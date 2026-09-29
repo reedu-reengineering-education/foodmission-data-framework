@@ -20,6 +20,7 @@ import {
   MealSwapEventType,
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { toDayBucket } from '../../events/user-event.utils';
 import {
   conflictingFlags,
   eventsForFlags,
@@ -30,10 +31,6 @@ import {
 @Injectable()
 export class MealLogsService {
   private readonly logger = new Logger(MealLogsService.name);
-
-  private toDayBucket(date: Date): string {
-    return date.toISOString().slice(0, 10);
-  }
 
   private resolveLoggedAt(
     persistedTimestamp: unknown,
@@ -127,15 +124,14 @@ export class MealLogsService {
       throw handlePrismaError(error, 'create meal log', 'MealLog');
     }
 
+    const mealDayBucket = toDayBucket(
+      this.resolveLoggedAt(mealLog.timestamp, createMealLogDto.timestamp),
+    );
+
     // Best-effort: the meal log is already persisted, so a failure recording
     // the event must not surface as a create failure (the client would retry
     // a call that already succeeded, creating a duplicate meal log).
     try {
-      const loggedAt = this.resolveLoggedAt(
-        mealLog.timestamp,
-        createMealLogDto.timestamp,
-      );
-
       await this.userEventService.record({
         userId,
         eventType: EventType.MEAL_LOGGED,
@@ -143,7 +139,7 @@ export class MealLogsService {
         metadata: {
           mealLogId: mealLog.id,
           mealId: mealLog.mealId,
-          mealDayBucket: this.toDayBucket(loggedAt),
+          mealDayBucket,
           source: EventSource.API,
           body: {
             ...(createMealLogDto.mealId !== undefined
@@ -172,7 +168,7 @@ export class MealLogsService {
       );
     }
 
-    await this.recordFlagEvents(mealLog, flags, swaps);
+    await this.recordFlagEvents(mealLog, flags, swaps, mealDayBucket);
 
     return this.toResponse(mealLog);
   }
@@ -186,12 +182,14 @@ export class MealLogsService {
     mealLog: MealLog,
     flags: MealFlagEventType[],
     swaps: MealSwapEventType[],
+    mealDayBucket: string,
   ): Promise<void> {
     for (const eventType of eventsForFlags(flags)) {
       await this.recordBehaviouralEvent(mealLog, eventType, {
         mealLogId: mealLog.id,
         mealId: mealLog.mealId,
         mealType: mealLog.typeOfMeal,
+        mealDayBucket,
         flags,
       });
     }
@@ -201,6 +199,7 @@ export class MealLogsService {
         mealLogId: mealLog.id,
         mealId: mealLog.mealId,
         mealType: mealLog.typeOfMeal,
+        mealDayBucket,
         ...swapSides(eventType),
       });
     }

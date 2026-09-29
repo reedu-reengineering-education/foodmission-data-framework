@@ -76,6 +76,36 @@ describe('UserEventService', () => {
     );
   });
 
+  it('stamps a server-owned UTC dayBucket, overriding any client value', async () => {
+    jest.useFakeTimers({ now: new Date('2026-09-29T23:30:00.000Z') });
+    try {
+      prisma.userEvent.findUnique.mockResolvedValue(null);
+      prisma.userEvent.create.mockResolvedValue({
+        id: 'evt-1',
+        userId: 'u1',
+        eventType: EventType.FOOD_WASTE_HALF_PLATE_SAVED,
+        source: EventSource.QUICK_ACTION,
+      });
+
+      await service.record({
+        userId: 'u1',
+        eventType: EventType.FOOD_WASTE_HALF_PLATE_SAVED,
+        source: EventSource.QUICK_ACTION,
+        metadata: { dayBucket: '1999-01-01' },
+      });
+
+      expect(prisma.userEvent.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            metadata: expect.objectContaining({ dayBucket: '2026-09-29' }),
+          }),
+        }),
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it('replays on idempotencyKey', async () => {
     prisma.userEvent.findUnique.mockResolvedValue({ id: 'evt-existing' });
 

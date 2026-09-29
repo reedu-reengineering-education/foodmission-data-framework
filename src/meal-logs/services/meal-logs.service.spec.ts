@@ -321,6 +321,29 @@ describe('MealLogsService', () => {
       );
     });
 
+    it('stamps flag and swap events with the meal day, not the recording day', async () => {
+      const log = quickLog(
+        [EventType.MEAL_MEAT_CONSUMED],
+        [EventType.SWAP_BEEF_TO_CHICKEN],
+      );
+      mockMealLogRepository.create.mockResolvedValue(log);
+
+      await service.create(
+        {
+          typeOfMeal: TypeOfMeal.LUNCH,
+          flags: [EventType.MEAL_MEAT_CONSUMED],
+          swaps: [EventType.SWAP_BEEF_TO_CHICKEN],
+        },
+        userId,
+      );
+
+      for (const [input] of userEventService.record.mock.calls) {
+        expect(input.metadata).toEqual(
+          expect.objectContaining({ mealDayBucket: '2026-09-17' }),
+        );
+      }
+    });
+
     it('still returns the log when recording an event fails', async () => {
       const log = quickLog([EventType.MEAL_MEAT_CONSUMED]);
       mockMealLogRepository.create.mockResolvedValue(log);

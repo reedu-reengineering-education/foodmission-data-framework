@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { Prisma, UserEvent } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { buildEventMetadata } from '../user-event.utils';
+import { buildEventMetadata, toDayBucket } from '../user-event.utils';
 import { RulesService } from '../../rules/rules.service';
 import {
   QUEST_PROGRESS_RECOMPUTER,
@@ -80,7 +80,12 @@ export class UserEventService implements UserEventRecorder {
       }
     }
 
-    const metadata = buildEventMetadata(input.metadata ?? {}, input.subject);
+    // `dayBucket` is server-owned (overwrites any client value) so rules can
+    // count distinct days without trusting client clocks.
+    const metadata = {
+      ...buildEventMetadata(input.metadata ?? {}, input.subject),
+      dayBucket: toDayBucket(new Date()),
+    };
 
     try {
       const event = await db.userEvent.create({
@@ -89,7 +94,7 @@ export class UserEventService implements UserEventRecorder {
           groupId: input.groupId ?? null,
           eventType: input.eventType,
           source: input.source,
-          metadata: metadata as Prisma.InputJsonValue,
+          metadata,
           idempotencyKey: input.idempotencyKey ?? null,
         },
       });
