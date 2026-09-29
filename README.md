@@ -461,6 +461,29 @@ The `docker-compose.yml` file includes:
 - **Cache**: Ephemeral cache store (Valkey)
 - **Keycloak**: Authentication and authorization server
 
+#### Upgrading local PostgreSQL from 15 to 18
+
+The local stack moved from `postgres:15-alpine` on port `5434` to `postgres:18-alpine` on port `5432`. PostgreSQL 18 cannot open a data directory written by 15, and the 18 image mounts its volume at `/var/lib/postgresql` instead of `/var/lib/postgresql/data`, so an existing `postgres_data` volume has to be dumped and restored. The volume also holds `keycloak_db`, so dump the whole cluster, not just `foodmission_db`.
+
+```bash
+# 1. While the old postgres:15 container is still running, dump every database
+docker exec foodmission-postgres pg_dumpall -U postgres > pg15-dump.sql
+
+# 2. Remove the container and the old volume
+docker compose down
+docker volume rm foodmission-data-framework_postgres_data
+
+# 3. Start PostgreSQL 18 and restore
+docker compose up -d postgres
+docker exec -i foodmission-postgres psql -U postgres < pg15-dump.sql
+# "role/database already exists" errors are expected: the init script
+# has already created them.
+
+# 4. In .env, change the port in DATABASE_URL and DATABASE_URL_TEST from 5434 to 5432
+```
+
+If you don't need your local data, skip the dump in step 1 and the `psql` restore in step 3, then run `npm run db:migrate:reset` and `npm run db:seed`. Keycloak re-imports the realm on start, but local Keycloak users you created by hand are lost.
+
 For production deployments, create a custom docker-compose file or use container orchestration platforms with appropriate environment configurations.
 
 ### Deployment
