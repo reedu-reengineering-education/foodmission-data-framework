@@ -123,10 +123,15 @@ describe('ChallengeProgressRepository', () => {
           challengeId: 'c1',
           progress: 1,
           completed: true,
+          status: 'COMPLETED',
+          state: { source: 'manual', mode: 'api' },
+          startedAt: expect.any(Date),
         },
         update: {
           progress: 1,
           completed: true,
+          status: 'COMPLETED',
+          state: { source: 'manual', mode: 'api' },
         },
         include: { challenge: true },
       });

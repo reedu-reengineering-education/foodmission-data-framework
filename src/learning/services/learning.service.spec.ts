@@ -127,7 +127,10 @@ describe('LearningService', () => {
         { provide: PrismaService, useValue: prisma },
         { provide: LearningTranslationHelper, useValue: mockTranslations },
         { provide: UserEventService, useValue: userEventService },
-        { provide: GamificationWalletService, useValue: gamificationWalletService },
+        {
+          provide: GamificationWalletService,
+          useValue: gamificationWalletService,
+        },
       ],
     }).compile();
 
@@ -322,7 +325,9 @@ describe('LearningService', () => {
         dimensionCode: 'DIM.DIET',
       };
       const randomSpy = jest.spyOn(Math, 'random').mockReturnValue(0.25);
-      prisma.quizProgress.findMany.mockResolvedValue([{ quizId: 'completed-1' }]);
+      prisma.quizProgress.findMany.mockResolvedValue([
+        { quizId: 'completed-1' },
+      ]);
       prisma.quiz.count.mockResolvedValue(2);
       prisma.quiz.findMany.mockResolvedValue([
         {
@@ -337,13 +342,15 @@ describe('LearningService', () => {
           foodChoice: false,
           foodWaste: false,
           available: true,
-          options: [{
-            id: 'opt-1',
-            label: 'A',
-            text: 'Lower impact',
-            isCorrect: true,
-            sortOrder: 0,
-          }],
+          options: [
+            {
+              id: 'opt-1',
+              label: 'A',
+              text: 'Lower impact',
+              isCorrect: true,
+              sortOrder: 0,
+            },
+          ],
         },
       ]);
 
@@ -395,7 +402,9 @@ describe('LearningService', () => {
       prisma.quizProgress.findMany.mockResolvedValue([{ quizId: 'q1' }]);
       prisma.quiz.count.mockResolvedValue(0);
 
-      await expect(service.getRandomQuiz('u1', { foodChoice: true }, 'fr')).resolves.toBeNull();
+      await expect(
+        service.getRandomQuiz('u1', { foodChoice: true }, 'fr'),
+      ).resolves.toBeNull();
       expect(prisma.quiz.findMany).not.toHaveBeenCalled();
 
       prisma.quiz.count.mockResolvedValue(3);
@@ -412,17 +421,23 @@ describe('LearningService', () => {
           foodChoice: true,
           foodWaste: false,
           available: true,
-          options: [{
-            id: 'opt-2',
-            label: 'A',
-            text: 'Seasonal',
-            isCorrect: false,
-            sortOrder: 0,
-          }],
+          options: [
+            {
+              id: 'opt-2',
+              label: 'A',
+              text: 'Seasonal',
+              isCorrect: false,
+              sortOrder: 0,
+            },
+          ],
         },
       ]);
 
-      const mapped = await service.getRandomQuiz('u1', { foodChoice: true }, 'fr');
+      const mapped = await service.getRandomQuiz(
+        'u1',
+        { foodChoice: true },
+        'fr',
+      );
 
       expect(mapped).toMatchObject({
         id: 'quiz-3',

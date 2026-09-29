@@ -62,7 +62,8 @@ export class QuestProgressResponseDto {
 
   @ApiPropertyOptional({
     type: QuestRewardDto,
-    description: 'Set only when this update first completed the quest and earned a reward',
+    description:
+      'Set only when this update first completed the quest and earned a reward',
   })
   @Expose()
   @Type(() => QuestRewardDto)

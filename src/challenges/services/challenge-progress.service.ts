@@ -1,12 +1,12 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { RewardSourceType, WalletCurrency } from '@prisma/client';
+import { RewardSourceType } from '@prisma/client';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { overlayTitles } from '../../learning/utils/overlay-titles';
 import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { TranslationService } from '../../translations/services/translation.service';
-import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { EventSource, EventType } from '../../events/event-types';
 import {
   RecordUserEventInput,
@@ -14,10 +14,7 @@ import {
 } from '../../events/services/user-event.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
-import {
-  ChallengeProgressResponseDto,
-  ChallengeRewardDto,
-} from '../dto/response-challenge-progress.dto';
+import { ChallengeProgressResponseDto } from '../dto/response-challenge-progress.dto';
 
 type ChallengeProgressRow = {
   challengeId: string;
@@ -35,7 +32,7 @@ export class ChallengeProgressService {
     private readonly challengeProgressRepository: ChallengeProgressRepository,
     private readonly translationService: TranslationService,
     private readonly userEventService: UserEventService,
-    private readonly walletService: GamificationWalletService,
+    private readonly completionRewardService: CompletionRewardService,
   ) {}
 
   async getChallengeById(
@@ -156,7 +153,9 @@ export class ChallengeProgressService {
       });
     }
 
-    if (updated.completed && !previous?.completed) {
+    const justCompleted = updated.completed && !previous?.completed;
+
+    if (justCompleted) {
       await this.emitProgressEvent({
         userId,
         eventType: EventType.CHALLENGE_COMPLETED,
@@ -166,11 +165,15 @@ export class ChallengeProgressService {
       });
     }
 
-    const reward = await this.awardCompletionReward(
-      userId,
-      challenge,
-      updated.completed && !previous?.completed,
-    );
+    const reward = justCompleted
+      ? await this.completionRewardService.awardCompletion({
+          userId,
+          sourceType: RewardSourceType.CHALLENGE,
+          sourceId: challenge.id,
+          code: challenge.code,
+          reward: challenge.reward,
+        })
+      : null;
 
     const dto = await this.mapRowsToDtos([updated], lang).then(
       (rows) => rows[0],
@@ -179,63 +182,6 @@ export class ChallengeProgressService {
       ...dto,
       reward,
     });
-  }
-
-  /**
-   * Credits the challenge's reward to the user's gamification wallet the first
-   * time the challenge is completed. Best-effort: a wallet failure must not fail
-   * the progress update, which is already persisted.
-   */
-  private async awardCompletionReward(
-    userId: string,
-    challenge: {
-      id: string;
-      code: string;
-      reward?: { id: string; xp: number | null; points: number | null } | null;
-    },
-    justCompleted: boolean,
-  ): Promise<ChallengeRewardDto | null> {
-    if (!justCompleted) {
-      this.logger.debug(
-        `Challenge ${challenge.code} reward not awarded: not first completion`,
-      );
-      return null;
-    }
-    if (!challenge.reward) {
-      this.logger.debug(`Challenge ${challenge.code} has no reward attached`);
-      return null;
-    }
-    const { reward } = challenge;
-    const base = {
-      userId,
-      rewardId: reward.id,
-      sourceType: RewardSourceType.CHALLENGE,
-      sourceId: challenge.id,
-      reason: `Challenge ${challenge.code} completed`,
-    };
-    try {
-      if (reward.xp) {
-        await this.walletService.award({
-          ...base,
-          currency: WalletCurrency.XP,
-          amount: reward.xp,
-        });
-      }
-      if (reward.points) {
-        await this.walletService.award({
-          ...base,
-          currency: WalletCurrency.POINTS,
-          amount: reward.points,
-        });
-      }
-    } catch (error) {
-      this.logger.error(
-        `Failed to award challenge ${challenge.code} reward to user ${userId}`,
-        error instanceof Error ? error.stack : error,
-      );
-      return null;
-    }
-    return { xp: reward.xp, points: reward.points };
   }
 
   /**

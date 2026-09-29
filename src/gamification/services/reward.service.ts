@@ -39,9 +39,7 @@ export class RewardService {
    */
   async create(input: CreateRewardInput): Promise<Reward> {
     if (!input.points && !input.xp && !input.badgeId) {
-      throw new BadRequestException(
-        'Reward must have points, xp, or a badge',
-      );
+      throw new BadRequestException('Reward must have points, xp, or a badge');
     }
 
     try {
@@ -103,12 +101,7 @@ export class RewardService {
   /**
    * List all rewards with optional filtering.
    */
-  async list(
-    filter?: {
-      skip?: number;
-      take?: number;
-    },
-  ): Promise<Reward[]> {
+  async list(filter?: { skip?: number; take?: number }): Promise<Reward[]> {
     return this.prisma.reward.findMany({
       skip: filter?.skip,
       take: filter?.take,
@@ -123,12 +116,11 @@ export class RewardService {
     const reward = await this.getById(id);
     const points = input.points === undefined ? reward.points : input.points;
     const xp = input.xp === undefined ? reward.xp : input.xp;
-    const badgeId = input.badgeId === undefined ? reward.badgeId : input.badgeId;
+    const badgeId =
+      input.badgeId === undefined ? reward.badgeId : input.badgeId;
 
     if (!points && !xp && !badgeId) {
-      throw new BadRequestException(
-        'Reward must have points, xp, or a badge',
-      );
+      throw new BadRequestException('Reward must have points, xp, or a badge');
     }
 
     try {

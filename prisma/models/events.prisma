@@ -24,6 +24,7 @@ model UserEvent {
 
   @@index([userId, createdAt])
   @@index([groupId, createdAt])
+  @@index([userId, eventType, createdAt])
   @@index([eventType, createdAt])
   @@index([source, createdAt])
   @@map("user_events")

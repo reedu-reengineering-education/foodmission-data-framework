@@ -18,6 +18,7 @@ import {
   hasAllOnboardingBaselines,
 } from '../../gamification/onboarding.utils';
 import type { User } from '@prisma/client';
+import { ProgressStatus } from '../../common/progress-status';
 
 export interface UserProfile {
   id: string;
@@ -163,10 +164,18 @@ export class UserProfilesService {
       return this.formatUserProfile(user);
     }
 
-    let updatedUser = await this.prisma.user.update({
-      where: { id: user.id },
-      data: updateData,
-    });
+    const currentQuestChanged =
+      updateData.currentQuestId !== undefined &&
+      updateData.currentQuestId !== user.currentQuestId;
+
+    let updatedUser = currentQuestChanged
+      ? await this.prisma.$transaction((tx) =>
+          this.updateProfileWithQuestTransition(tx, user, updateData),
+        )
+      : await this.prisma.user.update({
+          where: { id: user.id },
+          data: updateData,
+        });
 
     updatedUser = await this.applyGamificationOnboardingIfReady(
       updatedUser,
@@ -174,6 +183,181 @@ export class UserProfilesService {
     );
 
     return this.formatUserProfile(updatedUser);
+  }
+
+  private async updateProfileWithQuestTransition(
+    tx: Pick<
+      PrismaService,
+      | 'user'
+      | 'quest'
+      | 'mission'
+      | 'challenge'
+      | 'missionProgress'
+      | 'challengeProgress'
+    >,
+    user: User,
+    updateData: Record<string, unknown>,
+  ): Promise<User> {
+    const nextQuestId = (updateData.currentQuestId as string | null) ?? null;
+    const previousQuestId = user.currentQuestId;
+
+    const oldQuestItems = previousQuestId
+      ? await this.getQuestMissionChallengeItems(tx, previousQuestId)
+      : [];
+    const newQuestItems = nextQuestId
+      ? await this.getQuestMissionChallengeItems(tx, nextQuestId, true)
+      : [];
+
+    const updatedUser = await tx.user.update({
+      where: { id: user.id },
+      data: updateData,
+    });
+
+    if (previousQuestId && previousQuestId !== nextQuestId) {
+      await this.removeOldQuestProgressRows(tx, user.id, oldQuestItems);
+    }
+
+    if (nextQuestId) {
+      await this.seedQuestProgressRows(tx, user.id, newQuestItems);
+    }
+
+    return updatedUser;
+  }
+
+  private async getQuestMissionChallengeItems(
+    tx: Pick<PrismaService, 'quest'>,
+    questId: string,
+    requireAvailable = false,
+  ): Promise<Array<{ contentType: string; contentCode: string }>> {
+    const quest = await tx.quest.findUnique({
+      where: { id: questId },
+      select: {
+        available: true,
+        items: {
+          where: {
+            contentType: {
+              in: ['MISSION', 'CHALLENGE'],
+            },
+          },
+          select: {
+            contentType: true,
+            contentCode: true,
+          },
+        },
+      },
+    });
+
+    if (!quest || (requireAvailable && !quest.available)) {
+      throw new BadRequestException('Invalid currentQuestId');
+    }
+
+    return quest.items;
+  }
+
+  private async seedQuestProgressRows(
+    tx: Pick<
+      PrismaService,
+      'mission' | 'challenge' | 'missionProgress' | 'challengeProgress'
+    >,
+    userId: string,
+    questItems: Array<{ contentType: string; contentCode: string }>,
+  ): Promise<void> {
+    const missionCodes = questItems
+      .filter((item) => item.contentType === 'MISSION')
+      .map((item) => item.contentCode);
+    const challengeCodes = questItems
+      .filter((item) => item.contentType === 'CHALLENGE')
+      .map((item) => item.contentCode);
+
+    if (missionCodes.length > 0) {
+      const missions = await tx.mission.findMany({
+        where: { code: { in: missionCodes } },
+        select: { id: true },
+      });
+
+      if (missions.length > 0) {
+        await tx.missionProgress.createMany({
+          data: missions.map((mission) => ({
+            userId,
+            missionId: mission.id,
+            progress: 0,
+            completed: false,
+            status: ProgressStatus.NOT_STARTED,
+            state: {},
+          })),
+          skipDuplicates: true,
+        });
+      }
+    }
+
+    if (challengeCodes.length > 0) {
+      const challenges = await tx.challenge.findMany({
+        where: { code: { in: challengeCodes } },
+        select: { id: true },
+      });
+
+      if (challenges.length > 0) {
+        await tx.challengeProgress.createMany({
+          data: challenges.map((challenge) => ({
+            userId,
+            challengeId: challenge.id,
+            progress: 0,
+            completed: false,
+            status: ProgressStatus.NOT_STARTED,
+            state: {},
+          })),
+          skipDuplicates: true,
+        });
+      }
+    }
+  }
+
+  private async removeOldQuestProgressRows(
+    tx: Pick<
+      PrismaService,
+      'mission' | 'challenge' | 'missionProgress' | 'challengeProgress'
+    >,
+    userId: string,
+    questItems: Array<{ contentType: string; contentCode: string }>,
+  ): Promise<void> {
+    const missionCodes = questItems
+      .filter((item) => item.contentType === 'MISSION')
+      .map((item) => item.contentCode);
+    const challengeCodes = questItems
+      .filter((item) => item.contentType === 'CHALLENGE')
+      .map((item) => item.contentCode);
+
+    if (missionCodes.length > 0) {
+      const missions = await tx.mission.findMany({
+        where: { code: { in: missionCodes } },
+        select: { id: true },
+      });
+      if (missions.length > 0) {
+        await tx.missionProgress.deleteMany({
+          where: {
+            userId,
+            missionId: { in: missions.map((mission) => mission.id) },
+            status: { not: ProgressStatus.COMPLETED },
+          },
+        });
+      }
+    }
+
+    if (challengeCodes.length > 0) {
+      const challenges = await tx.challenge.findMany({
+        where: { code: { in: challengeCodes } },
+        select: { id: true },
+      });
+      if (challenges.length > 0) {
+        await tx.challengeProgress.deleteMany({
+          where: {
+            userId,
+            challengeId: { in: challenges.map((challenge) => challenge.id) },
+            status: { not: ProgressStatus.COMPLETED },
+          },
+        });
+      }
+    }
   }
 
   /**

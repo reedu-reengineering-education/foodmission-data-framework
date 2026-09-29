@@ -6,6 +6,7 @@ import { MissionsModule } from '../missions/missions.module';
 import { SurveysModule } from '../surveys/surveys.module';
 import { GamificationModule } from '../gamification/gamification.module';
 import { LearningModule } from '../learning/learning.module';
+import { QuestsModule } from '../quests/quests.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LearningModule } from '../learning/learning.module';
     GamificationModule,
     FoodyModule,
     LearningModule,
+    QuestsModule,
   ],
 })
 export class EngagementModule {}

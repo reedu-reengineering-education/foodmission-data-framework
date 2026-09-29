@@ -20,10 +20,14 @@ import {
 } from '../../common/exceptions/business.exception';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { PrismaService } from '../../database/prisma.service';
 
 describe('UserGroupsService', () => {
   let service: UserGroupsService;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
+  let prismaService: {
+    $transaction: jest.Mock;
+  };
 
   const mockUserGroupsRepository = {
     create: jest.fn(),
@@ -55,6 +59,9 @@ describe('UserGroupsService', () => {
     userEventService = {
       record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
     };
+    prismaService = {
+      $transaction: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -68,6 +75,7 @@ describe('UserGroupsService', () => {
           useValue: mockMembershipRepository,
         },
         { provide: UserEventService, useValue: userEventService },
+        { provide: PrismaService, useValue: prismaService },
       ],
     }).compile();
 
@@ -215,6 +223,94 @@ describe('UserGroupsService', () => {
       const result = await service.update(groupId, updateDto, userId);
 
       expect(result.name).toBe(updateDto.name);
+    });
+
+    it('should seed new quest rows and remove old non-completed rows for registered members', async () => {
+      const oldQuestId = 'quest-old';
+      const newQuestId = 'quest-new';
+      const updateWithQuest = { ...updateDto, currentQuestId: newQuestId };
+      const adminMembership = { userId, groupId, role: GroupRole.ADMIN };
+      const currentGroup = {
+        id: groupId,
+        currentQuestId: oldQuestId,
+        memberships: [],
+        virtualMembers: [],
+      };
+      const refreshedGroup = {
+        ...currentGroup,
+        currentQuestId: newQuestId,
+      };
+
+      const tx = {
+        quest: {
+          findUnique: jest
+            .fn()
+            .mockResolvedValueOnce({
+              available: true,
+              items: [
+                { contentType: 'MISSION', contentCode: 'old-mission' },
+                { contentType: 'CHALLENGE', contentCode: 'old-challenge' },
+              ],
+            })
+            .mockResolvedValueOnce({
+              available: true,
+              items: [
+                { contentType: 'MISSION', contentCode: 'new-mission' },
+                { contentType: 'CHALLENGE', contentCode: 'new-challenge' },
+              ],
+            }),
+        },
+        userGroup: {
+          update: jest.fn().mockResolvedValue(undefined),
+        },
+        groupMembership: {
+          findMany: jest
+            .fn()
+            .mockResolvedValue([
+              { userId: TEST_IDS.USER },
+              { userId: `${TEST_IDS.USER}-2` },
+              { userId: null },
+            ]),
+        },
+        mission: {
+          findMany: jest
+            .fn()
+            .mockResolvedValueOnce([{ id: 'mission-old-id' }])
+            .mockResolvedValueOnce([{ id: 'mission-new-id' }]),
+        },
+        challenge: {
+          findMany: jest
+            .fn()
+            .mockResolvedValueOnce([{ id: 'challenge-old-id' }])
+            .mockResolvedValueOnce([{ id: 'challenge-new-id' }]),
+        },
+        missionProgress: {
+          deleteMany: jest.fn().mockResolvedValue({ count: 2 }),
+          createMany: jest.fn().mockResolvedValue({ count: 2 }),
+        },
+        challengeProgress: {
+          deleteMany: jest.fn().mockResolvedValue({ count: 2 }),
+          createMany: jest.fn().mockResolvedValue({ count: 2 }),
+        },
+      };
+
+      prismaService.$transaction.mockImplementation((callback) => callback(tx));
+      mockUserGroupsRepository.findById
+        .mockResolvedValueOnce(currentGroup)
+        .mockResolvedValueOnce(currentGroup)
+        .mockResolvedValueOnce(refreshedGroup);
+      mockMembershipRepository.findByUserAndGroup.mockResolvedValue(
+        adminMembership,
+      );
+
+      const result = await service.update(groupId, updateWithQuest, userId);
+
+      expect(result.currentQuestId).toBe(newQuestId);
+      expect(prismaService.$transaction).toHaveBeenCalledTimes(1);
+      expect(tx.missionProgress.deleteMany).toHaveBeenCalled();
+      expect(tx.challengeProgress.deleteMany).toHaveBeenCalled();
+      expect(tx.missionProgress.createMany).toHaveBeenCalled();
+      expect(tx.challengeProgress.createMany).toHaveBeenCalled();
     });
 
     it('should throw GroupAdminRequiredException when user is not admin', async () => {

@@ -79,13 +79,14 @@ describe('MealLogsService', () => {
   });
 
   it('should create meal log when authorized', async () => {
+    const loggedAt = new Date('2026-09-17T12:00:00.000Z');
     const mealLog = {
       id: 'm1',
       mealId: 'm1',
       userId,
       typeOfMeal: TypeOfMeal.LUNCH,
       eatenOut: false,
-      timestamp: new Date(),
+      timestamp: loggedAt,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -116,6 +117,7 @@ describe('MealLogsService', () => {
       metadata: {
         mealLogId: 'm1',
         mealId: 'm1',
+        mealDayBucket: '2026-09-17',
         source: EventSource.API,
         body: {
           mealId: 'm1',
@@ -317,6 +319,29 @@ describe('MealLogsService', () => {
           metadata: expect.objectContaining({ from: 'BEEF', to: 'LEGUMES' }),
         }),
       );
+    });
+
+    it('stamps flag and swap events with the meal day, not the recording day', async () => {
+      const log = quickLog(
+        [EventType.MEAL_MEAT_CONSUMED],
+        [EventType.SWAP_BEEF_TO_CHICKEN],
+      );
+      mockMealLogRepository.create.mockResolvedValue(log);
+
+      await service.create(
+        {
+          typeOfMeal: TypeOfMeal.LUNCH,
+          flags: [EventType.MEAL_MEAT_CONSUMED],
+          swaps: [EventType.SWAP_BEEF_TO_CHICKEN],
+        },
+        userId,
+      );
+
+      for (const [input] of userEventService.record.mock.calls) {
+        expect(input.metadata).toEqual(
+          expect.objectContaining({ mealDayBucket: '2026-09-17' }),
+        );
+      }
     });
 
     it('still returns the log when recording an event fails', async () => {

@@ -64,7 +64,10 @@ export class QuizProgressResponseDto {
   @Expose()
   answeredAt?: Date | null;
 
-  @ApiPropertyOptional({ type: QuizRewardDto, description: 'Set only when this answer first earned a reward' })
+  @ApiPropertyOptional({
+    type: QuizRewardDto,
+    description: 'Set only when this answer first earned a reward',
+  })
   @Expose()
   @Type(() => QuizRewardDto)
   reward?: QuizRewardDto | null;

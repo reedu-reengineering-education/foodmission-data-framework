@@ -20,6 +20,11 @@ export function buildEventMetadata(
   };
 }
 
+/** UTC calendar day (`YYYY-MM-DD`) for per-day rule counters (`distinctBy`). */
+export function toDayBucket(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
 /** Normalize Prisma Json / unknown into a plain object for API responses. */
 export function asObjectMetadata(value: unknown): Record<string, unknown> {
   if (value && typeof value === 'object' && !Array.isArray(value)) {

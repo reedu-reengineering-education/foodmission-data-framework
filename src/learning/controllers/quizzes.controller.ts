@@ -25,9 +25,7 @@ import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
-import {
-  LearningPaginatedQueryDto,
-} from '../dto/learning-list-query.dto';
+import { LearningPaginatedQueryDto } from '../dto/learning-list-query.dto';
 import { QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
