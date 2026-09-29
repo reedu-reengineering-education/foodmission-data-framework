@@ -80,8 +80,8 @@
     "docker:logs": "docker compose -f docker-compose.yml logs -f",
     "docs:generate": "ts-node scripts/generate-openapi-spec.ts",
     "docs:consent-forms": "ts-node scripts/dev/convert-consent-forms.ts",
-    "rules:validate:draft": "ts-node scripts/rules/validate-rules-draft.ts",
-    "rules:validate:draft:strict": "ts-node scripts/rules/validate-rules-draft.ts --strict"
+    "rules:validate": "ts-node scripts/rules/validate-rules.ts",
+    "rules:validate:strict": "ts-node scripts/rules/validate-rules.ts --strict"
   },
   "dependencies": {
     "@cacheable/memory": "^2.2.0",

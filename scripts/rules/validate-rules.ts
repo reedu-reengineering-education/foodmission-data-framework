@@ -18,8 +18,7 @@ type RulesDoc = {
   challenges: RuleEntry[];
 };
 
-const DEFAULT_RULES_FILE =
-  'prisma/seeds/data/rules/drafts/rules-coverage.draft.yml';
+const DEFAULT_RULES_FILE = 'prisma/seeds/data/rules/rules-coverage.yml';
 const MISSION_CATALOG = 'prisma/seeds/data/catalog/missions.en.json';
 const CHALLENGE_CATALOG = 'prisma/seeds/data/catalog/challenges.en.json';
 
@@ -142,7 +141,7 @@ function main(): void {
     (entry) => entry.shape === 'undecided',
   ).length;
 
-  console.log('Rules draft validation OK');
+  console.log('Rules validation OK');
   console.log(`- missions: ${doc.missions.length}`);
   console.log(`- challenges: ${doc.challenges.length}`);
   console.log(`- mission undecided: ${missionUndecided}`);

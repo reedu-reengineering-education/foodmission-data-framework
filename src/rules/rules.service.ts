@@ -64,8 +64,7 @@ export class RulesService implements OnModuleInit {
     'seeds',
     'data',
     'rules',
-    'drafts',
-    'rules-coverage.draft.yml',
+    'rules-coverage.yml',
   );
 
   private loadedRules?: RulesCoverageDoc;

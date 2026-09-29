@@ -74,48 +74,55 @@ describe('RulesService filterEvents', () => {
 
   it('evaluates current and previous rolling windows independently', () => {
     const now = new Date('2026-09-17T12:00:00.000Z');
-    const evaluated = (service as any).evaluateRule(
-      {
-        window: { type: 'rolling_lookback', days: 7 },
-        counters: {
-          currentMeatMeals: {
-            event: 'MEAL_MEAT_CONSUMED',
-            distinctBy: 'metadata.mealId',
-          },
-          previousMeatMeals: {
-            event: 'MEAL_MEAT_CONSUMED',
-            distinctBy: 'metadata.mealId',
-            window: {
-              type: 'rolling_lookback',
-              days: 7,
-              offsetDays: 7,
+    // evaluateRule reads the wall clock; pin it so the fixtures stay in-window.
+    jest.useFakeTimers({ now });
+    let evaluated: unknown;
+    try {
+      evaluated = (service as any).evaluateRule(
+        {
+          window: { type: 'rolling_lookback', days: 7 },
+          counters: {
+            currentMeatMeals: {
+              event: 'MEAL_MEAT_CONSUMED',
+              distinctBy: 'metadata.mealId',
+            },
+            previousMeatMeals: {
+              event: 'MEAL_MEAT_CONSUMED',
+              distinctBy: 'metadata.mealId',
+              window: {
+                type: 'rolling_lookback',
+                days: 7,
+                offsetDays: 7,
+              },
             },
           },
+          target:
+            'previousMeatMeals >= 1 && currentMeatMeals <= previousMeatMeals - 1',
+          progress:
+            'previousMeatMeals > 0 ? clamp((previousMeatMeals - currentMeatMeals) / previousMeatMeals, 0, 1) : 0',
+          notes: ['test'],
         },
-        target:
-          'previousMeatMeals >= 1 && currentMeatMeals <= previousMeatMeals - 1',
-        progress:
-          'previousMeatMeals > 0 ? clamp((previousMeatMeals - currentMeatMeals) / previousMeatMeals, 0, 1) : 0',
-        notes: ['test'],
-      },
-      [
-        {
-          eventType: 'MEAL_MEAT_CONSUMED',
-          createdAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
-          metadata: { mealId: 'meal-current-1' },
-        },
-        {
-          eventType: 'MEAL_MEAT_CONSUMED',
-          createdAt: new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000),
-          metadata: { mealId: 'meal-previous-1' },
-        },
-        {
-          eventType: 'MEAL_MEAT_CONSUMED',
-          createdAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
-          metadata: { mealId: 'meal-previous-2' },
-        },
-      ],
-    );
+        [
+          {
+            eventType: 'MEAL_MEAT_CONSUMED',
+            createdAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+            metadata: { mealId: 'meal-current-1' },
+          },
+          {
+            eventType: 'MEAL_MEAT_CONSUMED',
+            createdAt: new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000),
+            metadata: { mealId: 'meal-previous-1' },
+          },
+          {
+            eventType: 'MEAL_MEAT_CONSUMED',
+            createdAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
+            metadata: { mealId: 'meal-previous-2' },
+          },
+        ],
+      );
+    } finally {
+      jest.useRealTimers();
+    }
 
     expect(evaluated).toEqual({ progress: 100, completed: true });
   });
