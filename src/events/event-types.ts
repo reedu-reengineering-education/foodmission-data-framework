@@ -287,7 +287,8 @@ export const CLIENT_RECORDABLE_EVENT_TYPES = [
   EventType.NUTRITION_PLANT_DIVERSITY_COUNT,
   // Learning
   EventType.LEARNING_FOOTPRINT_COMPARED,
-  EventType.LEARNING_RECIPE_EXPLORED,
+  // Not LEARNING_RECIPE_EXPLORED: `GET /recipes/:id` records it server-side,
+  // and the CHEF badge counts it, so a client must not be able to mint it.
   EventType.LEARNING_RECIPE_SHARED,
 ] as const;
 
