@@ -83,6 +83,12 @@ badges:
         - >-
           QUIZ_UPDATED is included so a quiz first answered wrong and later
           corrected counts; distinctBy quizId keeps it to one per quiz
+        - >-
+          Counts quizzes the user has ever answered correctly, not quizzes
+          whose current answer is correct: changing a correct answer to a wrong
+          one later does not take it back, and trying every option until one
+          is right counts too. Deliberately the same as quiz XP, which is paid
+          on a corrected answer
 
   - code: MISSIONARY
     shape: count_at_least
