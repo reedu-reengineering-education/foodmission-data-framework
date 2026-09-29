@@ -20,6 +20,7 @@ import {
   EventType,
 } from '../events/event-types';
 import { UserEventService } from '../events/services/user-event.service';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { userRegisteredIdempotencyKey } from './auth.constants';
 
@@ -92,7 +93,13 @@ export class AuthService {
       if (region) userCreatePayload.region = region;
       if (zip) userCreatePayload.zip = zip;
 
-      localUser = await this.userRepository.create(userCreatePayload);
+      // The local row and its USER_REGISTERED event commit together; if either
+      // fails, the Keycloak user is cleaned up below and the client can retry.
+      localUser = await this.prisma.$transaction(async (tx) => {
+        const created = await this.userRepository.create(userCreatePayload, tx);
+        await this.recordRegistration(created.id, tx);
+        return created;
+      });
     } catch (repoErr: any) {
       this.logger.error(
         'Local user persistence error',
@@ -147,8 +154,6 @@ export class AuthService {
       });
     }
 
-    await this.recordRegistration(localUser.id);
-
     return { createdUser, localUser };
   }
 
@@ -158,18 +163,23 @@ export class AuthService {
    * Keycloak without ever hitting this route, so whichever path creates the
    * local row first wins and the other replays.
    *
-   * Best-effort: the account exists either way, so a ledger failure must not
-   * fail registration.
+   * Runs inside the transaction that creates the local user row.
    */
-  private async recordRegistration(userId: string): Promise<void> {
-    await this.userEventService.recordBestEffort({
-      userId,
-      eventType: EventType.USER_REGISTERED,
-      source: EventSource.API,
-      metadata: {},
-      subject: { type: EventSubjectType.USER, id: userId },
-      idempotencyKey: userRegisteredIdempotencyKey(userId),
-    });
+  private async recordRegistration(
+    userId: string,
+    tx: Prisma.TransactionClient,
+  ): Promise<void> {
+    await this.userEventService.record(
+      {
+        userId,
+        eventType: EventType.USER_REGISTERED,
+        source: EventSource.API,
+        metadata: {},
+        subject: { type: EventSubjectType.USER, id: userId },
+        idempotencyKey: userRegisteredIdempotencyKey(userId),
+      },
+      tx,
+    );
   }
 
   /**

@@ -4,7 +4,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { RewardSourceType, WalletCurrency } from '@prisma/client';
+import { Prisma, RewardSourceType, WalletCurrency } from '@prisma/client';
 import { SurveysRepository } from '../repositories/surveys.repository';
 import {
   AnswerOptionDto,
@@ -375,50 +375,58 @@ export class SurveysService {
       }
     }
 
-    const result = await this.surveysRepository.submitSurveyResponse(
-      userId,
-      surveyId,
-      { responses: data.responses },
-    );
-
     const answeredQuestionIds = new Set(
       data.responses.map((r) => r.questionId),
     );
     const isComplete = survey.questions.every((q) =>
       answeredQuestionIds.has(q.id),
     );
+
+    // A complete submission and its SURVEY_COMPLETED event commit together,
+    // so a response can never exist without the event its badge counts.
+    const result = await this.surveysRepository.submitSurveyResponse(
+      userId,
+      surveyId,
+      { responses: data.responses },
+      isComplete
+        ? (tx, response) =>
+            this.recordSurveyCompleted(tx, userId, surveyId, response.id)
+        : undefined,
+    );
+
     if (isComplete) {
       await this.awardSurveyReward(userId, survey);
-      await this.recordSurveyCompleted(userId, surveyId, result.id);
     }
 
     return this.mapSurveyResponseToDto(result);
   }
 
   /**
-   * Records a SURVEY_COMPLETED event for a fully answered submission.
+   * Records a SURVEY_COMPLETED event for a fully answered submission, inside
+   * the transaction that writes the response.
    *
    * Keyed on the response, not on (user, survey): a survey may be answered
    * again on a later app use, and each attempt is its own completion. The
    * "Survey Beginner" badge counts distinct surveys, so repeats do not
    * shortcut it — see badges.rules.yml.
-   *
-   * Best-effort: the answers are already stored, so a ledger failure must
-   * not turn a successful submission into an error.
    */
   private async recordSurveyCompleted(
+    tx: Prisma.TransactionClient,
     userId: string,
     surveyId: string,
     responseId: string,
   ): Promise<void> {
-    await this.userEventService.recordBestEffort({
-      userId,
-      eventType: EventType.SURVEY_COMPLETED,
-      source: EventSource.SURVEY,
-      metadata: { surveyId, responseId, source: EventSource.API },
-      subject: { type: EventSubjectType.SURVEY, id: surveyId },
-      idempotencyKey: `survey-completed:${userId}:${responseId}`,
-    });
+    await this.userEventService.record(
+      {
+        userId,
+        eventType: EventType.SURVEY_COMPLETED,
+        source: EventSource.SURVEY,
+        metadata: { surveyId, responseId, source: EventSource.API },
+        subject: { type: EventSubjectType.SURVEY, id: surveyId },
+        idempotencyKey: `survey-completed:${userId}:${responseId}`,
+      },
+      tx,
+    );
   }
 
   /**

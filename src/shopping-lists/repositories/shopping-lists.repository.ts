@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ShoppingList } from '@prisma/client';
+import { Prisma, ShoppingList } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import {
   BaseRepository,
@@ -40,8 +40,11 @@ export class ShoppingListRepository implements BaseRepository<
     });
   }
 
-  async create(data: CreateShoppingListDto): Promise<ShoppingList> {
-    return await this.prisma.shoppingList.create({
+  async create(
+    data: CreateShoppingListDto,
+    tx?: Prisma.TransactionClient,
+  ): Promise<ShoppingList> {
+    return await (tx ?? this.prisma).shoppingList.create({
       data,
     });
   }

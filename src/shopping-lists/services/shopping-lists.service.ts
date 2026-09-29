@@ -24,6 +24,7 @@ import {
   EventType,
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
 export class ShoppingListService {
@@ -33,6 +34,7 @@ export class ShoppingListService {
     private readonly shoppingListRepository: ShoppingListRepository,
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
     private readonly userEventService: UserEventService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async create(
@@ -42,26 +44,33 @@ export class ShoppingListService {
     this.logger.log(`Creating a shopping list: ${createShoppingListDto.title}`);
 
     try {
-      const shoppingList = await this.shoppingListRepository.create({
-        ...createShoppingListDto,
-        userId,
-      });
-
-      // Keyed on the list, so a retried request records one creation.
-      // Best-effort: the list exists either way.
-      await this.userEventService.recordBestEffort({
-        userId,
-        eventType: EventType.SHOPPING_LIST_CREATED,
-        source: EventSource.SHOPPING_LIST,
-        metadata: {
-          shoppingListId: shoppingList.id,
-          source: EventSource.API,
-        },
-        subject: {
-          type: EventSubjectType.SHOPPING_LIST,
-          id: shoppingList.id,
-        },
-        idempotencyKey: `shopping-list-created:${userId}:${shoppingList.id}`,
+      // The list and its SHOPPING_LIST_CREATED event commit together: a list
+      // whose event was lost would never count towards its badge, and a
+      // failed request leaves nothing behind for the client's retry to
+      // duplicate.
+      const shoppingList = await this.prisma.$transaction(async (tx) => {
+        const created = await this.shoppingListRepository.create(
+          { ...createShoppingListDto, userId },
+          tx,
+        );
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.SHOPPING_LIST_CREATED,
+            source: EventSource.SHOPPING_LIST,
+            metadata: {
+              shoppingListId: created.id,
+              source: EventSource.API,
+            },
+            subject: {
+              type: EventSubjectType.SHOPPING_LIST,
+              id: created.id,
+            },
+            idempotencyKey: `shopping-list-created:${userId}:${created.id}`,
+          },
+          tx,
+        );
+        return created;
       });
 
       return this.transformToResponseDto(shoppingList);
