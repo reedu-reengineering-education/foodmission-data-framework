@@ -13,6 +13,23 @@ export class ConsentFormDto {
 
   @ApiProperty({
     description:
+      'Language of `content`: the requested locale when the pilot has a form in it, otherwise the English fallback',
+    example: 'no',
+  })
+  @Expose()
+  language!: string;
+
+  @ApiProperty({
+    description:
+      'Languages this pilot has a consent form in; always includes `en`',
+    type: [String],
+    example: ['en', 'no'],
+  })
+  @Expose()
+  availableLanguages!: string[];
+
+  @ApiProperty({
+    description:
       'Information letter and consent form for the pilot, as Markdown',
     example:
       '# Do you want to participate in the FOODMISSION Pilot Phase?\n...',

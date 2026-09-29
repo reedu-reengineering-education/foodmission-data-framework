@@ -264,6 +264,8 @@ export class CatalogController {
   @ApiOperation({
     summary:
       'Get the pilot information letter and consent form for a country, as Markdown',
+    description:
+      'Returned in the `lang` locale when the pilot has a form in that language (each pilot has English and its native language), otherwise in English.',
   })
   @ApiParam({
     name: 'countryCode',
@@ -274,8 +276,9 @@ export class CatalogController {
   @ApiCrudErrorResponses()
   consentForm(
     @Param('countryCode') countryCode: string,
+    @Query('lang') lang?: string,
   ): ConsentFormResponseDto {
-    return this.catalogService.getConsentForm(countryCode);
+    return this.catalogService.getConsentForm(countryCode, lang);
   }
 
   @Get('regions')

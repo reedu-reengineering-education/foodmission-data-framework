@@ -5,7 +5,8 @@ import TurndownService from 'turndown';
 
 // Converts the per-partner FOODMISSION pilot consent forms / information
 // letters from .docx to Markdown, renaming each output to the partner's country
-// code (hvl -> no.md, reedu -> de.md, ...).
+// code and the form's language (HVL_Norwegian -> no.no.md, reedu -> de.en.md,
+// ...). Each partner ships an English form and one in its native language.
 //
 // Usage: `npm run docs:consent-forms -- [inputFolder] [outputFolder]`
 // Defaults to ./docs/docx -> ./src/catalog/consent-forms (served by the catalog
@@ -68,6 +69,47 @@ const PARTNERS: Partner[] = [
   },
 ];
 
+/**
+ * Language of a form, taken from the last filename token
+ * (`ConsentForm_HVL_Norwegian`, `ConsentForm_UTH_EL`). Codes follow the app
+ * locales (`SUPPORTED_LOCALES`), so Greek is `el` and Slovenian `sl`. A
+ * filename without a language token is the English form.
+ */
+const LANGUAGE_ALIASES: Record<string, string> = {
+  en: 'en',
+  english: 'en',
+  de: 'de',
+  german: 'de',
+  deutsch: 'de',
+  el: 'el',
+  greek: 'el',
+  es: 'es',
+  spanish: 'es',
+  it: 'it',
+  italian: 'it',
+  nl: 'nl',
+  dutch: 'nl',
+  no: 'no',
+  nb: 'no',
+  norwegian: 'no',
+  pl: 'pl',
+  polish: 'pl',
+  sl: 'sl',
+  slovenian: 'sl',
+};
+
+const DEFAULT_FORM_LANGUAGE = 'en';
+
+export function matchLanguage(fileName: string): string {
+  const tokens = path
+    .basename(fileName, path.extname(fileName))
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean);
+
+  return LANGUAGE_ALIASES[tokens[tokens.length - 1]] ?? DEFAULT_FORM_LANGUAGE;
+}
+
 /** Longest aliases first so `cciscafe` wins over `ccis`, `adiconsum` over `adi`. */
 const ALIAS_INDEX: { alias: string; partner: Partner }[] = PARTNERS.flatMap(
   (partner) => partner.aliases.map((alias) => ({ alias, partner })),
@@ -126,13 +168,42 @@ export function isFooterSeparator(line: string): boolean {
 const BOLD_ONLY_LINE = /^\s*\*\*[^*]+\*\*\s*$/;
 
 /**
+ * Some translated forms drop the dashed rule and go straight from the lead-in
+ * ("**Samtykkeskjema brukt til å dokumentere etisk samtykke**") to the
+ * "**Samtykkeskjema**" heading. That pair of bold-only paragraphs is the last
+ * one in the letter, so without a separator the footer starts at the lead-in.
+ */
+export function findFooterStart(lines: string[]): number {
+  const separatorIndex = lines.findIndex(isFooterSeparator);
+
+  if (separatorIndex !== -1) {
+    return separatorIndex;
+  }
+
+  const paragraphs = lines
+    .map((line, index) => ({ line, index }))
+    .filter(({ line }) => line.trim() !== '');
+
+  for (let i = paragraphs.length - 2; i >= 0; i--) {
+    if (
+      BOLD_ONLY_LINE.test(paragraphs[i].line) &&
+      BOLD_ONLY_LINE.test(paragraphs[i + 1].line)
+    ) {
+      return paragraphs[i].index;
+    }
+  }
+
+  return -1;
+}
+
+/**
  * Drop everything from the footer separator on. The lead-in right above it
  * ("**Consent form used to document ethical consent**") introduces the removed
  * section, so a trailing bold-only paragraph goes as well.
  */
 export function stripFooter(markdown: string): string {
   const lines = markdown.split('\n');
-  const separatorIndex = lines.findIndex(isFooterSeparator);
+  const separatorIndex = findFooterStart(lines);
 
   if (separatorIndex === -1) {
     return markdown;
@@ -148,6 +219,40 @@ export function stripFooter(markdown: string): string {
   }
 
   return kept.join('\n');
+}
+
+/** Markdown of one paragraph as plain text: no list marker, emphasis or breaks. */
+function toPlainText(block: string): string {
+  return block
+    .replace(/^\s*\d+\\?\.\s+/, '')
+    .replace(/\*\*/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * The forms open with the partner name (a stray numbered list item in some
+ * Word files) followed by the title as bold, possibly line-broken, text. Serve
+ * the partner name as a plain paragraph and the title as the `#` heading, like
+ * the earlier forms that used a Word heading style.
+ */
+export function normaliseTitle(markdown: string): string {
+  if (markdown.trimStart().startsWith('#')) {
+    return markdown;
+  }
+
+  const blocks = markdown.trim().split(/\n\s*\n/);
+  const [partner, title, ...rest] = blocks.filter(
+    (block) => block.trim() !== '',
+  );
+
+  if (!title || !/^\s*\*\*/.test(title)) {
+    return markdown;
+  }
+
+  return [toPlainText(partner), `# ${toPlainText(title)}`, ...rest].join(
+    '\n\n',
+  );
 }
 
 // Turndown escapes underscores, so the local part may contain `\_`.
@@ -226,6 +331,7 @@ export function fixLinks(markdown: string): string {
 
 /** Clean-up steps applied to every converted form, in order. */
 const MARKDOWN_PIPELINE: ((markdown: string) => string)[] = [
+  normaliseTitle,
   stripFooter,
   fixLinks,
 ];
@@ -265,8 +371,8 @@ async function findDocxFiles(folder: string): Promise<string[]> {
 
 /**
  * Output path for a converted file. With renaming enabled a matched partner
- * yields `<country>.md`; unmatched files and collisions keep enough of the
- * original stem to stay distinguishable.
+ * yields `<country>.<language>.md`; unmatched files and collisions keep enough
+ * of the original stem to stay distinguishable.
  */
 function resolveOutputPath(
   filePath: string,
@@ -287,20 +393,22 @@ function resolveOutputPath(
     return path.join(OUTPUT_FOLDER, `${stem}.md`);
   }
 
-  const claimedBy = taken.get(partner.country);
+  const target = `${partner.country}.${matchLanguage(filePath)}`;
+  const claimedBy = taken.get(target);
 
   if (claimedBy) {
     // Two partners share a country (UTH/IELKA in GR, UNIVR/ADI in IT), or the
-    // same partner has several documents. Keep both files rather than clobber.
+    // same partner has several documents in one language. Keep both files
+    // rather than clobber.
     const disambiguated = `${partner.country}-${normalise(stem)}`;
     console.warn(
-      `  ! ${relative}: "${partner.country}.md" already taken by ${claimedBy}, writing ${disambiguated}.md`,
+      `  ! ${relative}: "${target}.md" already taken by ${claimedBy}, writing ${disambiguated}.md`,
     );
     return path.join(OUTPUT_FOLDER, `${disambiguated}.md`);
   }
 
-  taken.set(partner.country, relative);
-  return path.join(OUTPUT_FOLDER, `${partner.country}.md`);
+  taken.set(target, relative);
+  return path.join(OUTPUT_FOLDER, `${target}.md`);
 }
 
 async function main(): Promise<void> {
@@ -319,7 +427,7 @@ async function main(): Promise<void> {
 
   console.log(`Converting ${docxFiles.length} file(s) from ${INPUT_FOLDER}`);
 
-  // country code -> first source file that claimed it
+  // `<country>.<language>` -> first source file that claimed it
   const taken = new Map<string, string>();
 
   for (const filePath of docxFiles) {
@@ -331,9 +439,12 @@ async function main(): Promise<void> {
       const rawMarkdown = htmlToMarkdown(html);
       const markdown = postProcessMarkdown(rawMarkdown);
 
-      if (!rawMarkdown.split('\n').some(isFooterSeparator)) {
+      const rawLines = rawMarkdown.split('\n');
+      if (!rawLines.some(isFooterSeparator)) {
         console.warn(
-          `  ! ${relative}: no "-----" footer separator found, kept as is`,
+          findFooterStart(rawLines) === -1
+            ? `  ! ${relative}: no footer found, kept as is`
+            : `  ! ${relative}: no "-----" footer separator, cut at the consent form lead-in`,
         );
       }
       await fs.mkdir(path.dirname(outputPath), { recursive: true });

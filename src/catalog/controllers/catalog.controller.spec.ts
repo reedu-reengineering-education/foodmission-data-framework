@@ -92,15 +92,25 @@ describe('CatalogController', () => {
     expect(service.listAnnualIncomeLevels).toHaveBeenCalledWith('NO');
   });
 
-  it('consentForm should delegate to service with the country code', () => {
+  it('consentForm should delegate to service with the country code and language', () => {
     service.getConsentForm.mockReturnValue({
-      data: { countryCode: 'no', content: '# Consent' },
+      data: {
+        countryCode: 'no',
+        language: 'no',
+        availableLanguages: ['en', 'no'],
+        content: '# Consent',
+      },
     });
 
-    expect(controller.consentForm('no')).toEqual({
-      data: { countryCode: 'no', content: '# Consent' },
+    expect(controller.consentForm('no', 'no')).toEqual({
+      data: {
+        countryCode: 'no',
+        language: 'no',
+        availableLanguages: ['en', 'no'],
+        content: '# Consent',
+      },
     });
-    expect(service.getConsentForm).toHaveBeenCalledWith('no');
+    expect(service.getConsentForm).toHaveBeenCalledWith('no', 'no');
   });
 
   it('countries should delegate to service with query', () => {
