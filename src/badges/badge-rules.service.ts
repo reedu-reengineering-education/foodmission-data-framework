@@ -4,10 +4,7 @@ import { join } from 'node:path';
 import yaml from 'js-yaml';
 import { Prisma, RewardSourceType } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
-import {
-  AfterCommitQueue,
-  AfterCommitTask,
-} from '../common/after-commit/after-commit.queue';
+import { AfterCommitQueue } from '../common/after-commit/after-commit.queue';
 import { ProgressStatus } from '../common/progress-status';
 import {
   EventSource,
@@ -35,7 +32,7 @@ import {
   BadgeRulesDoc,
   badgeRulesSchema,
 } from './badge-rule-schema';
-import { BadgeRuleEvaluator } from './badge-rules.types';
+import { BadgeRuleEvaluator, BadgeTrigger } from './badge-rules.types';
 
 type BadgeCatalogItem = {
   id: string;
@@ -43,7 +40,7 @@ type BadgeCatalogItem = {
   ruleCode: string;
 };
 
-/** A badge the evaluator just moved to COMPLETED for the first time. */
+/** A badge whose rule is complete but which the user has not been granted. */
 type BadgeAward = {
   userId: string;
   badgeId: string;
@@ -80,8 +77,24 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
     'badges.rules.yml',
   );
 
+  /**
+   * Events that also retry grants left stuck by an earlier failure. A retry
+   * normally rides on the next event the badge's rule counts, but some rules
+   * (FIRST_STEP) only ever see one. Login is recorded at most once per user per
+   * UTC day, but only on `/auth/login`; app opens cover users who sign in with
+   * Keycloak directly. Client-posted is fine here: a retry only grants what the
+   * server already scored as complete.
+   */
+  static readonly GRANT_RETRY_EVENTS: ReadonlySet<string> = new Set([
+    EventType.USER_LOGGED_IN,
+    EventType.APP_SESSION_OPENED,
+  ]);
+
+  /** How long the badge catalog is trusted before it is read again. */
+  static readonly CATALOG_TTL_MS = 60_000;
+
   private loadedRules?: BadgeRulesDoc;
-  private catalog?: BadgeCatalogItem[];
+  private catalog?: { items: BadgeCatalogItem[]; loadedAt: number };
 
   constructor(
     private readonly prisma: PrismaService,
@@ -121,10 +134,10 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
   }
 
   async evaluateUserEvent(
-    userId: string,
-    eventType: string,
-    tx?: Prisma.TransactionClient,
+    trigger: BadgeTrigger,
+    options: { afterCommit?: boolean } = {},
   ): Promise<void> {
+    const { userId, eventType, eventId } = trigger;
     if (this.shouldIgnoreEventType(eventType)) {
       return;
     }
@@ -135,18 +148,118 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
     const triggered = this.load().badges.filter((entry) =>
       this.countsEventType(entry, eventType),
     );
-    if (triggered.length === 0) {
+    const retryStuck = BadgeRulesService.GRANT_RETRY_EVENTS.has(eventType);
+    if (triggered.length === 0 && !retryStuck) {
       return;
     }
 
-    const db = tx ?? this.prisma;
+    if (!options.afterCommit) {
+      await this.evaluate(userId, triggered, retryStuck);
+      return;
+    }
+
+    // The caller's transaction is still open. Nothing here may run on it:
+    // a failed statement would abort the caller's transaction however it is
+    // caught, and granting takes the wallet lock on a second connection. So
+    // wait until the triggering event is visible, then score from scratch.
+    // A rolled-back event never becomes visible and the task is skipped.
+    this.afterCommit.schedule([
+      {
+        label: `badges on ${eventType} for user ${userId}`,
+        confirm: () => this.isEventCommitted(eventId),
+        run: () => this.evaluate(userId, triggered, retryStuck),
+      },
+    ]);
+  }
+
+  /**
+   * Scores `entries` for the user and grants whatever is complete. With
+   * `retryStuck`, also grants badges an earlier evaluation completed but never
+   * managed to grant, whichever rule they belong to.
+   *
+   * Scoring holds a per-user advisory lock, so two evaluations for the same
+   * user run one after the other and the later one always reads a ledger at
+   * least as new as the earlier one's — a slow, stale evaluation can no longer
+   * overwrite a completed row with a lower score. Granting happens after that
+   * transaction commits, on the base client.
+   */
+  private async evaluate(
+    userId: string,
+    entries: BadgeRuleEntry[],
+    retryStuck = false,
+  ): Promise<void> {
+    const awards = await this.prisma.$transaction(
+      async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`badges:${userId}`}, 0))`;
+        const scored = await this.scoreBadges(tx, userId, entries);
+        if (!retryStuck) {
+          return scored;
+        }
+        const stuck = await this.findStuckAwards(tx, userId);
+        const byBadgeId = new Map(
+          [...scored, ...stuck].map((award) => [award.badgeId, award]),
+        );
+        return [...byBadgeId.values()];
+      },
+      // Waiting for the lock counts against the timeout, and a burst of events
+      // for one user queues several evaluations behind each other.
+      { timeout: 15_000 },
+    );
+
+    for (const award of awards) {
+      try {
+        await this.grantBadge(award);
+      } catch (error) {
+        // Not fatal: the badge stays unearned with a completed progress row,
+        // so the next event this rule counts, or the next login or app open,
+        // grants it again.
+        this.logger.error(
+          `Failed to grant badge ${award.code} to user ${userId}`,
+          error instanceof Error ? error.stack : error,
+        );
+      }
+    }
+  }
+
+  /**
+   * Completed progress rows with no earned sibling: a grant that failed or
+   * was lost to a restart. Retired badges stay ungranted.
+   */
+  private async findStuckAwards(
+    db: Prisma.TransactionClient,
+    userId: string,
+  ): Promise<BadgeAward[]> {
+    const rows = await db.badgeProgress.findMany({
+      where: {
+        userId,
+        completed: true,
+        badge: { available: true, earnedByUsers: { none: { userId } } },
+      },
+      select: { badgeId: true, badge: { select: { code: true } } },
+    });
+    return rows.map((row) => ({
+      userId,
+      badgeId: row.badgeId,
+      code: row.badge.code,
+    }));
+  }
+
+  private async scoreBadges(
+    db: Prisma.TransactionClient,
+    userId: string,
+    entries: BadgeRuleEntry[],
+  ): Promise<BadgeAward[]> {
+    if (entries.length === 0) {
+      return [];
+    }
+
     const catalog = await this.getCatalog(db);
     const badgeByRuleCode = new Map(
       catalog.map((badge) => [badge.ruleCode, badge]),
     );
 
     const pending: { entry: BadgeRuleEntry; badge: BadgeCatalogItem }[] = [];
-    for (const entry of triggered) {
+    for (const entry of entries) {
       const badge = badgeByRuleCode.get(entry.code);
       // A rule with no seeded badge is not an error: the YAML can describe a
       // badge before the catalog row exists, or after it is retired.
@@ -155,7 +268,7 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
       }
     }
     if (pending.length === 0) {
-      return;
+      return [];
     }
 
     const earned = await this.getEarnedBadgeIds(
@@ -165,7 +278,7 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
     );
     const unearned = pending.filter(({ badge }) => !earned.has(badge.id));
     if (unearned.length === 0) {
-      return;
+      return [];
     }
 
     const events = await this.loadEvents(
@@ -181,27 +294,11 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
         awards.push(award);
       }
     }
-
-    if (awards.length === 0) {
-      return;
-    }
-
-    const tasks = awards.map((award) => this.toAwardTask(award));
-
-    if (tx) {
-      // The progress rows above are still uncommitted, and awarding opens its
-      // own transactions (the wallet takes `FOR UPDATE` on its row). Running
-      // that from inside the caller's transaction deadlocks on a second
-      // connection. Hand it off instead — same reasoning as RulesService.
-      this.afterCommit.schedule(tasks);
-      return;
-    }
-
-    await this.afterCommit.run(tasks);
+    return awards;
   }
 
   /**
-   * Resolves once every award scheduled so far has settled. For tests and
+   * Resolves once every evaluation queued so far has settled. For tests and
    * graceful shutdown — the request path never waits on this.
    */
   async awaitPendingAwards(): Promise<void> {
@@ -260,8 +357,10 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
   }
 
   /**
-   * Scores one badge and writes its progress row. Returns the award only on
-   * the transition into completion, so a replayed evaluation never re-awards.
+   * Scores one badge and writes its progress row when it moved. Returns an
+   * award whenever the rule is complete — the caller only passes badges the
+   * user has not been granted, so a completed row without a grant (an earlier
+   * grant failed or was lost) is retried rather than skipped forever.
    */
   private async syncProgress(
     db: Prisma.TransactionClient | PrismaService,
@@ -288,7 +387,7 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
       previous.progress === progress &&
       previous.completed === completed;
     if (unchanged) {
-      return null;
+      return completed ? { userId, badgeId: badge.id, code: badge.code } : null;
     }
 
     const status = completed
@@ -323,39 +422,24 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
       update: row,
     });
 
-    if (!completed || previous?.completed) {
-      return null;
-    }
-
-    return { userId, badgeId: badge.id, code: badge.code };
+    return completed ? { userId, badgeId: badge.id, code: badge.code } : null;
   }
 
-  private toAwardTask(award: BadgeAward): AfterCommitTask {
-    return {
-      label: `badge ${award.code} for user ${award.userId}`,
-      confirm: () => this.confirmCompleted(award),
-      run: () => this.grantBadge(award),
-    };
-  }
-
-  /**
-   * Re-reads the progress row on the base client, so a badge is only granted
-   * once the evaluation that completed it is actually committed.
-   */
-  private async confirmCompleted(award: BadgeAward): Promise<boolean> {
-    const row = await this.prisma.badgeProgress.findUnique({
-      where: {
-        userId_badgeId: { userId: award.userId, badgeId: award.badgeId },
-      },
-      select: { completed: true },
+  /** True once the writer's transaction that created the event committed. */
+  private async isEventCommitted(eventId: string): Promise<boolean> {
+    const row = await this.prisma.userEvent.findUnique({
+      where: { id: eventId },
+      select: { id: true },
     });
-    return row?.completed === true;
+    return row !== null;
   }
 
   /**
-   * Grants the badge, then records it, then pays for it — in that order, and
-   * each step idempotent on its own, so a crash between any two of them heals
-   * on the next evaluation rather than double-paying.
+   * Records the badge, pays for it, and only then marks it earned. Every step
+   * is idempotent on its own, and the earned row is what stops re-evaluation,
+   * so a failure anywhere before it leaves the badge unearned and the next
+   * evaluation repeats the whole grant — replaying whatever already happened
+   * instead of double-paying.
    */
   private async grantBadge(award: BadgeAward): Promise<void> {
     // user_earned_badges has a foreign key to the wallet as well as to the
@@ -367,20 +451,6 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
     });
 
     const reward = await this.loadReward(award.badgeId);
-
-    await this.prisma.userEarnedBadge.upsert({
-      where: {
-        userId_badgeId: { userId: award.userId, badgeId: award.badgeId },
-      },
-      create: {
-        userId: award.userId,
-        badgeId: award.badgeId,
-        rewardId: reward?.id ?? null,
-        sourceType: RewardSourceType.BADGE,
-        sourceId: award.badgeId,
-      },
-      update: {},
-    });
 
     await this.recorder.record({
       userId: award.userId,
@@ -396,13 +466,32 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
     });
 
     // Optional: only badges with a Reward pointing at them pay XP or points.
-    // `awardCompletion` is itself idempotent per (user, source, reward).
-    await this.awarder.awardCompletion({
+    // `awardCompletion` is idempotent per (user, source, reward), but it logs
+    // and swallows wallet failures, returning null — which for a badge that
+    // has a reward means nothing was paid, so stop before marking it earned.
+    const paid = await this.awarder.awardCompletion({
       userId: award.userId,
       sourceType: RewardSourceType.BADGE,
       sourceId: award.badgeId,
       code: award.code,
       reward,
+    });
+    if (reward && !paid) {
+      throw new Error(`Reward ${reward.id} was not paid`);
+    }
+
+    await this.prisma.userEarnedBadge.upsert({
+      where: {
+        userId_badgeId: { userId: award.userId, badgeId: award.badgeId },
+      },
+      create: {
+        userId: award.userId,
+        badgeId: award.badgeId,
+        rewardId: reward?.id ?? null,
+        sourceType: RewardSourceType.BADGE,
+        sourceId: award.badgeId,
+      },
+      update: {},
     });
   }
 
@@ -433,16 +522,20 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
   }
 
   /**
-   * Cached for the lifetime of the process: this is seed data, a dozen rows,
-   * and it is read on most events. A newly seeded badge therefore needs a
-   * restart to start awarding — the same trade RulesService makes for missions.
+   * Cached briefly: this is seed data, a dozen rows, read on most evaluations.
+   * The expiry lets a badge seeded or retired on a running app take effect
+   * within a minute, and an empty result is never cached, so an event that
+   * arrives before the seed has run cannot switch badges off until a restart.
    * Only the immutable columns are cached; the reward is read at award time.
    */
   private async getCatalog(
     db: Prisma.TransactionClient | PrismaService,
   ): Promise<BadgeCatalogItem[]> {
-    if (this.catalog) {
-      return this.catalog;
+    if (
+      this.catalog &&
+      Date.now() - this.catalog.loadedAt < BadgeRulesService.CATALOG_TTL_MS
+    ) {
+      return this.catalog.items;
     }
 
     const rows = await db.badge.findMany({
@@ -450,11 +543,13 @@ export class BadgeRulesService implements OnModuleInit, BadgeRuleEvaluator {
       select: { id: true, code: true, ruleCode: true },
     });
 
-    this.catalog = rows.map((row) => ({
+    const items = rows.map((row) => ({
       id: row.id,
       code: row.code,
       ruleCode: row.ruleCode as string,
     }));
-    return this.catalog;
+    this.catalog =
+      items.length > 0 ? { items, loadedAt: Date.now() } : undefined;
+    return items;
   }
 }

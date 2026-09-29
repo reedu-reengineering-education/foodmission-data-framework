@@ -439,8 +439,9 @@ model Badge {
 /// shown before the badge is earned. Mirrors MissionProgress: written only by
 /// BadgeRulesService from the event ledger, never from a client request.
 /// The terminal state lives in UserEarnedBadge, which is what "earned" means;
-/// a row here with completed = true but no UserEarnedBadge sibling only
-/// happens between the evaluation and the after-commit award.
+/// a row here with completed = true but no UserEarnedBadge sibling means the
+/// grant is still running or failed; the next evaluation of that badge, or
+/// the user's next login or app open, retries it.
 model BadgeProgress {
   userId      String
   badgeId     String

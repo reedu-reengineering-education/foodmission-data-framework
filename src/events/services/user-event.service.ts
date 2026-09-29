@@ -134,11 +134,12 @@ export class UserEventService implements UserEventRecorder {
       // Badges are evaluated separately and on a wider set of events: the
       // MISSION_/QUEST_ completions excluded above are exactly what several
       // badge rules count. BadgeRulesService keeps its own, narrower exclusion
-      // list, so there is no filtering to do here.
+      // list, so there is no filtering to do here. Inside a transaction the
+      // evaluator only queues work for after the commit — it never touches tx.
       if (tx) {
-        await this.runBadgeEvaluation(event.userId, event.eventType, tx);
+        await this.runBadgeEvaluation(event, true);
       } else {
-        void this.runBadgeEvaluation(event.userId, event.eventType);
+        void this.runBadgeEvaluation(event, false);
       }
 
       // Only on a fresh write. A replayed event means some earlier call already
@@ -183,15 +184,17 @@ export class UserEventService implements UserEventRecorder {
   }
 
   private async runBadgeEvaluation(
-    userId: string,
-    eventType: string,
-    tx?: Prisma.TransactionClient,
+    event: { id: string; userId: string; eventType: string },
+    afterCommit: boolean,
   ): Promise<void> {
     try {
-      await this.getBadgeEvaluator()?.evaluateUserEvent(userId, eventType, tx);
+      await this.getBadgeEvaluator()?.evaluateUserEvent(
+        { userId: event.userId, eventType: event.eventType, eventId: event.id },
+        { afterCommit },
+      );
     } catch (error) {
       this.logger.error(
-        `Badge evaluation failed for ${eventType} and user ${userId}`,
+        `Badge evaluation failed for ${event.eventType} and user ${event.userId}`,
         error instanceof Error ? error.stack : error,
       );
     }

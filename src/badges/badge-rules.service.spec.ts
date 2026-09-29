@@ -59,30 +59,48 @@ function recipeViews(count: number) {
   }));
 }
 
+function trigger(eventType: string, userId = 'u1') {
+  return { userId, eventType, eventId: `evt-${eventType}` };
+}
+
 type MockDb = {
+  $transaction: jest.Mock;
+  $executeRaw: jest.Mock;
   badge: { findMany: jest.Mock };
-  userEvent: { findMany: jest.Mock };
+  userEvent: { findMany: jest.Mock; findUnique: jest.Mock };
   userEarnedBadge: { findMany: jest.Mock; upsert: jest.Mock };
-  badgeProgress: { findUnique: jest.Mock; upsert: jest.Mock };
+  badgeProgress: {
+    findUnique: jest.Mock;
+    findMany: jest.Mock;
+    upsert: jest.Mock;
+  };
   userGamificationWallet: { upsert: jest.Mock };
   reward: { findFirst: jest.Mock };
 };
 
 function buildDb(): MockDb {
-  return {
+  const db: MockDb = {
+    // Interactive transactions run the callback on the same mock client.
+    $transaction: jest.fn((fn: (tx: unknown) => unknown) => fn(db)),
+    $executeRaw: jest.fn().mockResolvedValue(1),
     badge: { findMany: jest.fn().mockResolvedValue(BADGES) },
-    userEvent: { findMany: jest.fn().mockResolvedValue([]) },
+    userEvent: {
+      findMany: jest.fn().mockResolvedValue([]),
+      findUnique: jest.fn().mockResolvedValue({ id: 'evt' }),
+    },
     userEarnedBadge: {
       findMany: jest.fn().mockResolvedValue([]),
       upsert: jest.fn().mockResolvedValue({}),
     },
     badgeProgress: {
       findUnique: jest.fn().mockResolvedValue(null),
+      findMany: jest.fn().mockResolvedValue([]),
       upsert: jest.fn().mockResolvedValue({}),
     },
     userGamificationWallet: { upsert: jest.fn().mockResolvedValue({}) },
     reward: { findFirst: jest.fn().mockResolvedValue(null) },
   };
+  return db;
 }
 
 describe('BadgeRulesService', () => {
@@ -109,14 +127,14 @@ describe('BadgeRulesService', () => {
   });
 
   it('ignores an event no badge rule counts, without touching the database', async () => {
-    await service.evaluateUserEvent('u1', EventType.MEAL_LOGGED);
+    await service.evaluateUserEvent(trigger(EventType.MEAL_LOGGED));
 
     expect(prisma.badge.findMany).not.toHaveBeenCalled();
     expect(prisma.userEvent.findMany).not.toHaveBeenCalled();
   });
 
   it('never re-enters on its own BADGE_EARNED output', async () => {
-    await service.evaluateUserEvent('u1', EventType.BADGE_EARNED);
+    await service.evaluateUserEvent(trigger(EventType.BADGE_EARNED));
 
     expect(prisma.badge.findMany).not.toHaveBeenCalled();
   });
@@ -124,7 +142,9 @@ describe('BadgeRulesService', () => {
   it('writes partial progress without awarding the badge', async () => {
     prisma.userEvent.findMany.mockResolvedValue(recipeViews(3));
 
-    await service.evaluateUserEvent('u1', EventType.LEARNING_RECIPE_EXPLORED);
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
     await service.awaitPendingAwards();
 
     expect(prisma.badgeProgress.upsert).toHaveBeenCalledTimes(1);
@@ -152,7 +172,9 @@ describe('BadgeRulesService', () => {
     ];
     prisma.userEvent.findMany.mockResolvedValue(sameRecipeTwice);
 
-    await service.evaluateUserEvent('u1', EventType.LEARNING_RECIPE_EXPLORED);
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
 
     expect(prisma.badgeProgress.upsert.mock.calls[0][0].create).toMatchObject({
       progress: 20,
@@ -161,18 +183,15 @@ describe('BadgeRulesService', () => {
 
   it('grants the badge, records it and credits its reward on completion', async () => {
     prisma.userEvent.findMany.mockResolvedValue(recipeViews(5));
-    // Two reads of the same row: the scoring read (no row yet) and the
-    // after-commit confirm, which must see the committed completion.
-    prisma.badgeProgress.findUnique
-      .mockResolvedValueOnce(null)
-      .mockResolvedValue({ completed: true });
     prisma.reward.findFirst.mockResolvedValue({
       id: 'reward-1',
       xp: 50,
       points: 20,
     });
 
-    await service.evaluateUserEvent('u1', EventType.LEARNING_RECIPE_EXPLORED);
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
     await service.awaitPendingAwards();
 
     // The wallet row has to exist first: user_earned_badges has a foreign key
@@ -204,6 +223,46 @@ describe('BadgeRulesService', () => {
         reward: { id: 'reward-1', xp: 50, points: 20 },
       }),
     );
+    // Marked earned last: it is what stops re-evaluation, so everything it
+    // guards has to have happened first.
+    const earnedAt = prisma.userEarnedBadge.upsert.mock.invocationCallOrder[0];
+    expect(recorder.record.mock.invocationCallOrder[0]).toBeLessThan(earnedAt);
+    expect(awarder.awardCompletion.mock.invocationCallOrder[0]).toBeLessThan(
+      earnedAt,
+    );
+  });
+
+  it('scores under a per-user advisory lock', async () => {
+    prisma.userEvent.findMany.mockResolvedValue(recipeViews(3));
+
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+
+    expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    const [sql, key] = prisma.$executeRaw.mock.calls[0];
+    expect(sql.join('?')).toContain('pg_advisory_xact_lock');
+    expect(key).toBe('badges:u1');
+    expect(prisma.$executeRaw.mock.invocationCallOrder[0]).toBeLessThan(
+      prisma.userEvent.findMany.mock.invocationCallOrder[0],
+    );
+  });
+
+  it('leaves the badge unearned when its reward could not be paid', async () => {
+    prisma.userEvent.findMany.mockResolvedValue(recipeViews(5));
+    prisma.reward.findFirst.mockResolvedValue({
+      id: 'reward-1',
+      xp: 50,
+      points: 20,
+    });
+    // awardCompletion logs wallet failures and returns null.
+    awarder.awardCompletion.mockResolvedValue(null);
+
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+
+    expect(prisma.userEarnedBadge.upsert).not.toHaveBeenCalled();
   });
 
   it('skips a badge the user already earned', async () => {
@@ -212,29 +271,106 @@ describe('BadgeRulesService', () => {
     ]);
     prisma.userEvent.findMany.mockResolvedValue(recipeViews(5));
 
-    await service.evaluateUserEvent('u1', EventType.LEARNING_RECIPE_EXPLORED);
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
     await service.awaitPendingAwards();
 
     expect(prisma.badgeProgress.upsert).not.toHaveBeenCalled();
     expect(prisma.userEarnedBadge.upsert).not.toHaveBeenCalled();
   });
 
-  it('does not award twice when the progress row was already complete', async () => {
+  it('retries the grant when the row is complete but the badge was never granted', async () => {
     prisma.userEvent.findMany.mockResolvedValue(recipeViews(5));
     prisma.badgeProgress.findUnique.mockResolvedValue({
       progress: 100,
       completed: true,
     });
 
-    await service.evaluateUserEvent('u1', EventType.LEARNING_RECIPE_EXPLORED);
-    await service.awaitPendingAwards();
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
 
+    // Nothing moved, so no progress write — but the earlier grant was lost.
     expect(prisma.badgeProgress.upsert).not.toHaveBeenCalled();
-    expect(prisma.userEarnedBadge.upsert).not.toHaveBeenCalled();
+    expect(prisma.userEarnedBadge.upsert).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries stuck grants on login even though no rule counts it', async () => {
+    prisma.badgeProgress.findMany.mockResolvedValue([
+      { badgeId: 'badge-list', badge: { code: 'SHOPPING_LIST' } },
+    ]);
+
+    await service.evaluateUserEvent(trigger(EventType.USER_LOGGED_IN));
+
+    expect(prisma.badgeProgress.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          userId: 'u1',
+          completed: true,
+          badge: { available: true, earnedByUsers: { none: { userId: 'u1' } } },
+        },
+      }),
+    );
+    // Nothing to score, so the ledger is never read — only the grant runs.
+    expect(prisma.userEvent.findMany).not.toHaveBeenCalled();
+    expect(prisma.userEarnedBadge.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({ badgeId: 'badge-list' }),
+      }),
+    );
+  });
+
+  it('does not look for stuck grants on ordinary events', async () => {
+    prisma.userEvent.findMany.mockResolvedValue(recipeViews(3));
+
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+
+    expect(prisma.badgeProgress.findMany).not.toHaveBeenCalled();
+  });
+
+  it('does not cache an empty catalog', async () => {
+    prisma.badge.findMany.mockResolvedValueOnce([]);
+    prisma.userEvent.findMany.mockResolvedValue(recipeViews(3));
+
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+    expect(prisma.badgeProgress.upsert).not.toHaveBeenCalled();
+
+    // Seeded after the first event: the next one must see it without a restart.
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+    expect(prisma.badge.findMany).toHaveBeenCalledTimes(2);
+    expect(prisma.badgeProgress.upsert).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-reads the catalog once it expires', async () => {
+    const now = jest.spyOn(Date, 'now').mockReturnValue(0);
+
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+    expect(prisma.badge.findMany).toHaveBeenCalledTimes(1);
+
+    now.mockReturnValue(BadgeRulesService.CATALOG_TTL_MS);
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
+    expect(prisma.badge.findMany).toHaveBeenCalledTimes(2);
+    now.mockRestore();
   });
 
   it('reads the ledger unbounded but narrowed to the counted event types', async () => {
-    await service.evaluateUserEvent('u1', EventType.LEARNING_RECIPE_EXPLORED);
+    await service.evaluateUserEvent(
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+    );
 
     const where = prisma.userEvent.findMany.mock.calls[0][0]
       .where as Prisma.UserEventWhereInput;
@@ -246,11 +382,8 @@ describe('BadgeRulesService', () => {
     expect(where.createdAt).toBeUndefined();
   });
 
-  it('defers awarding when the caller is inside a transaction', async () => {
+  it('runs nothing on the caller transaction and evaluates once the event commits', async () => {
     prisma.userEvent.findMany.mockResolvedValue(recipeViews(5));
-    prisma.badgeProgress.findUnique
-      .mockResolvedValueOnce(null)
-      .mockResolvedValue({ completed: true });
     const queue = new AfterCommitQueue();
     const schedule = jest.spyOn(queue, 'schedule');
     service = new BadgeRulesService(
@@ -262,14 +395,23 @@ describe('BadgeRulesService', () => {
     jest.spyOn(service, 'load').mockReturnValue(RULES);
 
     await service.evaluateUserEvent(
-      'u1',
-      EventType.LEARNING_RECIPE_EXPLORED,
-      prisma as unknown as Prisma.TransactionClient,
+      trigger(EventType.LEARNING_RECIPE_EXPLORED),
+      { afterCommit: true },
     );
 
-    // Awarding opens its own transactions; doing that on the caller's open one
-    // deadlocks on the wallet lock.
+    // A failed statement would poison the caller's transaction, and granting
+    // deadlocks on the wallet lock — so nothing may run before the commit.
     expect(schedule).toHaveBeenCalledTimes(1);
-    expect(prisma.userEarnedBadge.upsert).not.toHaveBeenCalled();
+    expect(prisma.badge.findMany).not.toHaveBeenCalled();
+    expect(prisma.badgeProgress.upsert).not.toHaveBeenCalled();
+
+    await service.awaitPendingAwards();
+
+    expect(prisma.userEvent.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: `evt-${EventType.LEARNING_RECIPE_EXPLORED}` },
+      }),
+    );
+    expect(prisma.userEarnedBadge.upsert).toHaveBeenCalledTimes(1);
   });
 });
