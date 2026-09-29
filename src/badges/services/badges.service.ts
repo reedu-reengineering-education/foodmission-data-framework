@@ -50,6 +50,10 @@ export class BadgesService {
     };
   }
 
+  /**
+   * Any badge by code, retired or not: earned codes on the gamification
+   * profile can point at a retired badge, and the client must resolve them.
+   */
   async getByCode(code: string): Promise<BadgeDto> {
     const row = await this.prisma.badge.findUnique({
       where: { code },
@@ -65,7 +69,8 @@ export class BadgesService {
 
   /**
    * The full catalog annotated for one user, so the client can render the
-   * locked badges next to the earned ones without a second call.
+   * locked badges next to the earned ones without a second call. Includes
+   * retired (`available = false`) badges the user has already earned.
    *
    * `earned` comes from UserEarnedBadge, which is the authoritative "has it"
    * record; `progress` comes from BadgeProgress, which may briefly read 100
@@ -75,7 +80,11 @@ export class BadgesService {
   async listForUser(userId: string): Promise<UserBadgesResponseDto> {
     const [rows, earned, progress] = await Promise.all([
       this.prisma.badge.findMany({
-        where: { available: true },
+        // A retired badge leaves the gallery but stays with whoever earned
+        // it, matching the earned codes on the gamification profile.
+        where: {
+          OR: [{ available: true }, { earnedByUsers: { some: { userId } } }],
+        },
         select: BadgesService.BADGE_SELECT,
         orderBy: [{ sortOrder: 'asc' }, { code: 'asc' }],
       }),
