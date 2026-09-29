@@ -430,7 +430,6 @@ model Badge {
   earnedByUsers UserEarnedBadge[]
   progress      BadgeProgress[]
 
-  @@index([ruleCode])
   @@index([sortOrder])
   @@map("badges")
 }

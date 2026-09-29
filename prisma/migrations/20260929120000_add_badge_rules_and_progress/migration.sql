@@ -18,7 +18,6 @@ ALTER TABLE "badges" ADD COLUMN "available" BOOLEAN NOT NULL DEFAULT true;
 
 -- CreateIndex
 CREATE UNIQUE INDEX "badges_ruleCode_key" ON "badges"("ruleCode");
-CREATE INDEX "badges_ruleCode_idx" ON "badges"("ruleCode");
 CREATE INDEX "badges_sortOrder_idx" ON "badges"("sortOrder");
 
 -- CreateTable
