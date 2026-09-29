@@ -44,7 +44,11 @@ describe('AuthService.register', () => {
         { provide: KeycloakAdminService, useValue: mockKeycloakAdminService },
         {
           provide: UserEventService,
-          useValue: { record: jest.fn(), findByIdempotencyKey: jest.fn() },
+          useValue: {
+            record: jest.fn(),
+            recordBestEffort: jest.fn(),
+            findByIdempotencyKey: jest.fn(),
+          },
         },
         {
           provide: PrismaService,

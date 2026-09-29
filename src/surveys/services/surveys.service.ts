@@ -411,18 +411,14 @@ export class SurveysService {
     surveyId: string,
     responseId: string,
   ): Promise<void> {
-    try {
-      await this.userEventService.record({
-        userId,
-        eventType: EventType.SURVEY_COMPLETED,
-        source: EventSource.SURVEY,
-        metadata: { surveyId, responseId, source: EventSource.API },
-        subject: { type: EventSubjectType.SURVEY, id: surveyId },
-        idempotencyKey: `survey-completed:${userId}:${responseId}`,
-      });
-    } catch {
-      // Swallowed on purpose — see above.
-    }
+    await this.userEventService.recordBestEffort({
+      userId,
+      eventType: EventType.SURVEY_COMPLETED,
+      source: EventSource.SURVEY,
+      metadata: { surveyId, responseId, source: EventSource.API },
+      subject: { type: EventSubjectType.SURVEY, id: surveyId },
+      idempotencyKey: `survey-completed:${userId}:${responseId}`,
+    });
   }
 
   /**

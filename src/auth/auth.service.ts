@@ -162,21 +162,14 @@ export class AuthService {
    * fail registration.
    */
   private async recordRegistration(userId: string): Promise<void> {
-    try {
-      await this.userEventService.record({
-        userId,
-        eventType: EventType.USER_REGISTERED,
-        source: EventSource.API,
-        metadata: {},
-        subject: { type: EventSubjectType.USER, id: userId },
-        idempotencyKey: userRegisteredIdempotencyKey(userId),
-      });
-    } catch (error) {
-      this.logger.warn(
-        `Failed to record USER_REGISTERED for user ${userId}`,
-        error instanceof Error ? error.message : error,
-      );
-    }
+    await this.userEventService.recordBestEffort({
+      userId,
+      eventType: EventType.USER_REGISTERED,
+      source: EventSource.API,
+      metadata: {},
+      subject: { type: EventSubjectType.USER, id: userId },
+      idempotencyKey: userRegisteredIdempotencyKey(userId),
+    });
   }
 
   /**

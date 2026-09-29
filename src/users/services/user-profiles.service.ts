@@ -102,18 +102,14 @@ export class UserProfilesService {
       // becomes a ledger fact. Shares that route's idempotency key, so a user
       // who took both paths is counted once. Best-effort: the account exists
       // regardless, and login must not fail on a ledger write.
-      try {
-        await this.userEventService.record({
-          userId: user.id,
-          eventType: EventType.USER_REGISTERED,
-          source: EventSource.API,
-          metadata: {},
-          subject: { type: EventSubjectType.USER, id: user.id },
-          idempotencyKey: userRegisteredIdempotencyKey(user.id),
-        });
-      } catch {
-        // Swallowed on purpose — see above.
-      }
+      await this.userEventService.recordBestEffort({
+        userId: user.id,
+        eventType: EventType.USER_REGISTERED,
+        source: EventSource.API,
+        metadata: {},
+        subject: { type: EventSubjectType.USER, id: user.id },
+        idempotencyKey: userRegisteredIdempotencyKey(user.id),
+      });
     }
 
     return this.formatUserProfile(user);

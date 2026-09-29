@@ -85,6 +85,23 @@ export class UserEventService implements UserEventRecorder {
     });
   }
 
+  /**
+   * Records an event the caller's own write does not depend on: a failure is
+   * logged and swallowed, so a ledger problem never fails the request that
+   * produced the fact. Takes no transaction on purpose — inside one, a failed
+   * insert aborts the caller's transaction however it is caught.
+   */
+  async recordBestEffort(input: RecordUserEventInput): Promise<void> {
+    try {
+      await this.record(input);
+    } catch (error) {
+      this.logger.warn(
+        `Failed to record ${input.eventType} for user ${input.userId}`,
+        error instanceof Error ? error.message : error,
+      );
+    }
+  }
+
   async record(
     input: RecordUserEventInput,
     tx?: Prisma.TransactionClient,

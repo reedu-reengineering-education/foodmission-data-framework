@@ -269,21 +269,14 @@ export class RecipesService {
     recipeId: string,
     userId: string,
   ): Promise<void> {
-    try {
-      await this.userEventService.record({
-        userId,
-        eventType: EventType.LEARNING_RECIPE_EXPLORED,
-        source: EventSource.RECIPE,
-        metadata: { recipeId, source: EventSource.API },
-        subject: { type: EventSubjectType.RECIPE, id: recipeId },
-        idempotencyKey: `recipe-explored:${userId}:${recipeId}`,
-      });
-    } catch (error) {
-      this.logger.warn(
-        `Failed to record LEARNING_RECIPE_EXPLORED for recipe ${recipeId}`,
-        error instanceof Error ? error.message : error,
-      );
-    }
+    await this.userEventService.recordBestEffort({
+      userId,
+      eventType: EventType.LEARNING_RECIPE_EXPLORED,
+      source: EventSource.RECIPE,
+      metadata: { recipeId, source: EventSource.API },
+      subject: { type: EventSubjectType.RECIPE, id: recipeId },
+      idempotencyKey: `recipe-explored:${userId}:${recipeId}`,
+    });
   }
 
   async update(

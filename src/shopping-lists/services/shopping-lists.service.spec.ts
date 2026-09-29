@@ -63,6 +63,7 @@ describe('ShoppingListService', () => {
               event: { id: 'evt-1' },
               replayed: false,
             }),
+            recordBestEffort: jest.fn().mockResolvedValue(undefined),
           },
         },
         {

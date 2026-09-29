@@ -49,27 +49,20 @@ export class ShoppingListService {
 
       // Keyed on the list, so a retried request records one creation.
       // Best-effort: the list exists either way.
-      try {
-        await this.userEventService.record({
-          userId,
-          eventType: EventType.SHOPPING_LIST_CREATED,
-          source: EventSource.SHOPPING_LIST,
-          metadata: {
-            shoppingListId: shoppingList.id,
-            source: EventSource.API,
-          },
-          subject: {
-            type: EventSubjectType.SHOPPING_LIST,
-            id: shoppingList.id,
-          },
-          idempotencyKey: `shopping-list-created:${userId}:${shoppingList.id}`,
-        });
-      } catch (eventError) {
-        this.logger.warn(
-          `Failed to record SHOPPING_LIST_CREATED for list ${shoppingList.id}`,
-          eventError instanceof Error ? eventError.message : eventError,
-        );
-      }
+      await this.userEventService.recordBestEffort({
+        userId,
+        eventType: EventType.SHOPPING_LIST_CREATED,
+        source: EventSource.SHOPPING_LIST,
+        metadata: {
+          shoppingListId: shoppingList.id,
+          source: EventSource.API,
+        },
+        subject: {
+          type: EventSubjectType.SHOPPING_LIST,
+          id: shoppingList.id,
+        },
+        idempotencyKey: `shopping-list-created:${userId}:${shoppingList.id}`,
+      });
 
       return this.transformToResponseDto(shoppingList);
     } catch (error: any) {

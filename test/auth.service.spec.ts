@@ -18,6 +18,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 const userEventServiceMock = {
   record: jest.fn(),
+  recordBestEffort: jest.fn(),
   findByIdempotencyKey: jest.fn(),
 };
 
@@ -121,7 +122,7 @@ describe('AuthService.login', () => {
   let httpService: jest.Mocked<HttpService>;
   let userProfileService: jest.Mocked<UserProfilesService>;
   let usersRepository: { touchLastLoginAt: jest.Mock };
-  let userEventService: { record: jest.Mock };
+  let userEventService: { record: jest.Mock; recordBestEffort: jest.Mock };
   const fakeTx = {} as any;
 
   beforeEach(async () => {
@@ -130,6 +131,7 @@ describe('AuthService.login', () => {
     };
     userEventService = {
       record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
+      recordBestEffort: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -277,7 +279,11 @@ describe('AuthService.sendResetPasswordEmailIfExists', () => {
         { provide: KeycloakAdminService, useValue: keycloakAdminService },
         {
           provide: UserEventService,
-          useValue: { record: jest.fn(), findByIdempotencyKey: jest.fn() },
+          useValue: {
+            record: jest.fn(),
+            recordBestEffort: jest.fn(),
+            findByIdempotencyKey: jest.fn(),
+          },
         },
         {
           provide: PrismaService,

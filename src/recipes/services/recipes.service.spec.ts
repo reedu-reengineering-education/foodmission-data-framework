@@ -48,6 +48,7 @@ describe('RecipesService', () => {
               event: { id: 'evt-1' },
               replayed: false,
             }),
+            recordBestEffort: jest.fn().mockResolvedValue(undefined),
           },
         },
         { provide: RecipesRepository, useValue: mockRecipeRepository },
