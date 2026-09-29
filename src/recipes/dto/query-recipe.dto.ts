@@ -12,7 +12,7 @@ import {
   TransformTrimToUndefined,
 } from '../../common/decorators/transformers';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
-import { Allergens } from '@prisma/client';
+import { Allergens, RecipeOrigin } from '@prisma/client';
 
 export class QueryRecipeDto extends PaginationQueryDto {
   @ApiPropertyOptional({
@@ -69,6 +69,15 @@ export class QueryRecipeDto extends PaginationQueryDto {
   @IsEnum(Allergens, { each: true })
   @TransformCSVToStringArray()
   allergens?: Allergens[];
+
+  @ApiPropertyOptional({
+    description: 'Filter by recipe origin',
+    enum: RecipeOrigin,
+  })
+  @IsOptional()
+  @IsEnum(RecipeOrigin)
+  @TransformTrimToUndefined()
+  origin?: RecipeOrigin;
 
   @ApiPropertyOptional({ description: 'Difficulty label' })
   @IsOptional()

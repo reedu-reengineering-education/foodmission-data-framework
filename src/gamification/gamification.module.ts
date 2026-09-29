@@ -7,6 +7,8 @@ import { COMPLETION_REWARD_AWARDER } from './completion-reward.types';
 import { GamificationOnboardingService } from './services/gamification-onboarding.service';
 import { GamificationProfileService } from './services/gamification-profile.service';
 import { BadgeService } from './services/badge.service';
+import { ProgressWheelService } from './services/progress-wheel.service';
+import { OnboardingSurveyService } from './services/onboarding-survey.service';
 import { RewardService } from './services/reward.service';
 
 @Module({
@@ -23,6 +25,8 @@ import { RewardService } from './services/reward.service';
     GamificationOnboardingService,
     GamificationProfileService,
     BadgeService,
+    ProgressWheelService,
+    OnboardingSurveyService,
     RewardService,
   ],
   exports: [
@@ -32,6 +36,8 @@ import { RewardService } from './services/reward.service';
     GamificationOnboardingService,
     GamificationProfileService,
     BadgeService,
+    ProgressWheelService,
+    OnboardingSurveyService,
     RewardService,
   ],
 })

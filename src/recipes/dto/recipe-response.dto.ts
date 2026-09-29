@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { Allergens } from '@prisma/client';
+import { Allergens, RecipeOrigin } from '@prisma/client';
 import { RecipeIngredientResponseDto } from './recipe-ingredient.dto';
 
 export class RecipeResponseDto {
@@ -107,6 +107,13 @@ export class RecipeResponseDto {
   @ApiProperty({ description: 'Whether recipe is publicly visible' })
   @Expose()
   isPublic: boolean;
+
+  @ApiProperty({
+    description: 'Where the recipe came from',
+    enum: RecipeOrigin,
+  })
+  @Expose()
+  origin: RecipeOrigin;
 
   @ApiPropertyOptional({ type: [String], description: 'Dietary labels' })
   @Expose()

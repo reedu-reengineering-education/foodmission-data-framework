@@ -1,5 +1,5 @@
 import { ContentLevel, PrismaClient, QuestContentType } from '@prisma/client';
-import { loadCatalogJson } from './food-facts';
+import { loadCatalogJson, loadRewardsByLevel } from './food-facts';
 
 interface QuestItemSeed {
   contentType: QuestContentType | string;
@@ -30,14 +30,7 @@ export async function seedQuests(prisma: PrismaClient) {
   });
   const dimensionByCode = new Map(dimensions.map((d) => [d.code, d.id]));
 
-  const questReward = await prisma.reward.findUnique({
-    where: { name: 'Standard Quest Reward' },
-  });
-  if (!questReward) {
-    console.warn(
-      '   ⚠️  Standard Quest Reward not found – run seedStandardRewards first',
-    );
-  }
+  const rewardsByLevel = await loadRewardsByLevel(prisma, 'Quest');
 
   let seeded = 0;
   let items = 0;
@@ -53,26 +46,29 @@ export async function seedQuests(prisma: PrismaClient) {
       continue;
     }
 
+    const level = row.level as ContentLevel;
+    const rewardId = rewardsByLevel.get(level)?.id ?? null;
+
     const quest = await prisma.quest.upsert({
       where: { code: row.code },
       update: {
         dimensionId,
-        level: row.level as ContentLevel,
+        level,
         name: row.name,
         title: row.title,
         description: row.description,
         available: true,
-        rewardId: questReward?.id ?? null,
+        rewardId,
       },
       create: {
         code: row.code,
         dimensionId,
-        level: row.level as ContentLevel,
+        level,
         name: row.name,
         title: row.title,
         description: row.description,
         available: true,
-        rewardId: questReward?.id ?? null,
+        rewardId,
       },
     });
 

@@ -149,6 +149,7 @@ model User {
   userEvents         UserEvent[]             @relation("UserEvents")
   walletEntries      WalletEntry[]
   foodyItems         UserFoodyItem[]
+  recipeRatings      RecipeRating[]
   legalConsents       UserConsent[]
 
   @@index([email])

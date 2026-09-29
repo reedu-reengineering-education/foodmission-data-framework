@@ -17,6 +17,15 @@ export async function seedSurveys(prisma: PrismaClient) {
   try {
     console.log('🌱 Seeding surveys...');
 
+    const surveyReward = await prisma.reward.findUnique({
+      where: { name: 'Standard Survey Reward' },
+    });
+    if (!surveyReward) {
+      console.warn(
+        '   ⚠️  Standard Survey Reward not found – run seedStandardRewards first',
+      );
+    }
+
     const surveysPath = path.join(
       process.cwd(),
       'prisma',
@@ -46,10 +55,12 @@ export async function seedSurveys(prisma: PrismaClient) {
         where: { title: surveyData.title },
         update: {
           description: surveyData.description,
+          rewardId: surveyReward?.id ?? null,
         },
         create: {
           title: surveyData.title,
           description: surveyData.description,
+          rewardId: surveyReward?.id ?? null,
         },
       });
 
@@ -65,9 +76,7 @@ export async function seedSurveys(prisma: PrismaClient) {
         orderBy: { order: 'asc' },
       });
       const existingByKey = new Map(
-        existingQuestions
-          .filter((q) => q.key)
-          .map((q) => [q.key as string, q]),
+        existingQuestions.filter((q) => q.key).map((q) => [q.key as string, q]),
       );
 
       for (let qIndex = 0; qIndex < surveyData.questions.length; qIndex++) {

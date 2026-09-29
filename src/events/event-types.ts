@@ -31,6 +31,8 @@
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
+ * - **Progress indicator** — `{ actionCode, wheels: [{ kind, delta, level,
+ *   accumulatedValue, targetValue, stagesCompleted }] }`
  * - **Foody** — `{ itemId, itemCode, type, cost? }` (purchase debits POINTS)
  * - **Onboarding** — `{ segment }`
  * - **App session** — `{ sessionId, platform?, appVersion?, durationSeconds? }`.

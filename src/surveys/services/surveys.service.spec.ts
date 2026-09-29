@@ -10,6 +10,7 @@ import {
 import { TranslationService } from '../../translations/services/translation.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
+import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 
 /** What the i18n mock resolves to for the default locale. */
 const ENGLISH_SCALE = [
@@ -40,9 +41,21 @@ describe('SurveysService', () => {
     id: 'survey-1',
     title: 'Test Survey',
     description: 'A test survey',
+    rewardId: null,
+    reward: null,
     questions: [mockQuestion],
     createdAt: new Date(),
     updatedAt: new Date(),
+  };
+
+  const expectedSurveyDto = {
+    id: mockSurvey.id,
+    slug: 'test-survey',
+    title: mockSurvey.title,
+    description: mockSurvey.description,
+    questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
+    createdAt: mockSurvey.createdAt,
+    updatedAt: mockSurvey.updatedAt,
   };
 
   type ResolvedTranslations = Record<
@@ -100,6 +113,12 @@ describe('SurveysService', () => {
             ),
           },
         },
+        {
+          provide: GamificationWalletService,
+          useValue: {
+            award: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -118,13 +137,9 @@ describe('SurveysService', () => {
 
       const result = await service.getAllSurveys();
 
-      expect(result).toEqual([
-        {
-          ...mockSurvey,
-          slug: 'test-survey',
-          questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-        },
-      ]);
+      expect(result).toEqual([expectedSurveyDto]);
+      expect(result[0]).not.toHaveProperty('reward');
+      expect(result[0]).not.toHaveProperty('rewardId');
       expect(repository.getAllSurveys).toHaveBeenCalled();
     });
 
@@ -143,11 +158,9 @@ describe('SurveysService', () => {
 
       const result = await service.getSurveyById('survey-1');
 
-      expect(result).toEqual({
-        ...mockSurvey,
-        slug: 'test-survey',
-        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-      });
+      expect(result).toEqual(expectedSurveyDto);
+      expect(result).not.toHaveProperty('reward');
+      expect(result).not.toHaveProperty('rewardId');
       expect(repository.getSurveyById).toHaveBeenCalledWith('survey-1');
     });
 
@@ -166,11 +179,9 @@ describe('SurveysService', () => {
 
       const result = await service.getSurveyBySlug('test-survey');
 
-      expect(result).toEqual({
-        ...mockSurvey,
-        slug: 'test-survey',
-        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-      });
+      expect(result).toEqual(expectedSurveyDto);
+      expect(result).not.toHaveProperty('reward');
+      expect(result).not.toHaveProperty('rewardId');
     });
 
     it('should throw NotFoundException when no survey matches the slug', async () => {
@@ -211,11 +222,9 @@ describe('SurveysService', () => {
 
       const result = await service.createSurvey(createDto);
 
-      expect(result).toEqual({
-        ...mockSurvey,
-        slug: 'test-survey',
-        questions: [{ ...mockQuestion, answers: ENGLISH_SCALE }],
-      });
+      expect(result).toEqual(expectedSurveyDto);
+      expect(result).not.toHaveProperty('reward');
+      expect(result).not.toHaveProperty('rewardId');
       expect(repository.createSurvey).toHaveBeenCalledWith(createDto);
     });
 

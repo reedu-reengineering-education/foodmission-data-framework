@@ -12,7 +12,11 @@ import {
   RecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
-import { Prisma } from '@prisma/client';
+import {
+  RateRecipeDto,
+  RecipeRatingResponseDto,
+} from '../dto/recipe-rating.dto';
+import { Prisma, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { plainToInstance } from 'class-transformer';
@@ -44,6 +48,7 @@ export class RecipesService {
         ...createRecipeDto,
         allergens: createRecipeDto.allergens ?? [],
         isPublic: createRecipeDto.isPublic ?? false,
+        origin: RecipeOrigin.USER,
         userId,
       });
       return this.toResponse(recipe);
@@ -140,12 +145,14 @@ export class RecipesService {
       tags,
       allergens,
       difficulty,
+      origin,
       search,
     } = query;
     return {
       ...(category ? { category } : {}),
       ...(cuisineType ? { cuisineType } : {}),
       ...(difficulty ? { difficulty } : {}),
+      ...(origin ? { origin } : {}),
       ...(tags && tags.length
         ? { tags: { hasSome: tags.map((t) => t.trim()) } }
         : {}),
@@ -160,19 +167,82 @@ export class RecipesService {
   }
 
   async findOne(id: string, userId: string): Promise<RecipeResponseDto> {
+    const recipe = await this.getVisibleRecipeOrThrow(id, userId);
+    return this.toResponse(recipe);
+  }
+
+  /**
+   * Returns the recipe if the user may see it, otherwise throws.
+   * Same visibility rule as findOne: owner or public.
+   */
+  private async getVisibleRecipeOrThrow(id: string, userId: string) {
     const recipe = await this.recipeRepository.findById(id);
 
     if (!recipe) {
       throw new NotFoundException('Recipe not found');
     }
 
-    // Allow access if user owns it OR if it's public
-    const canAccess = recipe.userId === userId || recipe.isPublic === true;
-    if (!canAccess) {
+    if (recipe.userId !== userId && recipe.isPublic !== true) {
       throw new ForbiddenException('Access denied to this recipe');
     }
 
-    return this.toResponse(recipe);
+    return recipe;
+  }
+
+  async getRating(
+    id: string,
+    userId: string,
+  ): Promise<RecipeRatingResponseDto> {
+    const recipe = await this.getVisibleRecipeOrThrow(id, userId);
+    const myRating = await this.recipeRepository.findRating(id, userId);
+
+    return this.toRatingResponse({
+      recipeId: recipe.id,
+      rating: recipe.rating,
+      ratingCount: recipe.ratingCount,
+      myRating: myRating?.value ?? null,
+    });
+  }
+
+  async rate(
+    id: string,
+    rateRecipeDto: RateRecipeDto,
+    userId: string,
+  ): Promise<RecipeRatingResponseDto> {
+    await this.getVisibleRecipeOrThrow(id, userId);
+
+    try {
+      const aggregate = await this.recipeRepository.upsertRating(
+        id,
+        userId,
+        rateRecipeDto.value,
+      );
+      return this.toRatingResponse(aggregate);
+    } catch (error) {
+      throw handlePrismaError(error, 'rate recipe', 'Recipe');
+    }
+  }
+
+  async removeRating(
+    id: string,
+    userId: string,
+  ): Promise<RecipeRatingResponseDto> {
+    await this.getVisibleRecipeOrThrow(id, userId);
+
+    try {
+      const aggregate = await this.recipeRepository.deleteRating(id, userId);
+
+      if (!aggregate) {
+        throw new NotFoundException('Rating not found');
+      }
+
+      return this.toRatingResponse(aggregate);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw handlePrismaError(error, 'delete recipe rating', 'Recipe');
+    }
   }
 
   async update(
@@ -197,6 +267,17 @@ export class RecipesService {
     } catch (error) {
       throw handlePrismaError(error, 'delete recipe', 'Recipe');
     }
+  }
+
+  private toRatingResponse(rating: {
+    recipeId: string;
+    rating: number;
+    ratingCount: number;
+    myRating: number | null;
+  }): RecipeRatingResponseDto {
+    return plainToInstance(RecipeRatingResponseDto, rating, {
+      excludeExtraneousValues: true,
+    });
   }
 
   private toResponse(recipe: any): RecipeResponseDto {

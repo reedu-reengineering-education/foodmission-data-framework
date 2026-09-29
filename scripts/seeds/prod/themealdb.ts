@@ -1,4 +1,4 @@
-import { Allergens, Prisma, PrismaClient } from '@prisma/client';
+import { Allergens, Prisma, PrismaClient, RecipeOrigin } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -179,6 +179,7 @@ function toRecipeCreateData(
     sustainabilityScore: recipe.sustainabilityScore ?? undefined,
     isPublic: true,
     userId: null,
+    origin: RecipeOrigin.THEMEALDB,
   };
 }
 
