@@ -3360,5 +3360,47 @@
       ],
       "note": "Machine-translated, needs partner review."
     }
+  },
+  "badges": {
+    "FIRST_STEP": {
+      "name": "Første steg",
+      "description": "Fullfør registreringen din."
+    },
+    "STYLISH": {
+      "name": "Stilig",
+      "description": "Gi Foody et personlig preg med et tilbehør."
+    },
+    "CURIOUS_FOODIE": {
+      "name": "Nysgjerrig matentusiast",
+      "description": "Se 5 matfakta."
+    },
+    "BRAINY": {
+      "name": "Luring",
+      "description": "Svar riktig på 10 quizer."
+    },
+    "MISSIONARY": {
+      "name": "Oppdragsmester",
+      "description": "Fullfør 3 oppdrag."
+    },
+    "ADVENTURER": {
+      "name": "Eventyrer",
+      "description": "Fullfør 1 eventyr."
+    },
+    "LEGENDARY_ADVENTURER": {
+      "name": "Legendarisk eventyrer",
+      "description": "Fullfør 5 eventyr."
+    },
+    "SURVEY_BEGINNER": {
+      "name": "Undersøkelsesnybegynner",
+      "description": "Fullfør 3 spørreundersøkelser."
+    },
+    "SHOPPING_LIST": {
+      "name": "Handleliste",
+      "description": "Lag 1 handleliste."
+    },
+    "CHEF": {
+      "name": "Mesterkokk",
+      "description": "Se 5 ulike oppskrifter."
+    }
   }
 }

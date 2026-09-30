@@ -8,8 +8,8 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    return this.prisma.user.create({
+  async create(createUserDto: CreateUserDto, tx?: Prisma.TransactionClient) {
+    return (tx ?? this.prisma).user.create({
       data: {
         ...createUserDto,
         pantry: {
@@ -45,8 +45,12 @@ export class UsersRepository {
     });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    tx?: Prisma.TransactionClient,
+  ) {
+    return (tx ?? this.prisma).user.update({
       where: { id },
       data: updateUserDto,
     });

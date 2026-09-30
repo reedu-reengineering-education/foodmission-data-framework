@@ -9,6 +9,10 @@ import {
   QuestProgressRecomputer,
 } from '../../quests/quest-progress.types';
 import {
+  BADGE_RULE_EVALUATOR,
+  BadgeRuleEvaluator,
+} from '../../badges/badge-rules.types';
+import {
   RecordUserEventInput,
   UserEventRecorder,
 } from '../user-event-recorder.types';
@@ -23,6 +27,7 @@ export class UserEventService implements UserEventRecorder {
 
   /** `undefined` = not looked up yet, `null` = not mounted in this app. */
   private questRecomputer?: QuestProgressRecomputer | null;
+  private badgeEvaluator?: BadgeRuleEvaluator | null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -49,6 +54,21 @@ export class UserEventService implements UserEventRecorder {
     return this.questRecomputer;
   }
 
+  /** Resolved lazily by token, for the same reason as the quest recomputer. */
+  private getBadgeEvaluator(): BadgeRuleEvaluator | null {
+    if (this.badgeEvaluator === undefined) {
+      try {
+        this.badgeEvaluator = this.moduleRef.get<BadgeRuleEvaluator>(
+          BADGE_RULE_EVALUATOR,
+          { strict: false },
+        );
+      } catch {
+        this.badgeEvaluator = null;
+      }
+    }
+    return this.badgeEvaluator;
+  }
+
   async findByIdempotencyKey(
     idempotencyKey: string,
     tx?: Prisma.TransactionClient,
@@ -63,6 +83,23 @@ export class UserEventService implements UserEventRecorder {
       where: { idempotencyKey },
       include,
     });
+  }
+
+  /**
+   * Records an event the caller's own write does not depend on: a failure is
+   * logged and swallowed, so a ledger problem never fails the request that
+   * produced the fact. Takes no transaction on purpose — inside one, a failed
+   * insert aborts the caller's transaction however it is caught.
+   */
+  async recordBestEffort(input: RecordUserEventInput): Promise<void> {
+    try {
+      await this.record(input);
+    } catch (error) {
+      this.logger.warn(
+        `Failed to record ${input.eventType} for user ${input.userId}`,
+        error instanceof Error ? error.message : error,
+      );
+    }
   }
 
   async record(
@@ -111,6 +148,17 @@ export class UserEventService implements UserEventRecorder {
         }
       }
 
+      // Badges are evaluated separately and on a wider set of events: the
+      // MISSION_/QUEST_ completions excluded above are exactly what several
+      // badge rules count. BadgeRulesService keeps its own, narrower exclusion
+      // list, so there is no filtering to do here. Inside a transaction the
+      // evaluator only queues work for after the commit — it never touches tx.
+      if (tx) {
+        await this.runBadgeEvaluation(event, true);
+      } else {
+        void this.runBadgeEvaluation(event, false);
+      }
+
       // Only on a fresh write. A replayed event means some earlier call already
       // recomputed for it, so the completion is counted exactly once.
       this.getQuestRecomputer()?.onCompletionEvent({
@@ -147,6 +195,23 @@ export class UserEventService implements UserEventRecorder {
     } catch (error) {
       this.logger.error(
         `Derived progress evaluation failed for ${eventType} and user ${userId}`,
+        error instanceof Error ? error.stack : error,
+      );
+    }
+  }
+
+  private async runBadgeEvaluation(
+    event: { id: string; userId: string; eventType: string },
+    afterCommit: boolean,
+  ): Promise<void> {
+    try {
+      await this.getBadgeEvaluator()?.evaluateUserEvent(
+        { userId: event.userId, eventType: event.eventType, eventId: event.id },
+        { afterCommit },
+      );
+    } catch (error) {
+      this.logger.error(
+        `Badge evaluation failed for ${event.eventType} and user ${event.userId}`,
         error instanceof Error ? error.stack : error,
       );
     }

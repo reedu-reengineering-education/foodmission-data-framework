@@ -18,6 +18,13 @@ import {
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { UpdateShoppingListDto } from '../dto/update-shopping-list.dto';
 import { ShoppingListItemRepository } from '../repositories/shopping-list-items.repository';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
+import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
 export class ShoppingListService {
@@ -26,6 +33,8 @@ export class ShoppingListService {
   constructor(
     private readonly shoppingListRepository: ShoppingListRepository,
     private readonly shoppingListItemRepository: ShoppingListItemRepository,
+    private readonly userEventService: UserEventService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async create(
@@ -35,10 +44,35 @@ export class ShoppingListService {
     this.logger.log(`Creating a shopping list: ${createShoppingListDto.title}`);
 
     try {
-      const shoppingList = await this.shoppingListRepository.create({
-        ...createShoppingListDto,
-        userId,
+      // The list and its SHOPPING_LIST_CREATED event commit together: a list
+      // whose event was lost would never count towards its badge, and a
+      // failed request leaves nothing behind for the client's retry to
+      // duplicate.
+      const shoppingList = await this.prisma.$transaction(async (tx) => {
+        const created = await this.shoppingListRepository.create(
+          { ...createShoppingListDto, userId },
+          tx,
+        );
+        await this.userEventService.record(
+          {
+            userId,
+            eventType: EventType.SHOPPING_LIST_CREATED,
+            source: EventSource.SHOPPING_LIST,
+            metadata: {
+              shoppingListId: created.id,
+              source: EventSource.API,
+            },
+            subject: {
+              type: EventSubjectType.SHOPPING_LIST,
+              id: created.id,
+            },
+            idempotencyKey: `shopping-list-created:${userId}:${created.id}`,
+          },
+          tx,
+        );
+        return created;
       });
+
       return this.transformToResponseDto(shoppingList);
     } catch (error: any) {
       if (error instanceof PrismaClientKnownRequestError) {

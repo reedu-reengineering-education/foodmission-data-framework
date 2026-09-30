@@ -11,6 +11,7 @@ export const TRANSLATABLE_ENTITY_TYPES = [
   'Topic',
   'Survey',
   'Question',
+  'Badge',
 ] as const;
 
 export type TranslatableEntityType = (typeof TRANSLATABLE_ENTITY_TYPES)[number];
@@ -28,6 +29,7 @@ export const ENTITY_TRANSLATABLE_FIELDS = {
   Topic: ['name'] as const,
   Survey: ['title', 'description'] as const,
   Question: ['text'] as const,
+  Badge: ['name', 'description'] as const,
 } as const;
 
 export type EntityTranslatableField<T extends TranslatableEntityType> =

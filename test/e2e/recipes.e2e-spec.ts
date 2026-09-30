@@ -2,6 +2,8 @@ import { INestApplication } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import request from 'supertest';
 import { PrismaService } from '../../src/database/prisma.service';
+import { UserEventService } from '../../src/events/services/user-event.service';
+import { RulesService } from '../../src/rules/rules.service';
 import { RecipeController } from '../../src/recipes/controllers/recipes.controller';
 import { RecipesRepository } from '../../src/recipes/repositories/recipes.repository';
 import { RecipesService } from '../../src/recipes/services/recipes.service';
@@ -28,6 +30,8 @@ describe('Recipes endpoints (e2e)', () => {
       providers: [
         RecipesService,
         RecipesRepository,
+        UserEventService,
+        { provide: RulesService, useValue: { evaluateUserEvent: jest.fn() } },
         { provide: PrismaService, useValue: prisma },
       ],
       authGuardMock: createAuthGuardMock(authUser),

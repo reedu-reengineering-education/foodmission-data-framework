@@ -11,13 +11,20 @@ import {
   EducationLevel,
 } from '../dto/create-user.dto';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
+import { userRegisteredIdempotencyKey } from '../../auth/auth.constants';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
 import {
   buildUserPreferences,
   extractOnboardingSurvey,
   hasAllOnboardingBaselines,
 } from '../../gamification/onboarding.utils';
-import type { User } from '@prisma/client';
+import type { Prisma, User } from '@prisma/client';
 import { ProgressStatus } from '../../common/progress-status';
 
 export interface UserProfile {
@@ -56,6 +63,7 @@ export class UserProfilesService {
     private readonly prisma: PrismaService,
     private readonly keycloakAdminService: KeycloakAdminService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -73,24 +81,71 @@ export class UserProfilesService {
         keycloakUser.email,
       );
       if (byEmail) {
-        user = await this.usersRepository.update(byEmail.id, {
-          keycloakId: keycloakUser.sub,
+        // A row found by email may come from a path that never recorded
+        // USER_REGISTERED (seeds, admin tools), so record it with the link.
+        user = await this.prisma.$transaction(async (tx) => {
+          const linked = await this.usersRepository.update(
+            byEmail.id,
+            { keycloakId: keycloakUser.sub },
+            tx,
+          );
+          await this.recordRegistered(linked.id, tx);
+          return linked;
         });
       }
     }
 
     // 3) If still not found, create a new user
     if (!user) {
-      user = await this.usersRepository.create({
-        keycloakId: keycloakUser.sub,
-        email: keycloakUser.email,
-        firstName: keycloakUser.given_name || '',
-        lastName: keycloakUser.family_name || '',
-        preferences: {},
+      // Users who register in Keycloak directly never pass through
+      // AuthService.register, so this is the only place their account creation
+      // becomes a ledger fact. Shares that route's idempotency key, so a user
+      // who took both paths is counted once. The row and the event commit
+      // together: if the event fails, no user is created and the next request
+      // simply tries again.
+      user = await this.prisma.$transaction(async (tx) => {
+        const created = await this.usersRepository.create(
+          {
+            keycloakId: keycloakUser.sub,
+            email: keycloakUser.email,
+            firstName: keycloakUser.given_name || '',
+            lastName: keycloakUser.family_name || '',
+            preferences: {},
+          },
+          tx,
+        );
+        await this.recordRegistered(created.id, tx);
+        return created;
       });
     }
 
     return this.formatUserProfile(user);
+  }
+
+  /**
+   * Records USER_REGISTERED inside `tx` unless it already exists. Checked
+   * first because the key is shared with AuthService.register: inserting a
+   * duplicate would abort the transaction, not just replay.
+   */
+  private async recordRegistered(
+    userId: string,
+    tx: Prisma.TransactionClient,
+  ): Promise<void> {
+    const idempotencyKey = userRegisteredIdempotencyKey(userId);
+    if (await this.userEventService.findByIdempotencyKey(idempotencyKey, tx)) {
+      return;
+    }
+    await this.userEventService.record(
+      {
+        userId,
+        eventType: EventType.USER_REGISTERED,
+        source: EventSource.API,
+        metadata: {},
+        subject: { type: EventSubjectType.USER, id: userId },
+        idempotencyKey,
+      },
+      tx,
+    );
   }
 
   async updateProfile(keycloakId: string, payload: any): Promise<UserProfile> {

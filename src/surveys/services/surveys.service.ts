@@ -4,7 +4,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { RewardSourceType, WalletCurrency } from '@prisma/client';
+import { Prisma, RewardSourceType, WalletCurrency } from '@prisma/client';
 import { SurveysRepository } from '../repositories/surveys.repository';
 import {
   AnswerOptionDto,
@@ -19,6 +19,12 @@ import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
 import { toSurveySlug } from '../utils/survey-slug.util';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 type LocalizableQuestion = { id: string; text: string };
 
@@ -50,6 +56,7 @@ export class SurveysService {
     private readonly translationService: TranslationService,
     private readonly i18n: I18nService,
     private readonly walletService: GamificationWalletService,
+    private readonly userEventService: UserEventService,
   ) {}
 
   /** Localized answer options, shared by all questions of all surveys. */
@@ -368,23 +375,58 @@ export class SurveysService {
       }
     }
 
-    const result = await this.surveysRepository.submitSurveyResponse(
-      userId,
-      surveyId,
-      { responses: data.responses },
-    );
-
     const answeredQuestionIds = new Set(
       data.responses.map((r) => r.questionId),
     );
     const isComplete = survey.questions.every((q) =>
       answeredQuestionIds.has(q.id),
     );
+
+    // A complete submission and its SURVEY_COMPLETED event commit together,
+    // so a response can never exist without the event its badge counts.
+    const result = await this.surveysRepository.submitSurveyResponse(
+      userId,
+      surveyId,
+      { responses: data.responses },
+      isComplete
+        ? (tx, response) =>
+            this.recordSurveyCompleted(tx, userId, surveyId, response.id)
+        : undefined,
+    );
+
     if (isComplete) {
       await this.awardSurveyReward(userId, survey);
     }
 
     return this.mapSurveyResponseToDto(result);
+  }
+
+  /**
+   * Records a SURVEY_COMPLETED event for a fully answered submission, inside
+   * the transaction that writes the response.
+   *
+   * Keyed on the response, not on (user, survey): a survey may be answered
+   * again on a later app use, and each attempt is its own completion. The
+   * "Survey Beginner" badge counts distinct surveys, so repeats do not
+   * shortcut it — see badges.rules.yml.
+   */
+  private async recordSurveyCompleted(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    surveyId: string,
+    responseId: string,
+  ): Promise<void> {
+    await this.userEventService.record(
+      {
+        userId,
+        eventType: EventType.SURVEY_COMPLETED,
+        source: EventSource.SURVEY,
+        metadata: { surveyId, responseId, source: EventSource.API },
+        subject: { type: EventSubjectType.SURVEY, id: surveyId },
+        idempotencyKey: `survey-completed:${userId}:${responseId}`,
+      },
+      tx,
+    );
   }
 
   /**

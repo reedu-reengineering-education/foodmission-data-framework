@@ -44,7 +44,10 @@ describe('AuthService.register', () => {
         { provide: KeycloakAdminService, useValue: mockKeycloakAdminService },
         {
           provide: UserEventService,
-          useValue: { record: jest.fn(), findByIdempotencyKey: jest.fn() },
+          useValue: {
+            record: jest.fn(),
+            findByIdempotencyKey: jest.fn(),
+          },
         },
         {
           provide: PrismaService,
@@ -84,6 +87,16 @@ describe('AuthService.register', () => {
       email: dto.email,
       password: dto.password,
     });
+    // The local row and USER_REGISTERED share one transaction.
+    const eventService = (service as any).userEventService as {
+      record: jest.Mock;
+    };
+    const tx = (mockUserRepo.create as jest.Mock).mock.calls[0][1];
+    expect(tx).toBeDefined();
+    expect(eventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({ eventType: 'USER_REGISTERED' }),
+      tx,
+    );
   });
 
   it('should extract id from Location header when body missing', async () => {

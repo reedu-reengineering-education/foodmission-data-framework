@@ -1,6 +1,17 @@
 import Joi from 'joi';
 import { EventType } from '../events/event-types';
 
+// The rule vocabulary and its evaluator live in rule-evaluator.ts, shared with
+// badge rules. This file is only the schema for the mission/challenge draft.
+import type {
+  RuleCounter,
+  RuleDefinition,
+  RuleWindow,
+  WindowType,
+} from './rule-evaluator';
+
+export type { RuleCounter, RuleDefinition, RuleWindow, WindowType };
+
 export const RULE_SHAPES = [
   'undecided',
   'count_at_least',
@@ -10,35 +21,16 @@ export const RULE_SHAPES = [
   'composite_threshold',
 ] as const;
 
+/**
+ * `lifetime` is deliberately absent: RulesService bounds its event query by the
+ * widest window in this document, so an unbounded rule here would make every
+ * evaluation scan the user's whole ledger. Badge rules, which are evaluated
+ * separately and account-wide, do allow it.
+ */
 export const WINDOW_TYPES = ['since_start', 'rolling_lookback'] as const;
 export const RESOLVE_AT = ['immediate', 'window_end'] as const;
 
 export type RuleShape = (typeof RULE_SHAPES)[number];
-export type WindowType = (typeof WINDOW_TYPES)[number];
-
-export interface RuleWindow {
-  type: WindowType;
-  days: number;
-  offsetDays?: number;
-}
-
-export interface RuleCounter {
-  event?: string;
-  anyOf?: string[];
-  distinctBy?: string;
-  where?: Record<string, string | number | boolean>;
-  window?: RuleWindow;
-}
-
-export interface RuleDefinition {
-  window: RuleWindow;
-  counters: Record<string, RuleCounter>;
-  target: string;
-  progress: string;
-  fail?: string;
-  resolveAt?: 'immediate' | 'window_end';
-  notes: string[];
-}
 
 export interface RuleEntry {
   code: string;
