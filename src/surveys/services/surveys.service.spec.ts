@@ -11,6 +11,7 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { I18nService } from 'nestjs-i18n';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import { UserEventService } from '../../events/services/user-event.service';
 
 /** What the i18n mock resolves to for the default locale. */
 const ENGLISH_SCALE = [
@@ -25,6 +26,7 @@ describe('SurveysService', () => {
   let service: SurveysService;
   let repository: jest.Mocked<SurveysRepository>;
   let translationService: jest.Mocked<TranslationService>;
+  let userEventService: { record: jest.Mock };
 
   const mockQuestion = {
     id: 'q-1',
@@ -74,6 +76,17 @@ describe('SurveysService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SurveysService,
+        {
+          // The badge rules count the events this service records; they are
+          // written in the same transaction as the row they describe.
+          provide: UserEventService,
+          useValue: {
+            record: jest.fn().mockResolvedValue({
+              event: { id: 'evt-1' },
+              replayed: false,
+            }),
+          },
+        },
         {
           provide: SurveysRepository,
           useValue: {
@@ -125,6 +138,7 @@ describe('SurveysService', () => {
     service = module.get<SurveysService>(SurveysService);
     repository = module.get(SurveysRepository);
     translationService = module.get(TranslationService);
+    userEventService = module.get(UserEventService);
   });
 
   it('should be defined', () => {
@@ -397,6 +411,7 @@ describe('SurveysService', () => {
         'user-1',
         'survey-1',
         submitDto,
+        expect.any(Function),
       );
       expect(repository.getSurveyResponse).not.toHaveBeenCalled();
     });
@@ -447,6 +462,52 @@ describe('SurveysService', () => {
         'user-1',
         'survey-1',
         submitDto,
+        expect.any(Function),
+      );
+    });
+
+    it('records SURVEY_COMPLETED inside the response transaction when complete', async () => {
+      const tx = { __tx: true };
+      repository.getSurveyById.mockResolvedValue(mockSurvey);
+      repository.submitSurveyResponse.mockImplementation(
+        async (_userId, _surveyId, _data, onCreated) => {
+          await onCreated?.(tx as never, { id: 'response-1' });
+          return { id: 'response-1', questionResponses: [] } as never;
+        },
+      );
+
+      await service.submitSurveyResponse('user-1', 'survey-1', {
+        responses: [{ questionId: 'q-1', value: 4 }],
+      });
+
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: 'SURVEY_COMPLETED',
+          idempotencyKey: 'survey-completed:user-1:response-1',
+        }),
+        tx,
+      );
+    });
+
+    it('records no completion for a partial submission', async () => {
+      repository.getSurveyById.mockResolvedValue({
+        ...mockSurvey,
+        questions: [mockQuestion, { ...mockQuestion, id: 'q-2' }],
+      });
+      repository.submitSurveyResponse.mockResolvedValue({
+        id: 'response-1',
+        questionResponses: [],
+      } as never);
+
+      await service.submitSurveyResponse('user-1', 'survey-1', {
+        responses: [{ questionId: 'q-1', value: 4 }],
+      });
+
+      expect(repository.submitSurveyResponse).toHaveBeenCalledWith(
+        'user-1',
+        'survey-1',
+        { responses: [{ questionId: 'q-1', value: 4 }] },
+        undefined,
       );
     });
 

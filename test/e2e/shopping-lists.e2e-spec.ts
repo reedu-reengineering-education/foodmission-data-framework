@@ -5,6 +5,8 @@ import { PrismaClient } from '@prisma/client';
 import request from 'supertest';
 import { DataBaseAuthGuard } from '../../src/common/guards/database-auth.guards';
 import { PrismaService } from '../../src/database/prisma.service';
+import { UserEventService } from '../../src/events/services/user-event.service';
+import { RulesService } from '../../src/rules/rules.service';
 import { FoodProductRepository } from '../../src/food-products/repositories/food-product.repository';
 import { GenericFoodRepository } from '../../src/generic-foods/repositories/generic-food.repository';
 import { ShoppingListItemsController } from '../../src/shopping-lists/controllers/shopping-list-items.controller';
@@ -37,6 +39,8 @@ describe('Shopping Lists (e2e)', () => {
         ShoppingListItemRepository,
         FoodProductRepository,
         GenericFoodRepository,
+        UserEventService,
+        { provide: RulesService, useValue: { evaluateUserEvent: jest.fn() } },
         { provide: PrismaService, useValue: prisma },
       ],
     })

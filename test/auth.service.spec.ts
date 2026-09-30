@@ -277,7 +277,10 @@ describe('AuthService.sendResetPasswordEmailIfExists', () => {
         { provide: KeycloakAdminService, useValue: keycloakAdminService },
         {
           provide: UserEventService,
-          useValue: { record: jest.fn(), findByIdempotencyKey: jest.fn() },
+          useValue: {
+            record: jest.fn(),
+            findByIdempotencyKey: jest.fn(),
+          },
         },
         {
           provide: PrismaService,

@@ -139,17 +139,31 @@ export class SurveysRepository {
     });
   }
 
+  /**
+   * `onCreated` runs inside the transaction that writes the response, so
+   * whatever it writes (e.g. the completion event) commits or rolls back with
+   * the response itself.
+   */
   async submitSurveyResponse(
     userId: string,
     surveyId: string,
     data: SubmitSurveyResponseDto,
+    onCreated?: (
+      tx: Prisma.TransactionClient,
+      response: { id: string },
+    ) => Promise<void>,
   ) {
     // Concurrent submits can both read the same latest attemptNumber; retry on
     // the unique-constraint race so the second caller gets the next number.
     const maxAttempts = 3;
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
-        return await this.createSurveyResponseAttempt(userId, surveyId, data);
+        return await this.createSurveyResponseAttempt(
+          userId,
+          surveyId,
+          data,
+          onCreated,
+        );
       } catch (error) {
         const isUniqueViolation =
           error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -168,6 +182,10 @@ export class SurveysRepository {
     userId: string,
     surveyId: string,
     data: SubmitSurveyResponseDto,
+    onCreated?: (
+      tx: Prisma.TransactionClient,
+      response: { id: string },
+    ) => Promise<void>,
   ) {
     return this.prisma.$transaction(async (tx) => {
       const latest = await tx.surveyResponse.findFirst({
@@ -177,7 +195,7 @@ export class SurveysRepository {
       });
       const attemptNumber = (latest?.attemptNumber ?? 0) + 1;
 
-      return tx.surveyResponse.create({
+      const created = await tx.surveyResponse.create({
         data: {
           userId,
           surveyId,
@@ -191,6 +209,8 @@ export class SurveysRepository {
         },
         include: surveyResponseInclude,
       });
+      await onCreated?.(tx, created);
+      return created;
     });
   }
 

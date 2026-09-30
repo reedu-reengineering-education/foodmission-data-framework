@@ -141,6 +141,7 @@ model User {
   quizProgress       QuizProgress[]
   questProgress      QuestProgress[]
   foodFactProgress   FoodFactProgress[]
+  badgeProgress      BadgeProgress[]
   currentQuest       Quest?                  @relation("UserCurrentQuest", fields: [currentQuestId], references: [id], onDelete: SetNull)
   groupMemberships   GroupMembership[]
   gamificationWallet UserGamificationWallet?

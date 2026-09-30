@@ -12,6 +12,7 @@ import {
   WeeklyReusableRange,
   WeeklyUpfRange,
 } from '@prisma/client';
+import { UserEventService } from '../../events/services/user-event.service';
 
 describe('UserProfilesService updateProfile gamification', () => {
   let service: UserProfilesService;
@@ -42,6 +43,18 @@ describe('UserProfilesService updateProfile gamification', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserProfilesService,
+        {
+          // The badge rules count the events this service records; they are
+          // written in the same transaction as the row they describe.
+          provide: UserEventService,
+          useValue: {
+            record: jest.fn().mockResolvedValue({
+              event: { id: 'evt-1' },
+              replayed: false,
+            }),
+            findByIdempotencyKey: jest.fn().mockResolvedValue(null),
+          },
+        },
         {
           provide: UsersRepository,
           useValue: {
@@ -100,6 +113,64 @@ describe('UserProfilesService updateProfile gamification', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('creates a new user and its USER_REGISTERED event in one transaction', async () => {
+    const userEventService = (service as any).userEventService as {
+      record: jest.Mock;
+    };
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(null);
+    (userRepository as any).findByEmail = jest.fn().mockResolvedValue(null);
+    (userRepository.create as jest.Mock).mockResolvedValue(mockUser);
+
+    await service.getOrCreateProfile({ sub: 'kc-new', email: 'new@test.dev' });
+
+    expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    expect(userRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ keycloakId: 'kc-new' }),
+      prisma,
+    );
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({ eventType: 'USER_REGISTERED' }),
+      prisma,
+    );
+  });
+
+  it('records USER_REGISTERED when linking an existing row by email', async () => {
+    const userEventService = (service as any).userEventService as {
+      record: jest.Mock;
+    };
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(null);
+    (userRepository as any).findByEmail = jest.fn().mockResolvedValue(mockUser);
+    (userRepository.update as jest.Mock).mockResolvedValue(mockUser);
+
+    await service.getOrCreateProfile({ sub: 'kc-new', email: mockUser.email });
+
+    expect(userRepository.update).toHaveBeenCalledWith(
+      mockUser.id,
+      { keycloakId: 'kc-new' },
+      prisma,
+    );
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({ eventType: 'USER_REGISTERED' }),
+      prisma,
+    );
+  });
+
+  it('does not re-insert USER_REGISTERED that already exists', async () => {
+    const userEventService = (service as any).userEventService as {
+      record: jest.Mock;
+      findByIdempotencyKey: jest.Mock;
+    };
+    userEventService.findByIdempotencyKey.mockResolvedValueOnce({ id: 'evt' });
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(null);
+    (userRepository as any).findByEmail = jest.fn().mockResolvedValue(mockUser);
+    (userRepository.update as jest.Mock).mockResolvedValue(mockUser);
+
+    await service.getOrCreateProfile({ sub: 'kc-new', email: mockUser.email });
+
+    // A duplicate insert would abort the transaction rather than replay.
+    expect(userEventService.record).not.toHaveBeenCalled();
   });
 
   it('applies side effects when baselines and client-chosen segment are set', async () => {

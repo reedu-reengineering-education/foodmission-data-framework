@@ -1,22 +1,30 @@
 import { AnnualIncomeLevel } from '@prisma/client';
 
-/**
- * Pilot countries that have an information letter / consent form, as ISO 3166-1
- * alpha-2 lowercase codes. Each entry maps to `consent-forms/<code>.md`, which
- * is generated from the partner .docx files by
- * `npm run docs:consent-forms`.
- */
-export const CONSENT_FORM_COUNTRY_CODES = [
-  'de',
-  'gr',
-  'it',
-  'nl',
-  'no',
-  'si',
-] as const;
+/** Every pilot country has an English form; other languages fall back to it. */
+export const CONSENT_FORM_FALLBACK_LANGUAGE = 'en';
 
-export type ConsentFormCountryCode =
-  (typeof CONSENT_FORM_COUNTRY_CODES)[number];
+/**
+ * Pilot countries that have an information letter / consent form (ISO 3166-1
+ * alpha-2, lowercase), with the languages each form exists in (app locales,
+ * see `SUPPORTED_LOCALES`). Each pair maps to
+ * `consent-forms/<country>.<language>.md`, which is generated from the partner
+ * .docx files by `npm run docs:consent-forms`.
+ */
+export const CONSENT_FORM_LANGUAGES = {
+  de: ['en', 'de'],
+  gr: ['en', 'el'],
+  it: ['en', 'it'],
+  nl: ['en', 'nl'],
+  no: ['en', 'no'],
+  // No updated CCIS-CAFE form yet: still the earlier English-only version.
+  si: ['en'],
+} as const satisfies Record<string, readonly string[]>;
+
+export type ConsentFormCountryCode = keyof typeof CONSENT_FORM_LANGUAGES;
+
+export const CONSENT_FORM_COUNTRY_CODES = Object.keys(
+  CONSENT_FORM_LANGUAGES,
+) as ConsentFormCountryCode[];
 
 /**
  * EUR band behind each AnnualIncomeLevel code: `min` inclusive, `max`

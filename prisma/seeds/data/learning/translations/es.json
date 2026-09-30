@@ -3360,5 +3360,47 @@
       ],
       "note": "Machine-translated, needs partner review."
     }
+  },
+  "badges": {
+    "FIRST_STEP": {
+      "name": "Primer paso",
+      "description": "Completa tu registro."
+    },
+    "STYLISH": {
+      "name": "Con estilo",
+      "description": "Personaliza a Foody con un accesorio."
+    },
+    "CURIOUS_FOODIE": {
+      "name": "Foodie curioso",
+      "description": "Consulta 5 datos alimentarios."
+    },
+    "BRAINY": {
+      "name": "Cerebrito",
+      "description": "Responde correctamente a 10 cuestionarios."
+    },
+    "MISSIONARY": {
+      "name": "Maestro de misiones",
+      "description": "Completa 3 misiones."
+    },
+    "ADVENTURER": {
+      "name": "Aventurero",
+      "description": "Completa 1 aventura."
+    },
+    "LEGENDARY_ADVENTURER": {
+      "name": "Aventurero legendario",
+      "description": "Completa 5 aventuras."
+    },
+    "SURVEY_BEGINNER": {
+      "name": "Principiante en encuestas",
+      "description": "Completa 3 encuestas."
+    },
+    "SHOPPING_LIST": {
+      "name": "Lista de la compra",
+      "description": "Crea 1 lista de la compra."
+    },
+    "CHEF": {
+      "name": "Chef",
+      "description": "Consulta 5 recetas diferentes."
+    }
   }
 }

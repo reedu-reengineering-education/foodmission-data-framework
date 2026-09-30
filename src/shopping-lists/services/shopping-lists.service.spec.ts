@@ -12,10 +12,16 @@ import { CreateShoppingListDto } from '../dto/create-shopping-list.dto';
 import { UpdateShoppingListDto } from '../dto/update-shopping-list.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ERROR_CODES } from '../../common/utils/error.utils';
+import { UserEventService } from '../../events/services/user-event.service';
+import { PrismaService } from '../../database/prisma.service';
+
+/** Stand-in for the interactive transaction client. */
+const tx = { __tx: true };
 
 describe('ShoppingListService', () => {
   let service: ShoppingListService;
   let shoppingListRepository: jest.Mocked<ShoppingListRepository>;
+  let userEventService: { record: jest.Mock };
   // ShoppingListItemRepository is provided for DI completeness but not used directly here.
 
   const mockShoppingList = {
@@ -53,6 +59,23 @@ describe('ShoppingListService', () => {
       providers: [
         ShoppingListService,
         {
+          // The badge rules count the events this service records; they are
+          // written in the same transaction as the row they describe.
+          provide: UserEventService,
+          useValue: {
+            record: jest.fn().mockResolvedValue({
+              event: { id: 'evt-1' },
+              replayed: false,
+            }),
+          },
+        },
+        {
+          provide: PrismaService,
+          useValue: {
+            $transaction: jest.fn((fn: (client: unknown) => unknown) => fn(tx)),
+          },
+        },
+        {
           provide: ShoppingListRepository,
           useValue: mockRepository,
         },
@@ -65,6 +88,7 @@ describe('ShoppingListService', () => {
 
     service = module.get<ShoppingListService>(ShoppingListService);
     shoppingListRepository = module.get(ShoppingListRepository);
+    userEventService = module.get(UserEventService);
   });
 
   it('should be defined', () => {
@@ -82,10 +106,10 @@ describe('ShoppingListService', () => {
 
       const result = await service.create(createDto, userId);
 
-      expect(shoppingListRepository.create).toHaveBeenCalledWith({
-        ...createDto,
-        userId,
-      });
+      expect(shoppingListRepository.create).toHaveBeenCalledWith(
+        { ...createDto, userId },
+        tx,
+      );
       expect(result).toEqual({
         id: mockShoppingList.id,
         title: mockShoppingList.title,
@@ -94,6 +118,31 @@ describe('ShoppingListService', () => {
         userId: mockShoppingList.userId,
         items: [],
       });
+    });
+
+    it('records SHOPPING_LIST_CREATED in the same transaction as the list', async () => {
+      shoppingListRepository.create.mockResolvedValue(mockShoppingList);
+
+      await service.create({ title: 'Weekly' }, 'user-1');
+
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: 'SHOPPING_LIST_CREATED',
+          idempotencyKey: `shopping-list-created:user-1:${mockShoppingList.id}`,
+        }),
+        tx,
+      );
+    });
+
+    it('fails the create when the event cannot be recorded', async () => {
+      shoppingListRepository.create.mockResolvedValue(mockShoppingList);
+      userEventService.record.mockRejectedValueOnce(new Error('db down'));
+
+      // The transaction rolls back the list too, so the client's retry
+      // cannot leave a duplicate behind.
+      await expect(
+        service.create({ title: 'Weekly' }, 'user-1'),
+      ).rejects.toThrow();
     });
 
     it('should throw ConflictException when duplicate title', async () => {

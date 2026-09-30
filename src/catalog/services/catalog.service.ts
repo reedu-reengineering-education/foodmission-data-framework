@@ -38,6 +38,8 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   ANNUAL_INCOME_EUR_BANDS,
   CONSENT_FORM_COUNTRY_CODES,
+  CONSENT_FORM_FALLBACK_LANGUAGE,
+  CONSENT_FORM_LANGUAGES,
   ConsentFormCountryCode,
   CONTENT_TAG_ENTRIES,
   DEFAULT_INCOME_CURRENCY,
@@ -73,6 +75,14 @@ function isConsentFormCountryCode(
   return (CONSENT_FORM_COUNTRY_CODES as readonly string[]).includes(value);
 }
 
+/** Also the file stem: `consent-forms/<country>.<language>.md`. */
+function consentFormKey(
+  code: ConsentFormCountryCode,
+  language: string,
+): string {
+  return `${code}.${language}`;
+}
+
 @Injectable()
 export class CatalogService implements OnModuleInit {
   constructor(private readonly i18n: I18nService) {}
@@ -80,21 +90,24 @@ export class CatalogService implements OnModuleInit {
   /**
    * Load every consent form into memory once, off the request path. A missing
    * file is logged but does not block startup; `getConsentForm` still falls
-   * back to a one-off read (and a 404) for that country.
+   * back to a one-off read, then to English, then to a 404.
    */
   async onModuleInit(): Promise<void> {
     await Promise.all(
-      CONSENT_FORM_COUNTRY_CODES.map(async (code) => {
-        const filePath = join(CONSENT_FORMS_DIR, `${code}.md`);
-        try {
-          this.consentForms.set(code, await readFile(filePath, 'utf-8'));
-        } catch (error) {
-          this.logger.error(
-            `Consent form file missing or unreadable: ${filePath}`,
-            error instanceof Error ? error.stack : undefined,
-          );
-        }
-      }),
+      CONSENT_FORM_COUNTRY_CODES.flatMap((code) =>
+        CONSENT_FORM_LANGUAGES[code].map(async (language) => {
+          const key = consentFormKey(code, language);
+          const filePath = join(CONSENT_FORMS_DIR, `${key}.md`);
+          try {
+            this.consentForms.set(key, await readFile(filePath, 'utf-8'));
+          } catch (error) {
+            this.logger.error(
+              `Consent form file missing or unreadable: ${filePath}`,
+              error instanceof Error ? error.stack : undefined,
+            );
+          }
+        }),
+      ),
     );
   }
 
@@ -105,8 +118,8 @@ export class CatalogService implements OnModuleInit {
     regionsAll?: CatalogValueDto[];
   } = {};
 
-  /** country code -> markdown, filled at startup, read from disk once per process */
-  private readonly consentForms = new Map<ConsentFormCountryCode, string>();
+  /** `<country>.<language>` -> markdown, filled at startup, read from disk once per process */
+  private readonly consentForms = new Map<string, string>();
 
   private readonly displayNamesByType: Record<
     'language' | 'region',
@@ -567,11 +580,15 @@ export class CatalogService implements OnModuleInit {
   }
 
   /**
-   * Information letter / consent form for a pilot country, as Markdown.
-   * Files live next to this module in `consent-forms/<code>.md` and are copied
-   * into `dist` as assets (see nest-cli.json).
+   * Information letter / consent form for a pilot country, as Markdown, in the
+   * requested locale (`lang` query) when the pilot has one, otherwise English.
+   * Files live next to this module in `consent-forms/<code>.<language>.md` and
+   * are copied into `dist` as assets (see nest-cli.json).
    */
-  getConsentForm(countryCode: string): ConsentFormResponseDto {
+  getConsentForm(
+    countryCode: string,
+    langOverride?: string,
+  ): ConsentFormResponseDto {
     const code = countryCode.trim().toLowerCase();
 
     if (!isConsentFormCountryCode(code)) {
@@ -580,30 +597,49 @@ export class CatalogService implements OnModuleInit {
       );
     }
 
-    if (this.consentForms.has(code)) {
-      return {
-        data: { countryCode: code, content: this.consentForms.get(code)! },
-      };
+    const availableLanguages: string[] = [...CONSENT_FORM_LANGUAGES[code]];
+    const requested = this.resolveLanguage(langOverride);
+    const candidates = availableLanguages.includes(requested)
+      ? [requested, CONSENT_FORM_FALLBACK_LANGUAGE]
+      : [CONSENT_FORM_FALLBACK_LANGUAGE];
+
+    for (const language of candidates) {
+      const content = this.loadConsentForm(code, language);
+      if (content !== undefined) {
+        return {
+          data: { countryCode: code, language, availableLanguages, content },
+        };
+      }
     }
 
-    // Only reached if the startup preload failed for this country.
-    const filePath = join(CONSENT_FORMS_DIR, `${code}.md`);
+    throw new NotFoundException(
+      `No consent form available for country code "${code}"`,
+    );
+  }
 
-    let content: string;
+  private loadConsentForm(
+    code: ConsentFormCountryCode,
+    language: string,
+  ): string | undefined {
+    const key = consentFormKey(code, language);
+    const cached = this.consentForms.get(key);
+
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    // Only reached if the startup preload failed for this form.
+    const filePath = join(CONSENT_FORMS_DIR, `${key}.md`);
     try {
-      content = readFileSync(filePath, 'utf-8');
+      const content = readFileSync(filePath, 'utf-8');
+      this.consentForms.set(key, content);
+      return content;
     } catch (error) {
       this.logger.error(
         `Consent form file missing or unreadable: ${filePath}`,
         error instanceof Error ? error.stack : undefined,
       );
-      throw new NotFoundException(
-        `No consent form available for country code "${code}"`,
-      );
+      return undefined;
     }
-
-    this.consentForms.set(code, content);
-
-    return { data: { countryCode: code, content } };
   }
 }

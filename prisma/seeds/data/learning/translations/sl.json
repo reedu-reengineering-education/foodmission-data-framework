@@ -3359,5 +3359,47 @@
       ],
       "note": "Model-translated (no DeepL credits available), needs partner review."
     }
+  },
+  "badges": {
+    "FIRST_STEP": {
+      "name": "Prvi korak",
+      "description": "Dokončaj registracijo."
+    },
+    "STYLISH": {
+      "name": "Stilist",
+      "description": "Prilagodi Foodyja z dodatkom."
+    },
+    "CURIOUS_FOODIE": {
+      "name": "Radovedni gurman",
+      "description": "Oglej si 5 dejstev o hrani."
+    },
+    "BRAINY": {
+      "name": "Bistroumnež",
+      "description": "Pravilno odgovori na 10 kvizov."
+    },
+    "MISSIONARY": {
+      "name": "Mojster misij",
+      "description": "Dokončaj 3 misije."
+    },
+    "ADVENTURER": {
+      "name": "Pustolovec",
+      "description": "Dokončaj 1 pustolovščino."
+    },
+    "LEGENDARY_ADVENTURER": {
+      "name": "Legendarni pustolovec",
+      "description": "Dokončaj 5 pustolovščin."
+    },
+    "SURVEY_BEGINNER": {
+      "name": "Začetnik anket",
+      "description": "Izpolni 3 ankete."
+    },
+    "SHOPPING_LIST": {
+      "name": "Nakupovalni seznam",
+      "description": "Ustvari 1 nakupovalni seznam."
+    },
+    "CHEF": {
+      "name": "Kuharski mojster",
+      "description": "Oglej si 5 različnih receptov."
+    }
   }
 }

@@ -3342,5 +3342,47 @@
       "title": "Nährwerte – Fortgeschrittene",
       "description": "Achten Sie darauf, dass jede Hauptmahlzeit mindestens drei der folgenden Bestandteile enthält: eine Proteinquelle, ein ballaststoffreiches Lebensmittel, Obst oder Gemüse oder eine Quelle für gesunde Fette. Die Verfütterung von Pflanzen an Nutztiere führt zu erheblichen Kalorienverlusten."
     }
+  },
+  "badges": {
+    "FIRST_STEP": {
+      "name": "Erster Schritt",
+      "description": "Schließe deine Registrierung ab."
+    },
+    "STYLISH": {
+      "name": "Stylisch",
+      "description": "Gestalte Foody mit einem Accessoire."
+    },
+    "CURIOUS_FOODIE": {
+      "name": "Neugieriger Feinschmecker",
+      "description": "Sieh dir 5 Lebensmittelfakten an."
+    },
+    "BRAINY": {
+      "name": "Schlaukopf",
+      "description": "Beantworte 10 Quizfragen richtig."
+    },
+    "MISSIONARY": {
+      "name": "Missionsheld",
+      "description": "Schließe 3 Missionen ab."
+    },
+    "ADVENTURER": {
+      "name": "Abenteurer",
+      "description": "Schließe 1 Quest ab."
+    },
+    "LEGENDARY_ADVENTURER": {
+      "name": "Legendärer Abenteurer",
+      "description": "Schließe 5 Quests ab."
+    },
+    "SURVEY_BEGINNER": {
+      "name": "Umfrage-Einsteiger",
+      "description": "Schließe 3 Umfragen ab."
+    },
+    "SHOPPING_LIST": {
+      "name": "Einkaufsliste",
+      "description": "Erstelle 1 Einkaufsliste."
+    },
+    "CHEF": {
+      "name": "Küchenchef",
+      "description": "Sieh dir 5 verschiedene Rezepte an."
+    }
   }
 }

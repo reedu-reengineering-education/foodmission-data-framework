@@ -20,12 +20,21 @@ import { Prisma, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import { plainToInstance } from 'class-transformer';
+import {
+  EventSource,
+  EventSubjectType,
+  EventType,
+} from '../../events/event-types';
+import { UserEventService } from '../../events/services/user-event.service';
 
 @Injectable()
 export class RecipesService {
   private readonly logger = new Logger(RecipesService.name);
 
-  constructor(private readonly recipeRepository: RecipesRepository) {}
+  constructor(
+    private readonly recipeRepository: RecipesRepository,
+    private readonly userEventService: UserEventService,
+  ) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
     return getOwnedEntityOrThrow(
@@ -168,6 +177,7 @@ export class RecipesService {
 
   async findOne(id: string, userId: string): Promise<RecipeResponseDto> {
     const recipe = await this.getVisibleRecipeOrThrow(id, userId);
+    await this.recordRecipeExplored(id, userId);
     return this.toResponse(recipe);
   }
 
@@ -243,6 +253,30 @@ export class RecipesService {
       }
       throw handlePrismaError(error, 'delete recipe rating', 'Recipe');
     }
+  }
+
+  /**
+   * Records the first time a user opens a given recipe.
+   *
+   * Keyed on (user, recipe), so re-opening the same recipe replays instead of
+   * appending — this is a "which recipes has this user seen" fact, which is
+   * what the "Chef" badge counts, not a view counter. Per-view analytics would
+   * need a separate event with a different key.
+   *
+   * Best-effort: reading a recipe must not fail because the ledger did.
+   */
+  private async recordRecipeExplored(
+    recipeId: string,
+    userId: string,
+  ): Promise<void> {
+    await this.userEventService.recordBestEffort({
+      userId,
+      eventType: EventType.LEARNING_RECIPE_EXPLORED,
+      source: EventSource.RECIPE,
+      metadata: { recipeId, source: EventSource.API },
+      subject: { type: EventSubjectType.RECIPE, id: recipeId },
+      idempotencyKey: `recipe-explored:${userId}:${recipeId}`,
+    });
   }
 
   async update(

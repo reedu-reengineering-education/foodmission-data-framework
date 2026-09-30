@@ -2,7 +2,10 @@ import { NotFoundException } from '@nestjs/common';
 import { CatalogService } from './catalog.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
-import { CONSENT_FORM_COUNTRY_CODES } from '../catalog.constants';
+import {
+  CONSENT_FORM_COUNTRY_CODES,
+  CONSENT_FORM_LANGUAGES,
+} from '../catalog.constants';
 
 describe('CatalogService', () => {
   let service: CatalogService;
@@ -22,12 +25,54 @@ describe('CatalogService', () => {
   });
 
   describe('getConsentForm', () => {
-    it('returns the markdown for every supported pilot country', () => {
+    it('returns the English markdown for every supported pilot country by default', () => {
       for (const code of CONSENT_FORM_COUNTRY_CODES) {
         const res = service.getConsentForm(code);
         expect(res.data.countryCode).toBe(code);
+        expect(res.data.language).toBe('en');
         expect(res.data.content.length).toBeGreaterThan(0);
       }
+    });
+
+    it('has a readable form for every listed country and language, English included', () => {
+      for (const code of CONSENT_FORM_COUNTRY_CODES) {
+        const languages = CONSENT_FORM_LANGUAGES[code] as readonly string[];
+        expect(languages).toContain('en');
+
+        for (const language of languages) {
+          const res = service.getConsentForm(code, language);
+          expect(res.data.language).toBe(language);
+          expect(res.data.availableLanguages).toEqual(languages);
+          expect(res.data.content.length).toBeGreaterThan(0);
+        }
+      }
+    });
+
+    it('returns the native-language form when requested', () => {
+      const english = service.getConsentForm('no', 'en').data.content;
+      const res = service.getConsentForm('no', 'no');
+
+      expect(res.data.language).toBe('no');
+      expect(res.data.content).not.toBe(english);
+    });
+
+    it('falls back to English for a language the pilot has no form in', () => {
+      const res = service.getConsentForm('no', 'de');
+
+      expect(res.data.language).toBe('en');
+      expect(res.data.content).toBe(service.getConsentForm('no').data.content);
+    });
+
+    it('falls back to English for an unsupported locale', () => {
+      expect(service.getConsentForm('de', 'xx').data.language).toBe('en');
+    });
+
+    it('uses the request locale when no language is passed', () => {
+      jest
+        .spyOn(I18nContext, 'current')
+        .mockReturnValue({ lang: 'el' } as unknown as I18nContext);
+
+      expect(service.getConsentForm('gr').data.language).toBe('el');
     });
 
     it('normalizes the country code casing and whitespace', () => {
