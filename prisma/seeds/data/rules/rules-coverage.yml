@@ -110,13 +110,60 @@ missions:
         - 'Direct mapping for at least 3 purchase decisions with multiple environmental dimensions'
         - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.A2.4
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        seasonalProduceMeals:
+          event: MEAL_SEASONAL_PRODUCE
+          distinctBy: metadata.mealLogId
+      target: 'seasonalProduceMeals >= 4'
+      progress: 'min(seasonalProduceMeals / 4, 1)'
+      notes:
+        - 'Counts the measurable part of the goal: 4 logged meals with seasonal products'
+        - 'The "think of one reason why they were selected" part is reflective and not captured by any event'
+        - 'Same event as M.B2.2 / M.I2.2 at a different level; they never share a quest'
+        - 'Seasonality is self-attested; not checked against a seasonal calendar'
   - code: M.A2.5
     shape: undecided
   - code: M.A3.1
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        novaGreenScorePurchases:
+          event: PROCESSING_NOVA_SCORE_COMPARED
+          distinctBy: metadata.productId
+          where:
+            metadata.comparedWith: GREEN_SCORE
+      target: 'novaGreenScorePurchases >= 3'
+      progress: 'min(novaGreenScorePurchases / 3, 1)'
+      notes:
+        - 'Direct mapping: three distinct products whose NOVA class was considered together with Green-Score'
+        - 'Nutri-Score comparisons do not count; the goal names Green-Score only'
+        - 'Same event as M.I3.4 at a different level; they never share a quest'
+        - 'Cannot verify the comparison preceded a purchase; self-attested'
   - code: M.A3.2
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        allScoresComparisons:
+          event: PROCESSING_ALL_SCORES_COMPARED
+          distinctBy: metadata.productId
+      target: 'allScoresComparisons >= 3'
+      progress: 'min(allScoresComparisons / 3, 1)'
+      notes:
+        - 'Direct mapping: three distinct foods whose NOVA class, Nutri-Score and Green-Score were compared together'
+        - 'Client should only offer this when all three scores are available for the product, per the goal'
+        - 'Deliberately excludes PROCESSING_NOVA_SCORE_COMPARED, which M.A3.1 (same quest) counts'
+        - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.A3.3
     shape: composite_threshold
     rule:
@@ -295,7 +342,23 @@ missions:
   - code: M.A6.1
     shape: undecided
   - code: M.A6.2
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        highFibreBreakfastDays:
+          event: NUTRITION_HIGH_FIBRE_MEAL
+          distinctBy: metadata.dayBucket
+          where:
+            metadata.mealType: BREAKFAST
+      target: 'highFibreBreakfastDays >= 7'
+      progress: 'min(highFibreBreakfastDays / 7, 1)'
+      notes:
+        - 'Every day of the week: counts distinct days with a high-fibre breakfast'
+        - 'Client contract: metadata.mealType set to BREAKFAST (same values as meal log typeOfMeal)'
+        - 'metadata.dayBucket is server-set (UTC day the event was recorded, not the meal day)'
   - code: M.A6.3
     shape: count_at_least
     rule:
@@ -432,7 +495,21 @@ missions:
         - 'Client must send metadata.productId; events without it are each counted separately'
         - 'Cannot verify the product was actually consumed this week; self-attested'
   - code: M.B2.2
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        seasonalProduceMeals:
+          event: MEAL_SEASONAL_PRODUCE
+          distinctBy: metadata.mealLogId
+      target: 'seasonalProduceMeals >= 5'
+      progress: 'min(seasonalProduceMeals / 5, 1)'
+      notes:
+        - 'Direct mapping from mission goal: 5 logged meals with at least one seasonal fruit or vegetable'
+        - 'Reported as a MEAL_SEASONAL_PRODUCE flag on POST /meal-logs; distinct by meal log so each logged meal counts once'
+        - 'Seasonality is self-attested; not checked against a seasonal calendar'
   - code: M.B2.3
     shape: count_at_least
     rule:
@@ -448,7 +525,22 @@ missions:
         - 'Counts occasions where a product with a sustainability certification was chosen'
         - 'No distinctBy: the goal counts occasions, so rebuying the same certified product counts again'
   - code: M.B2.4
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        localProduceMeals:
+          event: MEAL_LOCAL_PRODUCE
+          distinctBy: metadata.mealLogId
+      target: 'localProduceMeals >= 3'
+      progress: 'min(localProduceMeals / 3, 1)'
+      notes:
+        - 'Direct mapping from mission goal: 3 logged meals containing at least one locally produced product'
+        - 'Reported as a MEAL_LOCAL_PRODUCE flag on POST /meal-logs; distinct by meal log so each logged meal counts once'
+        - 'Deliberately excludes SHOPPING_LOCAL_CHOSEN: the goal is about meals eaten, not purchases'
+        - 'Locality is self-attested; not checked against product origin data'
   - code: M.B2.5
     shape: count_at_least
     rule:
@@ -579,7 +671,22 @@ missions:
         - 'Counts distinct food packages whose disposal/recycling instructions were checked'
         - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.B4.3
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingTypesObserved:
+          event: PACKAGING_MATERIAL_OBSERVED
+          distinctBy: metadata.productId
+      target: 'packagingTypesObserved >= 10'
+      progress: 'min(packagingTypesObserved / 10, 1)'
+      notes:
+        - 'Counts ten distinct foods whose packaging type was observed'
+        - 'Overlap accepted for now: same event as M.B4.1 (same quest) with a higher target, so completing M.B4.3 also completes M.B4.1'
+        - 'The reflection part is not captured by any event'
+        - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.B4.4
     shape: count_at_least
     rule:
@@ -595,7 +702,25 @@ missions:
         - 'Counts occasions where a reusable/refillable packaging option was identified'
         - 'No distinctBy: the goal counts occasions, not distinct products'
   - code: M.B4.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingCharacteristics:
+          anyOf:
+            - PACKAGING_MATERIAL_OBSERVED
+            - PACKAGING_RECYCLING_LABEL_READ
+            - PACKAGING_REUSABLE_SPOT_CHOSEN
+          distinctBy: metadata.productId
+      target: 'packagingCharacteristics >= 10'
+      progress: 'min(packagingCharacteristics / 10, 1)'
+      notes:
+        - 'Counts ten distinct products with at least one packaging characteristic looked up (material, recycling instructions, reuse)'
+        - 'Overlap accepted for now: shares events with M.B4.1, M.B4.2 and M.B4.3 in the same quest (PACKAGING_REUSABLE_SPOT_CHOSEN is also M.B4.4, which is in a different quest)'
+        - 'No dedicated event for recycled-content claims; covered only if the client records them as one of the listed events'
+        - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.B5.1
     shape: count_at_least
     rule:
@@ -822,13 +947,73 @@ missions:
       notes:
         - 'Direct mapping from mission goal (intermediate step towards M.A1.3)'
   - code: M.I1.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        proteinSources:
+          event: NUTRITION_PROTEIN_VARIETY_LOGGED
+          distinctBy: metadata.proteinSource
+      target: 'proteinSources >= 4'
+      progress: 'min(proteinSources / 4, 1)'
+      notes:
+        - 'Direct mapping: four distinct protein sources consumed during the week'
+        - 'Client contract: one event per source, with metadata.proteinSource set to a stable key (e.g. LEGUMES, DAIRY, EGGS, FISH, NUTS, SEEDS, TOFU, LEAN_MEAT)'
+        - 'Same rule as M.I6.5 in a different dimension; they never share a quest'
+        - 'Events without metadata.proteinSource are each counted separately'
   - code: M.I2.1
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        localProduceMeals:
+          event: MEAL_LOCAL_PRODUCE
+          distinctBy: metadata.mealLogId
+      target: 'localProduceMeals >= 3'
+      progress: 'min(localProduceMeals / 3, 1)'
+      notes:
+        - 'Counts the measurable part of the goal: 3 logged meals with locally produced products'
+        - 'Origin tracking is implied by flagging a product as local; no separate threshold is given in the goal'
+        - 'Deliberately excludes SHOPPING_ORIGIN_CHECKED, which M.I2.4 (same quest) is likely to count'
+        - 'Same rule as M.B2.4 at a different level; they never share a quest'
+        - 'Locality is self-attested; not checked against product origin data'
   - code: M.I2.2
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        seasonalProduceMeals:
+          event: MEAL_SEASONAL_PRODUCE
+          distinctBy: metadata.mealLogId
+      target: 'seasonalProduceMeals >= 8'
+      progress: 'min(seasonalProduceMeals / 8, 1)'
+      notes:
+        - 'Direct mapping from mission goal: 8 logged meals with seasonal ingredients'
+        - 'Same event as M.B2.2 with a higher target; they never share a quest'
+        - 'Seasonality is self-attested; not checked against a seasonal calendar'
   - code: M.I2.3
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        certifiedProductMeals:
+          event: MEAL_CERTIFIED_PRODUCT
+          distinctBy: metadata.mealLogId
+      target: 'certifiedProductMeals >= 3'
+      progress: 'min(certifiedProductMeals / 3, 1)'
+      notes:
+        - 'Direct mapping from mission goal: 3 logged meals using certified products'
+        - 'Reported as a MEAL_CERTIFIED_PRODUCT flag on POST /meal-logs; distinct by meal log so each logged meal counts once'
+        - 'Deliberately excludes SHOPPING_CERTIFICATION_CHOSEN: the goal is about meals eaten, not purchases, and M.I2.4 (same quest) may count certification lookups'
+        - 'Certification is self-attested; not checked against product label data'
   - code: M.I2.4
     shape: undecided
   - code: M.I2.5
@@ -867,7 +1052,21 @@ missions:
         - 'Could be tightened with a where filter (e.g. metadata.purchased: true) once the client sends such a flag'
         - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.I3.2
-    shape: undecided
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        novaCategoryComparisons:
+          event: PROCESSING_NOVA_CATEGORY_COMPARED
+      target: 'novaCategoryComparisons >= 1'
+      progress: 'min(novaCategoryComparisons, 1)'
+      notes:
+        - 'Direct mapping: one NOVA comparison across at least three products of the same food category'
+        - 'One event per completed comparison, metadata { category, productIds }'
+        - 'The engine cannot check productIds length or that the NOVA classes differ; the client must only emit once >= 3 same-category products are compared'
+        - 'Deliberately excludes PROCESSING_INDICATORS_COMPARED (multiple indicators on one product), which M.I3.4 (same quest) is likely to count'
   - code: M.I3.3
     shape: count_at_least
     rule:
@@ -887,9 +1086,44 @@ missions:
       notes:
         - 'Direct mapping from the processing-swap mission goal (intermediate step-up of M.B3.5)'
   - code: M.I3.4
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        novaScoreComparisons:
+          event: PROCESSING_NOVA_SCORE_COMPARED
+          distinctBy: metadata.productId
+      target: 'novaScoreComparisons >= 4'
+      progress: 'min(novaScoreComparisons / 4, 1)'
+      notes:
+        - 'Direct mapping: four distinct products whose NOVA class was compared with Green-Score or Nutri-Score'
+        - 'metadata.comparedWith is GREEN_SCORE or NUTRI_SCORE; either counts, and a product compared with both counts once'
+        - 'Deliberately excludes PROCESSING_INDICATORS_COMPARED: it does not record which indicators were compared'
+        - 'Client must send metadata.productId; events without it are each counted separately'
+        - 'Cannot verify the product was actually purchased; self-attested'
   - code: M.I3.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        recordedFoods:
+          anyOf:
+            - PROCESSING_NOVA_CHECKED
+            - PROCESSING_GREENSCORE_CHECKED
+            - PROCESSING_PRODUCTION_METHOD_CHECKED
+          distinctBy: metadata.productId
+      target: 'recordedFoods >= 6'
+      progress: 'min(recordedFoods / 6, 1)'
+      notes:
+        - 'Counts six distinct foods with at least one production-related indicator recorded (NOVA, Green-Score or production method)'
+        - 'The "reflect on whether they influenced your choices" part is reflective and not captured by any event'
+        - 'Deliberately excludes PROCESSING_NOVA_SCORE_COMPARED, which M.I3.4 (same quest) counts'
+        - 'Client must send metadata.productId; events without it are each counted separately'
+        - 'Cannot verify the food was actually consumed; self-attested'
   - code: M.I4.1
     shape: count_at_least
     rule:
@@ -935,9 +1169,39 @@ missions:
         - 'Counts occasions where a reusable/refillable packaging option was chosen'
         - 'No distinctBy: the goal counts occasions, not distinct products'
   - code: M.I4.4
-    shape: undecided
+    shape: one_shot_event
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingComparisons:
+          event: PACKAGING_COMPARISON_MADE
+      target: 'packagingComparisons >= 1'
+      progress: 'min(packagingComparisons, 1)'
+      notes:
+        - 'Direct mapping: one comparison of packaging materials across three similar food products'
+        - 'One event per completed comparison, metadata { category, productIds }'
+        - 'The engine cannot check productIds length or similarity; the client must only emit once >= 3 similar products are compared'
   - code: M.I4.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        circularPackagingFound:
+          anyOf:
+            - PACKAGING_REUSABLE_SPOT_CHOSEN
+            - PACKAGING_RECYCLABILITY_EVALUATED
+          distinctBy: metadata.productId
+      target: 'circularPackagingFound >= 4'
+      progress: 'min(circularPackagingFound / 4, 1)'
+      notes:
+        - 'Counts four distinct products whose packaging was identified as reusable, refillable or recyclable'
+        - 'Overlap accepted for now: shares events with M.I4.2 and M.I4.3 in the same quest'
+        - 'PACKAGING_RECYCLABILITY_EVALUATED also fires when packaging is judged hard to recycle; the rule cannot tell the outcome apart'
+        - 'Client must send metadata.productId; events without it are each counted separately'
   - code: M.I5.1
     shape: one_shot_event
     rule:
@@ -953,7 +1217,20 @@ missions:
         - 'Direct mapping: one meal plan created'
         - 'Cannot verify the plan preceded a main shopping trip; self-attested'
   - code: M.I5.2
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        leftoverMeals:
+          event: FOOD_WASTE_FULL_PLATE_SAVED
+      target: 'leftoverMeals >= 3'
+      progress: 'min(leftoverMeals / 3, 1)'
+      notes:
+        - 'Counts three occasions a full meal was eaten from leftovers (Full Plate Saved, as defined in M.I5.5)'
+        - 'Cannot verify the leftovers were eaten before preparing a new meal; self-attested'
+        - 'Same rule as M.I5.5 and M.B5.2; M.I5.5 is in no quest and M.B5.2 is at a different level'
   - code: M.I5.3
     shape: composite_threshold
     rule:
@@ -976,7 +1253,19 @@ missions:
   - code: M.I5.4
     shape: undecided
   - code: M.I5.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        fullPlateSaves:
+          event: FOOD_WASTE_FULL_PLATE_SAVED
+      target: 'fullPlateSaves >= 3'
+      progress: 'min(fullPlateSaves / 3, 1)'
+      notes:
+        - 'Direct mapping: three logged Full Plate Saved actions'
+        - 'Same rule as M.B5.2 at a different level; M.I5.5 is currently in no quest'
   - code: M.I6.1
     shape: count_at_least
     rule:
