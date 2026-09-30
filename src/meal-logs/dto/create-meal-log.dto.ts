@@ -35,7 +35,7 @@ export class CreateMealLogDto {
 
   @ApiPropertyOptional({
     description:
-      'Diet facts about the meal, given as the event types they record. ' +
+      'Diet and nutrition facts about the meal, given as the event types they record. ' +
       'Required when `mealId` is omitted. MEAL_MEAT_CONSUMED cannot be combined ' +
       'with MEAL_MEAT_FREE or MEAL_VEGAN.',
     enum: [...MEAL_FLAG_EVENT_TYPES],
