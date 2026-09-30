@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { ProgressStatus } from '../../common/progress-status';
+import { TranslationService } from '../../translations/services/translation.service';
 import {
   BadgeDto,
   BadgesResponseDto,
@@ -10,6 +11,7 @@ import {
 } from '../dto/badge-response.dto';
 
 type BadgeRow = {
+  id: string;
   code: string;
   name: string;
   description: string | null;
@@ -34,15 +36,21 @@ export class BadgesService {
     ruleCode: true,
   } as const;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly translationService: TranslationService,
+  ) {}
 
   /** The whole catalog, earned or not, in gallery order. */
-  async listCatalog(): Promise<BadgesResponseDto> {
-    const rows = await this.prisma.badge.findMany({
-      where: { available: true },
-      select: BadgesService.BADGE_SELECT,
-      orderBy: [{ sortOrder: 'asc' }, { code: 'asc' }],
-    });
+  async listCatalog(lang?: string): Promise<BadgesResponseDto> {
+    const rows = await this.translate(
+      await this.prisma.badge.findMany({
+        where: { available: true },
+        select: BadgesService.BADGE_SELECT,
+        orderBy: [{ sortOrder: 'asc' }, { code: 'asc' }],
+      }),
+      lang,
+    );
 
     return {
       badges: rows.map((row) => this.toBadgeDto(row)),
@@ -54,7 +62,7 @@ export class BadgesService {
    * Any badge by code, retired or not: earned codes on the gamification
    * profile can point at a retired badge, and the client must resolve them.
    */
-  async getByCode(code: string): Promise<BadgeDto> {
+  async getByCode(code: string, lang?: string): Promise<BadgeDto> {
     const row = await this.prisma.badge.findUnique({
       where: { code },
       select: BadgesService.BADGE_SELECT,
@@ -64,7 +72,8 @@ export class BadgesService {
       throw new NotFoundException(`Badge "${code}" not found`);
     }
 
-    return this.toBadgeDto(row);
+    const [translated] = await this.translate([row], lang);
+    return this.toBadgeDto(translated);
   }
 
   /**
@@ -77,8 +86,11 @@ export class BadgesService {
    * before the after-commit award lands. Reporting both separately is honest
    * about that gap rather than papering over it.
    */
-  async listForUser(userId: string): Promise<UserBadgesResponseDto> {
-    const [rows, earned, progress] = await Promise.all([
+  async listForUser(
+    userId: string,
+    lang?: string,
+  ): Promise<UserBadgesResponseDto> {
+    const [catalogRows, earned, progress] = await Promise.all([
       this.prisma.badge.findMany({
         // A retired badge leaves the gallery but stays with whoever earned
         // it, matching the earned codes on the gamification profile.
@@ -102,6 +114,7 @@ export class BadgesService {
         },
       }),
     ]);
+    const rows = await this.translate(catalogRows, lang);
 
     const earnedByBadgeId = new Map(
       earned.map((row) => [row.badgeId, row.earnedAt]),
@@ -132,6 +145,34 @@ export class BadgesService {
       earnedCount: badges.filter((badge) => badge.earned).length,
       totalCount: badges.length,
     };
+  }
+
+  /**
+   * Overlays `name` and `description` for `lang` from entity_translations,
+   * falling back to the English catalog values. English skips the lookup.
+   */
+  private async translate(
+    rows: BadgeRow[],
+    lang?: string,
+  ): Promise<BadgeRow[]> {
+    const overlay = await this.translationService.resolveMany(
+      'Badge',
+      rows.map((row) => row.id),
+      this.translationService.resolveLocale(lang),
+      ['name', 'description'],
+      Object.fromEntries(
+        rows.map((row) => [
+          row.id,
+          { name: row.name, description: row.description },
+        ]),
+      ),
+    );
+
+    return rows.map((row) => ({
+      ...row,
+      name: overlay[row.id]?.name ?? row.name,
+      description: overlay[row.id]?.description ?? row.description,
+    }));
   }
 
   private toBadgeDto(row: BadgeRow): BadgeDto {

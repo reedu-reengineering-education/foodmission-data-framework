@@ -986,6 +986,13 @@ const microLearningCategory = catalogCategory({
   ]),
 });
 
+const badgeCategory = catalogCategory({
+  id: 'catalog-badges',
+  title: 'Badges (name, description)',
+  section: 'badges',
+  englishRows: catalogFieldRows('badges.en.json', ['name', 'description']),
+});
+
 // ---------------------------------------------------------------------------
 // Category registry
 // ---------------------------------------------------------------------------
@@ -1005,6 +1012,7 @@ export function buildCategories(): Category[] {
     challengeCategory,
     questCategory,
     microLearningCategory,
+    badgeCategory,
     foodGroupCategory,
     foodNameCategory,
   ];

@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
+  LEARNING_TRANSLATED_LOCALES,
   learningTranslationFilePath,
   loadLearningTranslationFile,
 } from '../../../scripts/seeds/prod/learning-translations';
@@ -20,6 +21,28 @@ describe('learning translation files', () => {
     expect(file.quests?.['QUEST.DIET_CHANGES.BEGINNER.1']?.title).toContain(
       'Anfänger',
     );
+    expect(file.badges?.CHEF?.name).toBe('Küchenchef');
+  });
+
+  it('translates every badge in the catalog for every locale', () => {
+    const catalog = JSON.parse(
+      fs.readFileSync(
+        path.join(process.cwd(), 'prisma/seeds/data/catalog/badges.en.json'),
+        'utf-8',
+      ),
+    ) as { code: string }[];
+
+    for (const locale of LEARNING_TRANSLATED_LOCALES) {
+      const badges = loadLearningTranslationFile(locale).badges ?? {};
+      for (const { code } of catalog) {
+        expect({ locale, code, name: badges[code]?.name }).toEqual({
+          locale,
+          code,
+          name: expect.any(String),
+        });
+        expect(badges[code]?.description).toEqual(expect.any(String));
+      }
+    }
   });
 
   it('keeps translation files under prisma/seeds/data/learning/translations', () => {

@@ -3360,5 +3360,47 @@
       ],
       "note": "Machine-translated, needs partner review."
     }
+  },
+  "badges": {
+    "FIRST_STEP": {
+      "name": "Πρώτο βήμα",
+      "description": "Ολοκλήρωσε την εγγραφή σου."
+    },
+    "STYLISH": {
+      "name": "Κομψός",
+      "description": "Εξατομίκευσε τον Foody με ένα αξεσουάρ."
+    },
+    "CURIOUS_FOODIE": {
+      "name": "Περίεργος καλοφαγάς",
+      "description": "Δες 5 γεγονότα για τρόφιμα."
+    },
+    "BRAINY": {
+      "name": "Ξύπνιο μυαλό",
+      "description": "Απάντησε σωστά σε 10 κουίζ."
+    },
+    "MISSIONARY": {
+      "name": "Κυνηγός αποστολών",
+      "description": "Ολοκλήρωσε 3 αποστολές."
+    },
+    "ADVENTURER": {
+      "name": "Εξερευνητής",
+      "description": "Ολοκλήρωσε 1 περιπέτεια."
+    },
+    "LEGENDARY_ADVENTURER": {
+      "name": "Θρυλικός εξερευνητής",
+      "description": "Ολοκλήρωσε 5 περιπέτειες."
+    },
+    "SURVEY_BEGINNER": {
+      "name": "Αρχάριος στα ερωτηματολόγια",
+      "description": "Συμπλήρωσε 3 ερωτηματολόγια."
+    },
+    "SHOPPING_LIST": {
+      "name": "Λίστα αγορών",
+      "description": "Δημιούργησε 1 λίστα αγορών."
+    },
+    "CHEF": {
+      "name": "Σεφ",
+      "description": "Δες 5 διαφορετικές συνταγές."
+    }
   }
 }

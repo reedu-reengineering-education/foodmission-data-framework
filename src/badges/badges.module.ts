@@ -3,6 +3,7 @@ import { AfterCommitModule } from '../common/after-commit/after-commit.module';
 import { DatabaseModule } from '../database/database.module';
 import { EventsModule } from '../events/events.module';
 import { GamificationModule } from '../gamification/gamification.module';
+import { TranslationsModule } from '../translations/translations.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { BadgesController } from './controllers/badges.controller';
 import { BadgeRulesService } from './badge-rules.service';
@@ -21,6 +22,7 @@ import { BADGE_RULE_EVALUATOR } from './badge-rules.types';
     EventsModule,
     GamificationModule,
     AfterCommitModule,
+    TranslationsModule,
   ],
   controllers: [BadgesController],
   providers: [

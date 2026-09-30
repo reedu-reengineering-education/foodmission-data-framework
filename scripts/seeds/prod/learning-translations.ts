@@ -43,6 +43,7 @@ export type LearningTranslationFile = {
     string,
     { title?: string; body?: string; tips?: string }
   >;
+  badges?: Record<string, { name?: string; description?: string }>;
 };
 
 export const LEARNING_TRANSLATIONS_DIR = path.join(
@@ -105,6 +106,7 @@ export async function seedLearningTranslations(
     challenges,
     quests,
     microLearnings,
+    badges,
   ] = await Promise.all([
     prisma.dimension.findMany({ select: { id: true, code: true } }),
     prisma.topic.findMany({ select: { id: true, code: true } }),
@@ -123,6 +125,7 @@ export async function seedLearningTranslations(
     prisma.challenge.findMany({ select: { id: true, code: true } }),
     prisma.quest.findMany({ select: { id: true, code: true } }),
     prisma.microLearning.findMany({ select: { id: true, code: true } }),
+    prisma.badge.findMany({ select: { id: true, code: true } }),
   ]);
 
   const dimensionByCode = new Map(dimensions.map((d) => [d.code, d]));
@@ -133,6 +136,7 @@ export async function seedLearningTranslations(
   const challengeByCode = new Map(challenges.map((c) => [c.code, c]));
   const questByCode = new Map(quests.map((q) => [q.code, q]));
   const microLearningByCode = new Map(microLearnings.map((m) => [m.code, m]));
+  const badgeByCode = new Map(badges.map((b) => [b.code, b]));
 
   const upsert = async (
     entityType: string,
@@ -277,6 +281,16 @@ export async function seedLearningTranslations(
       await upsert('MicroLearning', row.id, locale, 'title', fields.title);
       await upsert('MicroLearning', row.id, locale, 'body', fields.body);
       await upsert('MicroLearning', row.id, locale, 'tips', fields.tips);
+    }
+
+    for (const [code, fields] of Object.entries(file.badges ?? {})) {
+      const row = badgeByCode.get(code);
+      if (!row) {
+        report.unknownCodes.push(`${locale}/Badge/${code}`);
+        continue;
+      }
+      await upsert('Badge', row.id, locale, 'name', fields.name);
+      await upsert('Badge', row.id, locale, 'description', fields.description);
     }
   }
 

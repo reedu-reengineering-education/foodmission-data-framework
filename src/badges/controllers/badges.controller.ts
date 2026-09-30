@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -11,6 +11,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 import { BadgesService } from '../services/badges.service';
 import {
   BadgeDto,
@@ -39,8 +40,8 @@ export class BadgesController {
   })
   @ApiResponse({ status: 200, type: BadgesResponseDto })
   @ApiCrudErrorResponses()
-  async list(): Promise<BadgesResponseDto> {
-    return this.badgesService.listCatalog();
+  async list(@Query() query: LearningLangQueryDto): Promise<BadgesResponseDto> {
+    return this.badgesService.listCatalog(query.lang);
   }
 
   @Get('me')
@@ -55,8 +56,9 @@ export class BadgesController {
   @ApiCrudErrorResponses()
   async listMine(
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<UserBadgesResponseDto> {
-    return this.badgesService.listForUser(userId);
+    return this.badgesService.listForUser(userId, query.lang);
   }
 
   @Get(':code')
@@ -66,7 +68,10 @@ export class BadgesController {
   @ApiParam({ name: 'code', example: 'CHEF' })
   @ApiResponse({ status: 200, type: BadgeDto })
   @ApiCrudErrorResponses()
-  async getOne(@Param('code') code: string): Promise<BadgeDto> {
-    return this.badgesService.getByCode(code);
+  async getOne(
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<BadgeDto> {
+    return this.badgesService.getByCode(code, query.lang);
   }
 }

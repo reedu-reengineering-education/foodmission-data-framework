@@ -3360,5 +3360,47 @@
       ],
       "note": "Machine-translated, needs partner review."
     }
+  },
+  "badges": {
+    "FIRST_STEP": {
+      "name": "Eerste stap",
+      "description": "Rond je registratie af."
+    },
+    "STYLISH": {
+      "name": "Stijlvol",
+      "description": "Personaliseer Foody met een accessoire."
+    },
+    "CURIOUS_FOODIE": {
+      "name": "Nieuwsgierige foodie",
+      "description": "Bekijk 5 voedselfeiten."
+    },
+    "BRAINY": {
+      "name": "Slimmerik",
+      "description": "Beantwoord 10 quizzen correct."
+    },
+    "MISSIONARY": {
+      "name": "Missiekampioen",
+      "description": "Voltooi 3 missies."
+    },
+    "ADVENTURER": {
+      "name": "Avonturier",
+      "description": "Voltooi 1 quest."
+    },
+    "LEGENDARY_ADVENTURER": {
+      "name": "Legendarische avonturier",
+      "description": "Voltooi 5 quests."
+    },
+    "SURVEY_BEGINNER": {
+      "name": "Enquêtebeginner",
+      "description": "Vul 3 enquêtes in."
+    },
+    "SHOPPING_LIST": {
+      "name": "Boodschappenlijst",
+      "description": "Maak 1 boodschappenlijst."
+    },
+    "CHEF": {
+      "name": "Chef-kok",
+      "description": "Bekijk 5 verschillende recepten."
+    }
   }
 }
