@@ -158,6 +158,7 @@ async function seedDevelopment() {
   }
 
   const genericFoods = await seedGenericFoods(prisma, { skipExisting });
+  const dietFlags = await seedDietFlags(prisma);
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
 
@@ -229,6 +230,10 @@ async function seedDevelopment() {
     {
       label: 'nevoLangualMapping',
       value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,
+    },
+    {
+      label: 'dietFlags',
+      value: `${dietFlags.updated} patched, ${dietFlags.skippedUnknownNevoCode} unknown nevoCode`,
     },
     { label: 'users', value: users.length },
     { label: 'shoppingList', value: shoppingList.length },

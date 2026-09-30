@@ -8,13 +8,14 @@ const CSV_PATH = path.join(
   'seeds',
   'data',
   'nevo',
-  'NEVO2025_v9.0.with_diet_flags.csv',
+  'NEVO2025_v9.0.csv',
 );
 
 /**
  * Column indices in the pipe-delimited NEVO CSV.
  * English metadata lands on GenericFood. Dutch columns (1, 4, 6, 8) and other
- * locales are loaded via `npm run db:translations`.
+ * locales are loaded via `npm run db:translations`. Diet flags are not part of
+ * the NEVO CSV; `seedDietFlags` patches them from `nevo_diet_flags.csv`.
  */
 const COL = {
   NEVO_VERSION: 0,
@@ -165,10 +166,6 @@ const COL = {
   F24_1TRS: 145,
   FAMSTXR: 146,
   FAUN: 147,
-  VEGAN: 148,
-  VEGETARIAN: 149,
-  MEAT_OR_FISH: 150,
-  LEGUME: 151,
 } as const;
 
 /**
@@ -195,10 +192,6 @@ function parseStringOrNull(raw: string): string | null {
 function parseInt_(raw: string): number {
   const cleaned = raw.replace(/"/g, '').trim();
   return parseInt(cleaned, 10);
-}
-
-function parseYesNo(raw?: string): boolean {
-  return parseString(raw ?? '').toLowerCase() === 'yes';
 }
 
 export type SeedGenericFoodsOptions = {
@@ -247,11 +240,6 @@ export async function seedGenericFoods(
     if (isNaN(nevoCode)) continue;
 
     const data = {
-      vegan: parseYesNo(cols[COL.VEGAN]),
-      vegetarian: parseYesNo(cols[COL.VEGETARIAN]),
-      meatOrFish: parseYesNo(cols[COL.MEAT_OR_FISH]),
-      legume: parseYesNo(cols[COL.LEGUME]),
-
       nevoVersion: parseString(cols[COL.NEVO_VERSION]),
       foodGroup: parseString(cols[COL.FOOD_GROUP]),
       foodName: parseString(cols[COL.FOOD_NAME]),
