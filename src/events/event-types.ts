@@ -29,6 +29,16 @@
  *   them as {@link MEAL_FLAG_EVENT_TYPES} values.
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
+ * - **NOVA category comparison** — `{ category, productIds }`: one event per
+ *   comparison of NOVA classes across ≥3 products of the same food category.
+ * - **NOVA vs score comparison** — `{ productId, comparedWith }`: one product's
+ *   NOVA class compared with its `GREEN_SCORE` or `NUTRI_SCORE`.
+ * - **All scores comparison** — `{ productId }`: one product's NOVA class,
+ *   Nutri-Score and Green-Score compared together.
+ * - **Packaging comparison** — `{ category, productIds }`: one event per
+ *   comparison of packaging materials across ≥3 similar products.
+ * - **High-fibre meal** — `{ mealType }` (`BREAKFAST` | `LUNCH` | `DINNER` | …,
+ *   same values as meal logs' `typeOfMeal`).
  * - **Learning** — `{ contentId?, contentType? }`
  * - **Wallet** — `{ currency, amount, reason }`
  * - **Progress indicator** — `{ actionCode, wheels: [{ kind, delta, level,
@@ -111,6 +121,9 @@ export const EventType = {
   MEAL_ALTERNATIVE_STAPLE: 'MEAL_ALTERNATIVE_STAPLE',
   MEAL_ANCIENT_GRAIN: 'MEAL_ANCIENT_GRAIN',
   MEAL_SUSTAINABLE_PLATE: 'MEAL_SUSTAINABLE_PLATE',
+  MEAL_SEASONAL_PRODUCE: 'MEAL_SEASONAL_PRODUCE',
+  MEAL_LOCAL_PRODUCE: 'MEAL_LOCAL_PRODUCE',
+  MEAL_CERTIFIED_PRODUCT: 'MEAL_CERTIFIED_PRODUCT',
 
   // ==========================================
   // 2. SUBSTITUTIONS & SWAPS
@@ -145,6 +158,9 @@ export const EventType = {
   PROCESSING_GREENSCORE_CHECKED: 'PROCESSING_GREENSCORE_CHECKED',
   PROCESSING_INDICATORS_COMPARED: 'PROCESSING_INDICATORS_COMPARED',
   PROCESSING_PRODUCTION_METHOD_CHECKED: 'PROCESSING_PRODUCTION_METHOD_CHECKED',
+  PROCESSING_NOVA_CATEGORY_COMPARED: 'PROCESSING_NOVA_CATEGORY_COMPARED',
+  PROCESSING_NOVA_SCORE_COMPARED: 'PROCESSING_NOVA_SCORE_COMPARED',
+  PROCESSING_ALL_SCORES_COMPARED: 'PROCESSING_ALL_SCORES_COMPARED',
 
   // ==========================================
   // 5. PACKAGING & CIRCULARITY
@@ -222,6 +238,9 @@ export const CLIENT_RECORDABLE_EVENT_TYPES = [
   EventType.MEAL_ALTERNATIVE_STAPLE,
   EventType.MEAL_ANCIENT_GRAIN,
   EventType.MEAL_SUSTAINABLE_PLATE,
+  EventType.MEAL_SEASONAL_PRODUCE,
+  EventType.MEAL_LOCAL_PRODUCE,
+  EventType.MEAL_CERTIFIED_PRODUCT,
   // Substitutions & swaps
   EventType.SWAP_BEEF_TO_PORK,
   EventType.SWAP_BEEF_TO_CHICKEN,
@@ -247,6 +266,9 @@ export const CLIENT_RECORDABLE_EVENT_TYPES = [
   EventType.PROCESSING_GREENSCORE_CHECKED,
   EventType.PROCESSING_INDICATORS_COMPARED,
   EventType.PROCESSING_PRODUCTION_METHOD_CHECKED,
+  EventType.PROCESSING_NOVA_CATEGORY_COMPARED,
+  EventType.PROCESSING_NOVA_SCORE_COMPARED,
+  EventType.PROCESSING_ALL_SCORES_COMPARED,
   // Packaging & circularity
   EventType.PACKAGING_MATERIAL_OBSERVED,
   EventType.PACKAGING_RECYCLING_LABEL_READ,
@@ -298,6 +320,9 @@ export const MEAL_FLAG_EVENT_TYPES = [
   EventType.MEAL_ALTERNATIVE_STAPLE,
   EventType.MEAL_ANCIENT_GRAIN,
   EventType.MEAL_SUSTAINABLE_PLATE,
+  EventType.MEAL_SEASONAL_PRODUCE,
+  EventType.MEAL_LOCAL_PRODUCE,
+  EventType.MEAL_CERTIFIED_PRODUCT,
 ] as const;
 
 export type MealFlagEventType = (typeof MEAL_FLAG_EVENT_TYPES)[number];
