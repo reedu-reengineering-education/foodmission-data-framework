@@ -18,6 +18,7 @@ import {
   emptyPaginationMock,
 } from '../../../test/fixtures/recipe.fixtures';
 import { UserEventService } from '../../events/services/user-event.service';
+import { TranslationService } from '../../translations/services/translation.service';
 
 describe('RecipesService', () => {
   let service: RecipesService;
@@ -32,6 +33,10 @@ describe('RecipesService', () => {
     findRating: jest.fn(),
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
+  };
+
+  const mockPrisma = {
+    entityTranslation: { findMany: jest.fn().mockResolvedValue([]) },
   };
 
   beforeEach(async () => {
@@ -52,6 +57,10 @@ describe('RecipesService', () => {
           },
         },
         { provide: RecipesRepository, useValue: mockRecipeRepository },
+        {
+          provide: TranslationService,
+          useValue: new TranslationService(mockPrisma as any),
+        },
       ],
     }).compile();
 
@@ -326,6 +335,100 @@ describe('RecipesService', () => {
       await expect(service.findOne('r-private', userId)).rejects.toThrow(
         ForbiddenException,
       );
+    });
+  });
+
+  describe('ingredient translations (NEVO)', () => {
+    const recipeWithIngredients = () =>
+      buildRecipe({
+        id: 'r1',
+        userId,
+        ingredients: [
+          buildRecipeIngredient({
+            id: 'ing-linked',
+            name: 'chicken breast',
+            genericFoodId: STUB_GENERIC_FOOD_CHICKEN_NEVO.id,
+            genericFood: { ...STUB_GENERIC_FOOD_CHICKEN_NEVO },
+          }),
+          buildRecipeIngredient({
+            id: 'ing-unlinked',
+            name: 'salt',
+            itemType: 'food_product',
+          }),
+        ],
+      });
+
+    it('should not query translations for the default locale', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(recipeWithIngredients());
+
+      const result = await service.findOne('r1', userId);
+
+      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+      expect(result.ingredients?.map((i) => i.name)).toEqual([
+        'chicken breast',
+        'salt',
+      ]);
+    });
+
+    it('should overlay translated NEVO foodName on linked ingredients', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(recipeWithIngredients());
+      mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
+        {
+          entityId: STUB_GENERIC_FOOD_CHICKEN_NEVO.id,
+          field: 'foodName',
+          value: 'Hähnchen',
+        },
+      ]);
+
+      const result = await service.findOne('r1', userId, 'de');
+
+      expect(mockPrisma.entityTranslation.findMany).toHaveBeenCalledWith({
+        where: {
+          entityType: 'GenericFood',
+          entityId: { in: [STUB_GENERIC_FOOD_CHICKEN_NEVO.id] },
+          locale: 'de',
+          field: { in: ['foodName'] },
+        },
+      });
+      const [linked, unlinked] = result.ingredients!;
+      expect(linked.name).toBe('Hähnchen');
+      expect(linked.genericFood).toEqual(
+        expect.objectContaining({ foodName: 'Hähnchen', nevoCode: 1234 }),
+      );
+      expect(unlinked.name).toBe('salt');
+    });
+
+    it('should keep stored ingredient name when translation is missing', async () => {
+      mockRecipeRepository.findById.mockResolvedValue(recipeWithIngredients());
+
+      const result = await service.findOne('r1', userId, 'de');
+
+      const [linked] = result.ingredients!;
+      expect(linked.name).toBe('chicken breast');
+      expect(linked.genericFood).toEqual(
+        expect.objectContaining({ foodName: 'Chicken' }),
+      );
+    });
+
+    it('should translate ingredients in list results', async () => {
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        emptyPaginationMock({ data: [recipeWithIngredients()], total: 1 }),
+      );
+      mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
+        {
+          entityId: STUB_GENERIC_FOOD_CHICKEN_NEVO.id,
+          field: 'foodName',
+          value: 'Kip',
+        },
+      ]);
+
+      const result = await service.findAll(userId, {
+        page: 1,
+        limit: 10,
+        lang: 'nl',
+      });
+
+      expect(result.data[0].ingredients?.[0].name).toBe('Kip');
     });
   });
 

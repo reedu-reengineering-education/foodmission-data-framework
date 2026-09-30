@@ -26,6 +26,14 @@ import {
   EventType,
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { TranslationService } from '../../translations/services/translation.service';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
+
+type LocalizableIngredient = {
+  name: string;
+  genericFoodId?: string | null;
+  genericFood?: { foodName: string } | null;
+};
 
 @Injectable()
 export class RecipesService {
@@ -34,6 +42,7 @@ export class RecipesService {
   constructor(
     private readonly recipeRepository: RecipesRepository,
     private readonly userEventService: UserEventService,
+    private readonly translationService: TranslationService,
   ) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
@@ -86,10 +95,12 @@ export class RecipesService {
         orderBy: { createdAt: 'desc' },
       });
 
+      const data = await this.localizeIngredients(result.data, query.lang);
+
       return plainToInstance(
         MultipleRecipeResponseDto,
         {
-          data: result.data.map((recipe) => this.toResponse(recipe)),
+          data: data.map((recipe) => this.toResponse(recipe)),
           total: result.total,
           page: result.page,
           limit: result.limit,
@@ -130,10 +141,12 @@ export class RecipesService {
         orderBy: { createdAt: 'desc' },
       });
 
+      const data = await this.localizeIngredients(result.data, query.lang);
+
       return plainToInstance(
         MultipleRecipeResponseDto,
         {
-          data: result.data.map((recipe) => this.toResponse(recipe)),
+          data: data.map((recipe) => this.toResponse(recipe)),
           total: result.total,
           page: result.page,
           limit: result.limit,
@@ -175,10 +188,77 @@ export class RecipesService {
     };
   }
 
-  async findOne(id: string, userId: string): Promise<RecipeResponseDto> {
+  async findOne(
+    id: string,
+    userId: string,
+    lang?: string,
+  ): Promise<RecipeResponseDto> {
     const recipe = await this.getVisibleRecipeOrThrow(id, userId);
     await this.recordRecipeExplored(id, userId);
-    return this.toResponse(recipe);
+    const [localized] = await this.localizeIngredients([recipe], lang);
+    return this.toResponse(localized);
+  }
+
+  /**
+   * Overlays NEVO translations onto ingredients linked to a generic food:
+   * both `genericFood.foodName` and the ingredient `name` take the localized
+   * NEVO name. Ingredients without a link, or without a translation row for
+   * the locale, keep their stored (English) name.
+   */
+  private async localizeIngredients<T extends object>(
+    recipes: T[],
+    lang?: string,
+  ): Promise<T[]> {
+    const locale = this.translationService.resolveLocale(lang);
+    if (locale === DEFAULT_LOCALE) {
+      return recipes;
+    }
+
+    // Repository methods are typed as bare `Recipe`, but include ingredients.
+    const ingredientsOf = (recipe: T) =>
+      (recipe as { ingredients?: LocalizableIngredient[] }).ingredients;
+
+    const genericFoodIds = [
+      ...new Set(
+        recipes.flatMap((recipe) =>
+          (ingredientsOf(recipe) ?? [])
+            .map((ingredient) => ingredient.genericFoodId)
+            .filter((id): id is string => !!id),
+        ),
+      ),
+    ];
+    if (genericFoodIds.length === 0) {
+      return recipes;
+    }
+
+    // No fallbacks: a null foodName means "no translation", so the stored
+    // ingredient name wins over the English NEVO name.
+    const localized = await this.translationService.resolveMany(
+      'GenericFood',
+      genericFoodIds,
+      locale,
+      ['foodName'],
+      {},
+    );
+
+    return recipes.map((recipe) => ({
+      ...recipe,
+      ingredients: ingredientsOf(recipe)?.map((ingredient) => {
+        const foodName = ingredient.genericFoodId
+          ? localized[ingredient.genericFoodId]?.foodName
+          : null;
+        if (!foodName) {
+          return ingredient;
+        }
+        return {
+          ...ingredient,
+          name: foodName,
+          ...(ingredient.genericFood
+            ? { genericFood: { ...ingredient.genericFood, foodName } }
+            : {}),
+        };
+      }),
+    }));
   }
 
   /**
