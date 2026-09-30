@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import yaml from 'js-yaml';
+import { evaluateRule } from '../rules/rule-evaluator';
 import { badgeRulesSchema, BadgeRulesDoc } from './badge-rule-schema';
 
 const RULES_PATH = join(
@@ -63,6 +64,22 @@ describe('badge rules document', () => {
         expect(counter.window?.type ?? 'lifetime').toBe('lifetime');
       }
     }
+  });
+
+  it('evaluates every badge rule and earns nothing without events', () => {
+    const failures: string[] = [];
+    for (const entry of loadRules().badges) {
+      try {
+        // A formula naming an unknown counter throws here; one that is true
+        // at zero would hand the badge to every user on their first event.
+        if (evaluateRule(entry.rule, []).completed) {
+          failures.push(`${entry.code}: completed with no events`);
+        }
+      } catch (error) {
+        failures.push(`${entry.code}: ${(error as Error).message}`);
+      }
+    }
+    expect(failures).toEqual([]);
   });
 
   it('rejects a rule whose window has no days outside lifetime', () => {
