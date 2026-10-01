@@ -24,9 +24,11 @@
  * | `groupId` | Optional group scope. |
  *
  * ## Metadata shapes by family
- * - **Meal** — `{ mealLogId?, mealId?, mealType?, flags?, tags? }`. Per-meal facts
- *   (`MEAL_VEGAN`, `MEAL_MEAT_FREE`, …) come from `POST /meal-logs`, which takes
- *   them as {@link MEAL_FLAG_EVENT_TYPES} values.
+ * - **Meal** — `{ mealLogId?, mealId?, mealType?, flags?, flagSource?, tags? }`.
+ *   Per-meal facts (`MEAL_VEGAN`, `MEAL_MEAT_FREE`, …) come from `POST /meal-logs`,
+ *   which takes them as {@link MEAL_FLAG_EVENT_TYPES} values and, for a log with a
+ *   `mealId`, also derives them from the meal's NEVO / OpenFoodFacts items.
+ *   `flagSource` says who asserted the fact: `user`, `derived` or `both`.
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
  * - **NOVA category comparison** — `{ category, productIds }`: one event per

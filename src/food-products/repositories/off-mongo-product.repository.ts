@@ -3,6 +3,15 @@ import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
 import { OffProduct, Prisma } from '.prisma/off-mongo-client';
 import { OpenFoodFactsSearchOptions } from '../interfaces/openfoodfacts.interface';
 
+/** The OFF tags meal-flag derivation reads (see `derive-meal-flags.ts`). */
+export interface OffMealFacts {
+  categories: string[];
+  labels: string[];
+  ingredientsAnalysisTags: string[];
+}
+
+const MEAL_FACTS_TIMEOUT_MS = 2000;
+
 export interface OffMongoSearchResult {
   items: OffProduct[];
   totalCount: number;
@@ -35,6 +44,57 @@ export class OffMongoProductRepository {
     }
     const doc = items[0];
     return { ...doc, id: doc._id };
+  }
+
+  /**
+   * Category, label and ingredient-analysis tags for several barcodes in one
+   * query. Postgres `FoodProduct` rows imported from OFF don't keep these, so
+   * meal-log flag derivation reads them here. Best-effort: Mongo not
+   * configured, slow (>2s) or failing yields an empty map, never an error, so
+   * a meal log is never blocked by it.
+   */
+  async findMealFactsByBarcodes(
+    barcodes: string[],
+  ): Promise<Map<string, OffMealFacts>> {
+    const facts = new Map<string, OffMealFacts>();
+    if (!this.isAvailable || barcodes.length === 0) {
+      return facts;
+    }
+
+    let timer: NodeJS.Timeout | undefined;
+    try {
+      const rawItems = await Promise.race([
+        this.prisma.offProduct.findRaw({
+          filter: { _id: { $in: barcodes } } as Prisma.InputJsonValue,
+          options: {
+            projection: {
+              categories_tags: 1,
+              labels_tags: 1,
+              ingredients_analysis_tags: 1,
+            },
+          } as Prisma.InputJsonValue,
+        }),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(
+            () => reject(new Error('OFF Mongo meal facts lookup timed out')),
+            MEAL_FACTS_TIMEOUT_MS,
+          );
+        }),
+      ]);
+
+      for (const doc of rawItems as unknown as Record<string, unknown>[]) {
+        facts.set(String(doc._id), {
+          categories: toStringArray(doc.categories_tags),
+          labels: toStringArray(doc.labels_tags),
+          ingredientsAnalysisTags: toStringArray(doc.ingredients_analysis_tags),
+        });
+      }
+    } catch {
+      return new Map();
+    } finally {
+      clearTimeout(timer);
+    }
+    return facts;
   }
 
   // Uses findRaw/aggregateRaw instead of Prisma's regular query builder.
@@ -138,4 +198,10 @@ export class OffMongoProductRepository {
         return undefined;
     }
   }
+}
+
+function toStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((v): v is string => typeof v === 'string')
+    : [];
 }
