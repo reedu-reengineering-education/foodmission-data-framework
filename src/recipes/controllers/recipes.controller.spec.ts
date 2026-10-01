@@ -75,9 +75,11 @@ describe('RecipeController', () => {
 
   it('findOne should retrieve recipe', async () => {
     service.findOne.mockResolvedValueOnce(mockRecipe as any);
-    const result = await controller.findOne('recipe-1', 'user-1');
+    const result = await controller.findOne('recipe-1', 'user-1', {
+      lang: 'de',
+    });
     expect(result).toEqual(mockRecipe);
-    expect(service.findOne).toHaveBeenCalledWith('recipe-1', 'user-1');
+    expect(service.findOne).toHaveBeenCalledWith('recipe-1', 'user-1', 'de');
   });
 
   it('update should call service with id/dto/user', async () => {

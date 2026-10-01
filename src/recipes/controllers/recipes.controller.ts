@@ -33,6 +33,7 @@ import {
   RecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 import {
   RateRecipeDto,
   RecipeRatingResponseDto,
@@ -122,8 +123,9 @@ export class RecipeController {
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<RecipeResponseDto> {
-    return this.recipeService.findOne(id, userId);
+    return this.recipeService.findOne(id, userId, query.lang);
   }
 
   @Get(':id/rating')

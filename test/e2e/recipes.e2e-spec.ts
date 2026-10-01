@@ -7,6 +7,7 @@ import { RulesService } from '../../src/rules/rules.service';
 import { RecipeController } from '../../src/recipes/controllers/recipes.controller';
 import { RecipesRepository } from '../../src/recipes/repositories/recipes.repository';
 import { RecipesService } from '../../src/recipes/services/recipes.service';
+import { TranslationService } from '../../src/translations/services/translation.service';
 import {
   createAuthGuardMock,
   createControllerE2eTestApp,
@@ -31,6 +32,7 @@ describe('Recipes endpoints (e2e)', () => {
         RecipesService,
         RecipesRepository,
         UserEventService,
+        TranslationService,
         { provide: RulesService, useValue: { evaluateUserEvent: jest.fn() } },
         { provide: PrismaService, useValue: prisma },
       ],

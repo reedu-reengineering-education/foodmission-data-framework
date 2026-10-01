@@ -4,13 +4,16 @@ import {
   IsArray,
   IsBoolean,
   IsEnum,
+  IsIn,
   IsOptional,
   IsString,
 } from 'class-validator';
 import {
   TransformCSVToStringArray,
+  TransformTrimLowercaseToUndefined,
   TransformTrimToUndefined,
 } from '../../common/decorators/transformers';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { Allergens, RecipeOrigin } from '@prisma/client';
 
@@ -90,4 +93,15 @@ export class QueryRecipeDto extends PaginationQueryDto {
   @IsString()
   @TransformTrimToUndefined()
   search?: string;
+
+  @ApiPropertyOptional({
+    description: `Optional locale for ingredient names linked to NEVO generic foods. Defaults to ${DEFAULT_LOCALE}.`,
+    enum: SUPPORTED_LOCALES,
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn([...SUPPORTED_LOCALES])
+  @TransformTrimLowercaseToUndefined()
+  lang?: string;
 }
