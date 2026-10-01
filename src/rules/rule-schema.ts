@@ -3,11 +3,12 @@ import { EventType } from '../events/event-types';
 
 // The rule vocabulary and its evaluator live in rule-evaluator.ts, shared with
 // badge rules. This file is only the schema for the mission/challenge draft.
-import type {
-  RuleCounter,
-  RuleDefinition,
-  RuleWindow,
-  WindowType,
+import {
+  findUnknownIdentifiers,
+  type RuleCounter,
+  type RuleDefinition,
+  type RuleWindow,
+  type WindowType,
 } from './rule-evaluator';
 
 export type { RuleCounter, RuleDefinition, RuleWindow, WindowType };
@@ -49,6 +50,15 @@ export interface RulesCoverageDoc {
 
 const EVENT_TYPE_VALUES = Object.values(EventType);
 
+/** Joi `custom` hook: a formula may only name its own counters and builtins. */
+export function rejectUnknownIdentifiers(rule: RuleDefinition): RuleDefinition {
+  const unknown = findUnknownIdentifiers(rule);
+  if (unknown.length > 0) {
+    throw new Error(`expression names unknown counters: ${unknown.join(', ')}`);
+  }
+  return rule;
+}
+
 const counterSchema = Joi.object({
   event: Joi.string().valid(...EVENT_TYPE_VALUES),
   anyOf: Joi.array()
@@ -89,7 +99,9 @@ const ruleSchema = Joi.object({
   fail: Joi.string().min(1),
   resolveAt: Joi.string().valid(...RESOLVE_AT),
   notes: Joi.array().items(Joi.string().min(1)).default([]),
-}).required();
+})
+  .custom(rejectUnknownIdentifiers)
+  .required();
 
 const missionEntrySchema = Joi.object({
   code: Joi.string()

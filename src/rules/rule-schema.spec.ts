@@ -141,3 +141,52 @@ describe('rulesCoverageSchema counter.where', () => {
     expect(error).toBeUndefined();
   });
 });
+
+describe('rulesCoverageSchema expression identifiers', () => {
+  function docWith(rule: Record<string, unknown>) {
+    return {
+      ...BASE_DOC,
+      missions: [
+        {
+          code: 'M.B1.1',
+          shape: 'composite_threshold',
+          rule: {
+            window: { type: 'since_start', days: 7 },
+            counters: {
+              reads: { event: 'LEARNING_FACT_READ' },
+              quizzes: { event: 'QUIZ_ANSWERED' },
+            },
+            target: 'reads >= 1 && quizzes >= 1',
+            progress: 'min((reads + quizzes) / 2, 1)',
+            notes: ['test'],
+            ...rule,
+          },
+        },
+      ],
+      challenges: [{ code: 'CH.B1.1', shape: 'undecided' }],
+    };
+  }
+
+  function validate(rule: Record<string, unknown>) {
+    return rulesCoverageSchema.validate(docWith(rule), {
+      abortEarly: false,
+      allowUnknown: false,
+    });
+  }
+
+  it('accepts expressions that only name counters and builtins', () => {
+    expect(
+      validate({ fail: 'clamp(reads, 0, 1) > max(quizzes, 0) || false' }).error,
+    ).toBeUndefined();
+  });
+
+  // The typo sits behind `&&`, which a zero-event run would never reach.
+  it.each([
+    ['target', 'reads >= 1 && quizzez >= 1'],
+    ['progress', 'reads > 0 ? min(quizzez, 1) : 0'],
+    ['fail', 'reads > 5 && quizzez > 5'],
+  ])('rejects an unknown counter in %s', (field, expression) => {
+    const { error } = validate({ [field]: expression });
+    expect(error?.message).toContain('unknown counters: quizzez');
+  });
+});

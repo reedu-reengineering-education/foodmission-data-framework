@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import yaml from 'js-yaml';
+import { evaluateRule } from '../rules/rule-evaluator';
 import { badgeRulesSchema, BadgeRulesDoc } from './badge-rule-schema';
 
 const RULES_PATH = join(
@@ -65,6 +66,23 @@ describe('badge rules document', () => {
     }
   });
 
+  it('evaluates every badge rule and earns nothing without events', () => {
+    const failures: string[] = [];
+    for (const entry of loadRules().badges) {
+      try {
+        // A formula that does not parse throws here; one that is true at
+        // zero would hand the badge to every user on their first event.
+        // Unknown counters are the schema's job: `&&` can skip a typo here.
+        if (evaluateRule(entry.rule, []).completed) {
+          failures.push(`${entry.code}: completed with no events`);
+        }
+      } catch (error) {
+        failures.push(`${entry.code}: ${(error as Error).message}`);
+      }
+    }
+    expect(failures).toEqual([]);
+  });
+
   it('rejects a rule whose window has no days outside lifetime', () => {
     const result = badgeRulesSchema.validate({
       schemaVersion: 1,
@@ -109,5 +127,29 @@ describe('badge rules document', () => {
     });
 
     expect(result.error).toBeDefined();
+  });
+
+  it('rejects a formula naming an unknown counter behind a short circuit', () => {
+    const result = badgeRulesSchema.validate({
+      schemaVersion: 1,
+      status: 'ready',
+      purpose: 'test',
+      badges: [
+        {
+          code: 'BROKEN',
+          shape: 'count_at_least',
+          rule: {
+            window: { type: 'lifetime' },
+            counters: { registrations: { event: 'MEAL_LOGGED' } },
+            // False at zero, so evaluating it never reaches `registrationz`.
+            target: 'registrations >= 1 && registrationz >= 1',
+            progress: 'registrations',
+            notes: [],
+          },
+        },
+      ],
+    });
+
+    expect(result.error?.message).toContain('unknown counters: registrationz');
   });
 });
