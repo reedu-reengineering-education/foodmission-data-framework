@@ -1,6 +1,6 @@
 # Meal log: automatic flag detection
 
-`POST /meal-logs` accepts diet flags (`flags`, values of `MEAL_FLAG_EVENT_TYPES`). Each flag becomes a `MEAL_*` event that mission rules count.
+`POST /meal-logs` accepts diet flags (`flags`, values of `MEAL_FLAG_EVENT_TYPES`). Each flag becomes a `MEAL_*` or `NUTRITION_*` event that mission rules count.
 
 When a log has a `mealId`, the server also derives flags from the meal's items: NEVO foods (`GenericFood`) and OpenFoodFacts products (`FoodProduct`). Clients don't have to send flags the food data already shows. Logs without a `mealId` have no items, so their flags remain manual.
 
@@ -14,6 +14,23 @@ When a log has a `mealId`, the server also derives flags from the meal's items: 
 | `MEAL_LEGUME_CONSUMED` | any item | `legume = true` | a legume category: `en:legumes`, `en:pulses`, `en:beans`, `en:lentils`, `en:chickpeas`, `en:peas`, `en:green-beans`, `en:broad-beans`, `en:peanuts`, `en:peanut-butters`, `en:tofu`, `en:tempeh`, `en:hummus`, `en:falafels`, … Soy drinks, desserts, yoghurts and sauce don't count. |
 | `MEAL_ANCIENT_GRAIN` | any item | a fixed list of NEVO codes: quinoa (3153, 3154), millet (847, 2159), buckwheat (208, 1019), spelt (5576, 5577, 5582) | `en:quinoa`, `en:spelt`, `en:buckwheat`, `en:millet`, `en:amaranth`, `en:teff`, `en:sorghum` (plus flour and groat variants) |
 | `MEAL_CERTIFIED_PRODUCT` | any item | — (NEVO has no label data) | a certification label (see below) |
+| `NUTRITION_PROTEIN_INCLUDED` | any item | a protein-rich food (see Definitions) | the same rules by category, using `proteins` per 100 g; without a protein value the category decides |
+| `NUTRITION_HIGH_FIBRE_MEAL` | any item | `fiber` ≥ 6 g per 100 g (EU "high fibre") | `fiber_100g` ≥ 6 g |
+| `NUTRITION_WHOLEGRAIN_CHOSEN` | any item | a fixed list of NEVO codes: wholemeal and rye breads, oats, porridge, muesli, brown rice, wholemeal pasta/couscous/wraps, bulgur, whole barley, millet, buckwheat, quinoa, whole spelt/barley flakes, wholemeal flours | a category or label naming whole grain / wholemeal / whole wheat (`en:whole-grain-pastas`, `en:wholemeal-breads`, label `en:whole-grain`), or `en:oat-flakes`, `en:mueslis`, `en:brown-rices`, `en:bulgur`, `en:quinoa`, … |
+| `NUTRITION_HEALTHY_FAT_CHOSEN` | any item | oily fish (≥ 1 g omega-3 per 100 g), or a vegetarian oil, nut, seed, avocado/olive or nut/seed spread with ≥ 10 g fat per 100 g and mono- + polyunsaturated ≥ 2 × saturated | oily fish categories, or a plant fat category (oils, nuts, seeds, avocados, olives, margarines) with fat ≥ 10 g and (fat − saturated) ≥ 2 × saturated; without fat values the category decides |
+
+### Per-food count events
+
+Two rules count distinct foods rather than meals, so they are recorded as extra events per meal log, not as flags. They aren't stored in `MealLog.flags`:
+
+| Event | One event per | Metadata key | Used by |
+|---|---|---|---|
+| `NUTRITION_PROTEIN_VARIETY_LOGGED` | distinct protein source in the meal | `proteinSource`: `MEAT`, `FISH`, `EGGS`, `DAIRY`, `LEGUMES`, `TOFU`, `NUTS`, `SEEDS` or `MEAT_SUBSTITUTE` | M.I1.5, M.I6.5 (4 different sources) |
+| `NUTRITION_PLANT_DIVERSITY_COUNT` | distinct NEVO plant food in the meal | `genericFoodId` | M.A6.5 (20 different plant foods) |
+
+Plant diversity is NEVO only, because OFF products have no `genericFoodId`. The rule would count each OFF event separately.
+
+Idempotency keys are `<eventType>:<mealLogId>:<proteinSource | genericFoodId>`, so a retried create doesn't count twice. `flagSource` is always `derived`.
 
 ### Certification labels
 
@@ -45,6 +62,29 @@ NEVO and OFF use the same definitions, so a meal gets the same flags whichever s
   - dishes built on pulses (chili, dahl, pea soup)
 
   It doesn't cover oils, soy drinks, soy sauce, miso, bean sprouts, or foods where peanuts are a minor ingredient (sweets, biscuits).
+- **Protein-rich:** meat, fish, eggs or cheese, or a food that reaches its group's protein minimum per 100 g:
+  - legumes ≥ 5 g
+  - nuts and seeds ≥ 7 g
+  - meat substitutes ≥ 8 g
+  - milk products ≥ 3.4 g (milk, yoghurt, quark)
+
+  Peanuts count as nuts, and tofu, tempeh and soy foods as `TOFU`. Sauces (peanut sauce) don't count.
+- **Healthy fat** is a source of unsaturated fat:
+  - oily fish
+  - plant oils
+  - nuts and seeds
+  - avocado and olives
+  - nut and seed spreads
+
+  Fried foods, mayonnaise salads, meat and coconut oil don't count.
+- **Plant food** (for plant diversity) is any of these:
+  - fruit, vegetables, pulses, nuts and seeds
+  - whole grains
+  - pulse foods (tofu, hummus)
+  - herbs and spices with fibre (so not stock, salt or seasoning powders)
+
+  Potatoes don't count.
+- **Per 100 g:** all thresholds are per 100 g, not per portion. Meal items only have a reliable weight when the unit is `G` / `KG`.
 - **Unknown:** an item with no linked food, or an OFF item whose diet status is unknown, counts as unknown. That blocks meat-free and vegan.
 
 The NEVO flags are stored on `GenericFood` (`vegan`, `vegetarian`, `meatOrFish`, `legume`) and seeded from `prisma/seeds/data/nevo/nevo_diet_flags.csv`. They were set for all 2328 NEVO foods from three sources:
@@ -70,9 +110,9 @@ Each flag event's metadata has a `flagSource`:
 
 ## Where the OFF data comes from
 
-Products imported via `POST /food-products/import/openfoodfacts/:barcode` are stored with only name, barcode and diet flags. Their categories, labels and ingredient-analysis tags are empty in Postgres.
+Products imported via `POST /food-products/import/openfoodfacts/:barcode` are stored with only name, barcode and diet flags. Their categories, labels, ingredient-analysis tags and nutrients are empty in Postgres.
 
-At log time, those three tag lists are therefore read from the OFF Mongo copy (`MONGODB_OFF_URL`). It's a single query for all of the meal's barcodes, projected to `categories_tags`, `labels_tags` and `ingredients_analysis_tags`.
+At log time, those fields are therefore read from the OFF Mongo copy (`MONGODB_OFF_URL`). It's a single query for all of the meal's barcodes, projected to `categories_tags`, `labels_tags`, `ingredients_analysis_tags` and the per-100 g `nutriments` for protein, fibre, fat and saturated fat.
 
 Fallback: if Mongo isn't configured, takes longer than 2 seconds, fails, or has no document for a barcode, the fields stored on `FoodProduct` are used. The live OFF HTTP API is never called at log time.
 
@@ -86,16 +126,21 @@ Detection never blocks a meal log. If loading the items or querying Mongo fails,
 | `MEAL_SEASONAL_PRODUCE` | neither NEVO nor OFF has seasonal data |
 | `MEAL_ALTERNATIVE_STAPLE` | not defined yet |
 | `MEAL_SUSTAINABLE_PLATE` | not defined yet |
+| `NUTRITION_SALT_FREE_TABLE` | it's a behaviour (no salt added at the table), not something the food data shows |
+| `NUTRITION_RAINBOW_COLOURS_LOGGED` | NEVO and OFF have no colour data, and the rule (M.A6.1) isn't defined |
+| `NUTRITION_ADDED_SUGAR_AVOIDED` | possible, not built yet: NEVO `addedSugars` ≈ 0, or no sugar among the first three OFF ingredients |
+| `NUTRITION_FRUIT_VEG_SERVING_ADDED` | possible, not built yet: a fruit/veg item of ≥ 80 g or ≥ 1 piece; "extra" serving can't be known |
 
 ## Code
 
 | File | What it holds |
 |---|---|
-| `src/meal-logs/derive-meal-flags.ts` | `itemFacts`, `deriveMealFlags`, `mergeDerivedFlags`, `ANCIENT_GRAIN_NEVO_CODES` |
-| `src/food-products/utils/off-meal-facts.ts` | OFF category lists (`offCategoryFacts`) and certification patterns (`isCertifiedLabel`) |
+| `src/meal-logs/derive-meal-flags.ts` | `itemFacts`, `deriveMeal` (flags, protein sources, plant foods), `deriveMealFlags`, `mergeDerivedFlags` |
+| `src/meal-logs/nevo-meal-facts.ts` | NEVO rules: `ANCIENT_GRAIN_NEVO_CODES`, `WHOLEGRAIN_NEVO_CODES`, `nevoProteinSource`, `nevoHealthyFat`, `isNevoPlantFood`, `isHighFibre` |
+| `src/food-products/utils/off-meal-facts.ts` | OFF category lists (`offCategoryFacts`, `isWholegrainProduct`) and certification patterns (`isCertifiedLabel`) |
 | `src/food-products/utils/off-diet-flags.ts` | `parseOffDietFlags`: vegan and vegetarian from OFF tags |
 | `src/food-products/repositories/off-mongo-product.repository.ts` | `findMealFactsByBarcodes`: the Mongo lookup for several barcodes at once |
-| `src/meal-logs/services/meal-logs.service.ts` | `create` → `deriveFlagsForMeal` → `mergeDerivedFlags` → `recordFlagEvents` |
+| `src/meal-logs/services/meal-logs.service.ts` | `create` → `deriveFromMealItems` → `mergeDerivedFlags` → `recordFlagEvents` + `recordFoodCountEvents` |
 
 ## Testing it by hand
 
@@ -107,8 +152,10 @@ Detection never blocks a meal log. If loading the items or querying Mongo fails,
 3. Log it: `POST /api/v1/meal-logs` with `{ "mealId": "<mealId>", "typeOfMeal": "LUNCH" }`.
 
 Expected result:
-- The log's flags are `MEAL_MEAT_FREE`, `MEAL_VEGAN`, `MEAL_LEGUME_CONSUMED`, `MEAL_ANCIENT_GRAIN` and `MEAL_CERTIFIED_PRODUCT`.
-- `user_events` has those events with `flagSource: "derived"`.
+- The log's flags are `MEAL_MEAT_FREE`, `MEAL_VEGAN`, `MEAL_LEGUME_CONSUMED`, `MEAL_ANCIENT_GRAIN`, `MEAL_CERTIFIED_PRODUCT`, `NUTRITION_PROTEIN_INCLUDED` (lentils, beans) and `NUTRITION_WHOLEGRAIN_CHOSEN` (quinoa).
+- `user_events` has those events with `flagSource: "derived"`, plus:
+  - one `NUTRITION_PROTEIN_VARIETY_LOGGED` with `proteinSource: "LEGUMES"`
+  - two `NUTRITION_PLANT_DIVERSITY_COUNT` events, one each for lentils and quinoa
 
 Look up the IDs with `GET /api/v1/generic-foods?search=quinoa` and `GET /api/v1/food-products?barcode=3560071015367`.
 
