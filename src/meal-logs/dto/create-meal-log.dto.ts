@@ -22,7 +22,7 @@ import { IsOptionalNotNull } from '../../common/decorators/optional-not-null.dec
 export class CreateMealLogDto {
   @ApiPropertyOptional({
     description:
-      'Meal consumed. Omit for a quick log — then `flags` describes the meal instead.',
+      'Meal consumed. Omit for a quick log — then `flags` and/or `swaps` describe the meal instead.',
     format: 'uuid',
   })
   @IsOptionalNotNull()
@@ -36,7 +36,7 @@ export class CreateMealLogDto {
   @ApiPropertyOptional({
     description:
       'Diet, nutrition and food waste facts about the meal, given as the event types they record. ' +
-      'Required when `mealId` is omitted. MEAL_MEAT_CONSUMED cannot be combined ' +
+      'When `mealId` is omitted, `flags` or `swaps` must be non-empty. MEAL_MEAT_CONSUMED cannot be combined ' +
       'with MEAL_MEAT_FREE or MEAL_VEGAN.',
     enum: [...MEAL_FLAG_EVENT_TYPES],
     isArray: true,
@@ -51,7 +51,8 @@ export class CreateMealLogDto {
 
   @ApiPropertyOptional({
     description:
-      'Substitutions made for this meal, given as the event types they record.',
+      'Substitutions made for this meal, given as the event types they record. ' +
+      'A swap alone is enough for a quick log without `mealId`.',
     enum: [...MEAL_SWAP_EVENT_TYPES],
     isArray: true,
     example: [EventType.SWAP_BEEF_TO_LEGUMES],

@@ -98,10 +98,14 @@ export class MealLogsService {
     const clientFlags = createMealLogDto.flags ?? [];
     const swaps = createMealLogDto.swaps ?? [];
 
-    // A log has to say *what* was eaten: either a linked meal or diet flags.
-    if (!createMealLogDto.mealId && clientFlags.length === 0) {
+    // A log has to say *what* was eaten: a linked meal, diet flags, or a swap.
+    if (
+      !createMealLogDto.mealId &&
+      clientFlags.length === 0 &&
+      swaps.length === 0
+    ) {
       throw new BadRequestException(
-        'Provide mealId or at least one diet flag in flags',
+        'Provide mealId, at least one diet flag in flags, or at least one swap in swaps',
       );
     }
 
