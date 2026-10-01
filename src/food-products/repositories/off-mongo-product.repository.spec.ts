@@ -21,6 +21,12 @@ describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
         categories_tags: ['en:legumes'],
         labels_tags: ['en:organic'],
         ingredients_analysis_tags: ['en:vegan'],
+        nutriments: {
+          proteins_100g: 8.5,
+          fiber_100g: '6.2',
+          fat_100g: 1,
+          'saturated-fat_100g': 'n/a',
+        },
       },
       { _id: '222' },
     ]);
@@ -34,6 +40,10 @@ describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
           categories_tags: 1,
           labels_tags: 1,
           ingredients_analysis_tags: 1,
+          'nutriments.proteins_100g': 1,
+          'nutriments.fiber_100g': 1,
+          'nutriments.fat_100g': 1,
+          'nutriments.saturated-fat_100g': 1,
         },
       },
     });
@@ -41,11 +51,19 @@ describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
       categories: ['en:legumes'],
       labels: ['en:organic'],
       ingredientsAnalysisTags: ['en:vegan'],
+      // Numeric strings are parsed; unparseable values become null.
+      nutriments: { proteins: 8.5, fiber: 6.2, fat: 1, saturatedFat: null },
     });
     expect(facts.get('222')).toEqual({
       categories: [],
       labels: [],
       ingredientsAnalysisTags: [],
+      nutriments: {
+        proteins: null,
+        fiber: null,
+        fat: null,
+        saturatedFat: null,
+      },
     });
   });
 

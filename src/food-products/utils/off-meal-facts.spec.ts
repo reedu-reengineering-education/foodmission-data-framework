@@ -1,4 +1,8 @@
-import { isCertifiedLabel, offCategoryFacts } from './off-meal-facts';
+import {
+  isCertifiedLabel,
+  isWholegrainProduct,
+  offCategoryFacts,
+} from './off-meal-facts';
 
 describe('offCategoryFacts', () => {
   it('recognises meat and fish parents', () => {
@@ -63,5 +67,39 @@ describe('isCertifiedLabel', () => {
     'en:eu-agriculture',
   ])('rejects %s', (label) => {
     expect(isCertifiedLabel(label)).toBe(false);
+  });
+});
+
+describe('isWholegrainProduct', () => {
+  it.each([
+    ['en:whole-grain-pastas'],
+    ['en:wholemeal-breads'],
+    ['en:whole-wheat-flours'],
+    ['en:whole-grain'],
+    ['en:oat-flakes'],
+    ['en:brown-rices'],
+  ])('accepts %s', (tag) => {
+    expect(isWholegrainProduct([tag])).toBe(true);
+  });
+
+  it.each([['en:whole-milks'], ['en:white-breads'], ['en:pastas']])(
+    'rejects %s',
+    (tag) => {
+      expect(isWholegrainProduct([tag])).toBe(false);
+    },
+  );
+});
+
+describe('offCategoryFacts: protein and fat kinds', () => {
+  it('tells fish, dairy, nuts and plant fat sources apart', () => {
+    expect(offCategoryFacts(['en:fishes', 'en:salmons'])).toEqual(
+      expect.objectContaining({ fish: true, oilyFish: true, meat: true }),
+    );
+    expect(offCategoryFacts(['en:yogurts']).proteinDairy).toBe(true);
+    expect(offCategoryFacts(['en:butters']).proteinDairy).toBe(false);
+    expect(offCategoryFacts(['en:peanut-butters'])).toEqual(
+      expect.objectContaining({ nuts: true, fatSource: true }),
+    );
+    expect(offCategoryFacts(['en:olive-oils']).fatSource).toBe(true);
   });
 });

@@ -30,10 +30,17 @@ import {
   swapSides,
 } from '../meal-log-events';
 import {
-  deriveMealFlags,
+  deriveMeal,
+  DerivedMeal,
   FlagSource,
   mergeDerivedFlags,
 } from '../derive-meal-flags';
+
+const NOTHING_DERIVED: DerivedMeal = {
+  flags: [],
+  proteinSources: [],
+  plantFoodIds: [],
+};
 
 @Injectable()
 export class MealLogsService {
@@ -117,12 +124,10 @@ export class MealLogsService {
       await this.getOwnedMealOrThrow(createMealLogDto.mealId, userId);
     }
 
-    const { flags, sources } = mergeDerivedFlags(
-      clientFlags,
-      createMealLogDto.mealId
-        ? await this.deriveFlagsForMeal(createMealLogDto.mealId)
-        : [],
-    );
+    const derived = createMealLogDto.mealId
+      ? await this.deriveFromMealItems(createMealLogDto.mealId)
+      : NOTHING_DERIVED;
+    const { flags, sources } = mergeDerivedFlags(clientFlags, derived.flags);
 
     let mealLog;
     try {
@@ -185,20 +190,19 @@ export class MealLogsService {
     }
 
     await this.recordFlagEvents(mealLog, flags, sources, swaps, mealDayBucket);
+    await this.recordFoodCountEvents(mealLog, derived, mealDayBucket);
 
     return this.toResponse(mealLog);
   }
 
   /**
-   * Diet flags implied by the meal's items (NEVO foods and OFF products). OFF
-   * tags are read from the OFF Mongo copy because imported `FoodProduct` rows
-   * don't keep them; the lookup is best-effort and falls back to stored data.
-   * Any failure here logs and yields no derived flags rather than failing the
-   * meal log.
+   * Flags and per-food facts implied by the meal's items (NEVO foods and OFF
+   * products). OFF tags and nutriments are read from the OFF Mongo copy
+   * because imported `FoodProduct` rows don't keep them; the lookup is
+   * best-effort and falls back to stored data. Any failure here logs and
+   * derives nothing rather than failing the meal log.
    */
-  private async deriveFlagsForMeal(
-    mealId: string,
-  ): Promise<MealFlagEventType[]> {
+  private async deriveFromMealItems(mealId: string): Promise<DerivedMeal> {
     try {
       const items = await this.mealItemRepository.findByMealId(mealId);
       const barcodes = [
@@ -210,13 +214,54 @@ export class MealLogsService {
       ];
       const offFacts =
         await this.offMongoProductRepository.findMealFactsByBarcodes(barcodes);
-      return deriveMealFlags(items, offFacts);
+      return deriveMeal(items, offFacts);
     } catch (error) {
       this.logger.error(
         `Failed to derive meal flags for meal ${mealId}`,
         error instanceof Error ? error.stack : error,
       );
-      return [];
+      return NOTHING_DERIVED;
+    }
+  }
+
+  /**
+   * Per-food facts that rules count by a metadata key rather than per meal:
+   * one `NUTRITION_PROTEIN_VARIETY_LOGGED` per distinct protein source
+   * (`metadata.proteinSource`) and one `NUTRITION_PLANT_DIVERSITY_COUNT` per
+   * distinct NEVO plant food (`metadata.genericFoodId`). Keyed by meal log and
+   * key so a retried create never double-counts.
+   */
+  private async recordFoodCountEvents(
+    mealLog: MealLog,
+    derived: DerivedMeal,
+    mealDayBucket: string,
+  ): Promise<void> {
+    const base = {
+      mealLogId: mealLog.id,
+      mealId: mealLog.mealId,
+      mealType: mealLog.typeOfMeal,
+      mealDayBucket,
+      flagSource: 'derived',
+    };
+
+    for (const proteinSource of derived.proteinSources) {
+      const eventType = EventType.NUTRITION_PROTEIN_VARIETY_LOGGED;
+      await this.recordBehaviouralEvent(
+        mealLog,
+        eventType,
+        { ...base, proteinSource },
+        `${eventType}:${mealLog.id}:${proteinSource}`,
+      );
+    }
+
+    for (const genericFoodId of derived.plantFoodIds) {
+      const eventType = EventType.NUTRITION_PLANT_DIVERSITY_COUNT;
+      await this.recordBehaviouralEvent(
+        mealLog,
+        eventType,
+        { ...base, genericFoodId },
+        `${eventType}:${mealLog.id}:${genericFoodId}`,
+      );
     }
   }
 
