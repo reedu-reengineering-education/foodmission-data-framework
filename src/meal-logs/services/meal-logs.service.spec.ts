@@ -273,12 +273,31 @@ describe('MealLogsService', () => {
     const recordedTypes = () =>
       userEventService.record.mock.calls.map((call) => call[0].eventType);
 
-    it('rejects a log with neither mealId nor flags', async () => {
+    it('rejects a log with neither mealId, flags nor swaps', async () => {
       await expect(
         service.create({ typeOfMeal: TypeOfMeal.LUNCH }, userId),
       ).rejects.toThrow(BadRequestException);
       expect(mockMealLogRepository.create).not.toHaveBeenCalled();
       expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('accepts a quick log with only a swap', async () => {
+      const log = quickLog([], [EventType.SWAP_BEEF_TO_LEGUMES]);
+      mockMealLogRepository.create.mockResolvedValue(log);
+
+      await service.create(
+        {
+          typeOfMeal: TypeOfMeal.LUNCH,
+          swaps: [EventType.SWAP_BEEF_TO_LEGUMES],
+        },
+        userId,
+      );
+
+      expect(mockMealLogRepository.create).toHaveBeenCalled();
+      expect(recordedTypes()).toEqual([
+        EventType.MEAL_LOGGED,
+        EventType.SWAP_BEEF_TO_LEGUMES,
+      ]);
     });
 
     it('rejects MEAT combined with a meat-free flag', async () => {
