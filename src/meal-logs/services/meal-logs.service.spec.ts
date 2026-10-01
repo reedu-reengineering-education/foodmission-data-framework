@@ -20,6 +20,8 @@ import {
   MealSwapEventType,
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { MealItemRepository } from '../../meals/meal-items/repositories/meal-items.repository';
+import { OffMongoProductRepository } from '../../food-products/repositories/off-mongo-product.repository';
 
 describe('MealLogsService', () => {
   let service: MealLogsService;
@@ -38,16 +40,33 @@ describe('MealLogsService', () => {
     findById: jest.fn(),
   };
 
+  const mockMealItemRepository = {
+    findByMealId: jest.fn(),
+  };
+
+  const mockOffMongoProductRepository = {
+    findMealFactsByBarcodes: jest.fn(),
+  };
+
   beforeEach(async () => {
     userEventService = {
       record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
     };
+    mockMealItemRepository.findByMealId.mockResolvedValue([]);
+    mockOffMongoProductRepository.findMealFactsByBarcodes.mockResolvedValue(
+      new Map(),
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MealLogsService,
         { provide: MealLogsRepository, useValue: mockMealLogRepository },
         { provide: MealsRepository, useValue: mockMealRepository },
+        { provide: MealItemRepository, useValue: mockMealItemRepository },
+        {
+          provide: OffMongoProductRepository,
+          useValue: mockOffMongoProductRepository,
+        },
         { provide: UserEventService, useValue: userEventService },
       ],
     }).compile();
@@ -374,6 +393,208 @@ describe('MealLogsService', () => {
       );
 
       expect(result.id).toBe('log-1');
+    });
+  });
+  describe('flags derived from the meal items', () => {
+    const lentils = {
+      genericFood: {
+        nevoCode: 120,
+        vegan: true,
+        vegetarian: true,
+        meatOrFish: false,
+        legume: true,
+      },
+      foodProduct: null,
+    };
+    const importedProduct = {
+      genericFood: null,
+      foodProduct: {
+        barcode: '5000',
+        categories: [],
+        labels: [],
+        ingredientsAnalysisTags: [],
+        isVegan: true,
+        isVegetarian: true,
+      },
+    };
+    const chicken = {
+      genericFood: {
+        nevoCode: 300,
+        vegan: false,
+        vegetarian: false,
+        meatOrFish: true,
+        legume: false,
+      },
+      foodProduct: null,
+    };
+
+    const mealLog = (flags: MealFlagEventType[]) => ({
+      id: 'log-1',
+      mealId: 'meal-1',
+      userId,
+      typeOfMeal: TypeOfMeal.DINNER,
+      timestamp: new Date('2026-09-17T19:00:00.000Z'),
+      mealFromPantry: false,
+      eatenOut: false,
+      flags,
+      swaps: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    const flagEvents = () =>
+      userEventService.record.mock.calls
+        .map(([input]) => input)
+        .filter((input) => input.eventType !== EventType.MEAL_LOGGED);
+
+    beforeEach(() => {
+      mockMealRepository.findById.mockResolvedValue({ id: 'meal-1', userId });
+      mockMealLogRepository.create.mockImplementation(
+        (data: { flags: MealFlagEventType[] }) =>
+          Promise.resolve(mealLog(data.flags)),
+      );
+    });
+
+    it('stores and records derived flags with their source', async () => {
+      mockMealItemRepository.findByMealId.mockResolvedValue([lentils]);
+
+      await service.create(
+        { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+        userId,
+      );
+
+      expect(mockMealItemRepository.findByMealId).toHaveBeenCalledWith(
+        'meal-1',
+      );
+      expect(mockMealLogRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          flags: [
+            EventType.MEAL_MEAT_FREE,
+            EventType.MEAL_VEGAN,
+            EventType.MEAL_LEGUME_CONSUMED,
+          ],
+        }),
+      );
+      expect(
+        flagEvents().map((input) => [
+          input.eventType,
+          input.metadata?.flagSource,
+        ]),
+      ).toEqual([
+        [EventType.MEAL_MEAT_FREE, 'derived'],
+        [EventType.MEAL_VEGAN, 'derived'],
+        [EventType.MEAL_LEGUME_CONSUMED, 'derived'],
+      ]);
+    });
+
+    it('keeps the client flag and drops a contradicting derived one', async () => {
+      mockMealItemRepository.findByMealId.mockResolvedValue([chicken]);
+
+      await service.create(
+        {
+          mealId: 'meal-1',
+          typeOfMeal: TypeOfMeal.DINNER,
+          flags: [EventType.MEAL_MEAT_FREE],
+        },
+        userId,
+      );
+
+      expect(flagEvents().map((input) => input.eventType)).toEqual([
+        EventType.MEAL_MEAT_FREE,
+      ]);
+      expect(flagEvents()[0].metadata?.flagSource).toBe('user');
+    });
+
+    it('marks a flag sent by the client and derived from the items as both', async () => {
+      mockMealItemRepository.findByMealId.mockResolvedValue([lentils]);
+
+      await service.create(
+        {
+          mealId: 'meal-1',
+          typeOfMeal: TypeOfMeal.DINNER,
+          flags: [EventType.MEAL_LEGUME_CONSUMED],
+        },
+        userId,
+      );
+
+      const legume = flagEvents().find(
+        (input) => input.eventType === EventType.MEAL_LEGUME_CONSUMED,
+      );
+      expect(legume?.metadata?.flagSource).toBe('both');
+    });
+
+    it('reads OFF tags from Mongo for products whose stored tags are empty', async () => {
+      mockMealItemRepository.findByMealId.mockResolvedValue([importedProduct]);
+      mockOffMongoProductRepository.findMealFactsByBarcodes.mockResolvedValue(
+        new Map([
+          [
+            '5000',
+            {
+              categories: ['en:legumes', 'en:chickpeas'],
+              labels: ['en:eu-organic'],
+              ingredientsAnalysisTags: ['en:vegan', 'en:vegetarian'],
+            },
+          ],
+        ]),
+      );
+
+      await service.create(
+        { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+        userId,
+      );
+
+      expect(
+        mockOffMongoProductRepository.findMealFactsByBarcodes,
+      ).toHaveBeenCalledWith(['5000']);
+      expect(flagEvents().map((input) => input.eventType)).toEqual(
+        expect.arrayContaining([
+          EventType.MEAL_LEGUME_CONSUMED,
+          EventType.MEAL_CERTIFIED_PRODUCT,
+        ]),
+      );
+    });
+
+    it('uses the stored product fields when Mongo has no data', async () => {
+      mockMealItemRepository.findByMealId.mockResolvedValue([importedProduct]);
+
+      await service.create(
+        { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+        userId,
+      );
+
+      expect(flagEvents().map((input) => input.eventType)).toEqual([
+        EventType.MEAL_MEAT_FREE,
+        EventType.MEAL_VEGAN,
+      ]);
+    });
+
+    it('still creates the log when loading the items fails', async () => {
+      mockMealItemRepository.findByMealId.mockRejectedValue(new Error('db'));
+
+      const result = await service.create(
+        { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+        userId,
+      );
+
+      expect(result.id).toBe('log-1');
+      expect(flagEvents()).toEqual([]);
+    });
+
+    it('does not look up items for a quick log', async () => {
+      mockMealLogRepository.create.mockResolvedValue({
+        ...mealLog([EventType.MEAL_VEGAN]),
+        mealId: null,
+      });
+
+      await service.create(
+        { typeOfMeal: TypeOfMeal.LUNCH, flags: [EventType.MEAL_VEGAN] },
+        userId,
+      );
+
+      expect(mockMealItemRepository.findByMealId).not.toHaveBeenCalled();
+      expect(
+        flagEvents().every((input) => input.metadata?.flagSource === 'user'),
+      ).toBe(true);
     });
   });
 });

@@ -21,6 +21,7 @@ type ChallengeProgressRow = {
   userId: string;
   completed: boolean;
   progress: number;
+  startedAt?: Date | null;
   challenge?: { title?: string } | null;
 };
 
@@ -63,6 +64,7 @@ export class ChallengeProgressService {
         completed: false,
         progress: 0,
         challengeTitle: titles[challenge.id],
+        startedAt: null,
       };
     }
 
@@ -229,6 +231,7 @@ export class ChallengeProgressService {
       completed: row.completed,
       progress: row.progress,
       challengeTitle: titles[row.challengeId] ?? row.challenge?.title ?? '',
+      startedAt: row.startedAt ?? null,
     }));
   }
 }

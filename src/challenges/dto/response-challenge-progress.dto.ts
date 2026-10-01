@@ -33,6 +33,14 @@ export class ChallengeProgressResponseDto {
   challengeTitle: string;
 
   @ApiPropertyOptional({
+    example: '2026-09-30T08:15:00.000Z',
+    nullable: true,
+    description: 'When the user started the challenge; null if not started',
+  })
+  @Expose()
+  startedAt?: Date | null;
+
+  @ApiPropertyOptional({
     type: ChallengeRewardDto,
     description:
       'Set only when this update first completed the challenge and earned a reward',

@@ -2,6 +2,8 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { MealLogsRepository } from '../repositories/meal-logs.repository';
 import { MealsRepository } from '../../meals/repositories/meals.repository';
+import { MealItemRepository } from '../../meals/meal-items/repositories/meal-items.repository';
+import { OffMongoProductRepository } from '../../food-products/repositories/off-mongo-product.repository';
 import { CreateMealLogDto } from '../dto/create-meal-log.dto';
 import { UpdateMealLogDto } from '../dto/update-meal-log.dto';
 import {
@@ -27,6 +29,11 @@ import {
   eventsForSwaps,
   swapSides,
 } from '../meal-log-events';
+import {
+  deriveMealFlags,
+  FlagSource,
+  mergeDerivedFlags,
+} from '../derive-meal-flags';
 
 @Injectable()
 export class MealLogsService {
@@ -59,6 +66,8 @@ export class MealLogsService {
   constructor(
     private readonly mealLogRepository: MealLogsRepository,
     private readonly mealRepository: MealsRepository,
+    private readonly mealItemRepository: MealItemRepository,
+    private readonly offMongoProductRepository: OffMongoProductRepository,
     private readonly userEventService: UserEventService,
   ) {}
 
@@ -86,17 +95,21 @@ export class MealLogsService {
     createMealLogDto: CreateMealLogDto,
     userId: string,
   ): Promise<MealLogResponseDto> {
-    const flags = createMealLogDto.flags ?? [];
+    const clientFlags = createMealLogDto.flags ?? [];
     const swaps = createMealLogDto.swaps ?? [];
 
     // A log has to say *what* was eaten: a linked meal, diet flags, or a swap.
-    if (!createMealLogDto.mealId && flags.length === 0 && swaps.length === 0) {
+    if (
+      !createMealLogDto.mealId &&
+      clientFlags.length === 0 &&
+      swaps.length === 0
+    ) {
       throw new BadRequestException(
         'Provide mealId, at least one diet flag in flags, or at least one swap in swaps',
       );
     }
 
-    const conflicts = conflictingFlags(flags);
+    const conflicts = conflictingFlags(clientFlags);
     if (conflicts.length > 0) {
       throw new BadRequestException(
         `Flag ${EventType.MEAL_MEAT_CONSUMED} conflicts with ${conflicts.join(', ')}`,
@@ -107,6 +120,13 @@ export class MealLogsService {
     if (createMealLogDto.mealId) {
       await this.getOwnedMealOrThrow(createMealLogDto.mealId, userId);
     }
+
+    const { flags, sources } = mergeDerivedFlags(
+      clientFlags,
+      createMealLogDto.mealId
+        ? await this.deriveFlagsForMeal(createMealLogDto.mealId)
+        : [],
+    );
 
     let mealLog;
     try {
@@ -146,7 +166,7 @@ export class MealLogsService {
               ? { mealId: createMealLogDto.mealId }
               : {}),
             typeOfMeal: createMealLogDto.typeOfMeal,
-            ...(flags.length > 0 ? { flags } : {}),
+            ...(clientFlags.length > 0 ? { flags: clientFlags } : {}),
             ...(swaps.length > 0 ? { swaps } : {}),
             ...(createMealLogDto.timestamp !== undefined
               ? { timestamp: createMealLogDto.timestamp }
@@ -168,9 +188,40 @@ export class MealLogsService {
       );
     }
 
-    await this.recordFlagEvents(mealLog, flags, swaps, mealDayBucket);
+    await this.recordFlagEvents(mealLog, flags, sources, swaps, mealDayBucket);
 
     return this.toResponse(mealLog);
+  }
+
+  /**
+   * Diet flags implied by the meal's items (NEVO foods and OFF products). OFF
+   * tags are read from the OFF Mongo copy because imported `FoodProduct` rows
+   * don't keep them; the lookup is best-effort and falls back to stored data.
+   * Any failure here logs and yields no derived flags rather than failing the
+   * meal log.
+   */
+  private async deriveFlagsForMeal(
+    mealId: string,
+  ): Promise<MealFlagEventType[]> {
+    try {
+      const items = await this.mealItemRepository.findByMealId(mealId);
+      const barcodes = [
+        ...new Set(
+          items
+            .map((item) => item.foodProduct?.barcode)
+            .filter((barcode): barcode is string => !!barcode),
+        ),
+      ];
+      const offFacts =
+        await this.offMongoProductRepository.findMealFactsByBarcodes(barcodes);
+      return deriveMealFlags(items, offFacts);
+    } catch (error) {
+      this.logger.error(
+        `Failed to derive meal flags for meal ${mealId}`,
+        error instanceof Error ? error.stack : error,
+      );
+      return [];
+    }
   }
 
   /**
@@ -181,6 +232,7 @@ export class MealLogsService {
   private async recordFlagEvents(
     mealLog: MealLog,
     flags: MealFlagEventType[],
+    sources: ReadonlyMap<EventTypeValue, FlagSource>,
     swaps: MealSwapEventType[],
     mealDayBucket: string,
   ): Promise<void> {
@@ -191,6 +243,7 @@ export class MealLogsService {
         mealType: mealLog.typeOfMeal,
         mealDayBucket,
         flags,
+        flagSource: sources.get(eventType) ?? 'user',
       });
     }
 

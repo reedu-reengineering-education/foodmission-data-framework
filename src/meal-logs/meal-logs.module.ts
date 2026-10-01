@@ -7,11 +7,19 @@ import { CommonModule } from '../common/common.module';
 import { MealsModule } from '../meals/meals.module';
 import { EventsModule } from '../events/events.module';
 import { UsersRepository } from '../users/repositories/users.repository';
+import { MealItemRepository } from '../meals/meal-items/repositories/meal-items.repository';
+import { OffMongoProductRepository } from '../food-products/repositories/off-mongo-product.repository';
 
 @Module({
   imports: [DatabaseModule, CommonModule, MealsModule, EventsModule],
   controllers: [MealLogsController],
-  providers: [MealLogsService, MealLogsRepository, UsersRepository],
+  providers: [
+    MealLogsService,
+    MealLogsRepository,
+    UsersRepository,
+    MealItemRepository,
+    OffMongoProductRepository,
+  ],
   exports: [MealLogsService, MealLogsRepository],
 })
 export class MealLogsModule {}
