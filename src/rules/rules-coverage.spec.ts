@@ -74,7 +74,8 @@ describe('mission and challenge rules document', () => {
       );
 
       // No events means every counter is 0, which is enough to catch a
-      // formula that names an unknown counter or does not parse.
+      // formula that does not parse. Unknown counters are caught by the
+      // schema, since `&&` and `?:` can skip the operand holding a typo.
       const failures: string[] = [];
       for (const entry of decided) {
         const rule = entry.rule!;

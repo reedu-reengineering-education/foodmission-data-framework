@@ -269,6 +269,39 @@ export function assertSafeExpression(expression: string): void {
   }
 }
 
+/** Names an expression may use besides the rule's own counters. */
+export const EXPRESSION_BUILTINS = [
+  'min',
+  'max',
+  'clamp',
+  'true',
+  'false',
+] as const;
+
+/**
+ * Names in `target`, `progress` and `fail` that are neither a counter of the
+ * rule nor a builtin. This reads the text instead of running it: `&&`, `||`
+ * and `?:` skip operands at runtime, so with every counter at 0 a typo behind
+ * a false `&&` is never reached and never throws.
+ */
+export function findUnknownIdentifiers(
+  rule: Pick<RuleDefinition, 'counters' | 'target' | 'progress' | 'fail'>,
+): string[] {
+  const known = new Set<string>([
+    ...Object.keys(rule.counters),
+    ...EXPRESSION_BUILTINS,
+  ]);
+  const unknown = new Set<string>();
+  for (const expression of [rule.target, rule.progress, rule.fail]) {
+    for (const name of expression?.match(/\b[A-Za-z_]\w*\b/g) ?? []) {
+      if (!known.has(name)) {
+        unknown.add(name);
+      }
+    }
+  }
+  return [...unknown];
+}
+
 export function normalizeProgress(value: unknown): number {
   const numeric = typeof value === 'number' ? value : Number(value);
   if (!Number.isFinite(numeric)) {

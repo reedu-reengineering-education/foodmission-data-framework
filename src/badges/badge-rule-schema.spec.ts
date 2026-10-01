@@ -70,8 +70,9 @@ describe('badge rules document', () => {
     const failures: string[] = [];
     for (const entry of loadRules().badges) {
       try {
-        // A formula naming an unknown counter throws here; one that is true
-        // at zero would hand the badge to every user on their first event.
+        // A formula that does not parse throws here; one that is true at
+        // zero would hand the badge to every user on their first event.
+        // Unknown counters are the schema's job: `&&` can skip a typo here.
         if (evaluateRule(entry.rule, []).completed) {
           failures.push(`${entry.code}: completed with no events`);
         }
@@ -126,5 +127,29 @@ describe('badge rules document', () => {
     });
 
     expect(result.error).toBeDefined();
+  });
+
+  it('rejects a formula naming an unknown counter behind a short circuit', () => {
+    const result = badgeRulesSchema.validate({
+      schemaVersion: 1,
+      status: 'ready',
+      purpose: 'test',
+      badges: [
+        {
+          code: 'BROKEN',
+          shape: 'count_at_least',
+          rule: {
+            window: { type: 'lifetime' },
+            counters: { registrations: { event: 'MEAL_LOGGED' } },
+            // False at zero, so evaluating it never reaches `registrationz`.
+            target: 'registrations >= 1 && registrationz >= 1',
+            progress: 'registrations',
+            notes: [],
+          },
+        },
+      ],
+    });
+
+    expect(result.error?.message).toContain('unknown counters: registrationz');
   });
 });
