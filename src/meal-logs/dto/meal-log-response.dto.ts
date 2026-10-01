@@ -43,7 +43,8 @@ export class MealLogResponseDto {
   eatenOut: boolean;
 
   @ApiProperty({
-    description: 'Diet facts reported for this meal, as event types',
+    description:
+      'Diet, nutrition and food waste facts reported for this meal, as event types',
     enum: [...MEAL_FLAG_EVENT_TYPES],
     isArray: true,
   })

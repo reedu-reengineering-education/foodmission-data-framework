@@ -225,7 +225,7 @@ export class MealLogsService {
   }
 
   /**
-   * One `MEAL_*` / `NUTRITION_*` / `SWAP_*` fact per reported flag and swap. Keyed by meal log id
+   * One `MEAL_*` / `NUTRITION_*` / `FOOD_WASTE_*` / `SWAP_*` fact per reported flag and swap. Keyed by meal log id
    * so a retried create (same log) never double-counts toward missions or rewards.
    * Best-effort for the same reason as `MEAL_LOGGED`.
    */
