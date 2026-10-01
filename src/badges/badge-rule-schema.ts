@@ -1,6 +1,10 @@
 import Joi from 'joi';
 import { EventType } from '../events/event-types';
-import { RULE_SHAPES, RuleShape } from '../rules/rule-schema';
+import {
+  rejectUnknownIdentifiers,
+  RULE_SHAPES,
+  RuleShape,
+} from '../rules/rule-schema';
 import { RuleDefinition } from '../rules/rule-evaluator';
 
 /**
@@ -78,7 +82,9 @@ const ruleSchema = Joi.object({
   target: Joi.string().min(1).required(),
   progress: Joi.string().min(1).required(),
   notes: Joi.array().items(Joi.string().min(1)).default([]),
-}).required();
+})
+  .custom(rejectUnknownIdentifiers)
+  .required();
 
 const badgeEntrySchema = Joi.object({
   // SCREAMING_SNAKE, the same spelling as the seeded Badge.code.

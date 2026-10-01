@@ -46,7 +46,7 @@ export class MealLogsController {
     summary: 'Create a meal log',
     description:
       'Logs a meal either by linking a Meal (mealId) or, for a quick log, by ' +
-      'reporting diet facts (flags) and substitutions (swaps) without one. ' +
+      'reporting diet and nutrition facts (flags) and substitutions (swaps) without one. ' +
       'Flags and swaps are given as the event types they record (e.g. MEAL_VEGAN, ' +
       'SWAP_BEEF_TO_LEGUMES). Records MEAL_LOGGED plus one event per reported flag ' +
       'and swap — MEAL_VEGAN also records MEAL_MEAT_FREE. With a mealId, flags are ' +
@@ -54,6 +54,8 @@ export class MealLogsController {
       'MEAL_MEAT_CONSUMED, MEAL_MEAT_FREE, MEAL_VEGAN, MEAL_LEGUME_CONSUMED, ' +
       'MEAL_ANCIENT_GRAIN and MEAL_CERTIFIED_PRODUCT. A derived flag that ' +
       'contradicts a reported one is dropped.',
+      'NUTRITION_WHOLEGRAIN_CHOSEN, SWAP_BEEF_TO_LEGUMES). Records MEAL_LOGGED plus one event per reported flag ' +
+      'and swap — MEAL_VEGAN also records MEAL_MEAT_FREE.',
   })
   @ApiBody({ type: CreateMealLogDto })
   @ApiResponse({

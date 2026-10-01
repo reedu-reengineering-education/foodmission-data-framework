@@ -68,6 +68,7 @@ describe('MissionProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
+        startedAt: new Date('2026-09-30T08:15:00.000Z'),
         mission: { title: 'Test Mission' },
       };
       (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue({
@@ -84,6 +85,7 @@ describe('MissionProgressService', () => {
         completed: false,
         progress: 0.5,
         missionTitle: 'Test Mission',
+        startedAt: new Date('2026-09-30T08:15:00.000Z'),
       });
     });
 
@@ -102,6 +104,7 @@ describe('MissionProgressService', () => {
         completed: false,
         progress: 0,
         missionTitle: 'Test Mission',
+        startedAt: null,
       });
     });
 
@@ -124,6 +127,7 @@ describe('MissionProgressService', () => {
           userId: 'u1',
           completed: false,
           progress: 0.5,
+          startedAt: new Date('2026-09-30T08:15:00.000Z'),
           mission: { title: 'Test Mission 1' },
         },
         {
@@ -143,6 +147,7 @@ describe('MissionProgressService', () => {
           completed: false,
           progress: 0.5,
           missionTitle: 'Test Mission 1',
+          startedAt: new Date('2026-09-30T08:15:00.000Z'),
         },
         {
           missionId: 'm2',
@@ -150,6 +155,7 @@ describe('MissionProgressService', () => {
           completed: true,
           progress: 1,
           missionTitle: 'Test Mission 2',
+          startedAt: null,
         },
       ]);
     });
@@ -188,6 +194,7 @@ describe('MissionProgressService', () => {
         completed: true,
         progress: 1,
         missionTitle: 'Test Mission',
+        startedAt: null,
         reward: null,
       });
     });

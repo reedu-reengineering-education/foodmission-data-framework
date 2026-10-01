@@ -29,6 +29,9 @@
  *   which takes them as {@link MEAL_FLAG_EVENT_TYPES} values and, for a log with a
  *   `mealId`, also derives them from the meal's NEVO / OpenFoodFacts items.
  *   `flagSource` says who asserted the fact: `user`, `derived` or `both`.
+ * - **Meal** — `{ mealLogId?, mealId?, mealType?, flags?, tags? }`. Per-meal facts
+ *   (`MEAL_VEGAN`, `MEAL_MEAT_FREE`, `NUTRITION_WHOLEGRAIN_CHOSEN`, …) come from `POST /meal-logs`, which takes
+ *   them as {@link MEAL_FLAG_EVENT_TYPES} values.
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
  * - **NOVA category comparison** — `{ category, productIds }`: one event per
@@ -320,11 +323,15 @@ export type ClientRecordableEventType =
   (typeof CLIENT_RECORDABLE_EVENT_TYPES)[number];
 
 /**
- * Per-meal diet facts a client may report as `flags` on `POST /meal-logs`.
+ * Per-meal diet and nutrition facts a client may report as `flags` on
+ * `POST /meal-logs`.
  *
  * The wire value *is* the event type, so the meal log stores exactly what the
  * ledger records and there is no second vocabulary to keep in sync.
  * `MEAL_LOGGED` is excluded: the route records it for every log.
+ * `NUTRITION_PROTEIN_VARIETY_LOGGED` / `NUTRITION_PLANT_DIVERSITY_COUNT` are
+ * excluded: their rules need per-food metadata (`proteinSource`,
+ * `genericFoodId`) a flag cannot carry.
  */
 export const MEAL_FLAG_EVENT_TYPES = [
   EventType.MEAL_MEAT_CONSUMED,
@@ -337,6 +344,14 @@ export const MEAL_FLAG_EVENT_TYPES = [
   EventType.MEAL_SEASONAL_PRODUCE,
   EventType.MEAL_LOCAL_PRODUCE,
   EventType.MEAL_CERTIFIED_PRODUCT,
+  EventType.NUTRITION_PROTEIN_INCLUDED,
+  EventType.NUTRITION_FRUIT_VEG_SERVING_ADDED,
+  EventType.NUTRITION_WHOLEGRAIN_CHOSEN,
+  EventType.NUTRITION_HIGH_FIBRE_MEAL,
+  EventType.NUTRITION_SALT_FREE_TABLE,
+  EventType.NUTRITION_HEALTHY_FAT_CHOSEN,
+  EventType.NUTRITION_RAINBOW_COLOURS_LOGGED,
+  EventType.NUTRITION_ADDED_SUGAR_AVOIDED,
 ] as const;
 
 export type MealFlagEventType = (typeof MEAL_FLAG_EVENT_TYPES)[number];
