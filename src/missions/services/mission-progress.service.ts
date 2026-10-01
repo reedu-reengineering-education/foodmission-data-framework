@@ -21,6 +21,7 @@ type MissionProgressRow = {
   userId: string;
   completed: boolean;
   progress: number;
+  startedAt?: Date | null;
   mission?: { title?: string } | null;
 };
 
@@ -63,6 +64,7 @@ export class MissionProgressService {
         completed: false,
         progress: 0,
         missionTitle: titles[mission.id],
+        startedAt: null,
       };
     }
 
@@ -229,6 +231,7 @@ export class MissionProgressService {
       completed: row.completed,
       progress: row.progress,
       missionTitle: titles[row.missionId] ?? row.mission?.title ?? '',
+      startedAt: row.startedAt ?? null,
     }));
   }
 }

@@ -68,6 +68,7 @@ describe('ChallengeProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
+        startedAt: new Date('2026-09-30T08:15:00.000Z'),
         challenge: { title: 'Test Challenge' },
       };
       (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
@@ -84,6 +85,7 @@ describe('ChallengeProgressService', () => {
         completed: false,
         progress: 0.5,
         challengeTitle: 'Test Challenge',
+        startedAt: new Date('2026-09-30T08:15:00.000Z'),
       });
     });
 
@@ -102,6 +104,7 @@ describe('ChallengeProgressService', () => {
         completed: false,
         progress: 0,
         challengeTitle: 'Test Challenge',
+        startedAt: null,
       });
     });
 
@@ -121,6 +124,7 @@ describe('ChallengeProgressService', () => {
           userId: 'u1',
           completed: false,
           progress: 0.5,
+          startedAt: new Date('2026-09-30T08:15:00.000Z'),
           challenge: { title: 'Challenge 1' },
         },
         {
@@ -142,6 +146,7 @@ describe('ChallengeProgressService', () => {
           completed: false,
           progress: 0.5,
           challengeTitle: 'Challenge 1',
+          startedAt: new Date('2026-09-30T08:15:00.000Z'),
         },
         {
           challengeId: 'c2',
@@ -149,6 +154,7 @@ describe('ChallengeProgressService', () => {
           completed: true,
           progress: 1,
           challengeTitle: 'Challenge 2',
+          startedAt: null,
         },
       ]);
     });
@@ -187,6 +193,7 @@ describe('ChallengeProgressService', () => {
         completed: true,
         progress: 1,
         challengeTitle: 'Test Challenge',
+        startedAt: null,
         reward: null,
       });
     });
