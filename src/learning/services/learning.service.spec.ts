@@ -586,8 +586,7 @@ describe('LearningService', () => {
         progress: 10,
       });
 
-      // The quest's start time is its unlock time.
-      expect(result.startedAt).toEqual(unlockedAt);
+      expect(result.unlockedAt).toEqual(unlockedAt);
 
       expect(userEventService.record).toHaveBeenCalledTimes(1);
       expect(userEventService.record).toHaveBeenCalledWith(
