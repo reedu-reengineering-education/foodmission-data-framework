@@ -360,21 +360,28 @@ missions:
         - 'Client contract: metadata.mealType set to BREAKFAST (same values as meal log typeOfMeal)'
         - 'metadata.dayBucket is server-set (UTC day the event was recorded, not the meal day)'
   - code: M.A6.3
-    shape: count_at_least
+    shape: composite_threshold
     rule:
       window:
         type: since_start
         days: 7
       counters:
-        sugarFreeDays:
+        loggedDays:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealDayBucket
+        meals:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealLogId
+        sugarFreeMeals:
           event: NUTRITION_ADDED_SUGAR_AVOIDED
-          distinctBy: metadata.dayBucket
-      target: 'sugarFreeDays >= 7'
-      progress: 'min(sugarFreeDays / 7, 1)'
+          distinctBy: metadata.mealLogId
+      target: 'loggedDays >= 7 && sugarFreeMeals >= meals'
+      progress: 'min(loggedDays / 7, 1) * min(sugarFreeMeals / max(meals, 1), 1)'
       notes:
-        - 'Throughout the week: counts distinct days confirmed free of added-sugar-first products'
-        - 'Positive check-in per day; there is no "added sugar consumed" event to fail on, so abstinence is self-attested'
-        - 'metadata.dayBucket is server-set (UTC day the event was recorded)'
+        - 'Throughout the week: a meal logged on each of the 7 days, and every logged meal flagged NUTRITION_ADDED_SUGAR_AVOIDED (no product with added sugar among its first three ingredients)'
+        - 'Per meal log: the flag is sent as a meal log flag, so one unflagged meal on any day blocks completion'
+        - 'Both meal counters use metadata.mealLogId, set on MEAL_LOGGED and on every meal flag event, so a retried log counts once'
+        - 'Cannot verify that every meal of the day was logged; self-attested'
   - code: M.A6.4
     shape: undecided
   - code: M.A6.5
@@ -1282,21 +1289,28 @@ missions:
   - code: M.I6.2
     shape: undecided
   - code: M.I6.3
-    shape: count_at_least
+    shape: composite_threshold
     rule:
       window:
         type: since_start
         days: 7
       counters:
-        saltFreeDays:
+        loggedDays:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealDayBucket
+        meals:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealLogId
+        saltFreeMeals:
           event: NUTRITION_SALT_FREE_TABLE
-          distinctBy: metadata.dayBucket
-      target: 'saltFreeDays >= 7'
-      progress: 'min(saltFreeDays / 7, 1)'
+          distinctBy: metadata.mealLogId
+      target: 'loggedDays >= 7 && saltFreeMeals >= meals'
+      progress: 'min(loggedDays / 7, 1) * min(saltFreeMeals / max(meals, 1), 1)'
       notes:
-        - 'Throughout the week: counts distinct days confirmed salt-free at the table'
-        - 'Positive check-in per day; there is no "salt added" event to fail on, so abstinence is self-attested'
-        - 'metadata.dayBucket is server-set (UTC day the event was recorded)'
+        - 'Throughout the week: a meal logged on each of the 7 days, and every logged meal flagged NUTRITION_SALT_FREE_TABLE (no salt added at the table)'
+        - 'Per meal log: the flag is sent as a meal log flag, so one unflagged meal on any day blocks completion'
+        - 'Both meal counters use metadata.mealLogId, set on MEAL_LOGGED and on every meal flag event, so a retried log counts once'
+        - 'Cannot verify that every meal of the day was logged; self-attested'
   - code: M.I6.4
     shape: count_at_least
     rule:
