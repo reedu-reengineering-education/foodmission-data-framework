@@ -982,6 +982,7 @@ export class LearningService {
       questCode: quest.code,
       questTitle: overlay[quest.id]?.title ?? quest.title,
       unlockedAt: progress?.unlockedAt ?? null,
+      startedAt: progress?.unlockedAt ?? null,
       completed: progress?.completed ?? false,
       progress: progress?.progress ?? 0,
     };

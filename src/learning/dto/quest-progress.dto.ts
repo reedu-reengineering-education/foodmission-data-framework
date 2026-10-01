@@ -52,6 +52,16 @@ export class QuestProgressResponseDto {
   @Expose()
   unlockedAt?: Date | null;
 
+  @ApiPropertyOptional({
+    example: '2026-08-04T12:00:00.000Z',
+    nullable: true,
+    description:
+      'When the quest became active for the user (same as unlockedAt, named ' +
+      'like the mission/challenge field); null if not started',
+  })
+  @Expose()
+  startedAt?: Date | null;
+
   @ApiProperty({ example: false })
   @Expose()
   completed: boolean;

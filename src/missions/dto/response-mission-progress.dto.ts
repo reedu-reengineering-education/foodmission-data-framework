@@ -33,6 +33,14 @@ export class MissionProgressResponseDto {
   missionTitle: string;
 
   @ApiPropertyOptional({
+    example: '2026-09-30T08:15:00.000Z',
+    nullable: true,
+    description: 'When the user started the mission; null if not started',
+  })
+  @Expose()
+  startedAt?: Date | null;
+
+  @ApiPropertyOptional({
     type: MissionRewardDto,
     description:
       'Set only when this update first completed the mission and earned a reward',

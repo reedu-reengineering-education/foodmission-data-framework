@@ -572,16 +572,22 @@ describe('LearningService', () => {
     });
 
     it('emits QUEST_STARTED on first active progress', async () => {
+      const unlockedAt = new Date('2026-09-30T08:15:00.000Z');
       prisma.questProgress.findUnique.mockResolvedValue(null);
       prisma.questProgress.upsert.mockResolvedValue({
         userId: 'u1',
         questId: quest.id,
         completed: false,
         progress: 10,
-        unlockedAt: new Date(),
+        unlockedAt,
       });
 
-      await service.upsertQuestProgress('u1', quest.code, { progress: 10 });
+      const result = await service.upsertQuestProgress('u1', quest.code, {
+        progress: 10,
+      });
+
+      // The quest's start time is its unlock time.
+      expect(result.startedAt).toEqual(unlockedAt);
 
       expect(userEventService.record).toHaveBeenCalledTimes(1);
       expect(userEventService.record).toHaveBeenCalledWith(
