@@ -46,9 +46,9 @@ export class MealLogsController {
     summary: 'Create a meal log',
     description:
       'Logs a meal either by linking a Meal (mealId) or, for a quick log, by ' +
-      'reporting diet and nutrition facts (flags) and substitutions (swaps) without one. ' +
+      'reporting diet, nutrition and food waste facts (flags) and substitutions (swaps) without one. ' +
       'Flags and swaps are given as the event types they record (e.g. MEAL_VEGAN, ' +
-      'NUTRITION_WHOLEGRAIN_CHOSEN, SWAP_BEEF_TO_LEGUMES). Records MEAL_LOGGED plus one event per reported flag ' +
+      'NUTRITION_WHOLEGRAIN_CHOSEN, FOOD_WASTE_FULL_PLATE_SAVED, SWAP_BEEF_TO_LEGUMES). Records MEAL_LOGGED plus one event per reported flag ' +
       'and swap — MEAL_VEGAN also records MEAL_MEAT_FREE. With a mealId, flags are ' +
       'also derived from the meal items (NEVO foods and OpenFoodFacts products): ' +
       'MEAL_MEAT_CONSUMED, MEAL_MEAT_FREE, MEAL_VEGAN, MEAL_LEGUME_CONSUMED, ' +
