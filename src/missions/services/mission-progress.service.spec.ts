@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { MissionProgressService } from './mission-progress.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { TranslationService } from '../../translations/services/translation.service';
@@ -34,6 +34,7 @@ describe('MissionProgressService', () => {
             findAllByUserId: jest.fn(),
             findAllPaginated: jest.fn(),
             upsert: jest.fn(),
+            restart: jest.fn(),
           },
         },
         {
@@ -84,6 +85,7 @@ describe('MissionProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
+        status: 'NOT_STARTED',
         missionTitle: 'Test Mission',
         startedAt: new Date('2026-09-30T08:15:00.000Z'),
       });
@@ -103,6 +105,7 @@ describe('MissionProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0,
+        status: 'NOT_STARTED',
         missionTitle: 'Test Mission',
         startedAt: null,
       });
@@ -146,6 +149,7 @@ describe('MissionProgressService', () => {
           userId: 'u1',
           completed: false,
           progress: 0.5,
+          status: 'NOT_STARTED',
           missionTitle: 'Test Mission 1',
           startedAt: new Date('2026-09-30T08:15:00.000Z'),
         },
@@ -154,6 +158,7 @@ describe('MissionProgressService', () => {
           userId: 'u1',
           completed: true,
           progress: 1,
+          status: 'NOT_STARTED',
           missionTitle: 'Test Mission 2',
           startedAt: null,
         },
@@ -193,6 +198,7 @@ describe('MissionProgressService', () => {
         userId: 'u1',
         completed: true,
         progress: 1,
+        status: 'NOT_STARTED',
         missionTitle: 'Test Mission',
         startedAt: null,
         reward: null,
@@ -448,11 +454,154 @@ describe('MissionProgressService', () => {
       expect(userEventService.record).not.toHaveBeenCalled();
     });
 
+    describe('giving up', () => {
+      const catalogRow = {
+        id: 'm1',
+        code: 'M.A1.1',
+        title: 'Test Mission',
+        reward: { id: 'r1', xp: 15, points: 20 },
+      };
+      const failedRow = {
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+        status: 'FAILED',
+        startedAt: new Date('2026-09-30T08:00:00.000Z'),
+        mission: { title: 'Test Mission' },
+      };
+
+      beforeEach(() => {
+        (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(
+          catalogRow,
+        );
+      });
+
+      it('marks the mission FAILED and records MISSION_FAILED once, without a reward', async () => {
+        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+          ...failedRow,
+          status: 'IN_PROGRESS',
+        });
+        (repository.upsert as jest.Mock).mockResolvedValue(failedRow);
+
+        const result = await service.update('m1', { failed: true }, 'u1');
+
+        expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
+          failed: true,
+        });
+        expect(result.status).toBe('FAILED');
+        expect(result.reward).toBeNull();
+        expect(userEventService.record).toHaveBeenCalledWith(
+          expect.objectContaining({
+            eventType: EventType.MISSION_FAILED,
+            idempotencyKey: `mission-failed:u1:m1:${failedRow.startedAt.getTime()}`,
+          }),
+        );
+        expect(walletService.award).not.toHaveBeenCalled();
+      });
+
+      it('rejects failed together with completed', async () => {
+        await expect(
+          service.update('m1', { failed: true, completed: true }, 'u1'),
+        ).rejects.toThrow(BadRequestException);
+        expect(repository.upsert).not.toHaveBeenCalled();
+      });
+
+      it('rejects any update to a failed mission', async () => {
+        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+          failedRow,
+        );
+
+        await expect(
+          service.update('m1', { progress: 100, completed: true }, 'u1'),
+        ).rejects.toThrow(BadRequestException);
+        expect(repository.upsert).not.toHaveBeenCalled();
+      });
+
+      it('rejects failing a completed mission', async () => {
+        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+          ...failedRow,
+          completed: true,
+          status: 'COMPLETED',
+        });
+
+        await expect(
+          service.update('m1', { failed: true }, 'u1'),
+        ).rejects.toThrow(BadRequestException);
+      });
+    });
+
     it('should throw NotFoundException if mission does not exist', async () => {
       (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(null);
       await expect(
         service.update('m1', { completed: true }, 'u1'),
       ).rejects.toThrow('Mission not found');
+    });
+  });
+
+  describe('restart', () => {
+    const catalogRow = { id: 'm1', code: 'M.A1.1', title: 'Test Mission' };
+    const failedStart = new Date('2026-09-20T08:00:00.000Z');
+    const restartedAt = new Date('2026-10-02T09:00:00.000Z');
+
+    beforeEach(() => {
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(
+        catalogRow,
+      );
+    });
+
+    it('starts a failed mission again and records MISSION_RESTARTED for the new attempt', async () => {
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+        status: 'FAILED',
+        startedAt: failedStart,
+      });
+      (repository.restart as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 0,
+        status: 'NOT_STARTED',
+        startedAt: restartedAt,
+        mission: { title: 'Test Mission' },
+      });
+
+      const result = await service.restart('M.A1.1', 'u1');
+
+      expect(repository.restart).toHaveBeenCalledWith('u1', 'm1');
+      expect(result).toEqual(
+        expect.objectContaining({
+          progress: 0,
+          completed: false,
+          status: 'NOT_STARTED',
+          startedAt: restartedAt,
+        }),
+      );
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.MISSION_RESTARTED,
+          idempotencyKey: `mission-restarted:u1:m1:${restartedAt.getTime()}`,
+          metadata: expect.objectContaining({
+            previousStartedAt: failedStart.toISOString(),
+          }),
+        }),
+      );
+    });
+
+    it.each([
+      ['in progress', { status: 'IN_PROGRESS', completed: false }],
+      ['completed', { status: 'COMPLETED', completed: true }],
+      ['never started', null],
+    ])('rejects restarting a %s mission', async (_label, row) => {
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(row);
+
+      await expect(service.restart('M.A1.1', 'u1')).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(repository.restart).not.toHaveBeenCalled();
     });
   });
 });

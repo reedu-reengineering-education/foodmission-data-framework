@@ -235,6 +235,37 @@ export class ChallengesController {
     );
   }
 
+  @Post('by-code/:code/progress/restart')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Restart a failed challenge by code',
+    description:
+      'Starts a FAILED challenge again as a new attempt: progress 0, status ' +
+      'NOT_STARTED and a new start time, so its rule window starts over. ' +
+      'Returns 400 when the challenge has not failed.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Challenge code',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Challenge restarted',
+    type: ChallengeProgressResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'The challenge has not failed' })
+  @ApiResponse({ status: 404, description: 'Challenge not found' })
+  @ApiCrudErrorResponses()
+  async restartProgressByCode(
+    @Param('code') code: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<ChallengeProgressResponseDto> {
+    return this.challengeProgressService.restart(code, userId, query.lang);
+  }
+
   @Get(':codeOrId')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

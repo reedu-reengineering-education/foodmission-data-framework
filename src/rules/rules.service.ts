@@ -9,6 +9,7 @@ import {
   AfterCommitTask,
 } from '../common/after-commit/after-commit.queue';
 import { ProgressStatus } from '../common/progress-status';
+import { progressEventKey } from '../common/progress-event-keys';
 import { EventSource, EventType, EventTypeValue } from '../events/event-types';
 import {
   USER_EVENT_RECORDER,
@@ -42,6 +43,19 @@ type ActiveQuestScope = {
   missionCodes: Set<string>;
   challengeCodes: Set<string>;
 };
+
+/** A user's progress row for one in-scope mission/challenge. */
+type ScopedProgress = {
+  status: string;
+  startedAt: Date | null;
+};
+
+/** COMPLETED and FAILED are final: the evaluator never changes them again. */
+function isResolved(status: string | undefined): boolean {
+  return (
+    status === ProgressStatus.COMPLETED || status === ProgressStatus.FAILED
+  );
+}
 
 /** A mission/challenge the evaluator just moved to COMPLETED for the first time. */
 type CompletionAward = {
@@ -139,7 +153,19 @@ export class RulesService implements OnModuleInit {
     if (this.shouldIgnoreEventType(eventType)) {
       return;
     }
+    await this.evaluateUser(userId, tx);
+  }
 
+  /**
+   * Re-scores every rule-backed mission and challenge in the user's current
+   * quest. Called on each behavioural event, and by the deadline scheduler so
+   * an item whose window ended fails even when the user records nothing.
+   * COMPLETED and FAILED items are final and skipped.
+   */
+  async evaluateUser(
+    userId: string,
+    tx?: Prisma.TransactionClient,
+  ): Promise<void> {
     const rules = this.load();
     const db = tx ?? this.prisma;
     const activeScope = await this.getActiveQuestScope(db, userId);
@@ -151,9 +177,33 @@ export class RulesService implements OnModuleInit {
       return;
     }
 
-    const windowDays = this.getMaxWindowDays(rules);
+    const missionCatalog = await this.getMissionCatalog(db);
+    const challengeCatalog = await this.getChallengeCatalog(db);
+    const missionProgress = await this.getScopedMissionProgress(
+      db,
+      userId,
+      missionCatalog,
+      activeScope,
+    );
+    const challengeProgress = await this.getScopedChallengeProgress(
+      db,
+      userId,
+      challengeCatalog,
+      activeScope,
+    );
+
+    // Anchored windows can start before the usual lookback (a 7-day mission
+    // started 9 days ago), so reach back to the oldest open item's start.
     const since = new Date();
-    since.setDate(since.getDate() - windowDays);
+    since.setDate(since.getDate() - this.getMaxWindowDays(rules));
+    for (const row of [
+      ...missionProgress.values(),
+      ...challengeProgress.values(),
+    ]) {
+      if (!isResolved(row.status) && row.startedAt && row.startedAt < since) {
+        since.setTime(row.startedAt.getTime());
+      }
+    }
 
     const events = (await db.userEvent.findMany({
       where: {
@@ -168,9 +218,6 @@ export class RulesService implements OnModuleInit {
       },
     })) as UserEventRow[];
 
-    const missionCatalog = await this.getMissionCatalog(db);
-    const challengeCatalog = await this.getChallengeCatalog(db);
-
     const missionRules = rules.missions.filter(
       (entry) =>
         entry.shape !== 'undecided' && activeScope.missionCodes.has(entry.code),
@@ -179,19 +226,6 @@ export class RulesService implements OnModuleInit {
       (entry) =>
         entry.shape !== 'undecided' &&
         activeScope.challengeCodes.has(entry.code),
-    );
-
-    const completedMissionIds = await this.getCompletedMissionIds(
-      db,
-      userId,
-      missionCatalog,
-      activeScope,
-    );
-    const completedChallengeIds = await this.getCompletedChallengeIds(
-      db,
-      userId,
-      challengeCatalog,
-      activeScope,
     );
 
     const completions: CompletionAward[] = [];
@@ -203,7 +237,7 @@ export class RulesService implements OnModuleInit {
       if (!catalogItem || !entry.rule) {
         continue;
       }
-      if (completedMissionIds.has(catalogItem.id)) {
+      if (isResolved(missionProgress.get(catalogItem.id)?.status)) {
         continue;
       }
       const completion = await this.syncProgress(
@@ -226,7 +260,7 @@ export class RulesService implements OnModuleInit {
       if (!catalogItem || !entry.rule) {
         continue;
       }
-      if (completedChallengeIds.has(catalogItem.id)) {
+      if (isResolved(challengeProgress.get(catalogItem.id)?.status)) {
         continue;
       }
       const completion = await this.syncProgress(
@@ -259,6 +293,77 @@ export class RulesService implements OnModuleInit {
     }
 
     await this.afterCommit.run(tasks);
+  }
+
+  /**
+   * Users with at least one open (not COMPLETED/FAILED), started mission or
+   * challenge whose rule window has ended: `startedAt + window.days <= now`
+   * for a rule with a `since_start` window. Items without a rule never time
+   * out. Used by the deadline scheduler to fail them without a new event.
+   */
+  async findUsersWithExpiredItems(now: Date = new Date()): Promise<string[]> {
+    const rules = this.load();
+    const userIds = new Set<string>();
+
+    const kinds = [
+      {
+        entries: rules.missions,
+        catalog: await this.getMissionCatalog(this.prisma),
+        query: (ids: string[], startedBefore: Date) =>
+          this.prisma.missionProgress.findMany({
+            where: {
+              missionId: { in: ids },
+              status: {
+                notIn: [ProgressStatus.COMPLETED, ProgressStatus.FAILED],
+              },
+              startedAt: { not: null, lte: startedBefore },
+            },
+            select: { userId: true },
+            distinct: ['userId'],
+          }),
+      },
+      {
+        entries: rules.challenges,
+        catalog: await this.getChallengeCatalog(this.prisma),
+        query: (ids: string[], startedBefore: Date) =>
+          this.prisma.challengeProgress.findMany({
+            where: {
+              challengeId: { in: ids },
+              status: {
+                notIn: [ProgressStatus.COMPLETED, ProgressStatus.FAILED],
+              },
+              startedAt: { not: null, lte: startedBefore },
+            },
+            select: { userId: true },
+            distinct: ['userId'],
+          }),
+      },
+    ];
+
+    for (const { entries, catalog, query } of kinds) {
+      // Group items by window length: one query per distinct deadline.
+      const idsByDays = new Map<number, string[]>();
+      for (const entry of entries) {
+        const window = entry.rule?.window;
+        if (entry.shape === 'undecided' || window?.type !== 'since_start') {
+          continue;
+        }
+        const item = catalog.find((candidate) => candidate.code === entry.code);
+        if (!item) continue;
+        const days = window.days ?? 7;
+        idsByDays.set(days, [...(idsByDays.get(days) ?? []), item.id]);
+      }
+
+      for (const [days, ids] of idsByDays) {
+        const startedBefore = new Date(now);
+        startedBefore.setDate(startedBefore.getDate() - days);
+        for (const row of await query(ids, startedBefore)) {
+          userIds.add(row.userId);
+        }
+      }
+    }
+
+    return [...userIds];
   }
 
   /**
@@ -389,36 +494,6 @@ export class RulesService implements OnModuleInit {
     entry: RuleEntry,
     kind: 'mission' | 'challenge',
   ): Promise<CompletionAward | null> {
-    const { completed, progress } = evaluateRule(
-      entry.rule as RuleDefinition,
-      events,
-    );
-    const ruleHash = hashRule(entry.rule);
-    const status = completed
-      ? ProgressStatus.COMPLETED
-      : progress > 0
-        ? ProgressStatus.IN_PROGRESS
-        : ProgressStatus.NOT_STARTED;
-
-    if (progress <= 0 && !completed) {
-      const previous =
-        kind === 'mission'
-          ? await db.missionProgress.findUnique({
-              where: {
-                userId_missionId: { userId, missionId: catalogItem.id },
-              },
-            })
-          : await db.challengeProgress.findUnique({
-              where: {
-                userId_challengeId: { userId, challengeId: catalogItem.id },
-              },
-            });
-
-      if (!previous) {
-        return null;
-      }
-    }
-
     const previous =
       kind === 'mission'
         ? await db.missionProgress.findUnique({
@@ -439,6 +514,27 @@ export class RulesService implements OnModuleInit {
               startedAt: true,
             },
           });
+
+    // The window starts when the item was started, so its deadline is known.
+    const { completed, failed, progress } = evaluateRule(
+      entry.rule as RuleDefinition,
+      events,
+      new Date(),
+      previous?.startedAt,
+    );
+    const ruleHash = hashRule(entry.rule);
+    const status = completed
+      ? ProgressStatus.COMPLETED
+      : failed
+        ? ProgressStatus.FAILED
+        : progress > 0
+          ? ProgressStatus.IN_PROGRESS
+          : ProgressStatus.NOT_STARTED;
+
+    // Nothing to record for an item the user hasn't started or touched.
+    if (!previous && progress <= 0 && !completed) {
+      return null;
+    }
 
     const previousCompleted = previous?.completed ?? false;
     const previousProgress = previous?.progress ?? 0;
@@ -515,6 +611,7 @@ export class RulesService implements OnModuleInit {
         id: catalogItem.id,
         progress,
         completed,
+        startedAt,
       });
     } else if (updated) {
       await this.emitDerivedEvent(db, {
@@ -529,7 +626,27 @@ export class RulesService implements OnModuleInit {
         id: catalogItem.id,
         progress,
         completed,
+        startedAt,
       });
+    }
+
+    if (failed) {
+      // Rows reach here at most once as FAILED: resolved rows are skipped.
+      await this.emitDerivedEvent(db, {
+        userId,
+        kind,
+        event:
+          kind === 'mission'
+            ? EventType.MISSION_FAILED
+            : EventType.CHALLENGE_FAILED,
+        transition: 'failed',
+        code: entry.code,
+        id: catalogItem.id,
+        progress,
+        completed,
+        startedAt,
+      });
+      return null;
     }
 
     if (!firstCompletion) {
@@ -548,6 +665,7 @@ export class RulesService implements OnModuleInit {
       id: catalogItem.id,
       progress,
       completed,
+      startedAt,
     });
 
     return { userId, kind, id: catalogItem.id, code: entry.code };
@@ -572,20 +690,19 @@ export class RulesService implements OnModuleInit {
       userId: string;
       kind: 'mission' | 'challenge';
       event: EventTypeValue;
-      transition: 'started' | 'updated' | 'completed';
+      transition: 'started' | 'updated' | 'completed' | 'failed';
       code: string;
       id: string;
       progress: number;
       completed: boolean;
+      /** The attempt's start time; scopes the key to this attempt. */
+      startedAt: Date | null;
     },
   ): Promise<void> {
     const isMission = input.kind === 'mission';
-    // Byte-identical to the keys mission-/challenge-progress.service.ts build,
-    // so the two paths deduplicate against each other.
-    const idempotencyKey =
-      input.transition === 'updated'
-        ? `${input.kind}-updated:${input.userId}:${input.id}:${input.progress}:${input.completed}`
-        : `${input.kind}-${input.transition}:${input.userId}:${input.id}`;
+    // The same helper mission-/challenge-progress.service.ts use, so the two
+    // paths deduplicate against each other.
+    const idempotencyKey = progressEventKey(input);
 
     await this.getRecorder().record(
       {
@@ -680,60 +797,58 @@ export class RulesService implements OnModuleInit {
     return { missionCodes, challengeCodes };
   }
 
-  private async getCompletedMissionIds(
+  private async getScopedMissionProgress(
     db: Prisma.TransactionClient | PrismaService,
     userId: string,
     missionCatalog: CatalogItem[],
     activeScope: ActiveQuestScope,
-  ): Promise<Set<string>> {
+  ): Promise<Map<string, ScopedProgress>> {
     const scopedIds = missionCatalog
       .filter((item) => activeScope.missionCodes.has(item.code))
       .map((item) => item.id);
 
     if (scopedIds.length === 0) {
-      return new Set<string>();
+      return new Map();
     }
 
     const rows = await db.missionProgress.findMany({
-      where: {
-        userId,
-        missionId: { in: scopedIds },
-        status: ProgressStatus.COMPLETED,
-      },
-      select: {
-        missionId: true,
-      },
+      where: { userId, missionId: { in: scopedIds } },
+      select: { missionId: true, status: true, startedAt: true },
     });
 
-    return new Set(rows.map((row) => row.missionId));
+    return new Map(
+      rows.map((row) => [
+        row.missionId,
+        { status: row.status, startedAt: row.startedAt },
+      ]),
+    );
   }
 
-  private async getCompletedChallengeIds(
+  private async getScopedChallengeProgress(
     db: Prisma.TransactionClient | PrismaService,
     userId: string,
     challengeCatalog: CatalogItem[],
     activeScope: ActiveQuestScope,
-  ): Promise<Set<string>> {
+  ): Promise<Map<string, ScopedProgress>> {
     const scopedIds = challengeCatalog
       .filter((item) => activeScope.challengeCodes.has(item.code))
       .map((item) => item.id);
 
     if (scopedIds.length === 0) {
-      return new Set<string>();
+      return new Map();
     }
 
     const rows = await db.challengeProgress.findMany({
-      where: {
-        userId,
-        challengeId: { in: scopedIds },
-        status: ProgressStatus.COMPLETED,
-      },
-      select: {
-        challengeId: true,
-      },
+      where: { userId, challengeId: { in: scopedIds } },
+      select: { challengeId: true, status: true, startedAt: true },
     });
 
-    return new Set(rows.map((row) => row.challengeId));
+    return new Map(
+      rows.map((row) => [
+        row.challengeId,
+        { status: row.status, startedAt: row.startedAt },
+      ]),
+    );
   }
 
   /**
