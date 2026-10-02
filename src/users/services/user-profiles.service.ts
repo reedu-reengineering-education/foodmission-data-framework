@@ -323,6 +323,9 @@ export class UserProfilesService {
     const challengeCodes = questItems
       .filter((item) => item.contentType === 'CHALLENGE')
       .map((item) => item.contentCode);
+    // Selecting the quest starts its missions and challenges, even at
+    // progress 0.
+    const startedAt = new Date();
 
     if (missionCodes.length > 0) {
       const missions = await tx.mission.findMany({
@@ -331,16 +334,23 @@ export class UserProfilesService {
       });
 
       if (missions.length > 0) {
+        const missionIds = missions.map((mission) => mission.id);
         await tx.missionProgress.createMany({
-          data: missions.map((mission) => ({
+          data: missionIds.map((missionId) => ({
             userId,
-            missionId: mission.id,
+            missionId,
             progress: 0,
             completed: false,
             status: ProgressStatus.NOT_STARTED,
             state: {},
+            startedAt,
           })),
           skipDuplicates: true,
+        });
+        // Rows kept by skipDuplicates that were seeded without a start time.
+        await tx.missionProgress.updateMany({
+          where: { userId, missionId: { in: missionIds }, startedAt: null },
+          data: { startedAt },
         });
       }
     }
@@ -352,16 +362,26 @@ export class UserProfilesService {
       });
 
       if (challenges.length > 0) {
+        const challengeIds = challenges.map((challenge) => challenge.id);
         await tx.challengeProgress.createMany({
-          data: challenges.map((challenge) => ({
+          data: challengeIds.map((challengeId) => ({
             userId,
-            challengeId: challenge.id,
+            challengeId,
             progress: 0,
             completed: false,
             status: ProgressStatus.NOT_STARTED,
             state: {},
+            startedAt,
           })),
           skipDuplicates: true,
+        });
+        await tx.challengeProgress.updateMany({
+          where: {
+            userId,
+            challengeId: { in: challengeIds },
+            startedAt: null,
+          },
+          data: { startedAt },
         });
       }
     }

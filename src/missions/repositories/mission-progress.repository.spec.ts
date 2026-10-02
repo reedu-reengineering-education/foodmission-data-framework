@@ -20,6 +20,7 @@ describe('MissionProgressRepository', () => {
               findUnique: jest.fn(),
               findMany: jest.fn(),
               upsert: jest.fn(),
+              update: jest.fn(),
             },
           },
         },
@@ -107,7 +108,7 @@ describe('MissionProgressRepository', () => {
 
   describe('upsert', () => {
     it('should call prisma.missionProgress.upsert with create defaults', async () => {
-      const mockReturn = { id: '1' };
+      const mockReturn = { id: '1', startedAt: new Date() };
       (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue(
         mockReturn,
       );
@@ -135,6 +136,44 @@ describe('MissionProgressRepository', () => {
         include: { mission: true },
       });
       expect(result).toBe(mockReturn);
+      expect(prisma.missionProgress.update).not.toHaveBeenCalled();
+    });
+
+    it('sets startedAt when the mission is started at progress 0', async () => {
+      (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue({
+        startedAt: new Date(),
+      });
+
+      await repository.upsert('u1', 'm1', { progress: 0 });
+
+      const call = (prisma.missionProgress.upsert as jest.Mock).mock
+        .calls[0][0];
+      expect(call.create).toEqual(
+        expect.objectContaining({
+          progress: 0,
+          status: 'NOT_STARTED',
+          startedAt: expect.any(Date),
+        }),
+      );
+    });
+
+    it('backfills startedAt on an existing row that has none', async () => {
+      (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue({
+        startedAt: null,
+      });
+      const backfilled = { startedAt: new Date() };
+      (prisma.missionProgress.update as jest.Mock).mockResolvedValue(
+        backfilled,
+      );
+
+      const result = await repository.upsert('u1', 'm1', { progress: 10 });
+
+      expect(prisma.missionProgress.update).toHaveBeenCalledWith({
+        where: { userId_missionId: { userId: 'u1', missionId: 'm1' } },
+        data: { startedAt: expect.any(Date) },
+        include: { mission: true },
+      });
+      expect(result).toBe(backfilled);
     });
   });
 });
