@@ -140,6 +140,53 @@ describe('rulesCoverageSchema counter.where', () => {
 
     expect(error).toBeUndefined();
   });
+
+  it('accepts before_start as a counter window but not as a rule window', () => {
+    const missionWith = (
+      ruleWindow: Record<string, unknown>,
+      counterWindow: Record<string, unknown>,
+    ) => ({
+      ...BASE_DOC,
+      missions: [
+        {
+          code: 'M.B1.3',
+          shape: 'bounded_max_with_fail',
+          rule: {
+            window: ruleWindow,
+            counters: {
+              previous: {
+                event: 'MEAL_MEAT_CONSUMED',
+                window: counterWindow,
+              },
+            },
+            target: 'previous >= 1',
+            progress: 'min(previous, 1)',
+            notes: ['test'],
+          },
+        },
+      ],
+      challenges: [{ code: 'CH.B1.1', shape: 'undecided' }],
+    });
+    const validate = (doc: unknown) =>
+      rulesCoverageSchema.validate(doc, { abortEarly: false }).error;
+
+    expect(
+      validate(
+        missionWith(
+          { type: 'since_start', days: 7 },
+          { type: 'before_start', days: 7 },
+        ),
+      ),
+    ).toBeUndefined();
+    expect(
+      validate(
+        missionWith(
+          { type: 'before_start', days: 7 },
+          { type: 'since_start', days: 7 },
+        ),
+      ),
+    ).toBeDefined();
+  });
 });
 
 describe('rulesCoverageSchema expression identifiers', () => {

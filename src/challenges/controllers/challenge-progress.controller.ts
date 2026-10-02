@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -102,6 +103,37 @@ export class ChallengeProgressController {
     return this.challengeProgressService.update(
       challengeId,
       updateChallengeProgressDto,
+      userId,
+      query.lang,
+    );
+  }
+
+  @Post('restart')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Restart a failed challenge',
+    description:
+      'Starts a FAILED challenge again as a new attempt: progress 0, status ' +
+      'NOT_STARTED and a new start time, so its rule window starts over. ' +
+      'Returns 400 when the challenge has not failed.',
+  })
+  @ApiParam({ name: 'challengeId', type: 'string', format: 'uuid' })
+  @ApiResponse({
+    status: 201,
+    description: 'Challenge restarted',
+    type: ChallengeProgressResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'The challenge has not failed' })
+  @ApiResponse({ status: 404, description: 'Challenge not found' })
+  @ApiCrudErrorResponses()
+  async restart(
+    @Param('challengeId', ParseUUIDPipe) challengeId: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<ChallengeProgressResponseDto> {
+    return this.challengeProgressService.restart(
+      challengeId,
       userId,
       query.lang,
     );

@@ -119,7 +119,193 @@ describe('rule-evaluator filterEvents', () => {
     expect(evaluated).toEqual({
       progress: 100,
       completed: true,
+      failed: false,
+      deadline: null,
       counters: { currentMeatMeals: 1, previousMeatMeals: 2 },
     });
+  });
+});
+
+describe('rule-evaluator since_start windows anchored at startedAt', () => {
+  const day = 24 * 60 * 60 * 1000;
+  const startedAt = new Date('2026-09-10T08:00:00.000Z');
+  const at = (days: number) => new Date(startedAt.getTime() + days * day);
+  const legumeMeal = (days: number, mealLogId: string) => ({
+    eventType: 'MEAL_LEGUME_CONSUMED',
+    createdAt: at(days),
+    metadata: { mealLogId },
+  });
+  const countRule = {
+    window: { type: 'since_start' as const, days: 7 },
+    counters: {
+      legumeMeals: {
+        event: 'MEAL_LEGUME_CONSUMED',
+        distinctBy: 'metadata.mealLogId',
+      },
+    },
+    target: 'legumeMeals >= 3',
+    progress: 'min(legumeMeals / 3, 1)',
+    notes: ['test'],
+  };
+  const meatCapRule = {
+    window: { type: 'since_start' as const, days: 7 },
+    counters: { meatMeals: { event: 'MEAL_MEAT_CONSUMED' } },
+    target: 'meatMeals <= 3',
+    fail: 'meatMeals > 3',
+    progress: 'max(0, min(1 - (meatMeals / 4), 1))',
+    notes: ['test'],
+  };
+  const meatMeals = (count: number) =>
+    Array.from({ length: count }, (_, i) => ({
+      eventType: 'MEAL_MEAT_CONSUMED',
+      createdAt: at(1 + i * 0.1),
+      metadata: {},
+    }));
+
+  it('ignores events before startedAt and computes the deadline', () => {
+    const outcome = evaluateRule(
+      countRule,
+      [legumeMeal(-1, 'before'), legumeMeal(1, 'a'), legumeMeal(2, 'b')],
+      at(3),
+      startedAt,
+    );
+
+    expect(outcome.counters.legumeMeals).toBe(2);
+    expect(outcome.deadline).toEqual(at(7));
+    expect(outcome.completed).toBe(false);
+    expect(outcome.failed).toBe(false);
+  });
+
+  it('ignores events after the window ends', () => {
+    const outcome = evaluateRule(
+      countRule,
+      [legumeMeal(1, 'a'), legumeMeal(2, 'b'), legumeMeal(8, 'late')],
+      at(9),
+      startedAt,
+    );
+
+    expect(outcome.counters.legumeMeals).toBe(2);
+  });
+
+  it('completes as soon as the target holds inside the window', () => {
+    const outcome = evaluateRule(
+      countRule,
+      [legumeMeal(1, 'a'), legumeMeal(2, 'b'), legumeMeal(3, 'c')],
+      at(3.5),
+      startedAt,
+    );
+
+    expect(outcome).toEqual(
+      expect.objectContaining({
+        completed: true,
+        failed: false,
+        progress: 100,
+      }),
+    );
+  });
+
+  it('fails when the window ends without the target', () => {
+    const outcome = evaluateRule(
+      countRule,
+      [legumeMeal(1, 'a')],
+      at(7),
+      startedAt,
+    );
+
+    expect(outcome).toEqual(
+      expect.objectContaining({ completed: false, failed: true }),
+    );
+  });
+
+  it('fails at once on a fail expression without resolveAt window_end', () => {
+    const outcome = evaluateRule(meatCapRule, meatMeals(4), at(2), startedAt);
+
+    expect(outcome).toEqual(
+      expect.objectContaining({ completed: false, failed: true }),
+    );
+  });
+
+  it('holds completion until the window end but fails at once with resolveAt window_end', () => {
+    const rule = { ...meatCapRule, resolveAt: 'window_end' as const };
+
+    const early = evaluateRule(rule, meatMeals(2), at(2), startedAt);
+    expect(early).toEqual(
+      expect.objectContaining({ completed: false, failed: false }),
+    );
+
+    // The 4th meat meal can't be undone, so the cap fails right away.
+    const tooMuchEarly = evaluateRule(rule, meatMeals(4), at(2), startedAt);
+    expect(tooMuchEarly.failed).toBe(true);
+
+    expect(evaluateRule(rule, meatMeals(2), at(7), startedAt).completed).toBe(
+      true,
+    );
+    expect(evaluateRule(rule, meatMeals(4), at(7), startedAt).failed).toBe(
+      true,
+    );
+  });
+
+  it('counts the week before the start in a before_start counter', () => {
+    const fewerMeatRule = {
+      window: { type: 'since_start' as const, days: 7 },
+      counters: {
+        currentMeatMeals: { event: 'MEAL_MEAT_CONSUMED' },
+        previousMeatMeals: {
+          event: 'MEAL_MEAT_CONSUMED',
+          window: { type: 'before_start' as const, days: 7 },
+        },
+      },
+      target:
+        'previousMeatMeals >= 1 && currentMeatMeals <= previousMeatMeals - 1',
+      fail: 'previousMeatMeals >= 1 && currentMeatMeals >= previousMeatMeals',
+      resolveAt: 'window_end' as const,
+      progress: '0',
+      notes: ['test'],
+    };
+    const meat = (days: number) => ({
+      eventType: 'MEAL_MEAT_CONSUMED',
+      createdAt: at(days),
+      metadata: {},
+    });
+    // Three in the week before the start (one too early to count), one after.
+    const events = [meat(-8), meat(-6), meat(-3), meat(-0.5), meat(2)];
+
+    const midWeek = evaluateRule(fewerMeatRule, events, at(3), startedAt);
+    expect(midWeek.counters).toEqual({
+      currentMeatMeals: 1,
+      previousMeatMeals: 3,
+    });
+    expect(midWeek).toEqual(
+      expect.objectContaining({ completed: false, failed: false }),
+    );
+
+    expect(
+      evaluateRule(fewerMeatRule, events, at(7), startedAt).completed,
+    ).toBe(true);
+    expect(
+      evaluateRule(
+        fewerMeatRule,
+        [...events, meat(3), meat(4)],
+        at(5),
+        startedAt,
+      ).failed,
+    ).toBe(true);
+  });
+
+  it('keeps the old rolling behaviour without startedAt', () => {
+    const now = at(20);
+    const outcome = evaluateRule(
+      countRule,
+      [legumeMeal(18, 'a'), legumeMeal(19, 'b'), legumeMeal(19.5, 'c')],
+      now,
+    );
+
+    expect(outcome).toEqual(
+      expect.objectContaining({
+        completed: true,
+        failed: false,
+        deadline: null,
+      }),
+    );
   });
 });

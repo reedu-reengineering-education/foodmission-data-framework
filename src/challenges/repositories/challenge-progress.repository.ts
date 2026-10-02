@@ -49,14 +49,19 @@ export class ChallengeProgressRepository {
     challengeId: string,
     updateDto: UpdateChallengeProgressDto,
   ) {
+    const failed = updateDto.failed === true;
     const progress = updateDto.progress ?? 0;
-    const completed = updateDto.completed ?? false;
-    const status = completed
-      ? ProgressStatus.COMPLETED
-      : progress > 0
-        ? ProgressStatus.IN_PROGRESS
-        : ProgressStatus.NOT_STARTED;
+    const completed = !failed && (updateDto.completed ?? false);
+    const status = failed
+      ? ProgressStatus.FAILED
+      : completed
+        ? ProgressStatus.COMPLETED
+        : progress > 0
+          ? ProgressStatus.IN_PROGRESS
+          : ProgressStatus.NOT_STARTED;
 
+    // Creating the progress row is starting the challenge, even at progress 0
+    // (clients start it that way), so it always gets a start time.
     return this.prisma.challengeProgress.upsert({
       where: { userId_challengeId: { userId, challengeId } },
       create: {
@@ -66,17 +71,39 @@ export class ChallengeProgressRepository {
         completed,
         status,
         state: { source: 'manual', mode: 'api' },
-        startedAt: status === ProgressStatus.NOT_STARTED ? null : new Date(),
+        startedAt: new Date(),
       },
       update: {
         ...(updateDto.progress !== undefined
           ? { progress: updateDto.progress }
           : {}),
-        ...(updateDto.completed !== undefined
-          ? { completed: updateDto.completed }
-          : {}),
+        ...(failed
+          ? { completed: false }
+          : updateDto.completed !== undefined
+            ? { completed: updateDto.completed }
+            : {}),
         status,
         state: { source: 'manual', mode: 'api' },
+      },
+      include: { challenge: true },
+    });
+  }
+
+  /**
+   * Resets a challenge's progress row for a new attempt: progress 0, not
+   * completed, NOT_STARTED, a fresh start time and no rule state.
+   */
+  async restart(userId: string, challengeId: string) {
+    return this.prisma.challengeProgress.update({
+      where: { userId_challengeId: { userId, challengeId } },
+      data: {
+        progress: 0,
+        completed: false,
+        status: ProgressStatus.NOT_STARTED,
+        startedAt: new Date(),
+        state: { source: 'manual', mode: 'restart' },
+        ruleHash: null,
+        evaluatedAt: null,
       },
       include: { challenge: true },
     });

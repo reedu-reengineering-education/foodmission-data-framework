@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressService } from './challenge-progress.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { TranslationService } from '../../translations/services/translation.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
@@ -34,6 +34,7 @@ describe('ChallengeProgressService', () => {
             findAllByUserId: jest.fn(),
             findAllPaginated: jest.fn(),
             upsert: jest.fn(),
+            restart: jest.fn(),
           },
         },
         {
@@ -84,6 +85,7 @@ describe('ChallengeProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0.5,
+        status: 'NOT_STARTED',
         challengeTitle: 'Test Challenge',
         startedAt: new Date('2026-09-30T08:15:00.000Z'),
       });
@@ -103,6 +105,7 @@ describe('ChallengeProgressService', () => {
         userId: 'u1',
         completed: false,
         progress: 0,
+        status: 'NOT_STARTED',
         challengeTitle: 'Test Challenge',
         startedAt: null,
       });
@@ -145,6 +148,7 @@ describe('ChallengeProgressService', () => {
           userId: 'u1',
           completed: false,
           progress: 0.5,
+          status: 'NOT_STARTED',
           challengeTitle: 'Challenge 1',
           startedAt: new Date('2026-09-30T08:15:00.000Z'),
         },
@@ -153,6 +157,7 @@ describe('ChallengeProgressService', () => {
           userId: 'u1',
           completed: true,
           progress: 1,
+          status: 'NOT_STARTED',
           challengeTitle: 'Challenge 2',
           startedAt: null,
         },
@@ -192,6 +197,7 @@ describe('ChallengeProgressService', () => {
         userId: 'u1',
         completed: true,
         progress: 1,
+        status: 'NOT_STARTED',
         challengeTitle: 'Test Challenge',
         startedAt: null,
         reward: null,
@@ -440,11 +446,156 @@ describe('ChallengeProgressService', () => {
       expect(userEventService.record).not.toHaveBeenCalled();
     });
 
+    describe('giving up', () => {
+      const catalogRow = {
+        id: 'c1',
+        code: 'CH.A1.1',
+        title: 'Test Challenge',
+        reward: { id: 'r1', xp: 15, points: 20 },
+      };
+      const failedRow = {
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+        status: 'FAILED',
+        startedAt: new Date('2026-09-30T08:00:00.000Z'),
+        challenge: { title: 'Test Challenge' },
+      };
+
+      beforeEach(() => {
+        (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue(
+          catalogRow,
+        );
+      });
+
+      it('marks the challenge FAILED and records CHALLENGE_FAILED once, without a reward', async () => {
+        (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+          ...failedRow,
+          status: 'IN_PROGRESS',
+        });
+        (repository.upsert as jest.Mock).mockResolvedValue(failedRow);
+
+        const result = await service.update('c1', { failed: true }, 'u1');
+
+        expect(repository.upsert).toHaveBeenCalledWith('u1', 'c1', {
+          failed: true,
+        });
+        expect(result.status).toBe('FAILED');
+        expect(result.reward).toBeNull();
+        expect(userEventService.record).toHaveBeenCalledWith(
+          expect.objectContaining({
+            eventType: EventType.CHALLENGE_FAILED,
+            idempotencyKey: `challenge-failed:u1:c1:${failedRow.startedAt.getTime()}`,
+          }),
+        );
+        expect(walletService.award).not.toHaveBeenCalled();
+      });
+
+      it('rejects failed together with completed', async () => {
+        await expect(
+          service.update('c1', { failed: true, completed: true }, 'u1'),
+        ).rejects.toThrow(BadRequestException);
+        expect(repository.upsert).not.toHaveBeenCalled();
+      });
+
+      it('rejects any update to a failed challenge', async () => {
+        (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+          failedRow,
+        );
+
+        await expect(
+          service.update('c1', { progress: 100, completed: true }, 'u1'),
+        ).rejects.toThrow(BadRequestException);
+        expect(repository.upsert).not.toHaveBeenCalled();
+      });
+
+      it('rejects failing a completed challenge', async () => {
+        (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+          ...failedRow,
+          completed: true,
+          status: 'COMPLETED',
+        });
+
+        await expect(
+          service.update('c1', { failed: true }, 'u1'),
+        ).rejects.toThrow(BadRequestException);
+      });
+    });
+
     it('should throw NotFoundException if challenge does not exist', async () => {
       (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue(null);
       await expect(
         service.update('c1', { completed: true }, 'u1'),
       ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('restart', () => {
+    const catalogRow = { id: 'c1', code: 'CH.A1.1', title: 'Test Challenge' };
+    const failedStart = new Date('2026-09-20T08:00:00.000Z');
+    const restartedAt = new Date('2026-10-02T09:00:00.000Z');
+
+    beforeEach(() => {
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue(
+        catalogRow,
+      );
+    });
+
+    it('starts a failed challenge again and records CHALLENGE_RESTARTED for the new attempt', async () => {
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+        status: 'FAILED',
+        startedAt: failedStart,
+      });
+      (repository.restart as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 0,
+        status: 'NOT_STARTED',
+        startedAt: restartedAt,
+        challenge: { title: 'Test Challenge' },
+      });
+
+      const result = await service.restart('CH.A1.1', 'u1');
+
+      expect(repository.restart).toHaveBeenCalledWith('u1', 'c1');
+      expect(result).toEqual(
+        expect.objectContaining({
+          progress: 0,
+          completed: false,
+          status: 'NOT_STARTED',
+          startedAt: restartedAt,
+        }),
+      );
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.CHALLENGE_RESTARTED,
+          idempotencyKey: `challenge-restarted:u1:c1:${restartedAt.getTime()}`,
+          metadata: expect.objectContaining({
+            previousStartedAt: failedStart.toISOString(),
+          }),
+        }),
+      );
+    });
+
+    it.each([
+      ['in progress', { status: 'IN_PROGRESS', completed: false }],
+      ['completed', { status: 'COMPLETED', completed: true }],
+      ['never started', null],
+    ])('rejects restarting a %s challenge', async (_label, row) => {
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        row,
+      );
+
+      await expect(service.restart('CH.A1.1', 'u1')).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(repository.restart).not.toHaveBeenCalled();
     });
   });
 });
