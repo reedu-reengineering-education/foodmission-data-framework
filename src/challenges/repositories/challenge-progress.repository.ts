@@ -62,10 +62,8 @@ export class ChallengeProgressRepository {
 
     // Creating the progress row is starting the challenge, even at progress 0
     // (clients start it that way), so it always gets a start time.
-    const now = new Date();
-    const where = { userId_challengeId: { userId, challengeId } };
-    const row = await this.prisma.challengeProgress.upsert({
-      where,
+    return this.prisma.challengeProgress.upsert({
+      where: { userId_challengeId: { userId, challengeId } },
       create: {
         userId,
         challengeId,
@@ -73,7 +71,7 @@ export class ChallengeProgressRepository {
         completed,
         status,
         state: { source: 'manual', mode: 'api' },
-        startedAt: now,
+        startedAt: new Date(),
       },
       update: {
         ...(updateDto.progress !== undefined
@@ -89,17 +87,6 @@ export class ChallengeProgressRepository {
       },
       include: { challenge: true },
     });
-
-    // Rows created before every start got a timestamp (started at progress 0)
-    // get one on their next update.
-    if (row.startedAt == null) {
-      return this.prisma.challengeProgress.update({
-        where,
-        data: { startedAt: now },
-        include: { challenge: true },
-      });
-    }
-    return row;
   }
 
   /**

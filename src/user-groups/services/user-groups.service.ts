@@ -247,15 +247,6 @@ export class UserGroupService {
           data: missionRows,
           skipDuplicates: true,
         });
-        // Rows kept by skipDuplicates that were seeded without a start time.
-        await tx.missionProgress.updateMany({
-          where: {
-            userId: { in: userIds },
-            missionId: { in: missions.map((mission) => mission.id) },
-            startedAt: null,
-          },
-          data: { startedAt },
-        });
       }
     }
 
@@ -279,14 +270,6 @@ export class UserGroupService {
         await tx.challengeProgress.createMany({
           data: challengeRows,
           skipDuplicates: true,
-        });
-        await tx.challengeProgress.updateMany({
-          where: {
-            userId: { in: userIds },
-            challengeId: { in: challenges.map((challenge) => challenge.id) },
-            startedAt: null,
-          },
-          data: { startedAt },
         });
       }
     }

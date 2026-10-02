@@ -74,12 +74,10 @@ describe('UserProfilesService updateProfile gamification', () => {
             challenge: { findMany: jest.fn() },
             missionProgress: {
               createMany: jest.fn(),
-              updateMany: jest.fn(),
               deleteMany: jest.fn(),
             },
             challengeProgress: {
               createMany: jest.fn(),
-              updateMany: jest.fn(),
               deleteMany: jest.fn(),
             },
             $transaction: jest.fn(),
@@ -384,23 +382,6 @@ describe('UserProfilesService updateProfile gamification', () => {
         },
       ],
       skipDuplicates: true,
-    });
-    // Rows that already existed without a start time get one.
-    expect(prisma.missionProgress.updateMany).toHaveBeenCalledWith({
-      where: {
-        userId: 'user-1',
-        missionId: { in: ['mission-new-1'] },
-        startedAt: null,
-      },
-      data: { startedAt: expect.any(Date) },
-    });
-    expect(prisma.challengeProgress.updateMany).toHaveBeenCalledWith({
-      where: {
-        userId: 'user-1',
-        challengeId: { in: ['challenge-new-1'] },
-        startedAt: null,
-      },
-      data: { startedAt: expect.any(Date) },
     });
   });
 });

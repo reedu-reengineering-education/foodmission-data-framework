@@ -287,12 +287,10 @@ describe('UserGroupsService', () => {
         missionProgress: {
           deleteMany: jest.fn().mockResolvedValue({ count: 2 }),
           createMany: jest.fn().mockResolvedValue({ count: 2 }),
-          updateMany: jest.fn().mockResolvedValue({ count: 0 }),
         },
         challengeProgress: {
           deleteMany: jest.fn().mockResolvedValue({ count: 2 }),
           createMany: jest.fn().mockResolvedValue({ count: 2 }),
-          updateMany: jest.fn().mockResolvedValue({ count: 0 }),
         },
       };
 
@@ -319,13 +317,6 @@ describe('UserGroupsService', () => {
         }),
       );
       expect(tx.challengeProgress.createMany).toHaveBeenCalled();
-      expect(tx.missionProgress.updateMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({ startedAt: null }),
-          data: { startedAt: expect.any(Date) },
-        }),
-      );
-      expect(tx.challengeProgress.updateMany).toHaveBeenCalled();
     });
 
     it('should throw GroupAdminRequiredException when user is not admin', async () => {

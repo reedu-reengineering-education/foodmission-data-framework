@@ -146,7 +146,11 @@ describe('RulesService failure', () => {
 
     const since = prisma.userEvent.findMany.mock.calls[0][0].where.createdAt
       .gte as Date;
-    expect(since.getTime()).toBe(startedAt.getTime());
+    // The widest window (7 calendar days) before the start, for before_start
+    // counters.
+    const expected = new Date(startedAt);
+    expected.setDate(expected.getDate() - 7);
+    expect(since.getTime()).toBe(expected.getTime());
   });
 
   it.each(['FAILED', 'COMPLETED'])(

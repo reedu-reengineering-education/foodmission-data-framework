@@ -67,10 +67,8 @@ export class MissionProgressRepository {
 
     // Creating the progress row is starting the mission, even at progress 0
     // (clients start it that way), so it always gets a start time.
-    const now = new Date();
-    const where = { userId_missionId: { userId, missionId } };
-    const row = await this.prisma.missionProgress.upsert({
-      where,
+    return this.prisma.missionProgress.upsert({
+      where: { userId_missionId: { userId, missionId } },
       create: {
         userId,
         missionId,
@@ -78,7 +76,7 @@ export class MissionProgressRepository {
         completed,
         status,
         state: { source: 'manual', mode: 'api' },
-        startedAt: now,
+        startedAt: new Date(),
       },
       update: {
         ...(updateDto.progress !== undefined
@@ -94,17 +92,6 @@ export class MissionProgressRepository {
       },
       include: { mission: true },
     });
-
-    // Rows created before every start got a timestamp (started at progress 0)
-    // get one on their next update.
-    if (row.startedAt == null) {
-      return this.prisma.missionProgress.update({
-        where,
-        data: { startedAt: now },
-        include: { mission: true },
-      });
-    }
-    return row;
   }
 
   /**

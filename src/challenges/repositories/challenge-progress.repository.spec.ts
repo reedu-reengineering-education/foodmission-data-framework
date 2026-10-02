@@ -138,7 +138,6 @@ describe('ChallengeProgressRepository', () => {
         include: { challenge: true },
       });
       expect(result).toBe(mockReturn);
-      expect(prisma.challengeProgress.update).not.toHaveBeenCalled();
     });
 
     it('marks the challenge FAILED and not completed when given up', async () => {
@@ -174,25 +173,6 @@ describe('ChallengeProgressRepository', () => {
           startedAt: expect.any(Date),
         }),
       );
-    });
-
-    it('backfills startedAt on an existing row that has none', async () => {
-      (prisma.challengeProgress.upsert as jest.Mock).mockResolvedValue({
-        startedAt: null,
-      });
-      const backfilled = { startedAt: new Date() };
-      (prisma.challengeProgress.update as jest.Mock).mockResolvedValue(
-        backfilled,
-      );
-
-      const result = await repository.upsert('u1', 'c1', { progress: 10 });
-
-      expect(prisma.challengeProgress.update).toHaveBeenCalledWith({
-        where: { userId_challengeId: { userId: 'u1', challengeId: 'c1' } },
-        data: { startedAt: expect.any(Date) },
-        include: { challenge: true },
-      });
-      expect(result).toBe(backfilled);
     });
   });
 

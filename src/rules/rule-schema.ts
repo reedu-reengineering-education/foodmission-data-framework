@@ -29,6 +29,12 @@ export const RULE_SHAPES = [
  * separately and account-wide, do allow it.
  */
 export const WINDOW_TYPES = ['since_start', 'rolling_lookback'] as const;
+/**
+ * Counters may also look at the week before the item started (`before_start`),
+ * e.g. "one fewer meat meal than your previous week". Not a rule window: a
+ * rule's own window is what it is scored and deadlined over.
+ */
+export const COUNTER_WINDOW_TYPES = [...WINDOW_TYPES, 'before_start'] as const;
 export const RESOLVE_AT = ['immediate', 'window_end'] as const;
 
 export type RuleShape = (typeof RULE_SHAPES)[number];
@@ -77,7 +83,7 @@ const counterSchema = Joi.object({
     .min(1),
   window: Joi.object({
     type: Joi.string()
-      .valid(...WINDOW_TYPES)
+      .valid(...COUNTER_WINDOW_TYPES)
       .required(),
     days: Joi.number().integer().positive().required(),
     offsetDays: Joi.number().integer().min(0),

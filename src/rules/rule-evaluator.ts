@@ -17,6 +17,8 @@ export const WINDOW_TYPES = [
   'since_start',
   'rolling_lookback',
   'lifetime',
+  // Counter windows only: the `days` days before the item started.
+  'before_start',
 ] as const;
 
 export type WindowType = (typeof WINDOW_TYPES)[number];
@@ -130,9 +132,10 @@ export function maxWindowDays(
  * `since_start` window is the last `days` days, as before, and never fails by
  * time.
  *
- * `resolveAt: window_end` holds both verdicts until the deadline: a "stay
- * below N" target is true from day one, and only the window end makes it a
- * completion.
+ * `resolveAt: window_end` holds completion until the deadline: a "stay below
+ * N" target is true from day one, and only the window end makes it a
+ * completion. A `fail` condition never waits: counters in an anchored window
+ * only grow, so a broken cap stays broken and the item fails at once.
  */
 export function evaluateRule(
   rule: RuleDefinition,
@@ -157,9 +160,7 @@ export function evaluateRule(
   const completed = targetMet && (!waitForWindowEnd || windowClosed);
   const failHolds =
     rule.fail != null && asBoolean(evaluateExpression(rule.fail, counters));
-  const failed =
-    !completed &&
-    ((failHolds && (!waitForWindowEnd || windowClosed)) || windowClosed);
+  const failed = !completed && (failHolds || windowClosed);
   const progress = completed
     ? 100
     : normalizeProgress(evaluateExpression(rule.progress, counters));
@@ -262,10 +263,12 @@ export function filterEvents(
 }
 
 /**
- * Whether an event falls in a window. A `since_start` window with an `anchor`
- * (the item's start time) runs from `anchor + offsetDays` for `days` days,
- * capped at `evaluationAt`. Every other window, and `since_start` without an
- * anchor, is the `days` days before `evaluationAt − offsetDays`.
+ * Whether an event falls in a window. With an `anchor` (the item's start
+ * time), a `since_start` window runs from `anchor + offsetDays` for `days`
+ * days, capped at `evaluationAt`, and a `before_start` window is the `days`
+ * days ending `offsetDays` before the anchor (nothing without an anchor).
+ * Every other window, and `since_start` without an anchor, is the `days` days
+ * before `evaluationAt − offsetDays`.
  */
 export function isWithinWindow(
   createdAt: Date,
@@ -281,6 +284,13 @@ export function isWithinWindow(
     const end = addDays(start, window.days ?? 7);
     const cappedEnd = end < evaluationAt ? end : evaluationAt;
     return createdAt >= start && createdAt <= cappedEnd;
+  }
+  if (window.type === 'before_start') {
+    if (!anchor) return false;
+    // The `days` days ending (exclusively) `offsetDays` before the start.
+    const end = addDays(anchor, -(window.offsetDays ?? 0));
+    const start = addDays(end, -(window.days ?? 7));
+    return createdAt >= start && createdAt < end;
   }
   const offsetDays = window.offsetDays ?? 0;
   const windowEnd = new Date(evaluationAt);

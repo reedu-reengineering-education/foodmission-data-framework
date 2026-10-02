@@ -334,11 +334,10 @@ export class UserProfilesService {
       });
 
       if (missions.length > 0) {
-        const missionIds = missions.map((mission) => mission.id);
         await tx.missionProgress.createMany({
-          data: missionIds.map((missionId) => ({
+          data: missions.map((mission) => ({
             userId,
-            missionId,
+            missionId: mission.id,
             progress: 0,
             completed: false,
             status: ProgressStatus.NOT_STARTED,
@@ -346,11 +345,6 @@ export class UserProfilesService {
             startedAt,
           })),
           skipDuplicates: true,
-        });
-        // Rows kept by skipDuplicates that were seeded without a start time.
-        await tx.missionProgress.updateMany({
-          where: { userId, missionId: { in: missionIds }, startedAt: null },
-          data: { startedAt },
         });
       }
     }
@@ -362,11 +356,10 @@ export class UserProfilesService {
       });
 
       if (challenges.length > 0) {
-        const challengeIds = challenges.map((challenge) => challenge.id);
         await tx.challengeProgress.createMany({
-          data: challengeIds.map((challengeId) => ({
+          data: challenges.map((challenge) => ({
             userId,
-            challengeId,
+            challengeId: challenge.id,
             progress: 0,
             completed: false,
             status: ProgressStatus.NOT_STARTED,
@@ -374,14 +367,6 @@ export class UserProfilesService {
             startedAt,
           })),
           skipDuplicates: true,
-        });
-        await tx.challengeProgress.updateMany({
-          where: {
-            userId,
-            challengeId: { in: challengeIds },
-            startedAt: null,
-          },
-          data: { startedAt },
         });
       }
     }

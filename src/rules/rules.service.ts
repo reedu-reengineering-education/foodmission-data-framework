@@ -193,15 +193,20 @@ export class RulesService implements OnModuleInit {
     );
 
     // Anchored windows can start before the usual lookback (a 7-day mission
-    // started 9 days ago), so reach back to the oldest open item's start.
+    // started 9 days ago), and `before_start` counters look at the week before
+    // a start, so reach back the widest window from the oldest open start.
+    const lookbackDays = this.getMaxWindowDays(rules);
     const since = new Date();
-    since.setDate(since.getDate() - this.getMaxWindowDays(rules));
+    since.setDate(since.getDate() - lookbackDays);
     for (const row of [
       ...missionProgress.values(),
       ...challengeProgress.values(),
     ]) {
-      if (!isResolved(row.status) && row.startedAt && row.startedAt < since) {
-        since.setTime(row.startedAt.getTime());
+      if (isResolved(row.status) || !row.startedAt) continue;
+      const windowFloor = new Date(row.startedAt);
+      windowFloor.setDate(windowFloor.getDate() - lookbackDays);
+      if (windowFloor < since) {
+        since.setTime(windowFloor.getTime());
       }
     }
 
