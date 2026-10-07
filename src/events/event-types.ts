@@ -58,9 +58,12 @@
  *   timestamps — retries must reuse a stable key). Subject is usually `USER`.
  * - **Group membership** — `{ groupId }` (+ `groupId` column when scoped)
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
- *   on behavioural events; emit STARTED / UPDATED / COMPLETED on real progress
- *   transitions (do not double-count the same action). `*_UPDATED` fires when
- *   progress/completed changes after start.
+ *   on behavioural events; emit STARTED / UPDATED / COMPLETED / FAILED on real
+ *   progress transitions (do not double-count the same action). `*_UPDATED`
+ *   fires when progress/completed changes after start. `*_FAILED` fires once,
+ *   when the rule window ends without the target, the rule's `fail` condition
+ *   holds, or the user gives up. A failed item changes only through a restart
+ *   (`*_RESTARTED`), which begins a new attempt from progress 0.
  *
  * ## Subject
  * Stored under `metadata.subject` as `{ type, id? }`. Known types: {@link EventSubjectType}.
@@ -96,9 +99,13 @@ export const EventType = {
   MISSION_STARTED: 'MISSION_STARTED',
   MISSION_UPDATED: 'MISSION_UPDATED',
   MISSION_COMPLETED: 'MISSION_COMPLETED',
+  MISSION_FAILED: 'MISSION_FAILED',
+  MISSION_RESTARTED: 'MISSION_RESTARTED',
   CHALLENGE_STARTED: 'CHALLENGE_STARTED',
   CHALLENGE_UPDATED: 'CHALLENGE_UPDATED',
   CHALLENGE_COMPLETED: 'CHALLENGE_COMPLETED',
+  CHALLENGE_FAILED: 'CHALLENGE_FAILED',
+  CHALLENGE_RESTARTED: 'CHALLENGE_RESTARTED',
   QUEST_STARTED: 'QUEST_STARTED',
   QUEST_UPDATED: 'QUEST_UPDATED',
   QUEST_COMPLETED: 'QUEST_COMPLETED',

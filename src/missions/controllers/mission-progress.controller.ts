@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -105,5 +106,32 @@ export class MissionProgressController {
       userId,
       query.lang,
     );
+  }
+
+  @Post('restart')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Restart a failed mission',
+    description:
+      'Starts a FAILED mission again as a new attempt: progress 0, status ' +
+      'NOT_STARTED and a new start time, so its rule window starts over. ' +
+      'Returns 400 when the mission has not failed.',
+  })
+  @ApiParam({ name: 'missionId', type: 'string', format: 'uuid' })
+  @ApiResponse({
+    status: 201,
+    description: 'Mission restarted',
+    type: MissionProgressResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'The mission has not failed' })
+  @ApiResponse({ status: 404, description: 'Mission not found' })
+  @ApiCrudErrorResponses()
+  async restart(
+    @Param('missionId', ParseUUIDPipe) missionId: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MissionProgressResponseDto> {
+    return this.missionProgressService.restart(missionId, userId, query.lang);
   }
 }

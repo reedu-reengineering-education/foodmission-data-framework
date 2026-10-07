@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { RewardSourceType } from '@prisma/client';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
@@ -8,6 +13,8 @@ import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { TranslationService } from '../../translations/services/translation.service';
 import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { EventSource, EventType } from '../../events/event-types';
+import { ProgressStatus } from '../../common/progress-status';
+import { progressEventKey } from '../../common/progress-event-keys';
 import {
   RecordUserEventInput,
   UserEventService,
@@ -21,6 +28,7 @@ type MissionProgressRow = {
   userId: string;
   completed: boolean;
   progress: number;
+  status?: string;
   startedAt?: Date | null;
   mission?: { title?: string } | null;
 };
@@ -63,6 +71,7 @@ export class MissionProgressService {
         userId,
         completed: false,
         progress: 0,
+        status: ProgressStatus.NOT_STARTED,
         missionTitle: titles[mission.id],
         startedAt: null,
       };
@@ -110,6 +119,20 @@ export class MissionProgressService {
         mission.id,
       );
 
+    if (updateDto.failed && updateDto.completed) {
+      throw new BadRequestException(
+        'A mission cannot be failed and completed at once',
+      );
+    }
+    if (previous?.status === ProgressStatus.FAILED) {
+      throw new BadRequestException(
+        'This mission has failed; restart it to try again',
+      );
+    }
+    if (updateDto.failed && previous?.completed) {
+      throw new BadRequestException('A completed mission cannot be failed');
+    }
+
     const updated = await this.missionProgressRepository.upsert(
       userId,
       mission.id,
@@ -130,6 +153,7 @@ export class MissionProgressService {
         ...(updateDto.completed !== undefined
           ? { completed: updateDto.completed }
           : {}),
+        ...(updateDto.failed !== undefined ? { failed: updateDto.failed } : {}),
       },
     };
 
@@ -139,7 +163,13 @@ export class MissionProgressService {
         eventType: EventType.MISSION_STARTED,
         source: EventSource.MISSION,
         metadata,
-        idempotencyKey: `mission-started:${userId}:${mission.id}`,
+        idempotencyKey: progressEventKey({
+          kind: 'mission',
+          transition: 'started',
+          userId,
+          id: mission.id,
+          startedAt: updated.startedAt,
+        }),
       });
     } else if (
       previous != null &&
@@ -151,7 +181,33 @@ export class MissionProgressService {
         eventType: EventType.MISSION_UPDATED,
         source: EventSource.MISSION,
         metadata,
-        idempotencyKey: `mission-updated:${userId}:${mission.id}:${updated.progress}:${updated.completed}`,
+        idempotencyKey: progressEventKey({
+          kind: 'mission',
+          transition: 'updated',
+          userId,
+          id: mission.id,
+          startedAt: updated.startedAt,
+          progress: updated.progress,
+          completed: updated.completed,
+        }),
+      });
+    }
+
+    if (updated.status === ProgressStatus.FAILED) {
+      // Same key as the rules engine, so a manual and a rule-based failure
+      // record one event.
+      await this.emitProgressEvent({
+        userId,
+        eventType: EventType.MISSION_FAILED,
+        source: EventSource.MISSION,
+        metadata,
+        idempotencyKey: progressEventKey({
+          kind: 'mission',
+          transition: 'failed',
+          userId,
+          id: mission.id,
+          startedAt: updated.startedAt,
+        }),
       });
     }
 
@@ -163,7 +219,12 @@ export class MissionProgressService {
         eventType: EventType.MISSION_COMPLETED,
         source: EventSource.MISSION,
         metadata,
-        idempotencyKey: `mission-completed:${userId}:${mission.id}`,
+        idempotencyKey: progressEventKey({
+          kind: 'mission',
+          transition: 'completed',
+          userId,
+          id: mission.id,
+        }),
       });
     }
 
@@ -184,6 +245,55 @@ export class MissionProgressService {
       ...dto,
       reward,
     });
+  }
+
+  /**
+   * Restarts a FAILED mission as a new attempt: progress 0, status NOT_STARTED
+   * and `startedAt` now, so its rule window starts over and events from the
+   * failed attempt no longer count. Only failed missions can be restarted.
+   */
+  async restart(
+    codeOrId: string,
+    userId: string,
+    lang?: string,
+  ): Promise<MissionProgressResponseDto> {
+    this.logger.log(`Restarting mission ${codeOrId} for user: ${userId}`);
+
+    const mission = await this.requireMission(codeOrId);
+    const previous =
+      await this.missionProgressRepository.findByUserIdAndMissionId(
+        userId,
+        mission.id,
+      );
+    if (previous?.status !== ProgressStatus.FAILED) {
+      throw new BadRequestException('Only a failed mission can be restarted');
+    }
+
+    const restarted = await this.missionProgressRepository.restart(
+      userId,
+      mission.id,
+    );
+
+    await this.emitProgressEvent({
+      userId,
+      eventType: EventType.MISSION_RESTARTED,
+      source: EventSource.MISSION,
+      metadata: {
+        missionId: mission.id,
+        missionCode: mission.code,
+        source: EventSource.API,
+        previousStartedAt: previous.startedAt?.toISOString() ?? null,
+      },
+      idempotencyKey: progressEventKey({
+        kind: 'mission',
+        transition: 'restarted',
+        userId,
+        id: mission.id,
+        startedAt: restarted.startedAt,
+      }),
+    });
+
+    return this.mapRowsToDtos([restarted], lang).then((rows) => rows[0]);
   }
 
   /**
@@ -230,6 +340,7 @@ export class MissionProgressService {
       userId: row.userId,
       completed: row.completed,
       progress: row.progress,
+      status: row.status ?? ProgressStatus.NOT_STARTED,
       missionTitle: titles[row.missionId] ?? row.mission?.title ?? '',
       startedAt: row.startedAt ?? null,
     }));

@@ -323,6 +323,9 @@ export class UserProfilesService {
     const challengeCodes = questItems
       .filter((item) => item.contentType === 'CHALLENGE')
       .map((item) => item.contentCode);
+    // Selecting the quest starts its missions and challenges, even at
+    // progress 0.
+    const startedAt = new Date();
 
     if (missionCodes.length > 0) {
       const missions = await tx.mission.findMany({
@@ -339,6 +342,7 @@ export class UserProfilesService {
             completed: false,
             status: ProgressStatus.NOT_STARTED,
             state: {},
+            startedAt,
           })),
           skipDuplicates: true,
         });
@@ -360,6 +364,7 @@ export class UserProfilesService {
             completed: false,
             status: ProgressStatus.NOT_STARTED,
             state: {},
+            startedAt,
           })),
           skipDuplicates: true,
         });

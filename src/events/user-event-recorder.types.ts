@@ -17,6 +17,8 @@ export interface RecordUserEventInput {
   groupId?: string | null;
   idempotencyKey?: string | null;
   subject?: EventSubject;
+  /** When the event happened; defaults to now. */
+  createdAt?: Date;
 }
 
 export interface UserEventRecorder {

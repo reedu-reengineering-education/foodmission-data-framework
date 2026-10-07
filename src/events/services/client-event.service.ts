@@ -15,6 +15,7 @@ export interface RecordClientEventInput {
   eventType: ClientRecordableEventType;
   metadata?: Record<string, unknown>;
   idempotencyKey?: string;
+  createdAt?: Date;
 }
 
 /**
@@ -62,6 +63,7 @@ export class ClientEventService {
       metadata: input.metadata ?? {},
       idempotencyKey,
       subject: { type: EventSubjectType.USER, id: input.userId },
+      createdAt: input.createdAt,
     });
 
     return { event: this.toDto(event), replayed };
