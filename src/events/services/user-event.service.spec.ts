@@ -106,6 +106,33 @@ describe('UserEventService', () => {
     }
   });
 
+  it('uses a supplied createdAt for the row and its dayBucket', async () => {
+    const createdAt = new Date('2026-08-20T12:30:00.000Z');
+    prisma.userEvent.findUnique.mockResolvedValue(null);
+    prisma.userEvent.create.mockResolvedValue({
+      id: 'evt-1',
+      userId: 'u1',
+      eventType: EventType.FOOD_WASTE_HALF_PLATE_SAVED,
+      source: EventSource.QUICK_ACTION,
+    });
+
+    await service.record({
+      userId: 'u1',
+      eventType: EventType.FOOD_WASTE_HALF_PLATE_SAVED,
+      source: EventSource.QUICK_ACTION,
+      createdAt,
+    });
+
+    expect(prisma.userEvent.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          createdAt,
+          metadata: expect.objectContaining({ dayBucket: '2026-08-20' }),
+        }),
+      }),
+    );
+  });
+
   it('replays on idempotencyKey', async () => {
     prisma.userEvent.findUnique.mockResolvedValue({ id: 'evt-existing' });
 
