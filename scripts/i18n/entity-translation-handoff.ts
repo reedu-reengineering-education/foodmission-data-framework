@@ -414,7 +414,7 @@ export async function buildEntityExportSheets(
 
   if (entityTypes.includes('FoodFact')) {
     const facts = await prisma.foodFact.findMany({
-      select: { id: true, code: true, body: true },
+      select: { id: true, code: true, title: true, body: true },
       orderBy: { code: 'asc' },
     });
     const fields = [...ENTITY_TRANSLATABLE_FIELDS.FoodFact];
@@ -434,7 +434,7 @@ export async function buildEntityExportSheets(
           entityId: f.id,
           naturalKey: f.code,
           field,
-          en: field === 'body' ? f.body : '',
+          en: field === 'title' ? f.title : field === 'body' ? f.body : '',
         })),
       ),
       existing,
@@ -446,6 +446,7 @@ export async function buildEntityExportSheets(
       select: {
         id: true,
         code: true,
+        title: true,
         question: true,
         explanation: true,
         options: {
@@ -475,11 +476,13 @@ export async function buildEntityExportSheets(
             naturalKey: q.code,
             field,
             en:
-              field === 'question'
-                ? q.question
-                : field === 'explanation'
-                  ? q.explanation
-                  : '',
+              field === 'title'
+                ? q.title
+                : field === 'question'
+                  ? q.question
+                  : field === 'explanation'
+                    ? q.explanation
+                    : '',
           })),
         ),
         existing,
