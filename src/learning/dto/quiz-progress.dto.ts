@@ -41,6 +41,10 @@ export class QuizProgressResponseDto {
   @Expose()
   quizCode: string;
 
+  @ApiPropertyOptional({ example: 'Greener Dinners' })
+  @Expose()
+  title?: string;
+
   @ApiPropertyOptional({
     example:
       'You want to reduce the environmental impact of your dinners. Which change is likely to have the biggest effect?',

@@ -11,6 +11,7 @@ interface QuizSeedRow {
   code: string;
   topicCode: string;
   level: ContentLevel | string;
+  title: string;
   question: string;
   explanation: string;
   source: string | null;
@@ -60,6 +61,7 @@ export async function seedQuizzes(prisma: PrismaClient) {
       where: { code: row.code },
       update: {
         topicId,
+        title: row.title,
         question: row.question,
         explanation: row.explanation,
         source: row.source,
@@ -73,6 +75,7 @@ export async function seedQuizzes(prisma: PrismaClient) {
       create: {
         code: row.code,
         topicId,
+        title: row.title,
         question: row.question,
         explanation: row.explanation,
         source: row.source,

@@ -306,6 +306,7 @@ export class LearningService {
       id: string;
       code: string;
       topicId: string;
+      title: string;
       body: string;
       source: string | null;
       level: FoodFactResponseDto['level'];
@@ -321,14 +322,15 @@ export class LearningService {
       'FoodFact',
       rows,
       locale,
-      ['body'],
-      (r) => ({ body: r.body }),
+      ['title', 'body'],
+      (r) => ({ title: r.title, body: r.body }),
     );
 
     return rows.map((r) => ({
       id: r.id,
       code: r.code,
       topicId: r.topicId,
+      title: overlay[r.id]?.title ?? r.title,
       body: overlay[r.id]?.body ?? r.body,
       source: r.source,
       level: r.level,
@@ -588,6 +590,7 @@ export class LearningService {
       id: string;
       code: string;
       topicId: string;
+      title: string;
       question: string;
       explanation: string;
       source: string | null;
@@ -619,6 +622,7 @@ export class LearningService {
       userId,
       quizId: quiz.id,
       quizCode: quiz.code,
+      title: mappedQuiz.title,
       question: mappedQuiz.question,
       selectedOptionId: progress?.selectedOptionId ?? null,
       isCorrect: progress?.isCorrect ?? null,
@@ -638,6 +642,7 @@ export class LearningService {
       id: string;
       code: string;
       topicId: string;
+      title: string;
       question: string;
       explanation: string;
       source: string | null;
@@ -660,8 +665,12 @@ export class LearningService {
       'Quiz',
       rows,
       locale,
-      ['question', 'explanation'],
-      (r) => ({ question: r.question, explanation: r.explanation }),
+      ['title', 'question', 'explanation'],
+      (r) => ({
+        title: r.title,
+        question: r.question,
+        explanation: r.explanation,
+      }),
     );
     const options = rows.flatMap((r) => r.options);
     const optionOverlay = await this.translations.overlayFields(
@@ -676,6 +685,7 @@ export class LearningService {
       id: r.id,
       code: r.code,
       topicId: r.topicId,
+      title: quizOverlay[r.id]?.title ?? r.title,
       question: quizOverlay[r.id]?.question ?? r.question,
       explanation: quizOverlay[r.id]?.explanation ?? r.explanation,
       source: r.source,
@@ -1187,19 +1197,18 @@ export class LearningService {
     if (factCodes.length > 0) {
       const rows = await this.prisma.foodFact.findMany({
         where: { code: { in: factCodes } },
-        select: { id: true, code: true, body: true },
+        select: { id: true, code: true, title: true },
       });
       const overlay = await this.translations.overlayFields(
         'FoodFact',
         rows,
         locale,
-        ['body'],
-        (r) => ({ body: r.body }),
+        ['title'],
+        (r) => ({ title: r.title }),
       );
       for (const row of rows) {
-        const body = overlay[row.id]?.body ?? row.body;
         labels[`${QuestContentType.FOOD_FACT}:${row.code}`] =
-          body.length > 80 ? `${body.slice(0, 77)}...` : body;
+          overlay[row.id]?.title ?? row.title;
       }
     }
 
@@ -1207,18 +1216,18 @@ export class LearningService {
     if (quizCodes.length > 0) {
       const rows = await this.prisma.quiz.findMany({
         where: { code: { in: quizCodes } },
-        select: { id: true, code: true, question: true },
+        select: { id: true, code: true, title: true },
       });
       const overlay = await this.translations.overlayFields(
         'Quiz',
         rows,
         locale,
-        ['question'],
-        (r) => ({ question: r.question }),
+        ['title'],
+        (r) => ({ title: r.title }),
       );
       for (const row of rows) {
         labels[`${QuestContentType.QUIZ}:${row.code}`] =
-          overlay[row.id]?.question ?? row.question;
+          overlay[row.id]?.title ?? row.title;
       }
     }
 

@@ -72,7 +72,7 @@ function addInstructionsSheet(
   for (const line of [
     'How to use this file:',
     '1. Every sheet below is one content category. Translate into the column of your language code.',
-    '2. Only edit the language columns. The "key" and "en" columns are the identity of the row — editing them drops the row on import.',
+    '2. Only edit the language columns. Never edit the "key" column. Changes to the "en" column are ignored unless agreed with the FOODMISSION team.',
     '3. Leave a cell empty to keep the current value in the repository. Delete nothing.',
     '4. Keep {{placeholders}} exactly as they appear in the English text — rows with mismatching placeholders are rejected.',
     '5. Do not add, remove, rename or reorder sheets, columns or the header row. Adding rows has no effect.',

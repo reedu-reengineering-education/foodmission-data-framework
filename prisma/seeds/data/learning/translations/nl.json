@@ -37,758 +37,1009 @@
   },
   "foodFacts": {
     "FF1.1.1": {
+      "title": "Minder rood vlees, minder impact",
       "body": "Minder rood vlees eten is een van de meest effectieve manieren om de milieu-impact van je eetpatroon te verminderen."
     },
     "FF1.1.2": {
+      "title": "Rundvlees en bossen",
       "body": "Door de consumptie van rundvlees te verminderen, kan de druk op bossen en natuurlijke leefgebieden worden verlicht."
     },
     "FF1.1.3": {
+      "title": "Minder vlees, minder uitstoot",
       "body": "Dieetpatronen met minder vlees gaan over het algemeen gepaard met minder uitstoot van broeikasgassen."
     },
     "FF1.1.4": {
+      "title": "Meer planten, minder rood vlees",
       "body": "Duurzame voedingspatronen bevatten doorgaans meer plantaardige voedingsmiddelen en minder rood vlees."
     },
     "FF1.1.5": {
+      "title": "Landgebruik van rundvlees",
       "body": "Voor de productie van rundvlees is veel meer land nodig dan voor de productie van plantaardige eiwitten zoals erwten of tofu."
     },
     "FF1.1.6": {
+      "title": "Vlees en waterverbruik",
       "body": "Door minder vlees te eten kan het waterverbruik in verband met de voedselproductie worden teruggedrongen."
     },
     "FF1.1.7": {
+      "title": "Vlees en antibiotica",
       "body": "Door de vleesconsumptie te verminderen, kan de behoefte aan antibiotica in de veehouderij mogelijk worden teruggedrongen."
     },
     "FF1.1.8": {
+      "title": "Veeteeltgrond versus calorieën",
       "body": "De veeteelt neemt wereldwijd het grootste deel van de landbouwgrond in beslag, terwijl deze sector slechts een veel kleiner aandeel van de calorieën en eiwitten levert."
     },
     "FF1.1.9": {
+      "title": "Veeteelt en biodiversiteit",
       "body": "Een lagere vraag naar veeteeltproducten kan bijdragen aan het behoud van de biodiversiteit door de omzetting van landbouwgrond te verminderen."
     },
     "FF1.1.10": {
+      "title": "Vervang vlees door peulvruchten",
       "body": "Door een deel van de vleesmeelsoorten te vervangen door peulvruchten kan de eiwitinname op peil worden gehouden en tegelijkertijd de milieueffecten worden verminderd."
     },
     "FF1.2.1": {
+      "title": "Peulvruchten verlagen klimaatimpact",
       "body": "Door een deel van je vleesconsumptie te vervangen door peulvruchten kun je de klimaatimpact van je eetpatroon verminderen."
     },
     "FF1.2.2": {
+      "title": "Peulvruchten: voedzaam en duurzaam",
       "body": "Peulvruchten zijn rijk aan eiwitten, vezels, vitamines en mineralen en hebben tegelijkertijd een lage ecologische voetafdruk."
     },
     "FF1.2.3": {
+      "title": "Varieer je eiwitbronnen",
       "body": "Het diversifiëren van eiwitbronnen draagt bij aan zowel de menselijke gezondheid als de ecologische duurzaamheid."
     },
     "FF1.2.4": {
+      "title": "De duurzaamste eiwitbronnen",
       "body": "Bonen, linzen, erwten en kikkererwten behoren tot de meest duurzame eiwitbronnen die er zijn."
     },
     "FF1.2.5": {
+      "title": "Peulvruchten besparen water",
       "body": "Peulvruchten hebben over het algemeen minder water nodig dan veel dierlijke eiwitbronnen."
     },
     "FF1.2.6": {
+      "title": "Peulvruchten plus granen",
       "body": "Door peulvruchten met granen te combineren, wordt de kwaliteit van plantaardige eiwitten verbeterd."
     },
     "FF1.2.7": {
+      "title": "Eieren en zuivel versus rood vlees",
       "body": "Eieren en zuivelproducten kunnen eiwitten leveren met een kleinere ecologische voetafdruk dan rood vlees."
     },
     "FF1.2.8": {
+      "title": "Peulvruchten voeden de bodem",
       "body": "Peulvruchten verbeteren op natuurlijke wijze de vruchtbaarheid van de bodem door stikstof uit de lucht te binden, waardoor er minder kunstmest nodig is."
     },
     "FF1.2.9": {
+      "title": "Insecten als eiwitbron",
       "body": "Insecten zijn rijk aan voedingsstoffen en kunnen in toekomstige voedselsystemen een belangrijke alternatieve eiwitbron worden."
     },
     "FF1.2.10": {
+      "title": "Plantaardige vleesvervangers",
       "body": "Plantaardige vleesvervangers kunnen bijdragen aan een vermindering van de vleesconsumptie, maar de voedingswaarde ervan verschilt per product."
     },
     "FF1.3.1": {
+      "title": "Quinoa: een complete eiwitbron",
       "body": "Quinoa bevat alle negen essentiële aminozuren en is daarmee een complete plantaardige eiwitbron."
     },
     "FF1.3.2": {
+      "title": "Peulvruchten en chronische ziekten",
       "body": "Peulvruchten zijn voedzame basisvoedingsmiddelen die in verband worden gebracht met een lager risico op chronische ziekten."
     },
     "FF1.3.3": {
+      "title": "Meer dan tarwe, rijst en maïs",
       "body": "Alternatieve gewassen dragen bij aan het verminderen van de afhankelijkheid van tarwe, rijst en maïs."
     },
     "FF1.3.4": {
+      "title": "Veerkrachtige gierst",
       "body": "Gierstsoorten zijn zeer veerkrachtige gewassen die onder hete, droge omstandigheden met weinig water kunnen groeien."
     },
     "FF1.3.5": {
+      "title": "Gierst in een veranderend klimaat",
       "body": "Gierst kan voedsel blijven produceren onder klimaatomstandigheden waarin andere gewassen het misschien niet redden."
     },
     "FF1.3.6": {
+      "title": "Diverse gewassen, meer voedselzekerheid",
       "body": "Het verbouwen van een grotere verscheidenheid aan basisgewassen kan de voedselzekerheid en de weerbaarheid tegen klimaatverandering versterken."
     },
     "FF1.3.7": {
+      "title": "Quinoa wereldwijd",
       "body": "Quinoa wordt inmiddels in meer dan 70 landen verbouwd, wat bijdraagt aan de diversificatie van de wereldwijde voedselproductie."
     },
     "FF1.3.8": {
+      "title": "De voordelen van boekweit",
       "body": "Boekweit is van nature glutenvrij en rijk aan vezels, eiwitten en antioxidanten."
     },
     "FF1.3.9": {
+      "title": "Eiwitten in amarant",
       "body": "Amarant bevat hoogwaardige eiwitten, waaronder lysine."
     },
     "FF1.3.10": {
+      "title": "Antioxidanten in oude graansoorten",
       "body": "Oude graansoorten zoals gierst, quinoa en amarant bevatten heilzame antioxidanten."
     },
     "FF2.1.1": {
+      "title": "Landbouw beslaat de helft van het land",
       "body": "Ongeveer de helft van het bewoonbare land op aarde wordt gebruikt voor landbouw."
     },
     "FF2.1.2": {
+      "title": "Plantaardig eiwit bespaart land",
       "body": "Voor de productie van plantaardige eiwitten is doorgaans veel minder land nodig dan voor de productie van vlees."
     },
     "FF2.1.3": {
+      "title": "Plantaardige maaltijden maken land vrij",
       "body": "Door vaker voor plantaardige maaltijden te kiezen, kan er land vrijkomen voor natuurherstel."
     },
     "FF2.1.4": {
+      "title": "Minder rundvlees, minder land",
       "body": "Het terugdringen van de consumptie van rundvlees is een van de belangrijkste veranderingen in het voedingspatroon om het landgebruik te verminderen."
     },
     "FF2.1.5": {
+      "title": "Rundvlees vraagt het meeste land",
       "body": "Rundvlees is een van de voedingsmiddelen die de meeste landbouwgrond in beslag nemen."
     },
     "FF2.1.6": {
+      "title": "Voedselverspilling verspilt land",
       "body": "Door voedselverspilling terug te dringen, zou een gebied kunnen worden bespaard dat groter is dan sommige landen."
     },
     "FF2.1.7": {
+      "title": "Landbouw is afhankelijk van de natuur",
       "body": "De landbouw is afhankelijk van gezonde bodems, biodiversiteit en ecosysteemdiensten."
     },
     "FF2.1.8": {
+      "title": "Land voor vee en veevoer",
       "body": "Het grootste deel van de landbouwgrond wordt gebruikt voor het weiden van vee of voor de teelt van veevoeder."
     },
     "FF2.1.9": {
+      "title": "Uitbreiding van landbouwgrond en biodiversiteit",
       "body": "De uitbreiding van landbouwgrond is een belangrijke oorzaak van het verlies aan biodiversiteit."
     },
     "FF2.1.10": {
+      "title": "Aangetaste landbouwgrond",
       "body": "Ongeveer 52 % van de landbouwgrond is matig of aanzienlijk aangetast."
     },
     "FF2.2.1": {
+      "title": "Waterverbruik in de landbouw",
       "body": "Ongeveer 70% van de wereldwijde zoetwateronttrekkingen wordt gebruikt voor de landbouw."
     },
     "FF2.2.2": {
+      "title": "Minder dierlijke producten, minder water",
       "body": "Diëten met minder dierlijke producten vergen vaak minder water."
     },
     "FF2.2.3": {
+      "title": "Duurzaam eten bespaart water",
       "body": "Duurzame voedingspatronen kunnen het waterverbruik in verband met voedsel met 20–50% verminderen."
     },
     "FF2.2.4": {
+      "title": "Voedselverspilling verspilt water",
       "body": "Door voedselverspilling gaan ook enorme hoeveelheden water verloren die voor de teelt van voedsel worden gebruikt."
     },
     "FF2.2.5": {
+      "title": "Dreigende watertekorten",
       "body": "Tegen 2050 zou het watertekort in veel regio's een bedreiging kunnen vormen voor de voedselproductie."
     },
     "FF2.2.6": {
+      "title": "Voorkom verspilling, bespaar water",
       "body": "Het voorkomen van voedselverspilling draagt bij aan het behoud van zoetwatervoorraden."
     },
     "FF2.2.7": {
+      "title": "De watervoetafdruk van je eetpatroon",
       "body": "De watervoetafdruk van je voedingspatroon hangt sterk af van wat je eet."
     },
     "FF2.2.8": {
+      "title": "Slimmer waterbeheer",
       "body": "Door het waterbeheer te verbeteren, kan de milieu-impact van de landbouw worden verminderd."
     },
     "FF2.2.9": {
+      "title": "Toenemende irrigatie",
       "body": "Het verbruik van irrigatiewater is sinds 1961 meer dan verdubbeld."
     },
     "FF2.2.10": {
+      "title": "Kunstmest en waterverontreiniging",
       "body": "Overmatig gebruik van kunstmest draagt bij aan waterverontreiniging en dode zones."
     },
     "FF2.3.1": {
+      "title": "Aandeel van voedsel in de uitstoot",
       "body": "Voedselsystemen zijn verantwoordelijk voor ongeveer een derde van de wereldwijde uitstoot van broeikasgassen."
     },
     "FF2.3.2": {
+      "title": "Peulvruchten verlagen de uitstoot",
       "body": "Door een deel van de dierlijke eiwitten te vervangen door peulvruchten kunnen de uitstoot als gevolg van onze voeding worden verminderd."
     },
     "FF2.3.3": {
+      "title": "Seizoensproducten, minder uitstoot",
       "body": "Door seizoensproducten te kopen, kun je de uitstoot als gevolg van voedselproductie helpen verminderen."
     },
     "FF2.3.4": {
+      "title": "Zelfde calorieën, andere voetafdruk",
       "body": "Voedingsmiddelen met hetzelfde aantal calorieën kunnen een heel verschillende CO₂-voetafdruk hebben."
     },
     "FF2.3.5": {
+      "title": "Voetafdruk van rund- en lamsvlees",
       "body": "Vlees, met name rundvlees en lamsvlees, heeft een veel grotere CO₂-voetafdruk dan de meeste plantaardige voedingsmiddelen."
     },
     "FF2.3.6": {
+      "title": "Uitstoot van vegetarisch eten",
       "body": "Vegetarische voedingspatronen kunnen aanzienlijk minder uitstoot veroorzaken dan voedingspatronen waarin veel vlees wordt gegeten."
     },
     "FF2.3.7": {
+      "title": "Het flexitarische effect",
       "body": "Flexitarische voedingspatronen kunnen de gevolgen voor het klimaat aanzienlijk verminderen."
     },
     "FF2.3.8": {
+      "title": "Uitstoot door voedselverspilling",
       "body": "Voedselverspilling leidt jaarlijks tot miljarden tonnen CO₂-equivalente uitstoot."
     },
     "FF2.3.9": {
+      "title": "Bossen slaan koolstof op",
       "body": "Door bossen te beschermen wordt voorkomen dat er grote hoeveelheden koolstof vrijkomen als gevolg van landgebruikverandering."
     },
     "FF2.3.10": {
+      "title": "Gewasrotatie met peulvruchten",
       "body": "Gewasrotaties met peulvruchten kunnen de koolstofvoetafdruk van de gewasproductie verkleinen."
     },
     "FF2.4.1": {
+      "title": "Uitstoot door voedseltransport",
       "body": "Het wereldwijde voedseltransport veroorzaakt jaarlijks ongeveer 3 miljard ton CO₂-equivalente uitstoot."
     },
     "FF2.4.2": {
+      "title": "Gekoeld transport",
       "body": "Bij transport over lange afstanden is vaak koeling nodig, wat het energieverbruik en de CO₂-voetafdruk van levensmiddelen vergroot."
     },
     "FF2.4.3": {
+      "title": "Seizoenskeuzes, minder transport",
       "body": "Door te kiezen voor seizoensproducten en onnodig transport te beperken, kan de klimaatimpact van het voedselsysteem worden verminderd."
     },
     "FF2.4.4": {
+      "title": "Aandeel van transport in de uitstoot",
       "body": "Bijna een vijfde van de uitstoot van broeikasgassen door het wereldwijde voedselsysteem is afkomstig van het vervoer van voedsel."
     },
     "FF2.4.5": {
+      "title": "Voedselkilometers van groente en fruit",
       "body": "Groenten en fruit zijn wereldwijd verantwoordelijk voor ongeveer 36% van de uitstoot als gevolg van het transport van voedsel."
     },
     "FF2.4.6": {
+      "title": "De koelketen",
       "body": "Het handhaven van een ononderbroken koelketen is essentieel voor het behoud van de voedselkwaliteit en het beperken van bederf tijdens het transport."
     },
     "FF2.4.7": {
+      "title": "Transport versus teelt",
       "body": "Het vervoer van groenten en fruit kan ongeveer twee keer zoveel broeikasgasemissies veroorzaken als de teelt ervan."
     },
     "FF2.4.8": {
+      "title": "Uitstoot van voedselvrachtvervoer",
       "body": "Hoewel voedsel slechts ongeveer 18% van de totale vrachtvervoersafstanden wereldwijd uitmaakt, is het verantwoordelijk voor ongeveer 27% van de vrachtgerelateerde uitstoot."
     },
     "FF2.4.9": {
+      "title": "Voedselverlies door gebrek aan koeling",
       "body": "Jaarlijks gaat ongeveer 526 miljoen ton voedsel verloren of wordt verspild als gevolg van ontoereikende koel- en vriesinstallaties."
     },
     "FF2.4.10": {
+      "title": "Betere koelketens",
       "body": "Door de infrastructuur van de koelketen te verbeteren, kunnen voedselverliezen worden teruggedrongen, de voedselzekerheid worden vergroot en de milieueffecten worden verminderd."
     },
     "FF3.1.1": {
+      "title": "Verwerking voor voedselveiligheid",
       "body": "Voedselverwerking kan de voedselveiligheid verbeteren en de houdbaarheid verlengen."
     },
     "FF3.1.2": {
+      "title": "Verwerking voorkomt verspilling",
       "body": "Verwerking kan voedselverspilling helpen verminderen doordat voedsel langer houdbaar blijft."
     },
     "FF3.1.3": {
+      "title": "Ultrabewerkte voedingsmiddelen",
       "body": "Ultraverbeterde voedingsmiddelen bevatten vaak meer suiker, zout en verzadigd vet."
     },
     "FF3.1.4": {
+      "title": "Energieverbruik bij verwerking",
       "body": "Verschillende verwerkingsmethoden verbruiken heel uiteenlopende hoeveelheden energie."
     },
     "FF3.1.5": {
+      "title": "Energie voor diepvriesproducten",
       "body": "Het opslaan van diepvriesproducten kan veel energie vergen."
     },
     "FF3.1.6": {
+      "title": "Verder dan de boerderij",
       "body": "Verwerking, verpakking en transport dragen allemaal bij aan de effecten van het voedselsysteem."
     },
     "FF3.1.7": {
+      "title": "Niet alle verwerking is schadelijk",
       "body": "Niet alle bewerkte voedingsmiddelen hebben een grote impact op het milieu."
     },
     "FF3.1.8": {
+      "title": "Efficiënte opslag en transport",
       "body": "Voedselverwerking kan de efficiëntie van opslag en transport verbeteren."
     },
     "FF3.1.9": {
+      "title": "Technologie maakt het verschil",
       "body": "De duurzaamheid van bewerkte levensmiddelen hangt af van de productietechnologie."
     },
     "FF3.1.10": {
+      "title": "De volledige levenscyclus",
       "body": "Als je naar de volledige levenscyclus van voedsel kijkt, krijg je een beter beeld van de duurzaamheid dan wanneer je je alleen op de verwerking richt."
     },
     "FF3.2.1": {
+      "title": "Korte toeleveringsketens",
       "body": "Korte toeleveringsketens kunnen de lokale economieën en de veerkracht ondersteunen."
     },
     "FF3.2.2": {
+      "title": "Seizoensgebonden en lokaal",
       "body": "Seizoensgebonden lokale voedingsmiddelen kunnen de behoefte aan opslag en transport verminderen."
     },
     "FF3.2.3": {
+      "title": "Herkomst is niet alles",
       "body": "Het land van herkomst alleen is geen afdoende maatstaf om te bepalen of een levensmiddel duurzaam is."
     },
     "FF3.2.4": {
+      "title": "Herkomst en traceerbaarheid",
       "body": "De herkomst van levensmiddelen kan nuttige informatie opleveren over traceerbaarheid en duurzaamheid."
     },
     "FF3.2.5": {
+      "title": "Sterk groeiende voedselhandel",
       "body": "De wereldwijde handel in voedingsmiddelen is de afgelopen decennia enorm toegenomen."
     },
     "FF3.2.6": {
+      "title": "Geïmporteerd veevoer in Europa",
       "body": "Veel Europese voedselsystemen zijn afhankelijk van geïmporteerd veevoer en grondstoffen."
     },
     "FF3.2.7": {
+      "title": "Vertrouwen in herkomstlabels",
       "body": "Consumenten associëren herkomstlabels vaak met kwaliteit en veiligheid."
     },
     "FF3.2.8": {
+      "title": "Lokaal is niet altijd duurzamer",
       "body": "Lokale voedingsmiddelen zijn niet altijd de meest duurzame keuze."
     },
     "FF3.2.9": {
+      "title": "Hoe telt meer dan hoe ver",
       "body": "Hoe voedsel wordt geproduceerd, is vaak belangrijker dan de afstand die het aflegt."
     },
     "FF3.2.10": {
+      "title": "Luchtvracht versus zeevracht",
       "body": "Voedingsmiddelen die per vliegtuig worden vervoerd, kunnen een veel grotere CO₂-voetafdruk hebben dan voedingsmiddelen die over zee worden vervoerd."
     },
     "FF3.3.1": {
+      "title": "Biologische boerderijen en biodiversiteit",
       "body": "Biologische boerderijen dragen bij aan een grotere biodiversiteit dan conventionele boerderijen."
     },
     "FF3.3.2": {
+      "title": "Klimaatvriendelijke landbouw",
       "body": "Klimaatvriendelijke landbouw heeft tot doel de veerkracht te vergroten en tegelijkertijd de uitstoot te verminderen."
     },
     "FF3.3.3": {
+      "title": "Evenwichtige landbouw",
       "body": "Duurzame landbouw zorgt voor een evenwicht tussen productiviteit en milieubescherming."
     },
     "FF3.3.4": {
+      "title": "Bloemenstroken voor bestuivers",
       "body": "Bloemenstroken en leefgebieden voor bestuivers kunnen de biodiversiteit op landbouwbedrijven bevorderen."
     },
     "FF3.3.5": {
+      "title": "Biologisch zonder kunstmatige middelen",
       "body": "Bij biologische landbouw wordt geen gebruik gemaakt van kunstmest en bestrijdingsmiddelen."
     },
     "FF3.3.6": {
+      "title": "Gewasdiversificatie",
       "body": "Gewasdiversificatie helpt landbouwbedrijven om zich tegen plagen en ziekten te wapenen."
     },
     "FF3.3.7": {
+      "title": "Agroforestry",
       "body": "Bij agroforestry worden bomen gecombineerd met gewassen of vee op hetzelfde stuk land."
     },
     "FF3.3.8": {
+      "title": "Geïntegreerde plaagbestrijding",
       "body": "Geïntegreerde plaagbestrijding zorgt ervoor dat er minder chemische bestrijdingsmiddelen nodig zijn."
     },
     "FF3.3.9": {
+      "title": "Precisielandbouw",
       "body": "Precisie-landbouw kan het gebruik van meststoffen en de uitstoot verminderen."
     },
     "FF3.3.10": {
+      "title": "Conserverende landbouw",
       "body": "Conserverende landbouw zorgt voor minder bodemverstoring en beschermt de bodemgezondheid."
     },
     "FF3.4.1": {
+      "title": "Diverse gewassen en rassen",
       "body": "Door gewassen en rassen te diversifiëren kan de veerkracht van het voedselsysteem worden vergroot."
     },
     "FF3.4.2": {
+      "title": "Alternatieve eiwitten",
       "body": "Alternatieve eiwitten kunnen de afhankelijkheid van de conventionele veeteelt verminderen."
     },
     "FF3.4.3": {
+      "title": "Veredeling in context",
       "body": "Duurzame veeteelt moet gepaard gaan met bredere verbeteringen in het voedselsysteem."
     },
     "FF3.4.4": {
+      "title": "Fokken op minder methaan",
       "body": "Het fokken van dieren met een lagere methaanuitstoot kan de impact van de veehouderij verminderen."
     },
     "FF3.4.5": {
+      "title": "Alternatief visvoer",
       "body": "Alternatieve voedermiddelen voor de aquacultuur kunnen de druk op de wilde visbestanden verminderen."
     },
     "FF3.4.6": {
+      "title": "Klimaatbestendige gewassen",
       "body": "Genetische verbetering kan gewassen helpen om nieuwe milieu-uitdagingen het hoofd te bieden."
     },
     "FF3.4.7": {
+      "title": "Productief vee",
       "body": "Door de productiviteit van dieren te verbeteren, kan het verbruik van hulpbronnen per kilogram vlees worden verminderd."
     },
     "FF3.4.8": {
+      "title": "Genomische bewerking",
       "body": "Genomische bewerking kan bijdragen aan de ontwikkeling van gewassen die beter bestand zijn tegen klimaatstress."
     },
     "FF3.4.9": {
+      "title": "Vee met efficiënte voederbenutting",
       "body": "Door selectief te fokken kan de voederbenutting bij vee worden verbeterd."
     },
     "FF3.4.10": {
+      "title": "Hydroponics en aquaponics",
       "body": "Hydroponische en aquaponische systemen verbruiken veel minder water dan de conventionele landbouw."
     },
     "FF3.5.1": {
+      "title": "Kinderarbeid in de landbouw",
       "body": "De landbouwsector is wereldwijd verantwoordelijk voor het grootste deel van de gevallen van kinderarbeid."
     },
     "FF3.5.2": {
+      "title": "Fairtrade voor boeren",
       "body": "Fairtrade heeft tot doel de inkomens en arbeidsomstandigheden van boeren te verbeteren."
     },
     "FF3.5.3": {
+      "title": "Eerlijke prijzen",
       "body": "Eerlijke handel bevordert transparantie en eerlijke prijsvorming in de hele toeleveringsketen."
     },
     "FF3.5.4": {
+      "title": "Fatsoenlijke arbeidsomstandigheden",
       "body": "Veilige en fatsoenlijke arbeidsomstandigheden vormen een essentieel onderdeel van duurzame voedselsystemen."
     },
     "FF3.5.5": {
+      "title": "Sociale duurzaamheid",
       "body": "De duurzaamheid van het voedselsysteem omvat ook sociale en arbeidsomstandigheden."
     },
     "FF3.5.6": {
+      "title": "Kwetsbare voedselwerkers",
       "body": "Veel werknemers in de voedselvoorziening blijven kwetsbaar voor uitbuiting."
     },
     "FF3.5.7": {
+      "title": "Ethische voedselkeuzes",
       "body": "Consumenten hechten steeds meer waarde aan ethische en eerlijke voedselproductie."
     },
     "FF3.5.8": {
+      "title": "Vrouwen in de voedselproductie",
       "body": "Vrouwen spelen een cruciale rol in de voedselproductie, maar hebben vaak minder toegang tot middelen."
     },
     "FF3.5.9": {
+      "title": "Kleinschalige boeren",
       "body": "Kleinschalige boeren produceren een groot deel van het voedsel in de wereld."
     },
     "FF3.5.10": {
+      "title": "Duurzame en rechtvaardige voedselsystemen",
       "body": "Duurzame voedselsystemen moeten milieuvriendelijk en sociaal rechtvaardig zijn."
     },
     "FF4.1.1": {
+      "title": "Waarom verpakking ertoe doet",
       "body": "Voedselverpakkingen beschermen producten tegen verontreiniging, vocht, zuurstof en fysieke schade, waardoor de voedselveiligheid en -kwaliteit worden gewaarborgd."
     },
     "FF4.1.2": {
+      "title": "Plastic voorkomt bederf",
       "body": "Plastic verpakkingen kunnen voedselbederf tegengaan, omdat ze licht van gewicht en duurzaam zijn en bederfelijke levensmiddelen goed beschermen."
     },
     "FF4.1.3": {
+      "title": "Evenwichtige verpakking",
       "body": "De meest duurzame verpakking biedt een evenwicht tussen materiaalefficiëntie, recycleerbaarheid, productbescherming en het voorkomen van voedselverspilling."
     },
     "FF4.1.4": {
+      "title": "Impact van voedsel versus verpakking",
       "body": "De milieu-impact van de productie van voedsel is vaak veel groter dan die van de verpakking die wordt gebruikt om het te beschermen."
     },
     "FF4.1.5": {
+      "title": "Verpakking tegen verspilling",
       "body": "Een goed ontworpen verpakking kan voedselverspilling tegengaan door de houdbaarheid te verlengen en bederf tijdens transport, opslag en thuisgebruik te voorkomen."
     },
     "FF4.1.6": {
+      "title": "Geen perfecte verpakking",
       "body": "Er bestaat niet één ‘meest duurzame’ verpakkingsmateriaal; de milieuprestaties hangen af van de gehele levenscyclus van het product."
     },
     "FF4.1.7": {
+      "title": "Eetbare verpakkingen",
       "body": "Eetbare verpakkingen kunnen helpen de afhankelijkheid van op fossiele brandstoffen gebaseerde kunststoffen te verminderen door conventionele verpakkingsmaterialen te vervangen door biologisch afbreekbare alternatieven."
     },
     "FF4.1.8": {
+      "title": "Eetbare coatings",
       "body": "Eetbare coatings kunnen de houdbaarheid van groenten en fruit verlengen door vochtverlies te beperken en de ademhaling te vertragen."
     },
     "FF4.1.9": {
+      "title": "Slimme verpakkingen",
       "body": "Slimme verpakkingen kunnen de temperatuur, de versheid en de toestand van het product monitoren, waardoor voedselverliezen in de hele toeleveringsketen worden teruggedrongen."
     },
     "FF4.1.10": {
+      "title": "Actieve verpakkingen",
       "body": "Actieve verpakkingen kunnen een wisselwerking aangaan met levensmiddelen door zuurstof of vocht op te nemen, waardoor producten langer vers blijven."
     },
     "FF4.2.1": {
+      "title": "Hergebruik loont op termijn",
       "body": "Herbruikbare verpakkingen zijn pas milieuvriendelijk als ze vaak genoeg zijn hergebruikt."
     },
     "FF4.2.2": {
+      "title": "Verpakkingsafval in Europa",
       "body": "In Europa wordt elke seconde ongeveer 1,5 ton afval van wegwerpverpakkingen geproduceerd."
     },
     "FF4.2.3": {
+      "title": "Recyclingpercentages van verpakkingen",
       "body": "Slechts ongeveer 40 % van het verpakkingsafval in Europa wordt gerecycled."
     },
     "FF4.2.4": {
+      "title": "Hergebruik bespaart grondstoffen",
       "body": "Herbruikbare verpakkingen kunnen de vraag naar nieuwe grondstoffen verminderen."
     },
     "FF4.2.5": {
+      "title": "Hoe vaak je hergebruikt telt",
       "body": "De milieuvoordelen van herbruikbare verpakkingen hangen af van hoe vaak ze worden hergebruikt."
     },
     "FF4.2.6": {
+      "title": "Transport en reiniging",
       "body": "Transportafstanden en reinigingsprocessen zijn van invloed op de milieu-impact van herbruikbare verpakkingssystemen."
     },
     "FF4.2.7": {
+      "title": "Het break-evenpunt",
       "body": "Elke herbruikbare verpakking heeft een break-evenpunt waarop deze voordeliger wordt dan alternatieven voor eenmalig gebruik."
     },
     "FF4.2.8": {
+      "title": "Hoge terugnamepercentages",
       "body": "Veel terugnamesystemen in Europa halen nu al een terugnamepercentage van 75% of meer."
     },
     "FF4.2.9": {
+      "title": "Verpakking verlengt houdbaarheid",
       "body": "Verbeterde verpakkingssystemen kunnen voedselverspilling helpen verminderen door de houdbaarheid te verlengen."
     },
     "FF4.2.10": {
+      "title": "Duurzame transportverpakkingen",
       "body": "Herbruikbare transportverpakkingen zijn vaak zo ontworpen dat ze vele jaren in omloop blijven."
     },
     "FF5.1.1": {
+      "title": "Huishoudens verspillen het meest",
       "body": "Huishoudens produceren meer voedselafval dan welke andere sector dan ook in de Europese Unie."
     },
     "FF5.1.2": {
+      "title": "Een vijfde wordt verspild",
       "body": "Wereldwijd wordt ongeveer een vijfde van het voedsel dat voor consumenten beschikbaar is, verspild."
     },
     "FF5.1.3": {
+      "title": "Lijstjes en maaltijdplanning",
       "body": "Boodschappenlijstjes en maaltijdplanning kunnen helpen om voedselverspilling thuis te verminderen."
     },
     "FF5.1.4": {
+      "title": "Kleinere porties, minder verspilling",
       "body": "Door kleinere porties aan te bieden, kan voedselverspilling in kantines en restaurants worden teruggedrongen."
     },
     "FF5.1.5": {
+      "title": "Standaardporties, meer restjes",
       "body": "Standaard portiegroottes leiden vaak tot onnodige restjes."
     },
     "FF5.1.6": {
+      "title": "Te veel bij het buffet",
       "body": "Veel mensen nemen in een buffetachtige eetgelegenheid meer eten mee dan ze op kunnen."
     },
     "FF5.1.7": {
+      "title": "Verspilling en klimaat",
       "body": "Voedselverspilling is verantwoordelijk voor een aanzienlijk deel van de uitstoot van broeikasgassen in het voedselsysteem."
     },
     "FF5.1.8": {
+      "title": "Verspild vlees",
       "body": "Vleesafval draagt onevenredig veel bij aan de klimaatimpact van voedselverspilling."
     },
     "FF5.1.9": {
+      "title": "Als voedselverspilling een land was",
       "body": "Als voedselverspilling een land zou zijn, zou het een van de grootste uitstoters van broeikasgassen ter wereld zijn."
     },
     "FF5.1.10": {
+      "title": "Verspilde voedingsstoffen",
       "body": "Voedselverspilling betekent ook verspilling van voedingsstoffen zoals eiwitten en vezels."
     },
     "FF5.2.1": {
+      "title": "Verspilling begint thuis",
       "body": "Huishoudens zijn verantwoordelijk voor meer dan de helft van de voedselverspilling in de EU."
     },
     "FF5.2.2": {
+      "title": "Bewaar voedsel op de juiste manier",
       "body": "Door voedsel op de juiste manier te bewaren, wordt verspilling tegengegaan en blijft het voedsel veilig om te eten."
     },
     "FF5.2.3": {
+      "title": "De tweeuurregel",
       "body": "Bederfelijke levensmiddelen mogen over het algemeen niet langer dan twee uur bij kamertemperatuur worden bewaard."
     },
     "FF5.2.4": {
+      "title": "Plan en hergebruik restjes",
       "body": "Door beter te plannen en restjes te hergebruiken, kun je geld besparen en de impact op het milieu verminderen."
     },
     "FF5.2.5": {
+      "title": "Ten minste houdbaar vs. te gebruiken tot",
       "body": "De houdbaarheidsdatum heeft betrekking op de kwaliteit, terwijl de uiterste consumptiedatum betrekking heeft op de voedselveiligheid."
     },
     "FF5.2.6": {
+      "title": "Meest verspilde voedingsmiddelen",
       "body": "Groenten en fruit zijn de voedingsmiddelen waarvan in Europa het meeste wordt verspild."
     },
     "FF5.2.7": {
+      "title": "Koel restjes snel af",
       "body": "Door restjes snel te koelen, voorkom je dat bacteriën zich gaan vermenigvuldigen."
     },
     "FF5.2.8": {
+      "title": "Verspild vlees en zuivel",
       "body": "Vlees en zuivelproducten worden misschien minder vaak weggegooid, maar hebben een grotere ecologische voetafdruk wanneer ze wel worden weggegooid."
     },
     "FF5.2.9": {
+      "title": "Verdelen om af te koelen",
       "body": "Grote porties eten koelen sneller af als ze in kleinere bakjes worden verdeeld."
     },
     "FF5.2.10": {
+      "title": "Luchtdichte bakjes",
       "body": "Luchtdichte bakjes zorgen ervoor dat restjes langer vers blijven."
     },
     "FF5.3.1": {
+      "title": "Huishoudens verspillen het meeste voedsel",
       "body": "Meer dan de helft van alle voedselverspilling in Europa is afkomstig van huishoudens."
     },
     "FF5.3.2": {
+      "title": "Te veel kopen",
       "body": "Meer voedsel kopen dan nodig is, is een van de belangrijkste oorzaken van vermijdbare voedselverspilling thuis."
     },
     "FF5.3.3": {
+      "title": "Controleer voordat je boodschappen doet",
       "body": "Door maaltijden te plannen en de voorraadkast te controleren voordat je boodschappen gaat doen, kun je voorkomen dat je te veel koopt en voedselverspilling tegengaan."
     },
     "FF5.3.4": {
+      "title": "Vries overtollig voedsel in",
       "body": "Door overtollig voedsel in te vriezen voordat het bederft, kan de houdbaarheid worden verlengd en kan verspilling worden tegengegaan."
     },
     "FF5.3.5": {
+      "title": "69 miljoen ton",
       "body": "De hoeveelheid voedselafval van huishoudens in Europa wordt geschat op ongeveer 69 miljoen ton per jaar."
     },
     "FF5.3.6": {
+      "title": "Verwarring over datumaanduidingen",
       "body": "Verwarring over de aanduidingen „ten minste houdbaar tot“ en „te gebruiken tot“ draagt in belangrijke mate bij aan onnodige voedselverspilling."
     },
     "FF5.3.7": {
+      "title": "Veilig na de houdbaarheidsdatum",
       "body": "Veel voedingsmiddelen blijven ook na de houdbaarheidsdatum veilig om te eten, mits ze op de juiste manier zijn bewaard."
     },
     "FF5.3.8": {
+      "title": "De valkuil van multi-aanbiedingen",
       "body": "Meervoudsaankoopaanbiedingen en bulkkortingen kunnen consumenten ertoe aanzetten meer voedsel te kopen dan ze kunnen verbruiken."
     },
     "FF5.3.9": {
+      "title": "Vaak te veel gekochte producten",
       "body": "Vers fruit, groenten, zuivelproducten en bakkerijproducten behoren tot de voedingsmiddelen die het vaakst worden verspild doordat er te veel van wordt gekocht."
     },
     "FF5.3.10": {
+      "title": "Houd je verspilling bij",
       "body": "Door bij te houden hoeveel voedsel je weggooit, kun je gewoontes ontdekken die tot overconsumptie en verspilling leiden."
     },
     "FF5.4.1": {
+      "title": "Groeiende porties",
       "body": "De portiegroottes zijn in veel landen de afgelopen decennia aanzienlijk toegenomen."
     },
     "FF5.4.2": {
+      "title": "Grotere porties, niet voller",
       "body": "Door grotere porties gaan mensen vaak meer eten zonder dat ze zich navenant voller voelen."
     },
     "FF5.4.3": {
+      "title": "Gezond voor jou en de planeet",
       "body": "Het terugdringen van overmatige voedselconsumptie kan zowel de persoonlijke gezondheid als de ecologische duurzaamheid ten goede komen."
     },
     "FF5.4.4": {
+      "title": "Hoeveel je eet telt",
       "body": "De milieu-impact van een voedingspatroon hangt niet alleen af van wat mensen eten, maar ook van hoeveel ze eten."
     },
     "FF5.4.5": {
+      "title": "Extra calorieën, meer uitstoot",
       "body": "Het consumeren van overtollige calorieën draagt bij aan een hogere uitstoot van broeikasgassen in het voedselsysteem, omdat er daardoor meer voedsel moet worden geproduceerd."
     },
     "FF5.4.6": {
+      "title": "Te veel van impactvolle producten",
       "body": "Voedingsmiddelen met een grote ecologische voetafdruk hebben een nog grotere impact wanneer ze in overmatige hoeveelheden worden geconsumeerd."
     },
     "FF5.4.7": {
+      "title": "Porties op maat",
       "body": "Door de juiste portiegroottes te kiezen, kun je zowel een te hoge calorie-inname als het verbruik van hulpbronnen helpen verminderen."
     },
     "FF5.4.8": {
+      "title": "Te veel eten kost hulpbronnen",
       "body": "Als er meer voedsel wordt gegeten dan het lichaam nodig heeft, neemt de vraag naar landbouwgrondstoffen zoals land, water en energie toe."
     },
     "FF5.4.9": {
+      "title": "De gevolgen van overconsumptie",
       "body": "Overconsumptie draagt bij aan een onnodige vraag naar voedselproductie, transport, opslag en verpakking."
     },
     "FF5.4.10": {
+      "title": "Genoeg, niet te veel",
       "body": "Duurzame voedingspatronen moedigen aan om voldoende te eten om aan de voedingsbehoeften te voldoen, zonder daarbij overmatig te consumeren."
     },
     "FF6.1.1": {
+      "title": "Wat eiwitten doen",
       "body": "Eiwitten helpen bij de opbouw en het herstel van spieren, weefsels, enzymen en hormonen."
     },
     "FF6.1.2": {
+      "title": "Plantaardig en dierlijk eiwit",
       "body": "Zowel plantaardige als dierlijke voedingsmiddelen kunnen eiwitten leveren."
     },
     "FF6.1.3": {
+      "title": "Peulvruchten voor gezondheid en planeet",
       "body": "Het vervangen van een deel van het rode vlees door peulvruchten is goed voor de gezondheid en de duurzaamheid."
     },
     "FF6.1.4": {
+      "title": "Hoeveel eiwit je nodig hebt",
       "body": "De meeste volwassenen hebben dagelijks ongeveer 0,83 g eiwit per kilogram lichaamsgewicht nodig."
     },
     "FF6.1.5": {
+      "title": "Plantaardige eiwitbronnen",
       "body": "Linzen, bonen, erwten, noten en zaden zijn uitstekende bronnen van plantaardige eiwitten."
     },
     "FF6.1.6": {
+      "title": "Het totale voedingsprofiel",
       "body": "Het is niet alleen het eiwitgehalte dat telt, maar het totale voedingsprofiel van een eiwitbron."
     },
     "FF6.1.7": {
+      "title": "Combineer plantaardige eiwitten",
       "body": "Door een gevarieerde hoeveelheid plantaardige eiwitten te eten, kun je alle essentiële aminozuren binnenkrijgen."
     },
     "FF6.1.8": {
+      "title": "Aminozuren in quinoa",
       "body": "Quinoa is een complete plantaardige eiwitbron die alle essentiële aminozuren bevat."
     },
     "FF6.1.9": {
+      "title": "Eiwitkwaliteit",
       "body": "De kwaliteit van eiwitten hangt af van de verteerbaarheid en de aminozuursamenstelling."
     },
     "FF6.1.10": {
+      "title": "Te veel eiwit",
       "body": "In veel landen met een hoog inkomen wordt meer eiwit geconsumeerd dan wordt aanbevolen."
     },
     "FF6.2.1": {
+      "title": "Onverzadigd versus verzadigd vet",
       "body": "Onverzadigde vetten zijn over het algemeen gezonder dan verzadigde vetten."
     },
     "FF6.2.2": {
+      "title": "Beperk verzadigd vet",
       "body": "De WHO adviseert om de inname van verzadigde vetten te beperken tot minder dan 10% van de dagelijkse energie-inname."
     },
     "FF6.2.3": {
+      "title": "Bronnen van gezonde vetten",
       "body": "Noten, zaden, vis en olijfolie zijn goede bronnen van gezonde vetten."
     },
     "FF6.2.4": {
+      "title": "Het soort vet telt",
       "body": "Het soort vet dat je eet, is net zo belangrijk als de hoeveelheid."
     },
     "FF6.2.5": {
+      "title": "Vermijd transvetten",
       "body": "Transvetten verhogen het risico op hart- en vaatziekten en hebben geen bekende gezondheidsvoordelen."
     },
     "FF6.2.6": {
+      "title": "Ander vet voor een gezond hart",
       "body": "Het vervangen van verzadigde vetten door onverzadigde vetten kan de gezondheid van het hart verbeteren."
     },
     "FF6.2.7": {
+      "title": "Hoeveel vet",
       "body": "Vet mag niet meer dan ongeveer 30% van de totale dagelijkse energie-inname uitmaken."
     },
     "FF6.2.8": {
+      "title": "Vetarm, maar veel suiker",
       "body": "Vetarme bewerkte voedingsmiddelen kunnen nog steeds veel suiker bevatten."
     },
     "FF6.2.9": {
+      "title": "Transvetten verwijderen",
       "body": "Industrieel geproduceerde transvetten kunnen worden verwijderd zonder dat dit ten koste gaat van de beschikbaarheid van voedsel."
     },
     "FF6.2.10": {
+      "title": "Vet en vitamines",
       "body": "Vet helpt het lichaam bij de opname van vitamine A, D, E en K."
     },
     "FF6.3.1": {
+      "title": "Suikerhoudende dranken",
       "body": "Suikerhoudende dranken vormen in veel voedingspatronen een belangrijke bron van toegevoegde suiker."
     },
     "FF6.3.2": {
+      "title": "Suiker en tanden",
       "body": "Een hoge suikerinname draagt bij aan tandbederf."
     },
     "FF6.3.3": {
+      "title": "Suiker en gewicht",
       "body": "Een te hoge suikerinname wordt in verband gebracht met gewichtstoename en obesitas."
     },
     "FF6.3.4": {
+      "title": "Beperk vrije suikers",
       "body": "De WHO beveelt aan om de inname van vrije suikers te beperken tot minder dan 10% van de dagelijkse energie-inname."
     },
     "FF6.3.5": {
+      "title": "Suiker in fruit",
       "body": "Fruit bevat natuurlijke suikers, vezels en vitamines."
     },
     "FF6.3.6": {
+      "title": "Minder suikerhoudende dranken",
       "body": "Het verminderen van de consumptie van suikerhoudende dranken is een effectieve manier om de suikerinname te verlagen."
     },
     "FF6.3.7": {
+      "title": "Zelf koken, minder suiker",
       "body": "Door thuis te koken kun je de hoeveelheid toegevoegde suiker beter onder controle houden."
     },
     "FF6.3.8": {
+      "title": "Lege calorieën",
       "body": "Suiker levert energie, maar bevat weinig essentiële voedingsstoffen."
     },
     "FF6.3.9": {
+      "title": "Minder dan 5% suiker",
       "body": "Het terugbrengen van het gehalte aan vrije suikers tot onder de 5% kan extra gezondheidsvoordelen opleveren."
     },
     "FF6.3.10": {
+      "title": "Herken toegevoegde suiker",
       "body": "Door etiketten te lezen kun je voedingsmiddelen met veel toegevoegde suiker herkennen."
     },
     "FF6.4.1": {
+      "title": "Te veel zout",
       "body": "De meeste mensen nemen meer dan twee keer de aanbevolen hoeveelheid zout tot zich."
     },
     "FF6.4.2": {
+      "title": "Zout en hartgezondheid",
       "body": "Door de zoutinname te verminderen, neemt het risico op hart- en vaatziekten en een beroerte af."
     },
     "FF6.4.3": {
+      "title": "De wereldwijde tol van natrium",
       "body": "Een te hoge natriuminname draagt wereldwijd bij aan miljoenen sterfgevallen."
     },
     "FF6.4.4": {
+      "title": "Minder dan 5 gram zout",
       "body": "De WHO adviseert om minder dan 5 gram zout per dag te consumeren."
     },
     "FF6.4.5": {
+      "title": "Verborgen zout",
       "body": "Het grootste deel van het zout in onze voeding is afkomstig uit bewerkte voedingsmiddelen en restaurantmaaltijden."
     },
     "FF6.4.6": {
+      "title": "Natrium en bloeddruk",
       "body": "Een hoge natriuminname verhoogt de bloeddruk."
     },
     "FF6.4.7": {
+      "title": "Kruiden in plaats van zout",
       "body": "Kruiden en specerijen kunnen helpen om zout bij het koken te vervangen."
     },
     "FF6.4.8": {
+      "title": "Natriumbronnen in Europa",
       "body": "Brood, vleeswaren en kaas zijn belangrijke bronnen van natrium in Europa."
     },
     "FF6.4.9": {
+      "title": "Zoutvervangers",
       "body": "Zoutvervangers met een laag natriumgehalte kunnen geschikte volwassenen helpen hun natriuminname te verminderen."
     },
     "FF6.4.10": {
+      "title": "Alle zout bevat natrium",
       "body": "Zeezout, Himalayazout en keukenzout bevatten allemaal aanzienlijke hoeveelheden natrium."
     },
     "FF6.5.1": {
+      "title": "Het vezeltekort",
       "body": "De meeste Europeanen eten minder vezels dan wordt aanbevolen."
     },
     "FF6.5.2": {
+      "title": "Bronnen van vezels",
       "body": "Volkorenproducten, fruit, groenten en peulvruchten zijn uitstekende bronnen van vezels."
     },
     "FF6.5.3": {
+      "title": "Water en vezels",
       "body": "Door voldoende water te drinken, kunnen voedingsvezels hun werk goed doen."
     },
     "FF6.5.4": {
+      "title": "25 gram per dag",
       "body": "Volwassenen zouden moeten streven naar ten minste 25 gram vezels per dag."
     },
     "FF6.5.5": {
+      "title": "Verhoog vezels geleidelijk",
       "body": "Door de vezelinname geleidelijk te verhogen, kunnen spijsverteringsklachten worden verminderd."
     },
     "FF6.5.6": {
+      "title": "De kracht van volkoren",
       "body": "Volkorenproducten leveren zowel vezels als belangrijke voedingsstoffen."
     },
     "FF6.5.7": {
+      "title": "Vezels voor de spijsvertering",
       "body": "Vezels bevorderen een gezonde spijsvertering en darmwerking."
     },
     "FF6.5.8": {
+      "title": "Vezels en ziekterisico",
       "body": "Een hogere vezelinname gaat gepaard met een lager risico op hart- en vaatziekten en diabetes type 2."
     },
     "FF6.5.9": {
+      "title": "Oplosbare en onoplosbare vezels",
       "body": "Zowel oplosbare als onoplosbare vezels dragen bij aan een goede gezondheid."
     },
     "FF6.5.10": {
+      "title": "Vezels geven een vol gevoel",
       "body": "Vezelrijke voedingsmiddelen kunnen ervoor zorgen dat mensen zich langer verzadigd voelen."
     },
     "FF6.6.1": {
+      "title": "Vitamine D-tekort",
       "body": "Vitamine D-tekort komt in heel Europa veel voor."
     },
     "FF6.6.2": {
+      "title": "Vitamine C",
       "body": "Vitamine C ondersteunt het immuunsysteem en de wondgenezing."
     },
     "FF6.6.3": {
+      "title": "Vitamines uit groente en fruit",
       "body": "Groenten en fruit leveren belangrijke vitamines en antioxidanten."
     },
     "FF6.6.4": {
+      "title": "Variatie voorkomt tekorten",
       "body": "Een gevarieerd eetpatroon helpt het risico op vitaminetekorten te verminderen."
     },
     "FF6.6.5": {
+      "title": "Bronnen van vitamine A",
       "body": "Oranje en donkergroene groenten zijn goede bronnen van vitamine A-voorlopers."
     },
     "FF6.6.6": {
+      "title": "Bronnen van vitamine E",
       "body": "Noten, zaden en plantaardige oliën zijn goede bronnen van vitamine E."
     },
     "FF6.6.7": {
+      "title": "Zonlicht en vitamine D",
       "body": "Zonlicht is de belangrijkste bron van vitamine D voor het lichaam."
     },
     "FF6.6.8": {
+      "title": "Bronnen van vitamine B12",
       "body": "Vitamine B12 komt vooral voor in dierlijke voedingsmiddelen."
     },
     "FF6.6.9": {
+      "title": "B12 voor veganisten",
       "body": "Veganisten hebben mogelijk verrijkte voedingsmiddelen of voedingssupplementen nodig om voldoende vitamine B12 binnen te krijgen."
     },
     "FF6.6.10": {
+      "title": "Verborgen honger",
       "body": "Vitaminegebrek kan zelfs optreden als er voldoende voedsel beschikbaar is."
     },
     "FF6.7.1": {
+      "title": "Genoeg calorieën voor iedereen",
       "body": "Er worden wereldwijd al genoeg calorieën geproduceerd om iedereen te voeden."
     },
     "FF6.7.2": {
+      "title": "Voedingsstoffen versus calorieën",
       "body": "Voedingsrijke voedingsmiddelen zijn niet altijd hetzelfde als calorierijke voedingsmiddelen."
     },
     "FF6.7.3": {
+      "title": "Ultrabewerkt en te veel eten",
       "body": "Ultraverbeterde voedingsmiddelen kunnen mensen ertoe aanzetten meer calorieën te consumeren."
     },
     "FF6.7.4": {
+      "title": "Gelijke calorieën, ongelijke impact",
       "body": "Voedingsmiddelen die evenveel calorieën bevatten, kunnen zeer uiteenlopende gevolgen voor het milieu hebben."
     },
     "FF6.7.5": {
+      "title": "Meer dan calorieën tellen",
       "body": "Bij duurzame voedingspatronen ligt de nadruk op voedingskeuzes, en niet alleen op het verminderen van calorieën."
     },
     "FF6.7.6": {
+      "title": "Calorieverlies van boer tot bord",
       "body": "Meer dan de helft van de calorieën in voedsel gaat verloren tussen de boerderij en het bord."
     },
     "FF6.7.7": {
+      "title": "De drie basisgewassen",
       "body": "Rijst, tarwe en maïs leveren bijna de helft van de wereldwijde calorieën."
     },
     "FF6.7.8": {
+      "title": "Calorieverlies door veevoer",
       "body": "Het voeren van gewassen aan vee leidt tot aanzienlijke calorieverliezen."
     },
     "FF6.7.9": {
+      "title": "Uitstoot van rundvlees per calorie",
       "body": "Rundvlees veroorzaakt per calorie veel meer uitstoot dan de meeste plantaardige voedingsmiddelen."
     },
     "FF6.7.10": {
+      "title": "Efficiënte voedselsystemen",
       "body": "Door de efficiëntie van het voedselsysteem te verbeteren, kan de beschikbare voedingswaarde worden verhoogd zonder dat er meer voedsel hoeft te worden geproduceerd."
     }
   },
   "quizzes": {
     "Q1.1.1": {
+      "title": "Groenere avondmaaltijden",
       "question": "Je wilt de milieu-impact van je avondmaaltijden verminderen. Welke verandering zal waarschijnlijk het grootste effect hebben?",
       "explanation": "Het verminderen van de consumptie van rundvlees heeft over het algemeen een veel grotere impact dan het overschakelen op vergelijkbare voedingsmiddelen, omdat de veeteelt in hoge mate bijdraagt aan landgebruik, waterverbruik en de uitstoot van broeikasgassen.",
       "options": {
@@ -799,6 +1050,7 @@
       }
     },
     "Q1.1.2": {
+      "title": "Weekmenu met lage impact",
       "question": "Welk weekmenu heeft waarschijnlijk de minste impact op het milieu?",
       "explanation": "Het vervangen van vlees door peulvruchten levert over het algemeen grotere milieuvoordelen op dan het louter wisselen tussen verschillende soorten dierlijke eiwitten.",
       "options": {
@@ -809,6 +1061,7 @@
       }
     },
     "Q1.1.3": {
+      "title": "Voedingspatronen en landgebruik",
       "question": "Je kunt kiezen uit twee wekelijkse voedingspatronen: Dieet A bevat bijna elke dag rood vlees. Dieet B volgt een mediterraan voedingspatroon met meer peulvruchten, groenten en matige hoeveelheden vlees. Van welk dieet wordt over het algemeen verwacht dat het minder landbouwgrond vereist?",
       "explanation": "Voor de productie van dierlijke voedingsmiddelen is doorgaans meer land nodig dan voor de productie van plantaardige voedingsmiddelen. Een mediterraan dieet wordt vaak in verband gebracht met een lager landgebruik, terwijl het toch voldoende voedingsstoffen biedt.",
       "options": {
@@ -819,6 +1072,7 @@
       }
     },
     "Q1.1.4": {
+      "title": "Een duurzame lunchkeuze",
       "question": "Welke lunchkeuze zou over het algemeen het meest duurzaam zijn?",
       "explanation": "Maaltijden waarin peulvruchten en groenten centraal staan, hebben over het algemeen een kleinere impact op het milieu dan maaltijden waarin rood vlees centraal staat.",
       "options": {
@@ -829,6 +1083,7 @@
       }
     },
     "Q1.1.5": {
+      "title": "Vlees en volksgezondheid",
       "question": "Waarom wordt het terugdringen van de vleesconsumptie soms zowel als een volksgezondheidskwestie als een milieukwestie beschouwd?",
       "explanation": "Het grootschalige gebruik van antibiotica bij vee draagt bij aan antimicrobiële resistentie, een groot probleem voor de volksgezondheid.",
       "options": {
@@ -838,6 +1093,7 @@
       }
     },
     "Q1.2.1": {
+      "title": "Rundvlees vervangen",
       "question": "Je vervangt rundvlees in een recept. Welke vervangingsoptie biedt milieuvoordelen en zorgt er tegelijkertijd voor dat de voedingswaarde op peil blijft?",
       "explanation": "Door een deel van de consumptie van rood vlees te vervangen door peulvruchten kan een voldoende inname van voedingsstoffen worden gewaarborgd en tegelijkertijd de impact op het milieu worden verminderd.",
       "options": {
@@ -848,6 +1104,7 @@
       }
     },
     "Q1.2.2": {
+      "title": "Je eiwitmix voor de week",
       "question": "Welke wekelijkse eiwitstrategie sluit het beste aan bij de aanbevelingen van de WHO?",
       "explanation": "De WHO benadrukt het belang van voedingsdiversiteit en een bredere variatie aan eiwitten",
       "options": {
@@ -858,6 +1115,7 @@
       }
     },
     "Q1.2.3": {
+      "title": "Plantaardige vleesvervangers",
       "question": "Welke bewering over plantaardige vleesvervangers klopt het beste?",
       "explanation": "Veel plantaardige vleesvervangers zijn sterk bewerkt en bevatten vaak aanzienlijke hoeveelheden natrium. Hun prestaties op het gebied van gezondheid en milieu kunnen sterk uiteenlopen.",
       "options": {
@@ -868,6 +1126,7 @@
       }
     },
     "Q1.2.4": {
+      "title": "Eiwit voor een gezonde bodem",
       "question": "Welke eiwitbron biedt zowel voordelen voor de voeding als voor de bodemgezondheid?",
       "options": {
         "A": "Kikkererwten",
@@ -878,6 +1137,7 @@
       "explanation": "Peulvruchten verbeteren de bodemvruchtbaarheid door stikstofbinding en leveren tegelijk eiwitten, vezels, vitamines en mineralen."
     },
     "Q1.2.5": {
+      "title": "Minder rood vlees in het gezin",
       "question": "Een gezin wil de consumptie van rood vlees verminderen zonder helemaal af te zien van dierlijke producten. Welke verandering sluit het beste aan bij de wetenschappelijke bevindingen?",
       "explanation": "Een gevarieerd voedingspatroon, met onder meer peulvruchten, vis, eieren en minder rood vlees, wordt in verband gebracht met gezondere en duurzamere eetgewoonten.",
       "options": {
@@ -888,6 +1148,7 @@
       }
     },
     "Q1.3.1": {
+      "title": "Varieer je granen",
       "question": "U wilt uw graanassortiment diversifiëren en tegelijkertijd de eiwitkwaliteit verbeteren. Welke optie is daarbij bijzonder interessant?",
       "explanation": "Quinoa bevat alle negen essentiële aminozuren en wordt beschouwd als een compleet eiwit.",
       "options": {
@@ -898,6 +1159,7 @@
       }
     },
     "Q1.3.2": {
+      "title": "Veerkrachtige voedingsgewoonten",
       "question": "Welke voedingsgewoonte zou de veerkracht van het voedselsysteem het beste ondersteunen?",
       "explanation": "Gewasdiversiteit vergroot de veerkracht bij verstoringen die verband houden met het klimaat, de markt en de toeleveringsketen.",
       "options": {
@@ -908,6 +1170,7 @@
       }
     },
     "Q1.3.3": {
+      "title": "Glutenvrije graankeuze",
       "question": "Iemand met coeliakie is op zoek naar een voedzaam alternatief voor granen. Welke optie is het meest geschikt?",
       "explanation": "Boekweit is van nature glutenvrij en bevat vezels, eiwitten, mineralen en heilzame bioactieve stoffen.",
       "options": {
@@ -918,6 +1181,7 @@
       }
     },
     "Q1.3.4": {
+      "title": "Klimaatbestendige gewassen",
       "question": "Een boer is op zoek naar een klimaatbestendig gewas dat goed tegen hitte en een beperkte watervoorziening kan. Welke optie wordt het best door de feiten ondersteund?",
       "explanation": "Gierstsoorten kunnen groeien bij hoge temperaturen, op arme grond en onder omstandigheden met weinig water, waardoor ze bijzonder goed bestand zijn tegen klimaatverandering.",
       "options": {
@@ -928,6 +1192,7 @@
       }
     },
     "Q1.3.5": {
+      "title": "Waarom peulvruchten belangrijk zijn",
       "question": "Waarom wordt er in duurzame voedingspatronen vaak de nadruk gelegd op peulvruchten?",
       "explanation": "Peulvruchten bieden niet alleen voedingsvoordelen, maar zorgen ook voor stikstofbinding, een lagere behoefte aan kunstmest en een kleinere ecologische voetafdruk.",
       "options": {
@@ -938,6 +1203,7 @@
       }
     },
     "Q2.1.1": {
+      "title": "Voeding en biodiversiteit",
       "question": "Je wilt dat je voedingskeuzes de biodiversiteit beter ondersteunen. Welke overweging is daarbij het meest relevant?",
       "explanation": "De uitbreiding van de landbouw is een van de belangrijkste oorzaken van habitatverlies en de afname van de biodiversiteit. Voedingsmiddelen waarvoor minder land nodig is, oefenen over het algemeen minder druk uit op bossen, graslanden en andere natuurlijke ecosystemen, wat bijdraagt aan de bescherming van de biodiversiteit.",
       "options": {
@@ -948,6 +1214,7 @@
       }
     },
     "Q2.1.2": {
+      "title": "Claims over lokaal rundvlees",
       "question": "Een supermarkt promoot „lokaal geproduceerd rundvlees“ als een duurzame keuze. Welke bewering komt het meest overeen met de feiten?",
       "explanation": "Het soort voedsel is vaak belangrijker dan waar het vandaan komt. Voor plantaardige eiwitten is over het algemeen veel minder land nodig dan voor rundvlees, ongeacht de herkomst.",
       "options": {
@@ -958,6 +1225,7 @@
       }
     },
     "Q2.1.3": {
+      "title": "Eiwitrijk avondmaal met weinig land",
       "question": "Je bent van plan een eiwitrijk avondmaal te bereiden met een zo klein mogelijke ecologische voetafdruk. Welke optie zal waarschijnlijk het beste uitpakken?",
       "explanation": "Voor dierlijke producten is over het algemeen meer land nodig dan voor plantaardige voedingsmiddelen. Van deze opties gaat de maaltijd op basis van linzen gepaard met de laagste landbehoefte.",
       "options": {
@@ -968,6 +1236,7 @@
       }
     },
     "Q2.1.4": {
+      "title": "Biodiversiteit beschermen",
       "question": "Een vriend wil via zijn voedingskeuzes de druk op de biodiversiteit verminderen. Welk advies zou het meest op wetenschappelijk bewijs gebaseerd zijn?",
       "explanation": "De uitbreiding van de landbouw is een belangrijke oorzaak van het verlies aan leefgebieden. Door de vraag naar landintensieve producten te verminderen, kan de druk op bossen en natuurlijke ecosystemen worden verlicht.",
       "options": {
@@ -978,6 +1247,7 @@
       }
     },
     "Q2.1.5": {
+      "title": "Voetafdruk van landgebruik",
       "question": "Welke klant heeft waarschijnlijk de kleinste voetafdruk op het gebied van landgebruik?",
       "explanation": "Uit onderzoek blijkt keer op keer dat de hoeveelheid rood vlees in het voedingspatroon een van de belangrijkste factoren is die bepalend zijn voor het landgebruik in verband met voedselproductie.",
       "options": {
@@ -988,6 +1258,7 @@
       }
     },
     "Q2.2.1": {
+      "title": "Een kleinere watervoetafdruk",
       "question": "Je wilt de watervoetafdruk van je maaltijden verkleinen. Welke gewoonte is waarschijnlijk het meest effectief?",
       "explanation": "Een aanzienlijk deel van het water dat bij de voedselproductie wordt gebruikt, gaat in feite verloren wanneer voedsel wordt weggegooid. Door voedselverspilling terug te dringen, daalt de vraag naar water direct.",
       "options": {
@@ -998,6 +1269,7 @@
       }
     },
     "Q2.2.2": {
+      "title": "Dieet en waterbehoefte",
       "question": "Twee mensen nemen elke dag evenveel calorieën tot zich. Bij welk dieet is de totale waterbehoefte waarschijnlijk het laagst?",
       "options": {
         "A": "Een dieet met meer peulvruchten en minder dierlijke producten",
@@ -1008,6 +1280,7 @@
       "explanation": "Het waterverbruik daalt doorgaans naarmate het eetpatroon verschuift van dierlijke naar plantaardige producten."
     },
     "Q2.2.3": {
+      "title": "Groenten die bijna bederven",
       "question": "Je vindt groenten in je koelkast die bijna bedorven zijn. Wat is de meest duurzame manier om hiermee om te gaan?",
       "explanation": "Door voedsel te gebruiken voordat het bederft, wordt verspilling voorkomen van het water, de grond en de energie die al in de productie ervan zijn gestoken.",
       "options": {
@@ -1018,6 +1291,7 @@
       }
     },
     "Q2.2.4": {
+      "title": "Waterverbruik en voedingspatronen",
       "question": "Welke stelling geeft het beste de feiten weer over waterverbruik en duurzame voedingspatronen?",
       "options": {
         "A": "Bij elk vegetarisch dieet wordt automatisch minder water verbruikt",
@@ -1028,6 +1302,7 @@
       "explanation": "Onderzoek laat zien dat minder dierlijke producten de watervoetafdruk vaak verlaagt, maar het totale waterverbruik blijft afhangen van de samenstelling van het eetpatroon."
     },
     "Q2.2.5": {
+      "title": "Waterbewuste maaltijden",
       "question": "Van welke maaltijd zou men over het algemeen verwachten dat deze de laagste watervoetafdruk heeft?",
       "explanation": "Plantaardige maaltijden vergen over het algemeen minder water",
       "options": {
@@ -1038,6 +1313,7 @@
       }
     },
     "Q2.3.1": {
+      "title": "Energievoetafdruk van voeding",
       "question": "Een consument wil de energievoetafdruk van zijn of haar voedselaankopen verkleinen. Welke verandering heeft waarschijnlijk de grootste impact?",
       "explanation": "Voedselverspilling betekent niet alleen het verlies van voedsel, maar ook het verlies van alle energie die is gebruikt voor de productie, verwerking, het transport, de opslag en de bereiding ervan. Door verspilling tegen te gaan, kan het onnodige energieverbruik in het hele voedselsysteem worden teruggedrongen.",
       "options": {
@@ -1048,6 +1324,7 @@
       }
     },
     "Q2.3.2": {
+      "title": "Energie-intensieve diëten",
       "question": "Je vergelijkt vier diëten met hetzelfde caloriegehalte. Van welk dieet wordt over het algemeen verwacht dat het binnen het voedselsysteem meer energie vergt?",
       "explanation": "Voedingsmiddelen van dierlijke oorsprong vergen over het algemeen meer energie, omdat ze afhankelijk zijn van de productie van veevoer, intensieve landbouwsystemen, verwerking, koeling en transport.",
       "options": {
@@ -1058,6 +1335,7 @@
       }
     },
     "Q2.3.3": {
+      "title": "Energie in de voedselketen",
       "question": "Welke schakel in de voedselketen is in veel regio’s vaak verantwoordelijk voor een groot deel van het totale energieverbruik?",
       "explanation": "Hoewel er in de hele voedselketen energie wordt verbruikt, gaat er vaak een aanzienlijk deel verloren tijdens de voedselverwerking, het transport, de koeling, de detailhandel, het bereiden en de consumptie.",
       "options": {
@@ -1068,6 +1346,7 @@
       }
     },
     "Q2.3.4": {
+      "title": "Voedselverliezen terugdringen",
       "question": "Een ontwikkelingsorganisatie moet beslissen waar ze moet investeren om voedselverliezen in een landelijke agrarische regio terug te dringen. Welke maatregel zal waarschijnlijk aanzienlijke voordelen opleveren?",
       "explanation": "Ongeveer 13% van de wereldwijde voedselproductie gaat verloren door ontoereikende koeling. Betrouwbare koelketensystemen helpen de kwaliteit van voedsel te behouden, verliezen te beperken en de efficiëntie van het voedselsysteem te verbeteren.",
       "options": {
@@ -1078,6 +1357,7 @@
       }
     },
     "Q2.3.5": {
+      "title": "Voedselsystemen en ecosystemen",
       "question": "Een beleidsmaker wil de druk op ecosystemen als gevolg van de voedselproductie verminderen. Welke stelling komt het beste overeen met de huidige wetenschappelijke bevindingen?",
       "options": {
         "A": "De voedselvoorziening voor de mens maakt slechts een klein deel van de biologische productiviteit van de aarde gebruik",
@@ -1088,6 +1368,7 @@
       "explanation": "Menselijke activiteiten, met name landbouw, bosbouw en voedselsystemen, nemen ongeveer 30% van de mondiale netto primaire productie in beslag, ver boven de voorgestelde veilige grens van 10%. Dat wijst op aanzienlijke druk op ecosystemen en biodiversiteit."
     },
     "Q2.4.1": {
+      "title": "Klimaatvriendelijk zonder vegetariër te worden",
       "question": "Je wilt je impact op het klimaat verminderen, maar je wilt geen vegetariër worden. Welke strategie is waarschijnlijk het meest effectief?",
       "explanation": "Het verminderen van de consumptie van rood vlees is een van de meest effectieve maatregelen op het gebied van voedingsgewoonten om de door voedsel veroorzaakte uitstoot van broeikasgassen te verminderen.",
       "options": {
@@ -1098,6 +1379,7 @@
       }
     },
     "Q2.4.2": {
+      "title": "Minder uitstoot via je eetpatroon",
       "question": "Je wilt de CO₂-voetafdruk van je eetpatroon verkleinen. Welke maatregel heeft waarschijnlijk het grootste effect?",
       "explanation": "Ongeveer 30 % van het wereldwijd geproduceerde voedsel wordt verspild, wat jaarlijks leidt tot een uitstoot van ongeveer 3,3 gigaton CO₂-equivalent. Door voedselverspilling tegen te gaan, wordt de uitstoot in de gehele voedselketen teruggedrongen, met inbegrip van productie, verwerking, transport en afvalverwerking.",
       "options": {
@@ -1108,6 +1390,7 @@
       }
     },
     "Q2.4.3": {
+      "title": "Minder uitstoot zonder nieuwe producten",
       "question": "Welke maatregel zorgt ervoor dat de uitstoot daalt zonder dat je andere voedingsmiddelen hoeft te kopen?",
       "explanation": "Voedselverspilling leidt tot aanzienlijke uitstoot van broeikasgassen, omdat alle resten",
       "options": {
@@ -1118,6 +1401,7 @@
       }
     },
     "Q2.4.4": {
+      "title": "Lokaal voedsel versus rundvlees",
       "question": "Iemand richt zich uitsluitend op het kopen van lokale voedingsmiddelen, maar blijft grote hoeveelheden rundvlees eten. Welke uitspraak komt het beste overeen met de feiten?",
       "explanation": "Uit onderzoek blijkt keer op keer dat het soort voedsel – en met name de consumptie van rundvlees – vaak een grotere rol speelt dan de transportafstand bij het bepalen van de impact op het klimaat.",
       "options": {
@@ -1128,6 +1412,7 @@
       }
     },
     "Q2.4.5": {
+      "title": "Koolstofarme eetpatronen",
       "question": "Welk eetpatroon wordt het vaakst genoemd als een koolstofarm alternatief voor een typisch westers dieet?",
       "explanation": "Flexitarische voedingspatronen verminderen de afhankelijkheid van dierlijke producten met een grote ecologische voetafdruk, terwijl incidentele consumptie nog steeds is toegestaan.",
       "options": {
@@ -1138,6 +1423,7 @@
       }
     },
     "Q3.1.1": {
+      "title": "Verwerking en duurzaamheid",
       "question": "Je vergelijkt twee eiwitrijke maaltijden: een bonenstoofpotje gemaakt van eenvoudige ingrediënten en plantaardige vleesnuggets. Welke conclusie wordt het best door de feiten ondersteund?",
       "explanation": "Voedselverwerking kan het energieverbruik doen toenemen, maar kan ook de houdbaarheid verlengen en voedselverspilling tegengaan. Duurzaamheid hangt af van de gehele levenscyclus en niet alleen van het verwerkingsniveau.",
       "options": {
@@ -1148,6 +1434,7 @@
       }
     },
     "Q3.1.2": {
+      "title": "Voetafdruk van verwerking",
       "question": "Als je twee voedingsmiddelen met een vergelijkbare voedingswaarde met elkaar vergelijkt, welke factor zou dan de ecologische voetafdruk van één van beide producten kunnen vergroten?",
       "explanation": "Verhitting, invriezen, drogen, malen en andere industriële processen kunnen in aanzienlijke mate bijdragen aan de milieu-impact van een voedingsproduct.",
       "options": {
@@ -1158,6 +1445,7 @@
       }
     },
     "Q3.1.3": {
+      "title": "Minder ultraverwerkt voedsel",
       "question": "Een consument wil minder ultraverwerkte voedingsmiddelen eten. Welke keuze draagt het beste bij aan dat doel?",
       "explanation": "Minimaal bewerkte voedingsmiddelen bevatten over het algemeen minder additieven en dragen doorgaans bij aan een betere algehele kwaliteit van het voedingspatroon.",
       "options": {
@@ -1168,6 +1456,7 @@
       }
     },
     "Q3.1.4": {
+      "title": "Waarom voedselverwerking belangrijk is",
       "question": "Waarom speelt voedselverwerking een belangrijke rol in voedselsystemen?",
       "explanation": "Verwerking kan de voedselveiligheid verbeteren, de kwaliteit waarborgen en ervoor zorgen dat voedsel efficiënter kan worden opgeslagen en vervoerd.",
       "options": {
@@ -1178,6 +1467,7 @@
       }
     },
     "Q3.1.5": {
+      "title": "Ultraverwerkte voedingsmiddelen",
       "question": "Welke bewering over ultraverwerkte voedingsmiddelen klopt het beste?",
       "explanation": "Het verwerkingsniveau kan nuttige informatie opleveren, maar voedingsmiddelen moeten nog steeds afzonderlijk worden beoordeeld.",
       "options": {
@@ -1188,6 +1478,7 @@
       }
     },
     "Q3.2.1": {
+      "title": "Wat ‘lokaal’ betekent",
       "question": "Op een product staat het label ‘lokaal’. Wat kun je uit deze informatie alleen al concluderen?",
       "explanation": "Het land van herkomst biedt nuttige informatie, maar de duurzaamheid hangt af van verschillende factoren, waaronder de productiemethode, de vervoerswijze en het seizoen.",
       "options": {
@@ -1198,6 +1489,7 @@
       }
     },
     "Q3.2.2": {
+      "title": "Lokale producten vergelijken",
       "question": "Je vergelijkt twee lokale producten. Welke aanvullende informatie zou het nuttigst zijn?",
       "explanation": "Productiemethoden hebben vaak een grotere impact op het milieu dan de herkomst alleen.",
       "options": {
@@ -1208,6 +1500,7 @@
       }
     },
     "Q3.2.3": {
+      "title": "Vervoer en klimaat",
       "question": "Welke vervoerswijze verdient over het algemeen de meeste aandacht bij het beoordelen van de gevolgen voor het klimaat?",
       "explanation": "Luchtvervoer kan de vervoersgerelateerde uitstoot van broeikasgassen aanzienlijk doen toenemen in vergelijking met andere vormen van vrachtvervoer.",
       "options": {
@@ -1218,6 +1511,7 @@
       }
     },
     "Q3.2.4": {
+      "title": "Tomaten vergelijken",
       "question": "Twee tomaten hebben dezelfde voedingswaarde. Welke informatie zou het nuttigst zijn om de duurzaamheid te vergelijken?",
       "explanation": "Productiesystemen hebben vaak een grotere invloed op het milieu dan het land van herkomst op zich.",
       "options": {
@@ -1228,6 +1522,7 @@
       }
     },
     "Q3.2.5": {
+      "title": "Herkomst van voedsel",
       "question": "Welke bewering over de herkomst van voedsel komt het meest overeen met de feiten?",
       "explanation": "De herkomst van voedsel kan nuttige informatie zijn, maar moet in samenhang met productiemethoden, seizoensgebondenheid en transport worden bekeken.",
       "options": {
@@ -1238,6 +1533,7 @@
       }
     },
     "Q3.3.1": {
+      "title": "Geïntegreerde plaagbestrijding",
       "question": "Je kiest tussen twee appelproducten: Product A: „Geproduceerd met behulp van geïntegreerde plaagbestrijding (IPM)“ Product B: Er is geen informatie over de teelt verstrekt. Wat wijst de vermelding „IPM“ hoogstwaarschijnlijk aan?",
       "explanation": "Geïntegreerde plaagbestrijding combineert biologische, fysische, gewasspecifieke en, indien nodig, chemische methoden om schade door plagen te beperken en tegelijkertijd de gevolgen voor het milieu en de gezondheid tot een minimum te beperken.",
       "options": {
@@ -1248,6 +1544,7 @@
       }
     },
     "Q3.3.2": {
+      "title": "Vruchtwisseling",
       "question": "Je koopt groenten en op één verpakking staat vermeld dat het landbouwbedrijf vruchtwisseling toepast en verschillende gewassen verbouwt. Waarom zou deze informatie relevant kunnen zijn?",
       "explanation": "Gewasdiversificatie en vruchtwisseling verbeteren de bodemvruchtbaarheid, de nutriëntenkringloop en de weerbaarheid tegen plagen en ziekten, waardoor er minder chemische middelen nodig zijn.",
       "options": {
@@ -1258,6 +1555,7 @@
       }
     },
     "Q3.3.3": {
+      "title": "Koffie uit de schaduw",
       "question": "Je kunt kiezen uit twee koffieproducten: Koffie A: geteeld in de schaduw binnen een agroforestry-systeem; Koffie B: geproduceerd op een monocultuurplantage. Waarom zouden sommige consumenten de voorkeur geven aan Koffie A?",
       "explanation": "Agrobosbouw combineert bomen met landbouwproductie. Deze systemen kunnen de bodemgezondheid, de biodiversiteit en de koolstofopslag verbeteren.",
       "options": {
@@ -1268,6 +1566,7 @@
       }
     },
     "Q3.3.4": {
+      "title": "Biologische landbouw",
       "question": "Twee groenteproducten hebben ongeveer dezelfde prijs. Op één ervan staat het label „Biologisch”. Welk kenmerk van de landbouw wordt het meest waarschijnlijk in verband gebracht met het biologische product?",
       "explanation": "Biologische landbouw maakt gebruik van methoden zoals vruchtwisseling, het gebruik van compost, bodembedekkers en biologische ongediertebestrijding, in plaats van synthetische bestrijdingsmiddelen en kunstmest.",
       "options": {
@@ -1278,6 +1577,7 @@
       }
     },
     "Q3.3.5": {
+      "title": "Klimaatslimme landbouw",
       "question": "Je kunt kiezen uit twee rijstproducten: Product A: Geproduceerd met behulp van klimaatslimme landbouw Product B: Er is geen informatie over de teelt beschikbaar Wat is het belangrijkste doel van klimaatslimme landbouw?",
       "explanation": "Klimaatvriendelijke landbouw heeft tot doel de productiviteit te verhogen, de veerkracht tegen klimaatverandering te versterken en de uitstoot van broeikasgassen te verminderen.",
       "options": {
@@ -1288,6 +1588,7 @@
       }
     },
     "Q3.4.1": {
+      "title": "Droogtebestendige gewassen",
       "question": "Je vergelijkt twee tomatenproducten. Het ene is afkomstig van een tomatenras dat is gekweekt om droogte te weerstaan, terwijl het andere afkomstig is van een conventioneel ras. Waarom zouden sommige consumenten het droogtebestendige ras als duurzamer beschouwen?",
       "explanation": "Het kweken van droogtebestendige gewassen kan helpen om de productie op peil te houden bij waterstress en de veerkracht tegen klimaatverandering te vergroten, hoewel dergelijke gewassen nog steeds water en goed landbouwbeheer nodig hebben.",
       "options": {
@@ -1298,6 +1599,7 @@
       }
     },
     "Q3.4.2": {
+      "title": "Moderne plantenveredeling",
       "question": "Stel, je komt een voedingsproduct tegen dat op de markt wordt gebracht als afkomstig van een klimaatbestendige gewasvariëteit die via moderne veredelingstechnieken is ontwikkeld. Wat is het belangrijkste duurzaamheidsvoordeel dat voor deze technologieën wordt aangevoerd?",
       "explanation": "Moderne veredelingstechnieken zijn erop gericht gewasrassen te ontwikkelen die beter presteren onder veranderende omgevingsomstandigheden en die bijdragen aan het op peil houden van de voedselproductie in de toekomst.",
       "options": {
@@ -1308,6 +1610,7 @@
       }
     },
     "Q3.4.3": {
+      "title": "Duurzaam visvoer",
       "question": "Je moet kiezen tussen twee visproducten. Het ene product is afkomstig van een aquacultuurbedrijf dat visvoer op basis van in het wild gevangen vis gedeeltelijk vervangt door insectenmeel en algenolie. Wat is de belangrijkste duurzaamheidsreden achter deze keuze?",
       "explanation": "In de aquacultuur wordt steeds vaker gebruikgemaakt van alternatieve voederingrediënten, zoals insectenmeel, algenolie en eencellige eiwitten, om de afhankelijkheid van in het wild gevangen vis te verminderen.",
       "options": {
@@ -1318,6 +1621,7 @@
       }
     },
     "Q3.4.4": {
+      "title": "Alternatieve eiwitbronnen",
       "question": "Een supermarkt promoot producten die eiwitten uit insecten, microalgen of mycoproteïne bevatten. Waarom komen deze eiwitbronnen vaak aan bod in onderzoek naar duurzaamheid?",
       "options": {
         "A": "Ze zijn gezonder dan conventionele voedingsmiddelen",
@@ -1328,6 +1632,7 @@
       "explanation": "Alternatieve eiwitbronnen worden onderzocht omdat ze de milieudruk van conventionele veehouderij kunnen verminderen en tegelijk kunnen bijdragen aan toekomstige voedselzekerheid."
     },
     "Q3.4.5": {
+      "title": "Voerefficiëntie in de veehouderij",
       "question": "Een vleesproducent geeft aan dat zijn veefokprogramma gericht is op voerefficiëntie. Waarom zou dit relevant kunnen zijn voor duurzaamheid?",
       "options": {
         "A": "Dieren worden vanzelf gezonder",
@@ -1338,6 +1643,7 @@
       "explanation": "Dieren met een betere voederconversie leveren dezelfde hoeveelheid vlees met minder voer, waardoor de milieudruk per eenheid product daalt."
     },
     "Q3.5.1": {
+      "title": "Het Fairtrade-keurmerk",
       "question": "Je moet kiezen tussen twee chocoladerepen met vergelijkbare voedingswaarden en milieugegevens. Eén ervan is voorzien van een Fairtrade-keurmerk. Op welk aanvullend aspect van duurzaamheid is het Fairtrade-keurmerk in de eerste plaats gericht?",
       "explanation": "Fairtrade streeft ernaar de levensomstandigheden te verbeteren door middel van eerlijke prijzen, arbeidsbescherming, gemeenschapsontwikkeling en betere handelsvoorwaarden voor producenten en werknemers.",
       "options": {
@@ -1348,6 +1654,7 @@
       }
     },
     "Q3.5.2": {
+      "title": "Sociale duurzaamheid",
       "question": "Een consument wil bij de aankoop van fruit zowel rekening houden met ecologische als met sociale duurzaamheid. Welke stelling komt het meest overeen met de huidige bevindingen?",
       "explanation": "Uit onderzoek blijkt dat de sociale en milieueffecten ongelijk verdeeld zijn. Er kunnen arbeidsrisico’s optreden in producerende landen, zelfs wanneer de milieuprestaties gunstig lijken.",
       "options": {
@@ -1358,6 +1665,7 @@
       }
     },
     "Q3.5.3": {
+      "title": "Gecertificeerde vis en zeevruchten",
       "question": "Je koopt vis, schaal- en schelpdieren en merkt dat het ene product afkomstig is van een gecertificeerde visserij die toezicht houdt op de arbeidsomstandigheden, terwijl er over het andere product geen informatie wordt verstrekt. Waarom zouden sommige consumenten de voorkeur geven aan het gecertificeerde product?",
       "explanation": "De visserij wordt beschouwd als een sector met een hoog risico op arbeidsuitbuiting. Certificeringsprogramma’s omvatten steeds vaker toezicht op de arbeidsomstandigheden en de naleving van de mensenrechten.",
       "options": {
@@ -1368,6 +1676,7 @@
       }
     },
     "Q3.5.4": {
+      "title": "Steun aan kleine boeren",
       "question": "Op een koffieverpakking wordt de steun aan kleine boeren benadrukt. Waarom is deze informatie relevant voor duurzaamheid?",
       "explanation": "Sociale duurzaamheid omvat onder meer eerlijke toegang tot markten, re",
       "options": {
@@ -1378,6 +1687,7 @@
       }
     },
     "Q3.5.5": {
+      "title": "Ethische voedselkeuzes",
       "question": "Welke productkeuze sluit het beste aan bij het idee dat duurzaamheid zowel ethische als milieuaspecten omvat?",
       "explanation": "Het Gemeenschappelijk Centrum voor Onderzoek van de Europese Commissie benadrukt dat duurzame voedselsystemen milieuvriendelijk, economisch levensvatbaar, eerlijk, inclusief en ethisch verantwoord moeten zijn.",
       "options": {
@@ -1388,6 +1698,7 @@
       }
     },
     "Q4.1.1": {
+      "title": "Impact van verpakkingen",
       "question": "Een consument wil de milieu-impact van voedselverpakkingen verminderen. Welke stelling komt het meest overeen met de huidige wetenschappelijke bevindingen?",
       "explanation": "De milieu-impact van de productie van voedsel is vaak veel groter dan die van de verpakking zelf. Verpakkingen die bederf en voedselverspilling effectief tegengaan, kunnen in het algemeen milieuvoordelen opleveren, zelfs als daarvoor extra materiaal wordt gebruikt.",
       "options": {
@@ -1398,6 +1709,7 @@
       }
     },
     "Q4.1.2": {
+      "title": "Eetbare verpakkingen",
       "question": "Een bedrijf twijfelt tussen conventionele plastic verpakkingen en een eetbare coating voor vers fruit. Welk potentieel milieuvoordeel van eetbare verpakkingen wordt het best door onderzoek onderbouwd?",
       "explanation": "Eetbare verpakkingen kunnen bijdragen aan klimaatbescherming door bepaalde materialen op basis van fossiele brandstoffen te vervangen en door de houdbaarheid te verlengen, waardoor voedselverspilling wordt tegengegaan.",
       "options": {
@@ -1408,6 +1720,7 @@
       }
     },
     "Q4.1.3": {
+      "title": "Verpakkingsinnovaties",
       "question": "Welke verpakkingsinnovatie is specifiek ontworpen om informatie te geven over de toestand van een levensmiddel, in plaats van het product rechtstreeks te conserveren?",
       "explanation": "Intelligente verpakkingen houden de toestand van levensmiddelen in de gaten of geven hierover informatie door, zoals de versheid, de temperatuurgeschiedenis of het risico op bederf. In tegenstelling tot actieve verpakkingen zorgen ze niet direct voor het behoud van het product.",
       "options": {
@@ -1418,6 +1731,7 @@
       }
     },
     "Q4.1.4": {
+      "title": "Verpakkingsmaterialen",
       "question": "Welke bewering over verpakkingsmaterialen klopt het beste?",
       "explanation": "Geen enkel verpakkingsmateriaal is op zich het meest duurzaam. De milieueffecten hangen af van de winning, de productie, het transport, de mogelijkheden voor hergebruik en recycling, en het voedingsproduct dat wordt beschermd.",
       "options": {
@@ -1428,6 +1742,7 @@
       }
     },
     "Q4.1.5": {
+      "title": "De EU-verpakkingshiërarchie",
       "question": "Een supermarkt wil de duurzaamheid van zijn verpakkingen verbeteren zonder dat dit ten koste gaat van de voedselkwaliteit. Welke strategie sluit het beste aan bij de EU-verpakkingshiërarchie?",
       "explanation": "De EU-verpakkingshiërarchie stelt als prioriteit om eerst onnodige verpakkingen te verminderen, vervolgens verpakkingen waar mogelijk te hergebruiken en ten slotte materialen te recyclen. Het doel is om producten te beschermen en tegelijkertijd het afval tot een minimum te beperken.",
       "options": {
@@ -1438,6 +1753,7 @@
       }
     },
     "Q4.2.1": {
+      "title": "Herbruikbare afhaalbakjes",
       "question": "Je hebt twee opties voor afhaalmaaltijden: Optie A: een wegwerpverpakking die gerecycled kan worden. Optie B: een herbruikbare verpakking die naar het restaurant moet worden teruggebracht. Welke factor is het belangrijkst om te bepalen of optie B daadwerkelijk duurzamer is?",
       "explanation": "Herbruikbare verpakkingen zijn pas milieuvriendelijker zodra ze hun ecologische break-evenpunt (e-BEP) hebben bereikt; dit betekent dat ze vaak genoeg moeten worden hergebruikt om de milieueffecten van de initiële productie te compenseren.",
       "options": {
@@ -1448,6 +1764,7 @@
       }
     },
     "Q4.2.2": {
+      "title": "Herbruikbare bekers",
       "question": "Een koffiebar heeft een programma voor herbruikbare bekers. Welk gedrag van klanten draagt het meest bij aan het milieusucces van het programma?",
       "explanation": "De milieuvoordelen van herbruikbare systemen hangen in de eerste plaats af van het behalen van een groot aantal hergebruikcycli.",
       "options": {
@@ -1458,6 +1775,7 @@
       }
     },
     "Q4.2.3": {
+      "title": "Verpakkingen bij maaltijdbezorging",
       "question": "Je vergelijkt twee maaltijdbezorgdiensten: Dienst A maakt gebruik van wegwerpverpakkingen die worden gerecycled. Dienst B maakt gebruik van herbruikbare bakjes die worden opgehaald, schoongemaakt en opnieuw gebruikt. Welke bewering klopt het beste?",
       "explanation": "Herbruikbare systemen kunnen beter presteren dan systemen voor eenmalig gebruik, maar hun prestaties zijn afhankelijk van factoren zoals het terugstuurpercentage, het transport, de reiniging en het aantal hergebruikscycli.",
       "options": {
@@ -1468,6 +1786,7 @@
       }
     },
     "Q4.2.4": {
+      "title": "Navulpunten",
       "question": "Een supermarkt introduceert navulpunten voor producten zoals ontbijtgranen, pasta en wasmiddelen. Welk duurzaamheidsvoordeel wordt met deze systemen in de eerste plaats beoogd?",
       "explanation": "Systemen voor hergebruik en hervulling zorgen ervoor dat verpakkingen langer in omloop blijven en verminderen de behoefte aan nieuwe materialen en verpakkingsafval.",
       "options": {
@@ -1478,6 +1797,7 @@
       }
     },
     "Q4.2.5": {
+      "title": "Claims over herbruikbare verpakkingen",
       "question": "Op het productetiket staat vermeld dat er gebruik wordt gemaakt van herbruikbare verpakkingen. Welke aanvullende informatie zou het nuttigst zijn om de milieuprestaties ervan te beoordelen?",
       "explanation": "Het aantal gerealiseerde hergebruikscycli is een van de belangrijkste factoren die bepalen of herbruikbare verpakkingen een positief effect op het milieu hebben.",
       "options": {
@@ -1488,6 +1808,7 @@
       }
     },
     "Q5.1.1": {
+      "title": "Bestellen zonder verspilling",
       "question": "Je bestelt een lunch in een restaurant en weet niet precies hoe grote honger je hebt. Welke keuze draagt het meest bij aan het verminderen van voedselverspilling?",
       "explanation": "Uit onderzoek blijkt dat het aanbieden en kiezen van kleinere porties de voedselverspilling aanzienlijk kan verminderen, zelfs als slechts een klein deel van de klanten daarvoor kiest.",
       "options": {
@@ -1498,6 +1819,7 @@
       }
     },
     "Q5.1.2": {
+      "title": "Voedselverspilling bij een buffet",
       "question": "Welk gedrag draagt bij een buffet het meest bij aan het verminderen van voedselverspilling?",
       "explanation": "Uit onderzoek in restaurants met een ‘all-you-can-eat’-concept is gebleken dat veel consumenten meer eten nemen dan ze daadwerkelijk opeten. Door met kleinere porties te beginnen, kun je voorkomen dat je te veel opschept.",
       "options": {
@@ -1508,6 +1830,7 @@
       }
     },
     "Q5.1.3": {
+      "title": "Kleinere porties",
       "question": "Een restaurant voert een menuoptie met kleinere porties in. Welk resultaat zou het meest in overeenstemming zijn met de gegevens?",
       "explanation": "Uit onderzoek blijkt dat het aanbieden van kleinere porties de verspilling aanzienlijk kan verminderen, zelfs als relatief weinig klanten daarvoor kiezen.",
       "options": {
@@ -1518,6 +1841,7 @@
       }
     },
     "Q5.1.4": {
+      "title": "Voedselverspilling in de kantine",
       "question": "Je ziet in een kantine een bord waarop klanten worden aangemoedigd om voedselverspilling tegen te gaan. Welke reactie zal waarschijnlijk het meest bijdragen aan het verminderen van etensresten?",
       "explanation": "Consumenten die er bewust op letten dat ze het eten dat al op hun bord ligt opeten, laten doorgaans minder eten over. Als je halverwege de maaltijd van gerecht wisselt, kan dat de verspilling juist vergroten.",
       "options": {
@@ -1528,6 +1852,7 @@
       }
     },
     "Q5.1.5": {
+      "title": "Oorzaken van bordresten",
       "question": "Welke factor draagt waarschijnlijk het meest bij aan voedselverspilling in restaurants en kantines?",
       "options": {
         "A": "Seizoensmenu's",
@@ -1538,6 +1863,7 @@
       "explanation": "Gestandaardiseerde portiegroottes houden vaak geen rekening met verschillen in eetlust en gelden als een systemische oorzaak van bordresten."
     },
     "Q5.2.1": {
+      "title": "Restjes bewaren",
       "question": "Je hebt restjes van het avondeten die je morgen wilt opeten. Wat is de beste eerste stap om zowel voedselverspilling als voedselveiligheidsrisico’s te voorkomen?",
       "explanation": "Bacteriën vermenigvuldigen zich snel bij kamertemperatuur. Door restjes onmiddellijk in de koelkast te bewaren, blijven ze veilig om te eten en wordt de kans verkleind dat ze worden weggegooid.",
       "options": {
@@ -1548,6 +1874,7 @@
       }
     },
     "Q5.2.2": {
+      "title": "Yoghurt na de houdbaarheidsdatum",
       "question": "Je komt een yoghurt tegen waarvan de houdbaarheidsdatum al twee dagen is verstreken. Wat kun je het beste doen?",
       "explanation": "Een houdbaarheidsdatum heeft betrekking op de kwaliteit van het voedsel, terwijl een uiterste consumptiedatum betrekking heeft op de voedselveiligheid. Veel voedingsmiddelen blijven ook na het verstrijken van de houdbaarheidsdatum nog eetbaar, mits ze op de juiste manier zijn bewaard.",
       "options": {
@@ -1558,6 +1885,7 @@
       }
     },
     "Q5.2.3": {
+      "title": "Soep bewaren",
       "question": "Je hebt een grote pan soep gemaakt die je wilt bewaren voor later deze week. Wat is de beste manier om deze te bewaren?",
       "explanation": "Kleinere bakjes koelen sneller af dan een grote pan, waardoor het voedsel minder lang bij temperaturen blijft waar bacteriën zich kunnen vermenigvuldigen.",
       "options": {
@@ -1568,6 +1896,7 @@
       }
     },
     "Q5.2.4": {
+      "title": "Restjes rijst veilig gebruiken",
       "question": "Je hebt wat extra rijst gekookt en wilt die de volgende dag als lunch gebruiken. Welke manier is het veiligst?",
       "explanation": "Gekookte rijst kan Bacillus cereus bevatten, een bacterie die zich snel kan vermenigvuldigen wanneer rijst bij kamertemperatuur wordt bewaard. Door rijst op de juiste manier te bewaren, kunt u voedselvergiftiging en onnodige verspilling voorkomen.",
       "options": {
@@ -1578,6 +1907,7 @@
       }
     },
     "Q5.2.5": {
+      "title": "Restjes opmaken",
       "question": "Welke gewoonte in het huishouden draagt het meest bij aan het voorkomen dat etensresten als afval eindigen?",
       "explanation": "Veel restjes worden afval omdat ze worden vergeten of vervangen door nieuw aangeschafte etenswaren. Door maaltijden bewust af te stemmen op de beschikbare restjes, kun je voedselverspilling helpen verminderen.",
       "options": {
@@ -1588,6 +1918,7 @@
       }
     },
     "Q5.3.1": {
+      "title": "‘Ten minste houdbaar tot’",
       "question": "Je vindt een yoghurt waarvan de houdbaarheidsdatum twee dagen is verstreken. De verpakking is ongeopend en de yoghurt is op de juiste manier in de koelkast bewaard. Wat kun je het beste doen?",
       "explanation": "Veel consumenten verwarren de vermeldingen ‘ten minste houdbaar tot’ en ‘te gebruiken tot’. ‘Ten minste houdbaar tot’ heeft betrekking op de kwaliteit, terwijl ‘te gebruiken tot’ betrekking heeft op de veiligheid. Misverstanden over deze vermeldingen dragen in belangrijke mate bij aan vermijdbare voedselverspilling in huishoudens.",
       "options": {
@@ -1598,6 +1929,7 @@
       }
     },
     "Q5.3.2": {
+      "title": "Voordeelacties",
       "question": "Een supermarkt heeft een aanbieding van „3 kopen, 2 gratis“ voor verse aardbeien. Welke vraag moet je jezelf stellen voordat je op de aanbieding ingaat?",
       "explanation": "Acties waarbij je bij aankoop van meerdere artikelen korting krijgt, zetten consumenten er vaak toe aan meer te kopen dan ze kunnen consumeren. Verse producten zijn vanwege hun korte houdbaarheid bijzonder gevoelig voor verspilling.",
       "options": {
@@ -1608,6 +1940,7 @@
       }
     },
     "Q5.3.3": {
+      "title": "Voedsel dat bijna over datum is",
       "question": "Je moet beslissen wat je gaat doen met voedsel waarvan de houdbaarheidsdatum bijna verstreken is. Welke aanpak zal waarschijnlijk de meeste voedselverspilling voorkomen?",
       "explanation": "Maaltijdplanning en het voorrang geven aan voedingsmiddelen met een kortere houdbaarheidstermijn behoren tot de meest effectieve huishoudelijke strategieën om voedselverspilling tegen te gaan.",
       "options": {
@@ -1618,6 +1951,7 @@
       }
     },
     "Q5.3.4": {
+      "title": "Voorkomen dat voedsel bederft",
       "question": "Welk huishouden produceert waarschijnlijk het minste afval door bedorven voedsel?",
       "explanation": "Veel voedingsmiddelen raken over de datum omdat consumenten vergeten wat ze thuis al in huis hebben en daardoor dubbele producten kopen. Inzicht in de voorraad is een belangrijke strategie om voedselverspilling tegen te gaan.",
       "options": {
@@ -1628,6 +1962,7 @@
       }
     },
     "Q5.3.5": {
+      "title": "Voedsel te vroeg weggooien",
       "question": "Een gezin gooit voedsel kort na de houdbaarheidsdatum weg omdat ze zich zorgen maken over de voedselveiligheid. Wat is, volgens de gegevens, vaak de drijfveer achter dit gedrag?",
       "explanation": "Uit onderzoek blijkt dat misvattingen over houdbaarheidsdata op voedselverpakkingen en bezorgdheid over mogelijke gezondheidsrisico’s tot de belangrijkste oorzaken behoren van vermijdbare voedselverspilling door huishoudens in Europa.",
       "options": {
@@ -1638,6 +1973,7 @@
       }
     },
     "Q5.4.1": {
+      "title": "Gezinsdiners plannen",
       "question": "Je bent een gezinsdiner aan het plannen en wilt onnodige voedselverspilling voorkomen. Welke aanpak helpt daarbij waarschijnlijk het beste?",
       "explanation": "Overmatige voorbereiding is een veelvoorkomende oorzaak van voedselverspilling in huishoudens. Door porties af te stemmen op de werkelijke behoefte, kan men voorkomen dat er te veel voedsel overblijft dat misschien nooit wordt opgegeten.",
       "options": {
@@ -1648,6 +1984,7 @@
       }
     },
     "Q5.4.2": {
+      "title": "Korting op gezinsverpakkingen",
       "question": "Een supermarkt biedt een flinke korting aan op een gezinsverpakking met verse levensmiddelen. Wat is de meest duurzame reactie hierop?",
       "explanation": "Het kopen van meer voedsel dan er kan worden geconsumeerd, is een veelvoorkomende oorzaak van voedselverspilling. Lagere prijzen per eenheid betekenen niet per se minder verspilling als het voedsel later toch wordt weggegooid.",
       "options": {
@@ -1658,6 +1995,7 @@
       }
     },
     "Q5.4.3": {
+      "title": "Winkelgewoonten",
       "question": "Welke winkelgewoonte draagt het meest bij aan overconsumptie en voedselverspilling?",
       "explanation": "Impulsaankopen leiden vaak tot overmatige aankopen en vergroten de kans dat voedsel over de houdbaarheidsdatum heen gaat voordat het wordt opgegeten.",
       "options": {
@@ -1668,6 +2006,7 @@
       }
     },
     "Q5.4.4": {
+      "title": "Weggegooid vers voedsel",
       "question": "In een huishouden worden vaak brood, fruit en groenten weggegooid. Welk onderliggend gedrag draagt waarschijnlijk het meest bij aan dit probleem?",
       "explanation": "Verse producten en bakkerijproducten behoren tot de voedingsmiddelen die het vaakst worden verspild, omdat ze een relatief korte houdbaarheid hebben en er vaak te veel van wordt gekocht.",
       "options": {
@@ -1678,6 +2017,7 @@
       }
     },
     "Q5.4.5": {
+      "title": "Overconsumptie en verspilling",
       "question": "Welke uitspraak geeft de relatie tussen overconsumptie en voedselverspilling het beste weer?",
       "explanation": "Overconsumptie en overmatige aankopen leiden er vaak toe dat voedsel ongebruikt blijft, waardoor zowel het huishoudelijk afval als de milieueffecten die gepaard gaan met de productie van dat voedsel toenemen.",
       "options": {
@@ -1688,6 +2028,7 @@
       }
     },
     "Q6.1.1": {
+      "title": "Duurzame eiwitinname",
       "question": "Je wilt je eiwitinname verhogen en tegelijkertijd de milieu-impact van je voedingspatroon verminderen. Welke wekelijkse aanpassing sluit het beste aan bij de huidige wetenschappelijke inzichten?",
       "options": {
         "A": "Eet grotere porties rood vlees",
@@ -1698,6 +2039,7 @@
       "explanation": "Peulvruchten, noten en volle granen leveren eiwitten en hebben doorgaans een lagere milieu-impact dan veel dierlijke eiwitbronnen. Variëren in eiwitbronnen is gunstig voor zowel gezondheid als duurzaamheid."
     },
     "Q6.1.2": {
+      "title": "Eiwitrijke lunches vergelijken",
       "question": "Twee lunches bevatten ongeveer evenveel eiwitten: Salade met linzen en quinoa Broodje met vleeswaren Welke bewering klopt het beste?",
       "explanation": "Eiwitrijke voedingsmiddelen verschillen qua de voedingsstoffen die ze bevatten, zoals vezels, natrium, verzadigde vetten, vitamines en mineralen. Het totale eiwitprofiel is van belang.",
       "options": {
@@ -1708,6 +2050,7 @@
       }
     },
     "Q6.1.3": {
+      "title": "Essentiële aminozuren",
       "question": "Iemand wil zijn vleesconsumptie verminderen, maar maakt zich zorgen of hij wel alle essentiële aminozuren binnenkrijgt. Welke aanpak is het meest geschikt?",
       "options": {
         "A": "Blijf bij elke maaltijd vlees eten",
@@ -1718,6 +2061,7 @@
       "explanation": "Verschillende plantaardige eiwitten vullen elkaar aan. In een gevarieerd eetpatroon levert het combineren van meerdere plantaardige eiwitbronnen doorgaans alle essentiële aminozuren."
     },
     "Q6.1.4": {
+      "title": "Eiwitclaims",
       "question": "Je vergelijkt twee voedingsmiddelen: Product A: „Bron van eiwitten“ Product B: „Eiwitrijk“ Wat kun je hieruit concluderen?",
       "options": {
         "A": "Product B bevat per definitie twee keer zoveel eiwit",
@@ -1728,6 +2072,7 @@
       "explanation": "Volgens de EU-wetgeving over voedingsclaims mag een product alleen 'eiwitrijk' worden genoemd als minstens 20% van de energetische waarde uit eiwit komt. Voor 'bron van eiwit' is minstens 12% vereist."
     },
     "Q6.1.5": {
+      "title": "Evenwichtige eiwitbronnen",
       "question": "Welk voedingspatroon sluit het best aan bij zowel de duurzaamheidsdoelstellingen als de huidige voedingsaanbevelingen?",
       "options": {
         "A": "De meeste eiwitten halen uit rood vlees en vleeswaren",
@@ -1738,6 +2083,7 @@
       "explanation": "Gezonde en duurzame voeding steunt doorgaans op uiteenlopende eiwitbronnen in plaats van op één bron. Peulvruchten, vis, noten, zuivel en matige hoeveelheden vlees kunnen allemaal bijdragen aan voldoende eiwit en aan de kwaliteit van het eetpatroon."
     },
     "Q6.2.1": {
+      "title": "Gezondere vetten",
       "question": "Je wilt de kwaliteit van de vetten in je voeding verbeteren, zonder dat je maaltijden daardoor minder lekker worden. Welke vervanging sluit het beste aan bij de huidige aanbevelingen?",
       "explanation": "De WHO adviseert om verzadigde vetten waar mogelijk te vervangen door onverzadigde vetten. Olijfolie is rijk aan onverzadigde vetten, terwijl boter rijk is aan verzadigde vetten.",
       "options": {
@@ -1748,6 +2094,7 @@
       }
     },
     "Q6.2.2": {
+      "title": "Vetprofiel van lunches",
       "question": "Je vergelijkt twee lunches die ongeveer evenveel eiwitten bevatten: Salade met linzen en walnoten Broodje met vleeswaren Welke bewering klopt het beste?",
       "explanation": "Plantaardige eiwitten",
       "options": {
@@ -1758,6 +2105,7 @@
       }
     },
     "Q6.2.3": {
+      "title": "„Low Fat“ op de verpakking",
       "question": "Op een verpakking staat „Low Fat“. Wat is de beste interpretatie daarvan?",
       "explanation": "Sommige vetarme producten compenseren dit door suikers of andere ingrediënten toe te voegen. Het is zinvoller om het volledige voedingsprofiel te beoordelen dan alleen naar het vetgehalte te kijken.",
       "options": {
@@ -1768,6 +2116,7 @@
       }
     },
     "Q6.2.4": {
+      "title": "Hartgezond diner",
       "question": "Welke maaltijdkeuze sluit het beste aan bij zowel de aanbevelingen voor een gezond hart als bij duurzame eetgewoonten?",
       "explanation": "Vis levert eiwitten en onverzadigde vetten, waaronder omega-3-vetzuren. Het vervangen van een deel van het rode en bewerkte vlees door vis gaat gepaard met gezondheidsvoordelen en kan bijdragen aan duurzamere eetgewoonten.",
       "options": {
@@ -1778,6 +2127,7 @@
       }
     },
     "Q6.2.5": {
+      "title": "Transvetten",
       "question": "Je wilt het risico dat gepaard gaat met de inname van transvetten verminderen. Welk voedingsmiddel verdient waarschijnlijk extra aandacht?",
       "explanation": "Industrieel geproduceerde transvetten komen vaak voor in gefrituurd voedsel, gebak en sommige verpakte snacks. De WHO adviseert om de inname van transvetten zo laag mogelijk te houden, omdat deze het risico op hart- en vaatziekten verhogen en geen bekende gezondheidsvoordelen bieden.",
       "options": {
@@ -1788,6 +2138,7 @@
       }
     },
     "Q6.3.1": {
+      "title": "Minder vrije suikers",
       "question": "Je wilt je inname van vrije suikers verminderen. Welke aanpassing aan je ontbijt zal waarschijnlijk het grootste effect hebben?",
       "explanation": "Met suiker gezoete dranken behoren in veel leeftijdsgroepen in Europa tot de grootste bronnen van vrije suikerinname. Het vervangen ervan door water is een van de meest effectieve manieren om de consumptie van vrije suiker te verminderen.",
       "options": {
@@ -1798,6 +2149,7 @@
       }
     },
     "Q6.3.2": {
+      "title": "Verborgen suikers",
       "question": "Welk product kan nog steeds aanzienlijke hoeveelheden suiker bevatten, ook al beschouwen veel consumenten het als gezond?",
       "explanation": "De WHO classificeert suikers die van nature in vruchtensap voorkomen als vrije suikers. Vruchtensap kan daarom aanzienlijk bijdragen aan de dagelijkse suikerinname.",
       "options": {
@@ -1808,6 +2160,7 @@
       }
     },
     "Q6.3.3": {
+      "title": "De claim „Zonder toegevoegde suikers“",
       "question": "Je vergelijkt twee producten: Product A: „Zonder toegevoegde suikers“ Product B: Standaardversie Wat kun je concluderen uit de claim op Product A?",
       "explanation": "Producten met het label „zonder toegevoegde suikers” kunnen toch van nature voorkomende suikers bevatten. Volgens de EU-wetgeving moet op producten, indien van toepassing, de vermelding „bevat van nature voorkomende suikers” worden aangebracht.",
       "options": {
@@ -1818,6 +2171,7 @@
       }
     },
     "Q6.3.4": {
+      "title": "Tussendoortjes met weinig suiker",
       "question": "Je bent op zoek naar een tussendoortje dat voedingsstoffen levert zonder dat het veel vrije suikers bevat. Welke optie past het beste bij dat doel?",
       "explanation": "Fruit, onbewerkte zuivelproducten en noten leveren voedingsstoffen zoals vezels, eiwitten, vitamines en mineralen, terwijl veel zoete snacks vooral vrije suikers en calorieën bevatten.",
       "options": {
@@ -1828,6 +2182,7 @@
       }
     },
     "Q6.3.5": {
+      "title": "Aanbevelingen voor suiker",
       "question": "Welke stelling geeft de huidige aanbevelingen inzake suikerinname het beste weer?",
       "explanation": "De EFSA concludeerde dat er geen veilige drempelwaarde voor toegevoegde en vrije suikers kon worden vastgesteld en beveelt aan de inname zo laag mogelijk te houden binnen een gezond en qua voedingswaarde toereikend dieet.",
       "options": {
@@ -1838,6 +2193,7 @@
       }
     },
     "Q6.4.1": {
+      "title": "Minder natrium",
       "question": "Je wilt je natriuminname verminderen. Welke verandering zal waarschijnlijk het grootste effect hebben?",
       "explanation": "In de meeste ontwikkelde landen is 70–80% van het zout in de voeding afkomstig van bewerkte voedingsmiddelen en maaltijden die buitenshuis worden genuttigd, en niet zozeer van het zout dat tijdens het koken of aan tafel wordt toegevoegd.",
       "options": {
@@ -1848,6 +2204,7 @@
       }
     },
     "Q6.4.2": {
+      "title": "Natriumarme maaltijden",
       "question": "Welke maaltijd bevat waarschijnlijk het minste natrium?",
       "explanation": "Verse en minimaal bewerkte voedingsmiddelen bevatten over het algemeen veel minder natrium dan vleeswaren, instantproducten en kant-en-klaarmaaltijden.",
       "options": {
@@ -1858,6 +2215,7 @@
       }
     },
     "Q6.4.3": {
+      "title": "Het label „natriumarm“",
       "question": "Op een product staat „natriumarm“. Wat is de beste interpretatie hiervan?",
       "explanation": "Het verminderen van de natriuminname is goed voor de gezondheid, maar bij een gezonde keuze moet ook rekening worden gehouden met andere factoren, zoals vet, suiker, vezels en de algehele kwaliteit van het voedsel.",
       "options": {
@@ -1868,6 +2226,7 @@
       }
     },
     "Q6.4.4": {
+      "title": "Smaak zonder zout",
       "question": "U wilt uw maaltijden meer smaak geven en tegelijkertijd uw zoutinname verminderen. Welke aanpak sluit het beste aan bij het advies van de WHO?",
       "explanation": "De WHO raadt aan om kruiden en specerijen te gebruiken om gerechten op smaak te brengen, in plaats van overmatig gebruik te maken van zout.",
       "options": {
@@ -1878,6 +2237,7 @@
       }
     },
     "Q6.4.5": {
+      "title": "Bronnen van natrium",
       "question": "Welke voedingscategorie levert doorgaans een van de grootste bijdragen aan de natriuminname in het Europese voedingspatroon?",
       "explanation": "In Europese bevolkingsgroepen zijn brood, vlees en vleesproducten, kaas en zuivelproducten belangrijke bronnen van natriuminname.",
       "options": {
@@ -1888,6 +2248,7 @@
       }
     },
     "Q6.5.1": {
+      "title": "Vezelrijk ontbijt",
       "question": "Je wilt meer vezels binnenkrijgen. Welk ontbijt helpt je daarbij het beste?",
       "explanation": "Haver, fruit en noten zijn allemaal belangrijk",
       "options": {
@@ -1898,6 +2259,7 @@
       }
     },
     "Q6.5.2": {
+      "title": "Vezels in pasta",
       "question": "Je moet kiezen tussen twee pastaproducten. Welke optie bevat waarschijnlijk de meeste vezels?",
       "explanation": "Volkorenproducten bevatten meer van de natuurlijke vezels van het graan dan geraffineerde graanproducten. Volkorenpasta is over het algemeen een betere",
       "options": {
@@ -1908,6 +2270,7 @@
       }
     },
     "Q6.5.3": {
+      "title": "Volkoren op het etiket",
       "question": "Op een verpakking staat dat het product volkoren granen bevat. Welke informatie op het etiket zou het sterkste bewijs leveren dat deze bewering klopt?",
       "explanation": "Een handige manier om volkorenproducten te herkennen, is door te kijken of termen als „volkoren”, „volle haver” of „volkoren” aan het begin van de ingrediëntenlijst staan.",
       "options": {
@@ -1918,6 +2281,7 @@
       }
     },
     "Q6.5.4": {
+      "title": "Vezels en spijsvertering",
       "question": "Iemand wil zijn spijsvertering verbeteren en constipatie voorkomen. Welke gewoonte sluit het beste aan bij de huidige wetenschappelijke inzichten?",
       "explanation": "Voedingsvezels ondersteunen de darmfunctie, vooral in combinatie met voldoende vochtinname. Door de vezelinname geleidelijk te verhogen, kun je ook tijdelijke een opgeblazen gevoel en ongemak helpen verminderen.",
       "options": {
@@ -1928,6 +2292,7 @@
       }
     },
     "Q6.5.5": {
+      "title": "Soorten voedingsvezels",
       "question": "Welke combinatie van voedingsmiddelen levert waarschijnlijk de grootste verscheidenheid aan verschillende soorten voedingsvezels op?",
       "explanation": "Verschillende vezelrijke voedingsmiddelen bevatten verschillende soorten oplosbare en onoplosbare vezels. Het eten van een gevarieerd aanbod aan peulvruchten, groenten, fruit en volkorenproducten bevordert de spijsvertering en de algehele kwaliteit van het voedingspatroon.",
       "options": {
@@ -1938,6 +2303,7 @@
       }
     },
     "Q6.6.1": {
+      "title": "Vitamines zonder supplementen",
       "question": "Je wilt het vitaminegehalte van je voeding verbeteren zonder supplementen te nemen. Welke gewoonte sluit het beste aan bij de huidige aanbevelingen?",
       "explanation": "Groenten en fruit leveren verschillende vitamines, mineralen, vezels en antioxidanten. Door een gevarieerd aanbod aan plantaardige voedingsmiddelen te eten, verbetert de algehele inname van micronutriënten en neemt het risico op tekorten af.",
       "options": {
@@ -1948,6 +2314,7 @@
       }
     },
     "Q6.6.2": {
+      "title": "Vitamine D uit voeding",
       "question": "Iemand wil via de voeding een voldoende vitamine D-gehalte op peil houden. Welke maaltijd draagt daar waarschijnlijk het meest aan bij?",
       "explanation": "Natuurlijke voeding",
       "options": {
@@ -1958,6 +2325,7 @@
       }
     },
     "Q6.6.3": {
+      "title": "Vitamines bij een veganistisch dieet",
       "question": "Een consument volgt een strikt veganistisch dieet. Op welke vitamine moet hij of zij extra letten?",
       "explanation": "Vitamine B12 komt van nature vrijwel uitsluitend voor in voedingsmiddelen van dierlijke oorsprong. Mensen die vegetarisch en vooral veganistisch eten, hebben mogelijk verrijkte voedingsmiddelen of supplementen nodig om een voldoende inname te behouden.",
       "options": {
@@ -1968,6 +2336,7 @@
       }
     },
     "Q6.6.4": {
+      "title": "Tussendoortjes met vitamine C",
       "question": "Welk tussendoortje is waarschijnlijk een goede bron van vitamine C?",
       "options": {
         "A": "Kaas en crackers",
@@ -1978,6 +2347,7 @@
       "explanation": "Fruit zoals sinaasappels, kiwi's en bessen en veel groenten zijn rijk aan vitamine C, dat bijdraagt aan de werking van het immuunsysteem en aan normale collageenvorming."
     },
     "Q6.6.5": {
+      "title": "Koken en vitamines",
       "question": "Je kunt kiezen uit twee bijgerechten: gestoomde groenten of groenten die heel lang op hoge temperatuur zijn gekookt. Bij welke optie blijven de vitamines waarschijnlijk beter behouden?",
       "explanation": "Te lang koken kan het gehalte aan bepaalde vitamines verminderen. De WHO raadt aan om fruit en groenten niet te lang te koken, zodat belangrijke voedingsstoffen behouden blijven.",
       "options": {
@@ -1988,6 +2358,7 @@
       }
     },
     "Q6.7.1": {
+      "title": "Lunches vol voedingsstoffen",
       "question": "Twee lunches bevatten ongeveer evenveel calorieën. Welke lunch bevat waarschijnlijk meer voedingsstoffen?",
       "explanation": "Calorieën geven de hoeveelheid energie weer, maar de voedingswaardedichtheid geeft aan hoeveel heilzame voedingsstoffen een maaltijd bevat. Een maaltijd op basis van peulvruchten, groenten en volkoren granen levert doorgaans meer vezels, vitamines, mineralen en fytochemicaliën dan veel sterk bewerkte alternatieven met een vergelijkbaar caloriegehalte.",
       "options": {
@@ -1998,6 +2369,7 @@
       }
     },
     "Q6.7.2": {
+      "title": "Caloriearme dranken",
       "question": "Welke drankkeuze draagt het meest bij aan het verminderen van onnodige calorie-inname?",
       "explanation": "Water zorgt voor hydratatie zonder calorieën, terwijl suikerhoudende dranken aanzienlijke hoeveelheden energie kunnen leveren met een beperkte voedingswaarde.",
       "options": {
@@ -2008,6 +2380,7 @@
       }
     },
     "Q6.7.3": {
+      "title": "Bewerkte snacks en calorieën",
       "question": "Waarom kan het regelmatig eten van sterk bewerkte snacks het beheersen van de calorie-inname bemoeilijken?",
       "explanation": "Veel ultraverwerkte voedingsmiddelen bevatten veel calorieën en je eet er al snel te veel van, wat kan leiden tot een te hoge calorie-inname en ongezonde gewichtstoename.",
       "options": {
@@ -2018,6 +2391,7 @@
       }
     },
     "Q6.7.4": {
+      "title": "Duurzame calorie-inname",
       "question": "Welke uitspraak geeft het beste een duurzame benadering van de calorie-inname weer?",
       "options": {
         "A": "Zo min mogelijk calorieën binnenkrijgen",
@@ -2028,6 +2402,7 @@
       "explanation": "Gezonde en duurzame voeding gaat niet alleen over calorieën. Het gaat om het dekken van de energiebehoefte met voedsel dat essentiële voedingsstoffen levert, en om het beperken van onnodige overconsumptie en verspilling."
     },
     "Q6.7.5": {
+      "title": "Vullende tussendoortjes",
       "question": "Vier tussendoortjes bevatten ongeveer evenveel calorieën. Welke zorgt er waarschijnlijk voor dat je langer een verzadigd gevoel houdt?",
       "explanation": "Voedingsmiddelen die vezels, eiwitten en gezonde vetten bevatten, zorgen over het algemeen voor een beter verzadigingsgevoel dan voedingsmiddelen die voornamelijk uit toegevoegde suikers bestaan.",
       "options": {

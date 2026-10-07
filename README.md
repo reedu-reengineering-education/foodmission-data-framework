@@ -357,6 +357,19 @@ Rows are matched by the `key` column (business codes such as `M.A1.1::goal` or
 `Q1.1.1::options::B`), empty cells keep the current value, and translations that
 drop a `{{placeholder}}` are rejected (exit code 1).
 
+English is owned by the repository: edited `en` cells are only reported as
+`skipped.english_changed`. To accept them, pass `--accept-english`:
+
+```bash
+npm run i18n:workbook:import -- --accept-english --dry-run
+```
+
+This writes the new English to `src/i18n/en/*.json` (`ui-*` sheets) and
+`prisma/seeds/data/catalog/*.en.json` (`catalog-*` sheets except dimensions and
+topics). Other sheets report `english_unsupported`. Translations that stay the
+same on a changed row are listed under `staleTranslations` in the import report
+so they can be reviewed.
+
 #### Testing
 
 - `npm run test` - Run unit tests

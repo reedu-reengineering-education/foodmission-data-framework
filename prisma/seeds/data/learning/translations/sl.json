@@ -37,758 +37,1009 @@
   },
   "foodFacts": {
     "FF1.1.1": {
+      "title": "Manj rdečega mesa, manjši vpliv",
       "body": "Uživanje manj rdečega mesa je eden najučinkovitejših načinov za zmanjšanje vpliva vaše prehrane na okolje."
     },
     "FF1.1.2": {
+      "title": "Govedina in gozdovi",
       "body": "Zmanjšanje porabe govedine lahko pomaga zmanjšati pritisk na gozdove in naravne habitate."
     },
     "FF1.1.3": {
+      "title": "Manj mesa, manj emisij",
       "body": "Prehrana z manj mesa običajno povzroči manj emisij toplogrednih plinov."
     },
     "FF1.1.4": {
+      "title": "Več rastlin, manj rdečega mesa",
       "body": "Trajnostna prehrana praviloma vsebuje več rastlinskih živil in manj rdečega mesa."
     },
     "FF1.1.5": {
+      "title": "Govedina in raba zemljišč",
       "body": "Pridelava govedine zahteva veliko več zemljišč kot pridelava rastlinskih beljakovin, kot sta grah ali tofu."
     },
     "FF1.1.6": {
+      "title": "Meso in poraba vode",
       "body": "Uživanje manj mesa lahko zmanjša porabo vode, povezano s pridelavo hrane."
     },
     "FF1.1.7": {
+      "title": "Meso in antibiotiki",
       "body": "Zmanjšanje porabe mesa lahko pripomore k manjši potrebi po antibiotikih v živinoreji."
     },
     "FF1.1.8": {
+      "title": "Živinoreja: zemljišča in kalorije",
       "body": "Živinoreja uporablja večino kmetijskih zemljišč na svetu, prispeva pa veliko manjši delež kalorij in beljakovin."
     },
     "FF1.1.9": {
+      "title": "Živinoreja in biotska raznovrstnost",
       "body": "Manjše povpraševanje po živalskih proizvodih lahko pomaga ohranjati biotsko raznovrstnost, saj se zmanjša spreminjanje rabe zemljišč."
     },
     "FF1.1.10": {
+      "title": "Meso zamenjajte s stročnicami",
       "body": "Nadomeščanje nekaterih mesnih obrokov s stročnicami lahko ohrani vnos beljakovin in hkrati zmanjša vplive na okolje."
     },
     "FF1.2.1": {
+      "title": "Stročnice zmanjšajo vpliv na podnebje",
       "body": "Nadomeščanje dela mesa s stročnicami lahko zmanjša vpliv vaše prehrane na podnebje."
     },
     "FF1.2.2": {
+      "title": "Stročnice: hranljive in z majhnim odtisom",
       "body": "Stročnice so bogate z beljakovinami, vlakninami, vitamini in minerali, hkrati pa imajo majhen okoljski odtis."
     },
     "FF1.2.3": {
+      "title": "Raznoliki viri beljakovin",
       "body": "Raznolikost virov beljakovin podpira tako zdravje ljudi kot okoljsko trajnostnost."
     },
     "FF1.2.4": {
+      "title": "Najbolj trajnostne beljakovine",
       "body": "Fižol, leča, grah in čičerika so med najbolj trajnostnimi razpoložljivimi viri beljakovin."
     },
     "FF1.2.5": {
+      "title": "Stročnice varčujejo z vodo",
       "body": "Stročnice običajno potrebujejo manj vode kot številni živalski viri beljakovin."
     },
     "FF1.2.6": {
+      "title": "Stročnice in žita",
       "body": "Kombiniranje stročnic z žiti izboljša kakovost rastlinskih beljakovin."
     },
     "FF1.2.7": {
+      "title": "Jajca in mlečni izdelki namesto rdečega mesa",
       "body": "Jajca in mlečni izdelki lahko zagotovijo beljakovine z manjšim vplivom na okolje kot rdeče meso."
     },
     "FF1.2.8": {
+      "title": "Stročnice hranijo tla",
       "body": "Stročnice naravno izboljšujejo rodovitnost tal, saj vežejo dušik iz zraka in tako zmanjšujejo potrebo po gnojilih."
     },
     "FF1.2.9": {
+      "title": "Žuželke kot vir beljakovin",
       "body": "Žuželke so bogate s hranili in lahko postanejo pomemben alternativni vir beljakovin v prihodnjih prehranskih sistemih."
     },
     "FF1.2.10": {
+      "title": "Rastlinske alternative mesu",
       "body": "Rastlinske alternative mesu lahko pomagajo zmanjšati porabo mesa, vendar se njihova hranilna kakovost med izdelki razlikuje."
     },
     "FF1.3.1": {
+      "title": "Kvinoja: popolna beljakovina",
       "body": "Kvinoja vsebuje vseh devet esencialnih aminokislin, zato je popolna rastlinska beljakovina."
     },
     "FF1.3.2": {
+      "title": "Stročnice in kronične bolezni",
       "body": "Stročnice so hranljiva osnovna živila, povezana z manjšim tveganjem za kronične bolezni."
     },
     "FF1.3.3": {
+      "title": "Več kot pšenica, riž in koruza",
       "body": "Alternativne poljščine pomagajo zmanjšati odvisnost od pšenice, riža in koruze."
     },
     "FF1.3.4": {
+      "title": "Odporna prosena žita",
       "body": "Prosena žita so zelo odporne poljščine, ki lahko rastejo v vročih in suhih razmerah z malo vode."
     },
     "FF1.3.5": {
+      "title": "Prosena žita v spreminjajočem se podnebju",
       "body": "Prosena žita lahko še naprej dajejo pridelek v podnebnih razmerah, v katerih druge poljščine morda odpovedo."
     },
     "FF1.3.6": {
+      "title": "Raznolike poljščine, večja prehranska varnost",
       "body": "Pridelava bolj raznolikih osnovnih poljščin lahko okrepi prehransko varnost in odpornost na podnebne spremembe."
     },
     "FF1.3.7": {
+      "title": "Kvinoja osvaja svet",
       "body": "Kvinojo danes gojijo v več kot 70 državah, kar pripomore k raznolikosti svetovne pridelave hrane."
     },
     "FF1.3.8": {
+      "title": "Prednosti ajde",
       "body": "Ajda je naravno brez glutena in bogata z vlakninami, beljakovinami in antioksidanti."
     },
     "FF1.3.9": {
+      "title": "Beljakovine amaranta",
       "body": "Amarant vsebuje visokokakovostne beljakovine, vključno z lizinom."
     },
     "FF1.3.10": {
+      "title": "Antioksidanti v starodavnih žitih",
       "body": "Starodavna žita, kot so proso, kvinoja in amarant, vsebujejo koristne antioksidativne snovi."
     },
     "FF2.1.1": {
+      "title": "Kmetijstvo zavzema polovico zemljišč",
       "body": "Približno polovica svetovnih naseljivih zemljišč se uporablja za kmetijstvo."
     },
     "FF2.1.2": {
+      "title": "Rastlinske beljakovine prihranijo zemljišča",
       "body": "Pridelava rastlinskih beljakovin običajno zahteva veliko manj zemljišč kot pridelava mesa."
     },
     "FF2.1.3": {
+      "title": "Rastlinski obroki sprostijo zemljišča",
       "body": "Več rastlinskih obrokov lahko pomaga sprostiti zemljišča za obnovo narave."
     },
     "FF2.1.4": {
+      "title": "Manj govedine, manj zemljišč",
       "body": "Zmanjšanje porabe govedine je ena največjih prehranskih sprememb za zmanjšanje rabe zemljišč."
     },
     "FF2.1.5": {
+      "title": "Govedina potrebuje največ zemljišč",
       "body": "Govedina je eno od živil, ki za pridelavo zahtevajo največ zemljišč."
     },
     "FF2.1.6": {
+      "title": "Zavržena hrana, zapravljena zemljišča",
       "body": "Zmanjšanje količine zavržene hrane bi lahko prihranilo več zemljišč, kot merijo nekatere države."
     },
     "FF2.1.7": {
+      "title": "Kmetijstvo je odvisno od narave",
       "body": "Kmetijstvo je odvisno od zdravih tal, biotske raznovrstnosti in ekosistemskih storitev."
     },
     "FF2.1.8": {
+      "title": "Zemljišča za živino in krmo",
       "body": "Večina kmetijskih zemljišč se uporablja za pašo živine ali pridelavo krme."
     },
     "FF2.1.9": {
+      "title": "Širjenje kmetijskih površin in biotska raznovrstnost",
       "body": "Širjenje kmetijskih površin je glavni vzrok izgube biotske raznovrstnosti."
     },
     "FF2.1.10": {
+      "title": "Degradirana kmetijska zemljišča",
       "body": "Približno 52 % kmetijskih zemljišč je zmerno ali močno degradiranih."
     },
     "FF2.2.1": {
+      "title": "Poraba vode v kmetijstvu",
       "body": "Približno 70 % svetovnega odvzema sladke vode se porabi za kmetijstvo."
     },
     "FF2.2.2": {
+      "title": "Manj živalskih proizvodov, manj vode",
       "body": "Prehrana z manj živalskimi proizvodi pogosto zahteva manj vode."
     },
     "FF2.2.3": {
+      "title": "Trajnostna prehrana prihrani vodo",
       "body": "Trajnostna prehrana lahko zmanjša porabo vode, povezano s hrano, za 20–50 %."
     },
     "FF2.2.4": {
+      "title": "Zavržena hrana, zapravljena voda",
       "body": "Z zavrženo hrano zapravimo tudi ogromne količine vode, porabljene za njeno pridelavo."
     },
     "FF2.2.5": {
+      "title": "Grozi pomanjkanje vode",
       "body": "Pomanjkanje vode bi lahko do leta 2050 ogrozilo pridelavo hrane v številnih regijah."
     },
     "FF2.2.6": {
+      "title": "Preprečite odpadke, prihranite vodo",
       "body": "Preprečevanje zavržene hrane pomaga ohranjati vire sladke vode."
     },
     "FF2.2.7": {
+      "title": "Vodni odtis vaše prehrane",
       "body": "Vodni odtis vaše prehrane je močno odvisen od tega, kaj jeste."
     },
     "FF2.2.8": {
+      "title": "Pametnejše upravljanje z vodo",
       "body": "Boljše upravljanje z vodo lahko zmanjša vpliv kmetovanja na okolje."
     },
     "FF2.2.9": {
+      "title": "Vse več namakanja",
       "body": "Poraba vode za namakanje se je od leta 1961 več kot podvojila."
     },
     "FF2.2.10": {
+      "title": "Gnojila in onesnaževanje voda",
       "body": "Prekomerna uporaba gnojil prispeva k onesnaževanju voda in nastanku mrtvih con."
     },
     "FF2.3.1": {
+      "title": "Delež emisij iz hrane",
       "body": "Prehranski sistemi ustvarijo približno tretjino svetovnih emisij toplogrednih plinov."
     },
     "FF2.3.2": {
+      "title": "Stročnice zmanjšajo emisije",
       "body": "Nadomeščanje dela živalskih beljakovin s stročnicami lahko zmanjša emisije, povezane s prehrano."
     },
     "FF2.3.3": {
+      "title": "Sezonska hrana, manj emisij",
       "body": "Nakup sezonskih živil lahko pomaga zmanjšati emisije, povezane s hrano."
     },
     "FF2.3.4": {
+      "title": "Enake kalorije, različni odtisi",
       "body": "Živila z enako količino kalorij imajo lahko zelo različne ogljične odtise."
     },
     "FF2.3.5": {
+      "title": "Odtis govedine in jagnjetine",
       "body": "Meso, zlasti govedina in jagnjetina, ima veliko večji ogljični odtis kot večina rastlinskih živil."
     },
     "FF2.3.6": {
+      "title": "Emisije vegetarijanske prehrane",
       "body": "Vegetarijanska prehrana lahko povzroči bistveno manj emisij kot prehrana z veliko mesa."
     },
     "FF2.3.7": {
+      "title": "Učinek fleksitarijanstva",
       "body": "Fleksitarijanska prehrana lahko občutno zmanjša vplive na podnebje."
     },
     "FF2.3.8": {
+      "title": "Emisije zaradi zavržene hrane",
       "body": "Zavržena hrana letno povzroči milijarde ton emisij v ekvivalentu CO2."
     },
     "FF2.3.9": {
+      "title": "Gozdovi shranjujejo ogljik",
       "body": "Varovanje gozdov preprečuje velike emisije ogljika zaradi spreminjanja rabe zemljišč."
     },
     "FF2.3.10": {
+      "title": "Kolobarjenje s stročnicami",
       "body": "Kolobarjenje s stročnicami lahko zmanjša ogljični odtis rastlinske pridelave."
     },
     "FF2.4.1": {
+      "title": "Emisije prevoza hrane",
       "body": "Svetovni prevoz hrane letno povzroči približno 3 milijarde ton emisij v ekvivalentu CO₂."
     },
     "FF2.4.2": {
+      "title": "Hlajeni prevoz",
       "body": "Prevoz na dolge razdalje pogosto zahteva hlajenje, kar poveča porabo energije in ogljični odtis hrane."
     },
     "FF2.4.3": {
+      "title": "Sezonska izbira, manj prevoza",
       "body": "Izbira sezonskih živil in zmanjšanje nepotrebnega prevoza lahko pomagata zmanjšati vpliv prehranskega sistema na podnebje."
     },
     "FF2.4.4": {
+      "title": "Delež prevoza v emisijah hrane",
       "body": "Skoraj petina emisij toplogrednih plinov svetovnega prehranskega sistema izvira iz prevoza hrane."
     },
     "FF2.4.5": {
+      "title": "Transportne poti sadja in zelenjave",
       "body": "Sadje in zelenjava predstavljata približno 36 % svetovnih emisij, povezanih s transportnimi potmi hrane."
     },
     "FF2.4.6": {
+      "title": "Hladna veriga",
       "body": "Neprekinjena hladna veriga je ključna za ohranjanje kakovosti hrane in zmanjševanje kvarjenja med prevozom."
     },
     "FF2.4.7": {
+      "title": "Emisije prevoza in pridelave",
       "body": "Prevoz sadja in zelenjave lahko povzroči približno dvakrat toliko emisij toplogrednih plinov kot njihova pridelava."
     },
     "FF2.4.8": {
+      "title": "Emisije tovornega prevoza hrane",
       "body": "Čeprav hrana predstavlja le okoli 18 % razdalj svetovnega tovornega prometa, povzroči približno 27 % emisij, povezanih s tovornim prometom."
     },
     "FF2.4.9": {
+      "title": "Izgube hrane brez hlajenja",
       "body": "Zaradi neustreznega hlajenja in hladilnih sistemov se letno izgubi ali zavrže približno 526 milijonov ton hrane."
     },
     "FF2.4.10": {
+      "title": "Boljše hladne verige",
       "body": "Boljša infrastruktura hladne verige lahko zmanjša izgube hrane, izboljša prehransko varnost in zmanjša vplive na okolje."
     },
     "FF3.1.1": {
+      "title": "Predelava za varnost hrane",
       "body": "Predelava hrane lahko izboljša varnost živil in podaljša njihov rok uporabnosti."
     },
     "FF3.1.2": {
+      "title": "Predelava zmanjša zavrženo hrano",
       "body": "Predelava lahko pomaga zmanjšati količino zavržene hrane, saj jo ohrani dlje časa."
     },
     "FF3.1.3": {
+      "title": "Visoko predelana živila",
       "body": "Visoko predelana živila pogosto vsebujejo več sladkorja, soli in nasičenih maščob."
     },
     "FF3.1.4": {
+      "title": "Poraba energije pri predelavi",
       "body": "Različni načini predelave porabijo zelo različne količine energije."
     },
     "FF3.1.5": {
+      "title": "Energija za zamrznjena živila",
       "body": "Zamrznjena živila lahko za shranjevanje zahtevajo precej energije."
     },
     "FF3.1.6": {
+      "title": "Onkraj kmetije",
       "body": "Predelava, embalaža in prevoz vsi prispevajo k vplivom prehranskega sistema."
     },
     "FF3.1.7": {
+      "title": "Ni vsaka predelava škodljiva",
       "body": "Nimajo vsa predelana živila velikega vpliva na okolje."
     },
     "FF3.1.8": {
+      "title": "Učinkovito shranjevanje in prevoz",
       "body": "Predelava hrane lahko izboljša učinkovitost shranjevanja in prevoza."
     },
     "FF3.1.9": {
+      "title": "Tehnologija je pomembna",
       "body": "Trajnostnost predelanih živil je odvisna od tehnologije proizvodnje."
     },
     "FF3.1.10": {
+      "title": "Celoten življenjski krog",
       "body": "Pogled na celoten življenjski krog hrane da boljšo sliko o trajnostnosti kot osredotočanje zgolj na predelavo."
     },
     "FF3.2.1": {
+      "title": "Kratke dobavne verige",
       "body": "Kratke dobavne verige lahko podpirajo lokalna gospodarstva in odpornost."
     },
     "FF3.2.2": {
+      "title": "Sezonsko in lokalno",
       "body": "Sezonska lokalna hrana lahko zmanjša potrebe po shranjevanju in prevozu."
     },
     "FF3.2.3": {
+      "title": "Poreklo ni vse",
       "body": "Zgolj država porekla ne more določiti, ali je živilo trajnostno."
     },
     "FF3.2.4": {
+      "title": "Poreklo in sledljivost",
       "body": "Poreklo hrane lahko daje koristne informacije o sledljivosti in trajnostnosti."
     },
     "FF3.2.5": {
+      "title": "Razcvet trgovine s hrano",
       "body": "Svetovna trgovina s hrano se je v zadnjih desetletjih močno povečala."
     },
     "FF3.2.6": {
+      "title": "Uvožena krma v Evropi",
       "body": "Številni evropski prehranski sistemi so odvisni od uvožene krme in surovin."
     },
     "FF3.2.7": {
+      "title": "Zaupanje v oznake porekla",
       "body": "Potrošniki oznake porekla pogosto povezujejo s kakovostjo in varnostjo."
     },
     "FF3.2.8": {
+      "title": "Lokalno ni vedno bolj zeleno",
       "body": "Lokalna hrana ni vedno najbolj trajnostna izbira."
     },
     "FF3.2.9": {
+      "title": "Način pridelave pred razdaljo",
       "body": "Kako je hrana pridelana, je pogosto pomembneje od razdalje, ki jo prepotuje."
     },
     "FF3.2.10": {
+      "title": "Letalski ali ladijski prevoz",
       "body": "Hrana, prepeljana z letalom, ima lahko veliko večji ogljični odtis kot hrana, prepeljana po morju."
     },
     "FF3.3.1": {
+      "title": "Ekološke kmetije in biotska raznovrstnost",
       "body": "Ekološke kmetije podpirajo večjo biotsko raznovrstnost kot konvencionalne kmetije."
     },
     "FF3.3.2": {
+      "title": "Podnebju prilagojeno kmetijstvo",
       "body": "Podnebju prilagojeno kmetijstvo želi povečati odpornost in hkrati zmanjšati emisije."
     },
     "FF3.3.3": {
+      "title": "Uravnoteženo kmetovanje",
       "body": "Trajnostno kmetovanje uravnoteža produktivnost z varstvom okolja."
     },
     "FF3.3.4": {
+      "title": "Cvetlični pasovi za opraševalce",
       "body": "Cvetlični pasovi in habitati za opraševalce lahko podpirajo biotsko raznovrstnost na kmetijah."
     },
     "FF3.3.5": {
+      "title": "Ekološko brez sintetičnih sredstev",
       "body": "Ekološko kmetovanje se izogiba sintetičnim gnojilom in pesticidom."
     },
     "FF3.3.6": {
+      "title": "Raznolikost poljščin",
       "body": "Raznolikost poljščin pomaga kmetijam pri odpornosti proti škodljivcem in boleznim."
     },
     "FF3.3.7": {
+      "title": "Kmetijsko gozdarstvo",
       "body": "Kmetijsko gozdarstvo združuje drevesa s poljščinami ali živino na istem zemljišču."
     },
     "FF3.3.8": {
+      "title": "Integrirano varstvo rastlin",
       "body": "Integrirano varstvo rastlin zmanjšuje odvisnost od kemičnih pesticidov."
     },
     "FF3.3.9": {
+      "title": "Precizno kmetijstvo",
       "body": "Precizno kmetijstvo lahko zmanjša porabo gnojil in emisije."
     },
     "FF3.3.10": {
+      "title": "Konservacijsko kmetijstvo",
       "body": "Konservacijsko kmetijstvo zmanjšuje poseganje v tla in varuje njihovo zdravje."
     },
     "FF3.4.1": {
+      "title": "Raznolike poljščine in pasme",
       "body": "Večja raznolikost poljščin in pasem lahko poveča odpornost prehranskega sistema."
     },
     "FF3.4.2": {
+      "title": "Alternativne beljakovine",
       "body": "Alternativne beljakovine lahko zmanjšajo odvisnost od konvencionalne živinoreje."
     },
     "FF3.4.3": {
+      "title": "Vzreja v širšem kontekstu",
       "body": "Trajnostno vzrejo je treba združiti s širšimi izboljšavami prehranskega sistema."
     },
     "FF3.4.4": {
+      "title": "Vzreja z manj metana",
       "body": "Vzreja živali z manjšimi emisijami metana lahko zmanjša vplive živinoreje."
     },
     "FF3.4.5": {
+      "title": "Alternativne krme za ribe",
       "body": "Alternativne krme za ribogojstvo lahko zmanjšajo pritisk na divje ribje staleže."
     },
     "FF3.4.6": {
+      "title": "Podnebno odporne poljščine",
       "body": "Genetsko izboljševanje lahko poljščinam pomaga pri spopadanju z novimi okoljskimi izzivi."
     },
     "FF3.4.7": {
+      "title": "Produktivna živina",
       "body": "Boljša produktivnost živali lahko zmanjša porabo virov na kilogram mesa."
     },
     "FF3.4.8": {
+      "title": "Urejanje genoma",
       "body": "Urejanje genoma lahko pomaga razviti poljščine, ki so bolj odporne na podnebni stres."
     },
     "FF3.4.9": {
+      "title": "Živina z boljšim izkoristkom krme",
       "body": "Selekcijska vzreja lahko izboljša izkoristek krme pri živini."
     },
     "FF3.4.10": {
+      "title": "Hidroponika in akvaponika",
       "body": "Hidroponski in akvaponski sistemi lahko porabijo veliko manj vode kot konvencionalno kmetovanje."
     },
     "FF3.5.1": {
+      "title": "Delo otrok v kmetijstvu",
       "body": "V kmetijstvu je največ primerov dela otrok na svetu."
     },
     "FF3.5.2": {
+      "title": "Fairtrade za kmete",
       "body": "Pravična trgovina (Fairtrade) si prizadeva izboljšati dohodke in delovne pogoje kmetov."
     },
     "FF3.5.3": {
+      "title": "Poštene cene",
       "body": "Pravična trgovina spodbuja preglednost in poštene cene vzdolž dobavnih verig."
     },
     "FF3.5.4": {
+      "title": "Dostojni delovni pogoji",
       "body": "Varni in dostojni delovni pogoji so ključni del trajnostnih prehranskih sistemov."
     },
     "FF3.5.5": {
+      "title": "Socialna trajnostnost",
       "body": "Trajnostnost prehranskega sistema vključuje socialne in delovne razmere."
     },
     "FF3.5.6": {
+      "title": "Ranljivi delavci v prehranskem sistemu",
       "body": "Številni delavci v prehranskem sistemu ostajajo izpostavljeni izkoriščanju."
     },
     "FF3.5.7": {
+      "title": "Etična izbira hrane",
       "body": "Potrošniki vse bolj cenijo etično in pravično pridelavo hrane."
     },
     "FF3.5.8": {
+      "title": "Ženske v pridelavi hrane",
       "body": "Ženske imajo ključno vlogo pri pridelavi hrane, a imajo pogosto slabši dostop do virov."
     },
     "FF3.5.9": {
+      "title": "Mali kmetje",
       "body": "Mali kmetje pridelajo velik delež svetovne hrane."
     },
     "FF3.5.10": {
+      "title": "Neoporečni in pravični prehranski sistemi",
       "body": "Trajnostni prehranski sistemi morajo biti okoljsko neoporečni in socialno pravični."
     },
     "FF4.1.1": {
+      "title": "Zakaj je embalaža pomembna",
       "body": "Embalaža za živila ščiti izdelke pred onesnaženjem, vlago, kisikom in fizičnimi poškodbami ter tako pomaga ohranjati varnost in kakovost hrane."
     },
     "FF4.1.2": {
+      "title": "Plastika preprečuje kvarjenje",
       "body": "Plastična embalaža lahko zmanjša kvarjenje hrane, saj je lahka, trpežna in učinkovito ščiti pokvarljiva živila."
     },
     "FF4.1.3": {
+      "title": "Uravnotežena embalaža",
       "body": "Najbolj trajnostna embalaža uravnoteža učinkovito rabo materialov, možnost recikliranja, zaščito izdelka in preprečevanje zavržene hrane."
     },
     "FF4.1.4": {
+      "title": "Vpliv hrane in embalaže",
       "body": "Vpliv pridelave hrane na okolje je pogosto veliko večji od vpliva embalaže, ki jo ščiti."
     },
     "FF4.1.5": {
+      "title": "Embalaža proti zavrženi hrani",
       "body": "Dobro zasnovana embalaža lahko zmanjša količino zavržene hrane, saj podaljša rok uporabnosti in preprečuje kvarjenje med prevozom, shranjevanjem in uporabo doma."
     },
     "FF4.1.6": {
+      "title": "Popolne embalaže ni",
       "body": "Ni enega samega „najbolj trajnostnega“ embalažnega materiala; okoljska učinkovitost je odvisna od celotnega življenjskega kroga izdelka."
     },
     "FF4.1.7": {
+      "title": "Užitna embalaža",
       "body": "Užitna embalaža lahko pomaga zmanjšati odvisnost od plastike iz fosilnih virov, saj konvencionalne embalažne materiale nadomesti z biološko razgradljivimi alternativami."
     },
     "FF4.1.8": {
+      "title": "Užitni premazi",
       "body": "Užitni premazi lahko podaljšajo rok uporabnosti sadja in zelenjave, saj zmanjšujejo izgubo vlage in upočasnjujejo dihanje."
     },
     "FF4.1.9": {
+      "title": "Pametna embalaža",
       "body": "Pametna embalaža lahko spremlja temperaturo, svežino in stanje izdelka ter tako pomaga zmanjšati izgube hrane vzdolž dobavne verige."
     },
     "FF4.1.10": {
+      "title": "Aktivna embalaža",
       "body": "Aktivna embalaža lahko sodeluje s hrano tako, da vpija kisik ali vlago, in tako pomaga, da izdelki dlje ostanejo sveži."
     },
     "FF4.2.1": {
+      "title": "Ponovna uporaba se sčasoma obrestuje",
       "body": "Embalaža za večkratno uporabo postane okoljsko koristna šele, ko je uporabljena dovolj velikokrat."
     },
     "FF4.2.2": {
+      "title": "Odpadna embalaža v Evropi",
       "body": "V Evropi vsako sekundo nastane približno 1,5 tone odpadne embalaže za enkratno uporabo."
     },
     "FF4.2.3": {
+      "title": "Stopnje recikliranja embalaže",
       "body": "V Evropi se reciklira le okoli 40 % odpadne embalaže."
     },
     "FF4.2.4": {
+      "title": "Ponovna uporaba prihrani surovine",
       "body": "Embalaža za večkratno uporabo lahko zmanjša povpraševanje po primarnih surovinah."
     },
     "FF4.2.5": {
+      "title": "Šteje število ponovnih uporab",
       "body": "Okoljske koristi embalaže za večkratno uporabo so odvisne od tega, kolikokrat jo uporabimo znova."
     },
     "FF4.2.6": {
+      "title": "Prevoz in čiščenje",
       "body": "Transportne razdalje in postopki čiščenja vplivajo na okoljski vpliv sistemov embalaže za večkratno uporabo."
     },
     "FF4.2.7": {
+      "title": "Prag koristnosti",
       "body": "Vsaka embalaža za večkratno uporabo ima prag, po katerem postane boljša od alternativ za enkratno uporabo."
     },
     "FF4.2.8": {
+      "title": "Visoke stopnje vračanja",
       "body": "Številni sistemi ponovne uporabe v Evropi že dosegajo stopnje vračanja 75 % ali več."
     },
     "FF4.2.9": {
+      "title": "Embalaža podaljša rok uporabnosti",
       "body": "Izboljšani embalažni sistemi lahko pomagajo zmanjšati količino zavržene hrane, saj podaljšajo rok uporabnosti."
     },
     "FF4.2.10": {
+      "title": "Dolgotrajna transportna embalaža",
       "body": "Transportna embalaža za večkratno uporabo je pogosto zasnovana tako, da ostane v obtoku več let."
     },
     "FF5.1.1": {
+      "title": "Gospodinjstva zavržejo največ",
       "body": "Gospodinjstva v Evropski uniji ustvarijo več zavržene hrane kot kateri koli drug sektor."
     },
     "FF5.1.2": {
+      "title": "Zavržemo petino hrane",
       "body": "Po svetu se zavrže približno petina hrane, ki je na voljo potrošnikom."
     },
     "FF5.1.3": {
+      "title": "Seznami in načrti obrokov",
       "body": "Nakupovalni seznami in načrtovanje obrokov lahko pomagajo zmanjšati količino zavržene hrane doma."
     },
     "FF5.1.4": {
+      "title": "Manjše porcije, manj odpadkov",
       "body": "Ponudba manjših porcij lahko zmanjša količino hrane, zavržene s krožnikov v menzah in restavracijah."
     },
     "FF5.1.5": {
+      "title": "Standardne porcije, več ostankov",
       "body": "Standardne velikosti porcij pogosto vodijo do nepotrebnih ostankov."
     },
     "FF5.1.6": {
+      "title": "Prepolni krožniki pri bifeju",
       "body": "Veliko ljudi si pri obrokih v obliki bifeja vzame več hrane, kot je lahko pojedo."
     },
     "FF5.1.7": {
+      "title": "Zavržena hrana in podnebje",
       "body": "Zavržena hrana je odgovorna za znaten delež emisij toplogrednih plinov prehranskega sistema."
     },
     "FF5.1.8": {
+      "title": "Zavrženo meso",
       "body": "Zavrženo meso nesorazmerno prispeva k podnebnemu vplivu zavržene hrane."
     },
     "FF5.1.9": {
+      "title": "Če bi bila zavržena hrana država",
       "body": "Če bi bila zavržena hrana država, bi bila med največjimi svetovnimi onesnaževalkami s toplogrednimi plini."
     },
     "FF5.1.10": {
+      "title": "Zavržena hranila",
       "body": "Zavržena hrana pomeni tudi zavržena hranila, kot so beljakovine in vlaknine."
     },
     "FF5.2.1": {
+      "title": "Zavržena hrana se začne doma",
       "body": "Gospodinjstva predstavljajo več kot polovico zavržene hrane v EU."
     },
     "FF5.2.2": {
+      "title": "Pravilno shranjujte hrano",
       "body": "Pravilno shranjevanje zmanjša količino odpadkov in ohranja hrano varno za uživanje."
     },
     "FF5.2.3": {
+      "title": "Pravilo dveh ur",
       "body": "Pokvarljivih živil praviloma ne smemo puščati na sobni temperaturi več kot dve uri."
     },
     "FF5.2.4": {
+      "title": "Načrtujte in porabite ostanke",
       "body": "Boljše načrtovanje in ponovna uporaba ostankov lahko prihranita denar in zmanjšata vplive na okolje."
     },
     "FF5.2.5": {
+      "title": "„Uporabno najmanj do“ ali „porabiti do“",
       "body": "Oznaka „uporabno najmanj do“ se nanaša na kakovost, oznaka „porabiti do“ pa na varnost živila."
     },
     "FF5.2.6": {
+      "title": "Najpogosteje zavržena živila",
       "body": "Sadje in zelenjava sta v Evropi najpogosteje zavrženi živili."
     },
     "FF5.2.7": {
+      "title": "Ostanke hitro ohladite",
       "body": "Hitro ohlajanje ostankov pomaga preprečiti razmnoževanje bakterij."
     },
     "FF5.2.8": {
+      "title": "Zavrženo meso in mlečni izdelki",
       "body": "Meso in mlečni izdelki so morda redkeje zavrženi, a imajo takrat večji okoljski odtis."
     },
     "FF5.2.9": {
+      "title": "Razdelite za hitrejše ohlajanje",
       "body": "Velike količine hrane se ohladijo hitreje, če jih razdelimo v manjše posode."
     },
     "FF5.2.10": {
+      "title": "Nepredušne posode",
       "body": "Nepredušne posode pomagajo, da ostanki dlje ostanejo sveži."
     },
     "FF5.3.1": {
+      "title": "Največ zavržene hrane v gospodinjstvih",
       "body": "Več kot polovico vse zavržene hrane v Evropi ustvarijo gospodinjstva."
     },
     "FF5.3.2": {
+      "title": "Prekomerni nakupi",
       "body": "Nakup večje količine hrane, kot je potrebno, je eden glavnih vzrokov za doma nastalo zavrženo hrano, ki bi se ji lahko izognili."
     },
     "FF5.3.3": {
+      "title": "Preverite zaloge pred nakupom",
       "body": "Načrtovanje obrokov in pregled zalog pred nakupom lahko pomagata zmanjšati prekomerne nakupe in količino zavržene hrane."
     },
     "FF5.3.4": {
+      "title": "Zamrznite presežke hrane",
       "body": "Zamrzovanje presežkov hrane, preden se pokvarijo, podaljša njihovo uporabnost in zmanjša količino odpadkov."
     },
     "FF5.3.5": {
+      "title": "69 milijonov ton",
       "body": "Ocenjuje se, da gospodinjstva v Evropi letno zavržejo približno 69 milijonov ton hrane."
     },
     "FF5.3.6": {
+      "title": "Zmeda z oznakami datuma",
       "body": "Nejasnost glede oznak „uporabno najmanj do“ in „porabiti do“ znatno prispeva k nepotrebno zavrženi hrani."
     },
     "FF5.3.7": {
+      "title": "Varno tudi po datumu „uporabno najmanj do“",
       "body": "Številna živila so po datumu „uporabno najmanj do“ še vedno varna za uživanje, če so bila pravilno shranjena."
     },
     "FF5.3.8": {
+      "title": "Pasti količinskih popustov",
       "body": "Akcije z več izdelki in količinski popusti lahko potrošnike spodbudijo k nakupu več hrane, kot jo lahko porabijo."
     },
     "FF5.3.9": {
+      "title": "Živila, ki jih pogosto kupimo preveč",
       "body": "Sveže sadje, zelenjava, mlečni izdelki in pekovski izdelki so med živili, ki jih zaradi prekomernih nakupov najpogosteje zavržemo."
     },
     "FF5.3.10": {
+      "title": "Spremljajte zavrženo hrano",
       "body": "Spremljanje hrane, ki jo zavržete, lahko pomaga prepoznati navade, ki vodijo v prekomerno uživanje in odpadke."
     },
     "FF5.4.1": {
+      "title": "Vse večje porcije",
       "body": "Velikosti porcij so se v mnogih državah v zadnjih desetletjih močno povečale."
     },
     "FF5.4.2": {
+      "title": "Večje porcije, a ne večja sitost",
       "body": "Večje porcije pogosto pripeljejo do tega, da ljudje pojedo več, ne da bi se počutili sorazmerno bolj siti."
     },
     "FF5.4.3": {
+      "title": "Zdravo za vas in planet",
       "body": "Zmanjšanje prekomernega vnosa hrane koristi tako osebnemu zdravju kot okoljski trajnostnosti."
     },
     "FF5.4.4": {
+      "title": "Pomembno je, koliko pojeste",
       "body": "Okoljski vpliv prehrane ni odvisen le od tega, kaj ljudje jedo, temveč tudi od tega, koliko pojedo."
     },
     "FF5.4.5": {
+      "title": "Presežne kalorije, več emisij",
       "body": "Uživanje presežnih kalorij prispeva k večjim emisijam toplogrednih plinov prehranskega sistema, ker je treba pridelati več hrane."
     },
     "FF5.4.6": {
+      "title": "Preveč živil z velikim odtisom",
       "body": "Živila z velikim okoljskim odtisom imajo ob prekomernem uživanju še večji vpliv."
     },
     "FF5.4.7": {
+      "title": "Primerne velikosti porcij",
       "body": "Izbira primernih velikosti porcij lahko pomaga zmanjšati tako prekomeren vnos kalorij kot porabo virov."
     },
     "FF5.4.8": {
+      "title": "Prenajedanje porablja vire",
       "body": "Uživanje več hrane, kot jo telo potrebuje, povečuje povpraševanje po kmetijskih virih, kot so zemljišča, voda in energija."
     },
     "FF5.4.9": {
+      "title": "Verižni učinek prekomernega uživanja",
       "body": "Prekomerno uživanje prispeva k nepotrebnemu povpraševanju po pridelavi, prevozu, shranjevanju in embaliranju hrane."
     },
     "FF5.4.10": {
+      "title": "Dovolj, ne preveč",
       "body": "Trajnostna prehrana spodbuja uživanje dovolj hrane za pokritje prehranskih potreb, hkrati pa se izogiba prekomernemu uživanju."
     },
     "FF6.1.1": {
+      "title": "Vloga beljakovin",
       "body": "Beljakovine pomagajo graditi in obnavljati mišice, tkiva, encime in hormone."
     },
     "FF6.1.2": {
+      "title": "Rastlinske in živalske beljakovine",
       "body": "Beljakovine lahko zagotovijo tako rastlinska kot živalska živila."
     },
     "FF6.1.3": {
+      "title": "Stročnice za zdravje in planet",
       "body": "Nadomeščanje dela rdečega mesa s stročnicami koristi zdravju in trajnostnosti."
     },
     "FF6.1.4": {
+      "title": "Koliko beljakovin potrebujete",
       "body": "Večina odraslih potrebuje približno 0,83 g beljakovin na kilogram telesne teže na dan."
     },
     "FF6.1.5": {
+      "title": "Rastlinski viri beljakovin",
       "body": "Leča, fižol, grah, oreški in semena so odlični rastlinski viri beljakovin."
     },
     "FF6.1.6": {
+      "title": "Celotna hranilna sestava",
       "body": "Pomembna je celotna hranilna sestava vira beljakovin, ne le vsebnost beljakovin."
     },
     "FF6.1.7": {
+      "title": "Kombinirajte rastlinske beljakovine",
       "body": "Uživanje raznolikih rastlinskih beljakovin lahko zagotovi vse esencialne aminokisline."
     },
     "FF6.1.8": {
+      "title": "Aminokisline v kvinoji",
       "body": "Kvinoja je popolna rastlinska beljakovina, ki vsebuje vse esencialne aminokisline."
     },
     "FF6.1.9": {
+      "title": "Kakovost beljakovin",
       "body": "Kakovost beljakovin je odvisna od prebavljivosti in sestave aminokislin."
     },
     "FF6.1.10": {
+      "title": "Preveč beljakovin",
       "body": "Mnoge države z visokimi dohodki zaužijejo več beljakovin, kot je priporočeno."
     },
     "FF6.2.1": {
+      "title": "Nenasičene in nasičene maščobe",
       "body": "Nenasičene maščobe so na splošno bolj zdrave od nasičenih."
     },
     "FF6.2.2": {
+      "title": "Omejite nasičene maščobe",
       "body": "SZO priporoča, da nasičene maščobe predstavljajo manj kot 10 % dnevnega energijskega vnosa."
     },
     "FF6.2.3": {
+      "title": "Viri zdravih maščob",
       "body": "Oreški, semena, ribe in oljčno olje so dobri viri zdravih maščob."
     },
     "FF6.2.4": {
+      "title": "Vrsta maščobe je pomembna",
       "body": "Vrsta maščobe, ki jo zaužijete, je prav tako pomembna kot količina."
     },
     "FF6.2.5": {
+      "title": "Izogibajte se transmaščobam",
       "body": "Transmaščobe povečujejo tveganje za bolezni srca in nimajo znanih koristi za zdravje."
     },
     "FF6.2.6": {
+      "title": "Zamenjava maščob za zdravo srce",
       "body": "Zamenjava nasičenih maščob z nenasičenimi lahko izboljša zdravje srca."
     },
     "FF6.2.7": {
+      "title": "Koliko maščob",
       "body": "Maščobe naj ne prispevajo več kot približno 30 % skupnega dnevnega energijskega vnosa."
     },
     "FF6.2.8": {
+      "title": "Malo maščob, veliko sladkorja",
       "body": "Predelana živila z malo maščobe lahko še vedno vsebujejo veliko sladkorja."
     },
     "FF6.2.9": {
+      "title": "Odstranjevanje transmaščob",
       "body": "Industrijsko proizvedene transmaščobe je mogoče odstraniti, ne da bi to vplivalo na razpoložljivost hrane."
     },
     "FF6.2.10": {
+      "title": "Maščobe in vitamini",
       "body": "Maščobe telesu pomagajo absorbirati vitamine A, D, E in K."
     },
     "FF6.3.1": {
+      "title": "Sladke pijače",
       "body": "Sladke pijače so glavni vir dodanega sladkorja v številnih prehranskih navadah."
     },
     "FF6.3.2": {
+      "title": "Sladkor in zobje",
       "body": "Visok vnos sladkorja prispeva k nastanku zobne gnilobe."
     },
     "FF6.3.3": {
+      "title": "Sladkor in telesna teža",
       "body": "Prekomeren vnos sladkorja je povezan s pridobivanjem telesne teže in debelostjo."
     },
     "FF6.3.4": {
+      "title": "Omejite proste sladkorje",
       "body": "SZO priporoča, da prosti sladkorji predstavljajo manj kot 10 % dnevnega energijskega vnosa."
     },
     "FF6.3.5": {
+      "title": "Sladkor v sadju",
       "body": "Sadje vsebuje naravne sladkorje skupaj z vlakninami in vitamini."
     },
     "FF6.3.6": {
+      "title": "Manj sladkih pijač",
       "body": "Zmanjšanje uživanja sladkih pijač je učinkovit način za zmanjšanje vnosa sladkorja."
     },
     "FF6.3.7": {
+      "title": "Kuhajte doma za nadzor sladkorja",
       "body": "Kuhanje doma olajša nadzor nad dodanim sladkorjem."
     },
     "FF6.3.8": {
+      "title": "Prazne kalorije",
       "body": "Sladkor daje energijo, a malo esencialnih hranil."
     },
     "FF6.3.9": {
+      "title": "Sladkor pod 5 %",
       "body": "Zmanjšanje prostih sladkorjev pod 5 % lahko prinese dodatne koristi za zdravje."
     },
     "FF6.3.10": {
+      "title": "Prepoznajte dodani sladkor",
       "body": "Branje etiket pomaga prepoznati živila z veliko dodanega sladkorja."
     },
     "FF6.4.1": {
+      "title": "Preveč soli",
       "body": "Večina ljudi zaužije več kot dvakrat toliko soli, kot je priporočeno."
     },
     "FF6.4.2": {
+      "title": "Sol in zdravje srca",
       "body": "Zmanjšanje vnosa soli zmanjša tveganje za bolezni srca in možgansko kap."
     },
     "FF6.4.3": {
+      "title": "Posledice natrija po svetu",
       "body": "Prekomeren vnos natrija po svetu prispeva k milijonom smrti."
     },
     "FF6.4.4": {
+      "title": "Manj kot 5 gramov soli",
       "body": "SZO priporoča uživanje manj kot 5 gramov soli na dan."
     },
     "FF6.4.5": {
+      "title": "Skrita sol",
       "body": "Večina soli v prehrani izvira iz predelanih živil in hrane iz restavracij."
     },
     "FF6.4.6": {
+      "title": "Natrij in krvni tlak",
       "body": "Visok vnos natrija zvišuje krvni tlak."
     },
     "FF6.4.7": {
+      "title": "Zelišča namesto soli",
       "body": "Zelišča in začimbe lahko pri kuhanju nadomestijo sol."
     },
     "FF6.4.8": {
+      "title": "Viri natrija v Evropi",
       "body": "Kruh, predelano meso in sir so v Evropi glavni viri natrija."
     },
     "FF6.4.9": {
+      "title": "Nadomestki soli",
       "body": "Nadomestki soli z malo natrija lahko primernim odraslim pomagajo zmanjšati vnos natrija."
     },
     "FF6.4.10": {
+      "title": "Vsaka sol vsebuje natrij",
       "body": "Morska sol, himalajska sol in kuhinjska sol vse vsebujejo veliko natrija."
     },
     "FF6.5.1": {
+      "title": "Premalo vlaknin",
       "body": "Večina Evropejcev zaužije manj vlaknin, kot je priporočeno."
     },
     "FF6.5.2": {
+      "title": "Viri vlaknin",
       "body": "Polnozrnata žita, sadje, zelenjava in stročnice so odlični viri vlaknin."
     },
     "FF6.5.3": {
+      "title": "Voda in vlaknine",
       "body": "Zadosten vnos vode pomaga, da vlaknine učinkovito delujejo."
     },
     "FF6.5.4": {
+      "title": "25 gramov na dan",
       "body": "Odrasli naj zaužijejo vsaj 25 gramov vlaknin na dan."
     },
     "FF6.5.5": {
+      "title": "Vlaknine povečujte postopoma",
       "body": "Postopno povečevanje vnosa vlaknin lahko zmanjša prebavne težave."
     },
     "FF6.5.6": {
+      "title": "Prednosti polnozrnatih žit",
       "body": "Polnozrnata žita poleg vlaknin vsebujejo tudi pomembna hranila."
     },
     "FF6.5.7": {
+      "title": "Vlaknine za prebavo",
       "body": "Vlaknine podpirajo zdravo prebavo in delovanje črevesja."
     },
     "FF6.5.8": {
+      "title": "Vlaknine in tveganje za bolezni",
       "body": "Večji vnos vlaknin je povezan z manjšim tveganjem za bolezni srca in sladkorno bolezen tipa 2."
     },
     "FF6.5.9": {
+      "title": "Topne in netopne vlaknine",
       "body": "K zdravju prispevajo tako topne kot netopne vlaknine."
     },
     "FF6.5.10": {
+      "title": "Vlaknine dlje nasitijo",
       "body": "Živila, bogata z vlakninami, pomagajo, da se ljudje dlje počutijo site."
     },
     "FF6.6.1": {
+      "title": "Pomanjkanje vitamina D",
       "body": "Pomanjkanje vitamina D je v Evropi pogosto."
     },
     "FF6.6.2": {
+      "title": "Vitamin C",
       "body": "Vitamin C podpira imunski sistem in celjenje ran."
     },
     "FF6.6.3": {
+      "title": "Vitamini iz sadja in zelenjave",
       "body": "Sadje in zelenjava zagotavljata pomembne vitamine in antioksidante."
     },
     "FF6.6.4": {
+      "title": "Raznolikost preprečuje pomanjkanje",
       "body": "Raznolika prehrana pomaga zmanjšati tveganje za pomanjkanje vitaminov."
     },
     "FF6.6.5": {
+      "title": "Viri vitamina A",
       "body": "Oranžna in temnozelena zelenjava sta dobra vira predhodnikov vitamina A."
     },
     "FF6.6.6": {
+      "title": "Viri vitamina E",
       "body": "Oreški, semena in rastlinska olja so dobri viri vitamina E."
     },
     "FF6.6.7": {
+      "title": "Sončna svetloba in vitamin D",
       "body": "Sončna svetloba je glavni vir vitamina D za telo."
     },
     "FF6.6.8": {
+      "title": "Viri vitamina B12",
       "body": "Vitamin B12 najdemo predvsem v živilih živalskega izvora."
     },
     "FF6.6.9": {
+      "title": "B12 za vegane",
       "body": "Vegani morda potrebujejo obogatena živila ali prehranska dopolnila, da zaužijejo dovolj vitamina B12."
     },
     "FF6.6.10": {
+      "title": "Skrita lakota",
       "body": "Pomanjkanje vitaminov se lahko pojavi tudi, kadar je hrane v izobilju."
     },
     "FF6.7.1": {
+      "title": "Dovolj kalorij za vse",
       "body": "Svet že zdaj pridela dovolj kalorij, da bi nahranil vse."
     },
     "FF6.7.2": {
+      "title": "Hranila in kalorije",
       "body": "Živila, bogata s hranili, niso vedno enaka živilom, bogatim s kalorijami."
     },
     "FF6.7.3": {
+      "title": "Visoko predelana živila in prenajedanje",
       "body": "Visoko predelana živila lahko ljudi spodbudijo k uživanju več kalorij."
     },
     "FF6.7.4": {
+      "title": "Enake kalorije, različen vpliv",
       "body": "Živila z enako količino kalorij imajo lahko zelo različne vplive na okolje."
     },
     "FF6.7.5": {
+      "title": "Več kot štetje kalorij",
       "body": "Trajnostna prehrana se osredotoča na izbiro živil, ne le na zmanjševanje kalorij."
     },
     "FF6.7.6": {
+      "title": "Izgube kalorij od kmetije do krožnika",
       "body": "Več kot polovica kalorij iz hrane se izgubi na poti od kmetije do krožnika."
     },
     "FF6.7.7": {
+      "title": "Tri glavna osnovna živila",
       "body": "Riž, pšenica in koruza zagotavljajo skoraj polovico svetovnih kalorij."
     },
     "FF6.7.8": {
+      "title": "Izgube pri krmnih poljščinah",
       "body": "Krmljenje živine s poljščinami povzroči velike izgube kalorij."
     },
     "FF6.7.9": {
+      "title": "Emisije govedine na kalorijo",
       "body": "Govedina na kalorijo povzroči veliko več emisij kot večina rastlinskih živil."
     },
     "FF6.7.10": {
+      "title": "Učinkoviti prehranski sistemi",
       "body": "Večja učinkovitost prehranskega sistema lahko poveča razpoložljivo prehrano, ne da bi pridelali več hrane."
     }
   },
   "quizzes": {
     "Q1.1.1": {
+      "title": "Bolj zelene večerje",
       "question": "Želite zmanjšati vpliv svojih večerij na okolje. Katera sprememba bo verjetno imela največji učinek?",
       "explanation": "Zmanjšanje porabe govedine ima praviloma veliko večji učinek kot menjavanje med podobnimi živili, saj živinoreja močno prispeva k rabi zemljišč, porabi vode in emisijam toplogrednih plinov.",
       "options": {
@@ -799,6 +1050,7 @@
       }
     },
     "Q1.1.2": {
+      "title": "Jedilnik z manjšim vplivom",
       "question": "Kateri tedenski jedilnik ima verjetno najmanjši vpliv na okolje?",
       "explanation": "Nadomeščanje mesa s stročnicami praviloma prinese večje okoljske koristi kot zgolj menjavanje med živalskimi beljakovinami.",
       "options": {
@@ -809,6 +1061,7 @@
       }
     },
     "Q1.1.3": {
+      "title": "Prehrana in raba zemljišč",
       "question": "Izbirate med dvema tedenskima načinoma prehrane: prehrana A vsebuje rdeče meso skoraj vsak dan. Prehrana B sledi sredozemskemu vzorcu z več stročnicami, zelenjavo in zmernimi količinami mesa. Za katero prehrano se praviloma pričakuje, da zahteva manj kmetijskih zemljišč?",
       "explanation": "Pridelava živil živalskega izvora praviloma zahteva več zemljišč kot pridelava rastlinskih živil. Sredozemski način prehrane je pogosto povezan z manjšo rabo zemljišč, hkrati pa še vedno zagotavlja ustrezno prehranjenost.",
       "options": {
@@ -819,6 +1072,7 @@
       }
     },
     "Q1.1.4": {
+      "title": "Trajnostna izbira kosila",
       "question": "Katera izbira kosila bi bila praviloma najbolj trajnostna?",
       "explanation": "Obroki, ki temeljijo na stročnicah in zelenjavi, imajo praviloma manjše vplive na okolje kot obroki, ki temeljijo na rdečem mesu.",
       "options": {
@@ -829,6 +1083,7 @@
       }
     },
     "Q1.1.5": {
+      "title": "Meso in javno zdravje",
       "question": "Zakaj zmanjševanje porabe mesa včasih velja tako za vprašanje javnega zdravja kot za okoljsko vprašanje?",
       "explanation": "Obsežna uporaba antibiotikov v živinoreji prispeva k odpornosti proti protimikrobnim zdravilom, kar je velik problem javnega zdravja.",
       "options": {
@@ -838,6 +1093,7 @@
       }
     },
     "Q1.2.1": {
+      "title": "Zamenjava govedine",
       "question": "V receptu nadomeščate govedino. Katera zamenjava prinaša okoljske koristi in hkrati pomaga ohraniti ustrezno prehranjenost?",
       "explanation": "Nadomeščanje dela rdečega mesa s stročnicami lahko ohrani ustrezen vnos hranil in hkrati zmanjša vpliv na okolje.",
       "options": {
@@ -848,6 +1104,7 @@
       }
     },
     "Q1.2.2": {
+      "title": "Tedenska izbira beljakovin",
       "question": "Katera tedenska strategija glede beljakovin se najbolje ujema s priporočili SZO?",
       "explanation": "SZO poudarja prehransko raznolikost in širšo mešanico beljakovin",
       "options": {
@@ -858,6 +1115,7 @@
       }
     },
     "Q1.2.3": {
+      "title": "Rastlinske alternative mesu",
       "question": "Katera trditev o rastlinskih alternativah mesu je najbolj točna?",
       "explanation": "Številni rastlinski nadomestki mesa so močno predelani in pogosto vsebujejo veliko natrija. Njihova zdravstvena in okoljska učinkovitost se lahko močno razlikuje.",
       "options": {
@@ -868,6 +1126,7 @@
       }
     },
     "Q1.2.4": {
+      "title": "Beljakovine za zdrava tla",
       "question": "Kateri vir beljakovin prinaša tako prehranske koristi kot koristi za zdravje tal?",
       "options": {
         "A": "Čičerika",
@@ -878,6 +1137,7 @@
       "explanation": "Stročnice izboljšujejo rodovitnost tal z vezavo dušika, hkrati pa zagotavljajo beljakovine, vlaknine, vitamine in minerale."
     },
     "Q1.2.5": {
+      "title": "Manj rdečega mesa v družini",
       "question": "Družina želi zmanjšati porabo rdečega mesa, ne da bi opustila živalske proizvode. Katera sprememba najbolje odraža dokaze?",
       "explanation": "Prehranska raznolikost, ki vključuje stročnice, ribe, jajca in manjše količine rdečega mesa, je povezana z bolj zdravo in bolj trajnostno prehrano.",
       "options": {
@@ -888,6 +1148,7 @@
       }
     },
     "Q1.3.1": {
+      "title": "Popestrite izbiro žit",
       "question": "Želite popestriti izbiro žit in hkrati izboljšati kakovost beljakovin. Katera možnost je posebej zanimiva?",
       "explanation": "Kvinoja vsebuje vseh devet esencialnih aminokislin in velja za popolno beljakovino.",
       "options": {
@@ -898,6 +1159,7 @@
       }
     },
     "Q1.3.2": {
+      "title": "Navade za odporen prehranski sistem",
       "question": "Katera prehranska navada bi najbolje podprla odpornost prehranskega sistema?",
       "explanation": "Raznolikost poljščin povečuje odpornost na motnje, povezane s podnebjem, trgom in dobavnimi verigami.",
       "options": {
@@ -908,6 +1170,7 @@
       }
     },
     "Q1.3.3": {
+      "title": "Brezglutenska alternativa žitom",
       "question": "Oseba s celiakijo išče hranilno bogato alternativo žitom. Katera možnost je najprimernejša?",
       "explanation": "Ajda je naravno brez glutena ter vsebuje vlaknine, beljakovine, minerale in koristne bioaktivne snovi.",
       "options": {
@@ -918,6 +1181,7 @@
       }
     },
     "Q1.3.4": {
+      "title": "Podnebno odporne poljščine",
       "question": "Kmet išče podnebno odporno poljščino, ki prenese vročino in majhno razpoložljivost vode. Katero možnost dokazi najbolje podpirajo?",
       "explanation": "Proso lahko raste pri visokih temperaturah, na slabih tleh in ob omejeni količini vode, zato je posebej odporno na podnebne spremembe.",
       "options": {
@@ -928,6 +1192,7 @@
       }
     },
     "Q1.3.5": {
+      "title": "Zakaj so stročnice pomembne",
       "question": "Zakaj so stročnice v trajnostni prehrani pogosto izpostavljene?",
       "explanation": "Stročnice združujejo prehranske koristi z vezavo dušika, manjšo potrebo po gnojilih in manjšim okoljskim odtisom.",
       "options": {
@@ -938,6 +1203,7 @@
       }
     },
     "Q2.1.1": {
+      "title": "Hrana in biotska raznovrstnost",
       "question": "Želite, da bi vaše izbire hrane bolje podpirale biotsko raznovrstnost. Kateri vidik je najpomembnejši?",
       "explanation": "Širjenje kmetijskih površin je eden glavnih vzrokov za izgubo habitatov in upad biotske raznovrstnosti. Živila, ki zahtevajo manj zemljišč, praviloma manj obremenjujejo gozdove, travišča in druge naravne ekosisteme ter tako pomagajo varovati biotsko raznovrstnost.",
       "options": {
@@ -948,6 +1214,7 @@
       }
     },
     "Q2.1.2": {
+      "title": "Navedbe o lokalni govedini",
       "question": "Trgovina „lokalno pridelano govedino“ oglašuje kot trajnostno izbiro. Katera trditev je najbolj skladna z dokazi?",
       "explanation": "Vrsta živila je pogosto pomembnejša od tega, od kod prihaja. Rastlinske beljakovine praviloma zahtevajo veliko manj zemljišč kot govedina, ne glede na poreklo.",
       "options": {
@@ -958,6 +1225,7 @@
       }
     },
     "Q2.1.3": {
+      "title": "Večerja z majhnim zemljiškim odtisom",
       "question": "Načrtujete večerjo, bogato z beljakovinami, z najmanjšim možnim zemljiškim odtisom. Katera možnost se bo najverjetneje odrezala najbolje?",
       "explanation": "Živalski proizvodi praviloma zahtevajo več zemljišč kot rastlinska živila. Med temi možnostmi je obrok iz leče povezan z najmanjšo potrebo po zemljiščih.",
       "options": {
@@ -968,6 +1236,7 @@
       }
     },
     "Q2.1.4": {
+      "title": "Varovanje biotske raznovrstnosti",
       "question": "Prijatelj želi z izbiro hrane zmanjšati pritisk na biotsko raznovrstnost. Kateri nasvet bi bil najbolj podprt z dokazi?",
       "explanation": "Širjenje kmetijskih površin je glavni vzrok izgube habitatov. Manjše povpraševanje po izdelkih, ki zahtevajo veliko zemljišč, pomaga zmanjšati pritisk na gozdove in naravne ekosisteme.",
       "options": {
@@ -978,6 +1247,7 @@
       }
     },
     "Q2.1.5": {
+      "title": "Odtis rabe zemljišč",
       "question": "Kateri kupec ima verjetno najmanjši odtis rabe zemljišč?",
       "explanation": "Raziskave dosledno kažejo, da je količina rdečega mesa v prehrani eden najmočnejših dejavnikov rabe zemljišč, povezane s hrano.",
       "options": {
@@ -988,6 +1258,7 @@
       }
     },
     "Q2.2.1": {
+      "title": "Manjši vodni odtis",
       "question": "Želite zmanjšati vodni odtis svojih obrokov. Katera navada bo verjetno najučinkovitejša?",
       "explanation": "Znaten delež vode, porabljene pri pridelavi hrane, se dejansko zapravi, kadar hrano zavržemo. Manj zavržene hrane neposredno zmanjša potrebo po vodi.",
       "options": {
@@ -998,6 +1269,7 @@
       }
     },
     "Q2.2.2": {
+      "title": "Prehrana in poraba vode",
       "question": "Dve osebi vsak dan zaužijeta enako število kalorij. Katera prehrana bo skupno verjetno zahtevala manj vode?",
       "options": {
         "A": "Prehrana z več stročnicami in manj živalskimi proizvodi",
@@ -1008,6 +1280,7 @@
       "explanation": "Poraba vode se praviloma zmanjša, ko se prehrana premakne od živil živalskega izvora k rastlinskim."
     },
     "Q2.2.3": {
+      "title": "Zelenjava tik pred kvarjenjem",
       "question": "V hladilniku najdete zelenjavo, ki se bo kmalu pokvarila. Kateri je najbolj trajnosten ukrep?",
       "explanation": "Če hrano porabimo, preden se pokvari, ne zapravimo vode, zemljišč in energije, ki so bili že vloženi v njeno pridelavo.",
       "options": {
@@ -1018,6 +1291,7 @@
       }
     },
     "Q2.2.4": {
+      "title": "Poraba vode in trajnostna prehrana",
       "question": "Katera trditev najbolje odraža dokaze o porabi vode in trajnostni prehrani?",
       "options": {
         "A": "Vsaka vegetarijanska prehrana samodejno porabi manj vode",
@@ -1028,6 +1302,7 @@
       "explanation": "Študije kažejo, da manj živil živalskega izvora pogosto zmanjša vodni odtis, vendar je skupna poraba vode še vedno odvisna od sestave prehrane."
     },
     "Q2.2.5": {
+      "title": "Obroki, varčni z vodo",
       "question": "Kateri obrok bi praviloma imel najmanjši vodni odtis?",
       "explanation": "Rastlinski obroki praviloma zahtevajo manj vodnih vi",
       "options": {
@@ -1038,6 +1313,7 @@
       }
     },
     "Q2.3.1": {
+      "title": "Energijski odtis hrane",
       "question": "Potrošnik želi zmanjšati energijski odtis svojih nakupov hrane. Katera sprememba bo najverjetneje imela največji učinek?",
       "explanation": "Zavržena hrana ne pomeni le izgube hrane, temveč tudi izgubo vse energije, porabljene za njeno pridelavo, predelavo, prevoz, shranjevanje in pripravo. Manj odpadkov zmanjša nepotrebno porabo energije v celotnem prehranskem sistemu.",
       "options": {
@@ -1048,6 +1324,7 @@
       }
     },
     "Q2.3.2": {
+      "title": "Energijsko potratna prehrana",
       "question": "Primerjate štiri načine prehrane z enakim vnosom kalorij. Za katero prehrano se praviloma pričakuje, da zahteva več energije v prehranskem sistemu?",
       "explanation": "Živila živalskega izvora praviloma zahtevajo več energije, saj so odvisna od pridelave krme, intenzivnih rejnih sistemov, predelave, hlajenja in prevoza.",
       "options": {
@@ -1058,6 +1335,7 @@
       }
     },
     "Q2.3.3": {
+      "title": "Energija v prehranski verigi",
       "question": "Katera faza prehranske verige v številnih regijah pogosto predstavlja velik delež skupne porabe energije?",
       "explanation": "Čeprav se energija porablja v celotni prehranski verigi, se velik delež pogosto porabi pri predelavi, prevozu, hlajenju, prodaji, kuhanju in uživanju hrane.",
       "options": {
@@ -1068,6 +1346,7 @@
       }
     },
     "Q2.3.4": {
+      "title": "Zmanjševanje izgub hrane",
       "question": "Razvojna agencija se odloča, kam vložiti sredstva za zmanjšanje izgub hrane na podeželskem kmetijskem območju. Kateri ukrep bo verjetno prinesel znatne koristi?",
       "explanation": "Približno 13 % svetovne pridelave hrane se izgubi zaradi neustreznega hlajenja. Zanesljivi sistemi hladne verige pomagajo ohranjati kakovost hrane, zmanjšati izgube in izboljšati učinkovitost prehranskega sistema.",
       "options": {
@@ -1078,6 +1357,7 @@
       }
     },
     "Q2.3.5": {
+      "title": "Prehranski sistemi in ekosistemi",
       "question": "Oblikovalec politik želi zmanjšati pritisk na ekosisteme zaradi pridelave hrane. Katera trditev najbolje odraža sedanje dokaze?",
       "options": {
         "A": "Človeški prehranski sistemi porabijo le majhen delež biološke produktivnosti Zemlje",
@@ -1088,6 +1368,7 @@
       "explanation": "Človekove dejavnosti, zlasti kmetijstvo, gozdarstvo in prehranski sistemi, prisvojijo približno 30 % svetovne neto primarne proizvodnje, kar je daleč nad predlagano varno mejo 10 %. To kaže na velik pritisk na ekosisteme in biotsko raznovrstnost."
     },
     "Q2.4.1": {
+      "title": "Podnebju prijazno brez vegetarijanstva",
       "question": "Želite zmanjšati svoj podnebni vpliv, a ne želite postati vegetarijanec. Katera strategija bo verjetno najučinkovitejša?",
       "explanation": "Zmanjšanje porabe rdečega mesa je eden najučinkovitejših prehranskih ukrepov za zmanjšanje emisij toplogrednih plinov, povezanih s hrano.",
       "options": {
@@ -1098,6 +1379,7 @@
       }
     },
     "Q2.4.2": {
+      "title": "Manj emisij iz prehrane",
       "question": "Želite zmanjšati ogljični odtis svoje prehrane. Katero dejanje bo verjetno imelo največji učinek?",
       "explanation": "Približno 30 % svetovno pridelane hrane se zavrže, kar letno povzroči približno 3,3 gigatone emisij v ekvivalentu CO₂. Preprečevanje zavržene hrane zmanjša emisije v celotni prehranski verigi, vključno s pridelavo, predelavo, prevozom in odstranjevanjem.",
       "options": {
@@ -1108,6 +1390,7 @@
       }
     },
     "Q2.4.3": {
+      "title": "Manj emisij z istimi živili",
       "question": "Katero dejanje zmanjša emisije, ne da bi spremenili živila, ki jih kupujete?",
       "explanation": "Zavržena hrana povzroči znatne emisije toplogrednih plinov, saj so vsi vi",
       "options": {
@@ -1118,6 +1401,7 @@
       }
     },
     "Q2.4.4": {
+      "title": "Lokalna hrana ali govedina",
       "question": "Oseba se osredotoča le na nakup lokalne hrane, a še naprej uživa velike količine govedine. Katera trditev najbolje odraža dokaze?",
       "explanation": "Raziskave dosledno kažejo, da ima vrsta živila – zlasti uživanje govedine – pri podnebnem vplivu pogosto večjo vlogo kot transportna razdalja.",
       "options": {
@@ -1128,6 +1412,7 @@
       }
     },
     "Q2.4.5": {
+      "title": "Prehrana z manjšim ogljičnim odtisom",
       "question": "Kateri prehranski vzorec je najpogosteje prepoznan kot ogljično manj obremenjujoča alternativa običajni zahodni prehrani?",
       "explanation": "Fleksitarijanska prehrana zmanjša odvisnost od živalskih proizvodov z velikim vplivom, hkrati pa dopušča občasno uživanje.",
       "options": {
@@ -1138,6 +1423,7 @@
       }
     },
     "Q3.1.1": {
+      "title": "Predelava in trajnostnost",
       "question": "Primerjate dva obroka, bogata z beljakovinami: enolončnico iz fižola iz preprostih sestavin in rastlinske mesne nagete. Kateri sklep je najbolje podprt z dokazi?",
       "explanation": "Predelava hrane lahko poveča porabo energije, hkrati pa lahko podaljša rok uporabnosti in zmanjša količino zavržene hrane. Trajnostnost je odvisna od celotnega življenjskega kroga in ne le od stopnje predelave.",
       "options": {
@@ -1148,6 +1434,7 @@
       }
     },
     "Q3.1.2": {
+      "title": "Okoljski odtis predelave",
       "question": "Pri primerjavi dveh živil s podobno hranilno vrednostjo – kateri dejavnik bi lahko povečal okoljski odtis enega od njiju?",
       "explanation": "Segrevanje, zamrzovanje, sušenje, mletje in drugi industrijski postopki lahko znatno prispevajo k okoljskemu vplivu živila.",
       "options": {
@@ -1158,6 +1445,7 @@
       }
     },
     "Q3.1.3": {
+      "title": "Manj visoko predelanih živil",
       "question": "Potrošnik želi zmanjšati vnos visoko predelanih živil. Katera izbira ta cilj najbolje podpira?",
       "explanation": "Minimalno predelana živila praviloma vsebujejo manj aditivov in prispevajo k boljši splošni kakovosti prehrane.",
       "options": {
@@ -1168,6 +1456,7 @@
       }
     },
     "Q3.1.4": {
+      "title": "Zakaj je predelava hrane pomembna",
       "question": "Zakaj ima predelava hrane pomembno vlogo v prehranskih sistemih?",
       "explanation": "Predelava lahko izboljša varnost živil, ohrani kakovost in omogoči učinkovitejše shranjevanje ter prevoz hrane.",
       "options": {
@@ -1178,6 +1467,7 @@
       }
     },
     "Q3.1.5": {
+      "title": "Visoko predelana živila",
       "question": "Katera trditev o visoko predelanih živilih je najbolj točna?",
       "explanation": "Stopnja predelave lahko da koristne informacije, a je treba živila še vedno presojati posamično.",
       "options": {
@@ -1188,6 +1478,7 @@
       }
     },
     "Q3.2.1": {
+      "title": "Kaj pomeni oznaka „lokalno“",
       "question": "Izdelek je označen kot „lokalen“. Kaj lahko sklepate zgolj iz tega podatka?",
       "explanation": "Država porekla daje koristne informacije, a je trajnostnost odvisna od več dejavnikov, vključno z načinom pridelave, načinom prevoza in sezonskostjo.",
       "options": {
@@ -1198,6 +1489,7 @@
       }
     },
     "Q3.2.2": {
+      "title": "Primerjava lokalnih izdelkov",
       "question": "Primerjate dva lokalna izdelka. Kateri dodatni podatek bi bil najbolj koristen?",
       "explanation": "Načini pridelave imajo pogosto večje vplive na okolje kot samo poreklo.",
       "options": {
@@ -1208,6 +1500,7 @@
       }
     },
     "Q3.2.3": {
+      "title": "Prevoz in podnebje",
       "question": "Kateri način prevoza si pri ocenjevanju podnebnih vplivov praviloma zasluži največ pozornosti?",
       "explanation": "Letalski prevoz lahko v primerjavi z drugimi načini tovornega prometa močno poveča emisije toplogrednih plinov, povezane s prevozom.",
       "options": {
@@ -1218,6 +1511,7 @@
       }
     },
     "Q3.2.4": {
+      "title": "Primerjava paradižnikov",
       "question": "Dva paradižnika imata enako hranilno vrednost. Kateri podatek bi bil najbolj koristen za primerjavo trajnostnosti?",
       "explanation": "Proizvodni sistemi imajo pogosto večji okoljski vpliv kot sama država porekla.",
       "options": {
@@ -1228,6 +1522,7 @@
       }
     },
     "Q3.2.5": {
+      "title": "Poreklo hrane",
       "question": "Katera trditev o poreklu hrane je najbolj skladna z dokazi?",
       "explanation": "Poreklo hrane je lahko koristen podatek, a ga je treba upoštevati skupaj z načini pridelave, sezonskostjo in prevozom.",
       "options": {
@@ -1238,6 +1533,7 @@
       }
     },
     "Q3.3.1": {
+      "title": "Integrirano varstvo rastlin",
       "question": "Izbirate med dvema izdelkoma iz jabolk: izdelek A: „Pridelano z integriranim varstvom rastlin (IVR)“, izdelek B: brez podatkov o pridelavi. Kaj navedba o IVR najverjetneje pomeni?",
       "explanation": "Integrirano varstvo rastlin združuje biološke, fizikalne, za posamezno poljščino značilne in po potrebi kemične pristope za zmanjšanje škode zaradi škodljivcev ob čim manjših vplivih na okolje in zdravje.",
       "options": {
@@ -1248,6 +1544,7 @@
       }
     },
     "Q3.3.2": {
+      "title": "Kolobarjenje",
       "question": "Kupujete zelenjavo in na enem pakiranju je poudarjeno, da kmetija izvaja kolobarjenje in goji več poljščin. Zakaj bi bil ta podatek lahko pomemben?",
       "explanation": "Raznolikost poljščin in kolobarjenje izboljšujeta rodovitnost tal, kroženje hranil in odpornost proti škodljivcem ter boleznim, kar zmanjšuje potrebo po prekomernih kemičnih vnosih.",
       "options": {
@@ -1258,6 +1555,7 @@
       }
     },
     "Q3.3.3": {
+      "title": "Kava, gojena v senci",
       "question": "Izbirate med dvema izdelkoma kave: kava A: gojena v senci v sistemu kmetijskega gozdarstva, kava B: pridelana na monokulturni plantaži. Zakaj bi nekateri potrošniki morda imeli raje kavo A?",
       "explanation": "Kmetijsko gozdarstvo združuje drevesa s kmetijsko pridelavo. Taki sistemi lahko izboljšajo zdravje tal, biotsko raznovrstnost in vezavo ogljika.",
       "options": {
@@ -1268,6 +1566,7 @@
       }
     },
     "Q3.3.4": {
+      "title": "Ekološko kmetovanje",
       "question": "Dva izdelka iz zelenjave imata podobno ceno. Eden je označen kot „ekološki“. Katera lastnost pridelave je najverjetneje povezana z ekološkim izdelkom?",
       "explanation": "Ekološko kmetovanje se namesto na sintetične pesticide in gnojila opira na prakse, kot so kolobarjenje, uporaba komposta, prekrivne rastline in biološko varstvo rastlin.",
       "options": {
@@ -1278,6 +1577,7 @@
       }
     },
     "Q3.3.5": {
+      "title": "Podnebju prilagojeno kmetijstvo",
       "question": "Izbirate med dvema izdelkoma iz riža: izdelek A: pridelan s podnebju prilagojenim kmetijstvom, izdelek B: brez podatkov o pridelavi. Kaj je glavni cilj podnebju prilagojenega kmetijstva?",
       "explanation": "Podnebju prilagojeno kmetijstvo želi povečati produktivnost, okrepiti odpornost na podnebne spremembe in zmanjšati emisije toplogrednih plinov.",
       "options": {
@@ -1288,6 +1588,7 @@
       }
     },
     "Q3.4.1": {
+      "title": "Sušno odporne sorte",
       "question": "Primerjate dva izdelka iz paradižnika. Eden izvira iz sorte, požlahtnjene za odpornost na sušo, drugi pa iz konvencionalne sorte. Zakaj bi nekateri potrošniki sušno odporno sorto imeli za bolj trajnostno?",
       "explanation": "Žlahtnjenje sušno odpornih poljščin lahko pomaga ohranjati pridelavo ob pomanjkanju vode in izboljša odpornost na podnebne spremembe, čeprav take poljščine še vedno potrebujejo vodo in dobro kmetijsko upravljanje.",
       "options": {
@@ -1298,6 +1599,7 @@
       }
     },
     "Q3.4.2": {
+      "title": "Sodobno žlahtnjenje rastlin",
       "question": "Najdete živilo, ki se trži kot pridelano iz podnebno odporne sorte, razvite s sodobnimi žlahtniteljskimi tehnikami. Katera je glavna zatrjevana trajnostna korist teh tehnologij?",
       "explanation": "Sodobne žlahtniteljske tehnologije želijo razviti sorte, ki se bolje obnesejo v spreminjajočih se okoljskih razmerah in pomagajo ohraniti pridelavo hrane v prihodnosti.",
       "options": {
@@ -1308,6 +1610,7 @@
       }
     },
     "Q3.4.3": {
+      "title": "Trajnostna ribja krma",
       "question": "Izbirate med dvema ribjima izdelkoma. Eden prihaja iz ribogojnice, ki krmo iz divjih rib delno nadomešča z moko iz žuželk in olji iz alg. Kaj je glavni trajnostni razlog za to izbiro?",
       "explanation": "Ribogojstvo vse pogosteje uvaja alternativne sestavine krme, kot so moka iz žuželk, olja iz alg in enocelične beljakovine, da zmanjša odvisnost od divjih ulovljenih rib",
       "options": {
@@ -1318,6 +1621,7 @@
       }
     },
     "Q3.4.4": {
+      "title": "Alternativne beljakovine",
       "question": "Trgovina oglašuje izdelke z beljakovinami iz žuželk, mikroalg ali mikoproteina. Zakaj se ti viri beljakovin pogosto obravnavajo v raziskavah trajnostnosti?",
       "options": {
         "A": "Bolj zdravi so od konvencionalnih živil",
@@ -1328,6 +1632,7 @@
       "explanation": "Alternativne vire beljakovin raziskujejo, ker lahko pomagajo zmanjšati okoljske pritiske konvencionalne živinoreje in hkrati podpirajo prihodnjo prehransko varnost."
     },
     "Q3.4.5": {
+      "title": "Izkoristek krme v živinoreji",
       "question": "Proizvajalec mesa navaja, da je njegov program vzreje osredotočen na izkoristek krme. Zakaj bi bilo to lahko pomembno za trajnostnost?",
       "options": {
         "A": "Živali samodejno postanejo bolj zdrave",
@@ -1338,6 +1643,7 @@
       "explanation": "Živali z boljšim izkoristkom krme dajo enako količino mesa z manj krme in tako zmanjšajo okoljski pritisk na enoto proizvodnje."
     },
     "Q3.5.1": {
+      "title": "Oznaka Fairtrade",
       "question": "Izbirate med dvema čokoladnima ploščicama s podobno hranilno vrednostjo in okoljskimi podatki. Ena nosi oznako Fairtrade. Kateri dodatni vidik trajnostnosti naj bi oznaka Fairtrade predvsem naslavljala?",
       "explanation": "Fairtrade želi izboljšati preživetje ljudi s poštenimi cenami, varstvom delavcev, razvojem skupnosti in boljšimi trgovinskimi pogoji za pridelovalce in delavce.",
       "options": {
@@ -1348,6 +1654,7 @@
       }
     },
     "Q3.5.2": {
+      "title": "Družbena trajnostnost",
       "question": "Potrošnik želi pri nakupu sadja upoštevati okoljsko in družbeno trajnostnost. Katera trditev je najbolj skladna s sedanjimi dokazi?",
       "explanation": "Raziskave kažejo, da so družbeni in okoljski vplivi porazdeljeni različno. Tveganja glede delovnih razmer se lahko pojavijo v državah pridelave tudi, kadar je okoljska učinkovitost videti ugodna.",
       "options": {
@@ -1358,6 +1665,7 @@
       }
     },
     "Q3.5.3": {
+      "title": "Certificirani morski sadeži",
       "question": "Kupujete morske sadeže in opazite, da en izdelek prihaja iz certificiranega ribolova, ki spremlja delovne prakse, drugi pa nima podatkov. Zakaj bi nekateri potrošniki imeli raje certificiran izdelek?",
       "explanation": "Ribištvo velja za sektor z velikim tveganjem izkoriščanja delavcev. Programi certificiranja vse pogosteje vključujejo spremljanje delovnih razmer in človekovih pravic.",
       "options": {
@@ -1368,6 +1676,7 @@
       }
     },
     "Q3.5.4": {
+      "title": "Podpora malim kmetom",
       "question": "Embalaža kave poudarja podporo malim kmetom. Zakaj je ta podatek pomemben za trajnostnost?",
       "explanation": "Družbena trajnostnost vključuje pravičen dostop do trgov, vi",
       "options": {
@@ -1378,6 +1687,7 @@
       }
     },
     "Q3.5.5": {
+      "title": "Etične izbire hrane",
       "question": "Katera izbira izdelka je najbolj skladna z zamislijo, da trajnostnost vključuje etične in ne le okoljske vidike?",
       "explanation": "Skupno raziskovalno središče Evropske komisije poudarja, da morajo biti trajnostni prehranski sistemi okoljsko trajnostni, ekonomsko izvedljivi ter pravični, vključujoči in etični.",
       "options": {
@@ -1388,6 +1698,7 @@
       }
     },
     "Q4.1.1": {
+      "title": "Vpliv embalaže",
       "question": "Potrošnik želi zmanjšati vpliv embalaže za živila na okolje. Katera trditev je najbolj skladna s sedanjimi dokazi?",
       "explanation": "Vpliv pridelave hrane na okolje je pogosto veliko večji od vpliva same embalaže. Embalaža, ki učinkovito preprečuje kvarjenje in zavrženje hrane, lahko prinese skupne okoljske koristi, tudi če porabi dodatne materiale.",
       "options": {
@@ -1398,6 +1709,7 @@
       }
     },
     "Q4.1.2": {
+      "title": "Užitna embalaža",
       "question": "Podjetje se odloča med konvencionalno plastično embalažo in užitnim premazom za sveže sadje. Katero morebitno okoljsko korist užitne embalaže raziskave najbolje podpirajo?",
       "explanation": "Užitna embalaža lahko prispeva k blaženju podnebnih sprememb, saj nadomešča nekatere materiale iz fosilnih virov in podaljšuje rok uporabnosti ter tako pomaga preprečevati zavrženje hrane.",
       "options": {
@@ -1408,6 +1720,7 @@
       }
     },
     "Q4.1.3": {
+      "title": "Novosti v embalaži",
       "question": "Katera embalažna novost je posebej zasnovana za dajanje informacij o stanju živila in ne za njegovo neposredno ohranjanje?",
       "explanation": "Inteligentna embalaža spremlja ali sporoča podatke o stanju hrane, na primer o svežini, temperaturni zgodovini ali tveganju kvarjenja. Za razliko od aktivne embalaže izdelka ne ohranja neposredno.",
       "options": {
@@ -1418,6 +1731,7 @@
       }
     },
     "Q4.1.4": {
+      "title": "Embalažni materiali",
       "question": "Katera trditev o embalažnih materialih je najbolj točna?",
       "explanation": "Noben embalažni material sam po sebi ni najbolj trajnosten. Vplivi na okolje so odvisni od pridobivanja, proizvodnje, prevoza, možnosti ponovne uporabe in recikliranja ter od živila, ki ga embalaža ščiti.",
       "options": {
@@ -1428,6 +1742,7 @@
       }
     },
     "Q4.1.5": {
+      "title": "Hierarhija embalaže v EU",
       "question": "Trgovina želi izboljšati trajnostnost embalaže in hkrati ohraniti kakovost živil. Katera strategija je najbolj skladna z evropsko hierarhijo ravnanja z embalažo?",
       "explanation": "Evropska hierarhija ravnanja z embalažo daje prednost najprej zmanjšanju nepotrebne embalaže, nato ponovni uporabi, kadar je mogoča, in nazadnje recikliranju materialov. Cilj je zaščititi izdelke ob čim manjši porabi vi",
       "options": {
@@ -1438,6 +1753,7 @@
       }
     },
     "Q4.2.1": {
+      "title": "Povratne posode za hrano s seboj",
       "question": "Na voljo imate dve možnosti za hrano s seboj: možnost A: posoda za enkratno uporabo, ki jo je mogoče reciklirati; možnost B: posoda za večkratno uporabo, ki jo je treba vrniti restavraciji. Kateri dejavnik je najpomembnejši pri presoji, ali je možnost B res bolj trajnostna?",
       "explanation": "Embalaža za večkratno uporabo postane okoljsko ugodnejša šele, ko doseže svoj okoljski prag (e-BEP), kar pomeni, da mora biti uporabljena dovolj velikokrat, da nadomesti vplive svoje začetne proizvodnje.",
       "options": {
@@ -1448,6 +1764,7 @@
       }
     },
     "Q4.2.2": {
+      "title": "Skodelice za večkratno uporabo",
       "question": "Kavarna ponuja program skodelic za večkratno uporabo. Katero ravnanje strank najbolj prispeva k okoljski uspešnosti programa?",
       "explanation": "Okoljske koristi sistemov za večkratno uporabo so odvisne predvsem od velikega števila ciklov ponovne uporabe.",
       "options": {
@@ -1458,6 +1775,7 @@
       }
     },
     "Q4.2.3": {
+      "title": "Embalaža pri dostavi hrane",
       "question": "Primerjate dve storitvi dostave hrane: storitev A uporablja embalažo za enkratno uporabo, ki se reciklira. Storitev B uporablja posode za večkratno uporabo, ki jih zbira, čisti in znova uporablja. Katera trditev je najbolj točna?",
       "explanation": "Sistemi za večkratno uporabo se lahko odrežejo bolje od sistemov za enkratno uporabo, a je njihova učinkovitost odvisna od dejavnikov, kot so stopnje vračanja, prevoz, čiščenje in število ciklov ponovne uporabe.",
       "options": {
@@ -1468,6 +1786,7 @@
       }
     },
     "Q4.2.4": {
+      "title": "Postaje za ponovno polnjenje",
       "question": "Trgovina uvede postaje za ponovno polnjenje za izdelke, kot so kosmiči, testenine in detergenti. Katero trajnostno korist želijo ti sistemi predvsem doseči?",
       "explanation": "Sistemi ponovne uporabe in polnjenja ohranjajo embalažo dlje v obtoku ter zmanjšujejo potrebo po novih materialih in količino odpadne embalaže.",
       "options": {
@@ -1478,6 +1797,7 @@
       }
     },
     "Q4.2.5": {
+      "title": "Navedbe o embalaži za večkratno uporabo",
       "question": "Na etiketi izdelka piše, da uporablja embalažo za večkratno uporabo. Kateri dodatni podatek bi bil najbolj koristen pri oceni njene okoljske učinkovitosti?",
       "explanation": "Število doseženih ciklov ponovne uporabe je eden najpomembnejših dejavnikov, ali embalaža za večkratno uporabo postane okoljsko koristna.",
       "options": {
@@ -1488,6 +1808,7 @@
       }
     },
     "Q5.1.1": {
+      "title": "Naročilo brez zavržene hrane",
       "question": "V restavraciji naročate kosilo in niste prepričani, kako lačni ste. Katera izbira bo najverjetneje zmanjšala količino hrane, zavržene s krožnika?",
       "explanation": "Raziskave kažejo, da ponudba in izbira manjših porcij lahko občutno zmanjšata količino zavržene hrane, tudi kadar jih izbere le majhen delež gostov.",
       "options": {
@@ -1498,6 +1819,7 @@
       }
     },
     "Q5.1.2": {
+      "title": "Zavržena hrana pri bifeju",
       "question": "Katero ravnanje pri bifeju najverjetneje zmanjša količino zavržene hrane?",
       "explanation": "Raziskave v okoljih z neomejeno postrežbo so pokazale, da si številni gostje vzamejo več hrane, kot je dejansko pojedo. Začetek z manjšimi porcijami pomaga zmanjšati pretirano nakladanje.",
       "options": {
@@ -1508,6 +1830,7 @@
       }
     },
     "Q5.1.3": {
+      "title": "Manjše porcije",
       "question": "Restavracija uvede možnost manjše porcije na jedilniku. Kateri izid bi bil najbolj skladen z dokazi?",
       "explanation": "Študije kažejo, da razpoložljivost manjših porcij lahko občutno zmanjša količino odpadkov, tudi kadar jih izbere razmeroma malo gostov.",
       "options": {
@@ -1518,6 +1841,7 @@
       }
     },
     "Q5.1.4": {
+      "title": "Zavržena hrana v menzi",
       "question": "V menzi vidite napis, ki goste spodbuja k zmanjšanju zavržene hrane. Kateri odziv najverjetneje zmanjša količino ostankov?",
       "explanation": "Gostje, ki se zavestno potrudijo pojesti hrano, ki jo že imajo na krožniku, običajno pustijo manj hrane. Menjava jedi sredi obroka lahko odpadke celo poveča.",
       "options": {
@@ -1528,6 +1852,7 @@
       }
     },
     "Q5.1.5": {
+      "title": "Vzroki za ostanke na krožnikih",
       "question": "Kateri dejavnik najverjetneje prispeva k zavrženi hrani s krožnikov v restavracijah in menzah?",
       "options": {
         "A": "Sezonski jedilniki",
@@ -1538,6 +1863,7 @@
       "explanation": "Standardizirane velikosti porcij pogosto ne upoštevajo razlik v apetitu in veljajo za sistemski vzrok za ostanke na krožniku."
     },
     "Q5.2.1": {
+      "title": "Shranjevanje ostankov",
       "question": "Od večerje so vam ostali ostanki, ki jih nameravate pojesti jutri. Kateri je najboljši prvi korak za preprečitev zavržene hrane in tveganj za varnost živil?",
       "explanation": "Bakterije se pri sobni temperaturi hitro razmnožujejo. Hitro shranjevanje v hladilnik ohrani ostanke varne za uživanje in zmanjša verjetnost, da bodo zavrženi.",
       "options": {
@@ -1548,6 +1874,7 @@
       }
     },
     "Q5.2.2": {
+      "title": "Jogurt po datumu „uporabno najmanj do“",
       "question": "Najdete jogurt, ki mu je datum „uporabno najmanj do“ potekel pred dvema dnevoma. Kaj je najprimernejše ravnanje?",
       "explanation": "Oznaka „uporabno najmanj do“ se nanaša na kakovost, oznaka „porabiti do“ pa na varnost živila. Številna živila so po datumu „uporabno najmanj do“ še vedno užitna, če so bila pravilno shranjena.",
       "options": {
@@ -1558,6 +1885,7 @@
       }
     },
     "Q5.2.3": {
+      "title": "Shranjevanje juhe",
       "question": "Pripravili ste velik lonec juhe, ki ga želite shraniti za pozneje v tednu. Kateri je najboljši način shranjevanja?",
       "explanation": "Manjše posode se ohladijo hitreje kot velik lonec, kar skrajša čas, ko je hrana pri temperaturah, ki spodbujajo razmnoževanje bakterij.",
       "options": {
@@ -1568,6 +1896,7 @@
       }
     },
     "Q5.2.4": {
+      "title": "Varnost ostankov riža",
       "question": "Skuhali ste preveč riža in ga želite uporabiti za naslednje kosilo. Katero ravnanje je najvarnejše?",
       "explanation": "Kuhan riž lahko vsebuje bakterijo Bacillus cereus, ki se hitro razmnožuje, kadar riž ostane pri sobni temperaturi. Pravilno shranjevanje pomaga preprečiti okužbe s hrano in nepotrebne odpadke.",
       "options": {
@@ -1578,6 +1907,7 @@
       }
     },
     "Q5.2.5": {
+      "title": "Poraba ostankov",
       "question": "Katera navada v gospodinjstvu najverjetneje zmanjša količino ostankov, ki postanejo odpadek?",
       "explanation": "Veliko ostankov postane odpadek, ker jih pozabimo ali nadomestimo z na novo kupljeno hrano. Dejavno načrtovanje obrokov okoli razpoložljivih ostankov pomaga zmanjšati količino zavržene hrane.",
       "options": {
@@ -1588,6 +1918,7 @@
       }
     },
     "Q5.3.1": {
+      "title": "Datum „uporabno najmanj do“",
       "question": "Najdete jogurt, ki mu je datum „uporabno najmanj do“ potekel pred dvema dnevoma. Embalaža je neodprta in je bil pravilno shranjen v hladilniku. Kaj je najprimernejše ravnanje?",
       "explanation": "Številni potrošniki zamenjujejo oznaki „uporabno najmanj do“ in „porabiti do“. Prva se nanaša na kakovost, druga na varnost. Napačno razumevanje teh oznak znatno prispeva k zavrženi hrani v gospodinjstvih, ki bi se ji lahko izognili.",
       "options": {
@@ -1598,6 +1929,7 @@
       }
     },
     "Q5.3.2": {
+      "title": "Količinske akcije",
       "question": "Trgovina ponuja akcijo „kupite 3, dobite 2 brezplačno“ za sveže jagode. Katero vprašanje si morate zastaviti, preden ponudbo sprejmete?",
       "explanation": "Akcije z več izdelki pogosto spodbudijo potrošnike k nakupu več, kot lahko porabijo. Sveži pridelki so zaradi kratkega roka uporabnosti posebej izpostavljeni zavrženju.",
       "options": {
@@ -1608,6 +1940,7 @@
       }
     },
     "Q5.3.3": {
+      "title": "Hrana tik pred iztekom roka",
       "question": "Odločate se, kaj storiti s hrano, ki se ji bliža rok uporabnosti. Katera strategija bo verjetno preprečila največ zavržene hrane?",
       "explanation": "Načrtovanje obrokov in dajanje prednosti živilom s krajšim preostalim rokom sta med najučinkovitejšimi strategijami gospodinjstev za zmanjšanje zavržene hrane.",
       "options": {
@@ -1618,6 +1951,7 @@
       }
     },
     "Q5.3.4": {
+      "title": "Manj potekle hrane",
       "question": "Katero gospodinjstvo bo verjetno ustvarilo najmanj odpadkov zaradi potekle hrane?",
       "explanation": "Veliko živilom poteče rok, ker potrošniki pozabijo, kaj že imajo doma, in kupijo podvojene izdelke. Poznavanje domačih zalog je ključna strategija za preprečevanje zavržene hrane.",
       "options": {
@@ -1628,6 +1962,7 @@
       }
     },
     "Q5.3.5": {
+      "title": "Prezgodaj zavržena hrana",
       "question": "Družina zavrže hrano kmalu po izteku roka, ker jih skrbi varnost živil. Kaj po dokazih pogosto vodi to ravnanje?",
       "explanation": "Raziskave kažejo, da so napačno razumevanje datumskih oznak in skrbi glede morebitnih tveganj za zdravje med glavnimi vzroki za zavrženo hrano v evropskih gospodinjstvih, ki bi se ji lahko izognili.",
       "options": {
@@ -1638,6 +1973,7 @@
       }
     },
     "Q5.4.1": {
+      "title": "Načrtovanje družinskih večerij",
       "question": "Načrtujete družinsko večerjo in se želite izogniti nepotrebno zavrženi hrani. Kateri pristop bo najverjetneje pomagal?",
       "explanation": "Prekomerna priprava je pogost vzrok za zavrženo hrano v gospodinjstvih. Načrtovanje porcij glede na dejanske potrebe pomaga zmanjšati presežke hrane, ki morda nikoli ne bodo pojedeni.",
       "options": {
@@ -1648,6 +1984,7 @@
       }
     },
     "Q5.4.2": {
+      "title": "Popusti na družinska pakiranja",
       "question": "Trgovina ponuja velik popust na družinsko pakiranje svežih živil. Kateri odziv je najbolj trajnosten?",
       "explanation": "Nakup večje količine hrane, kot jo je mogoče porabiti, je pogost vzrok za zavrženo hrano. Nižja cena na enoto ne pomeni nujno manj odpadkov, če hrano pozneje zavržemo.",
       "options": {
@@ -1658,6 +1995,7 @@
       }
     },
     "Q5.4.3": {
+      "title": "Nakupovalne navade",
       "question": "Katera nakupovalna navada najverjetneje prispeva k prekomernemu uživanju in zavrženi hrani?",
       "explanation": "Impulzivni nakupi pogosto vodijo v prekomerne nakupe in povečajo verjetnost, da bo hrani potekel rok, preden jo pojemo.",
       "options": {
@@ -1668,6 +2006,7 @@
       }
     },
     "Q5.4.4": {
+      "title": "Zavržena sveža živila",
       "question": "Gospodinjstvo pogosto zavrže kruh, sadje in zelenjavo. Katero ravnanje v ozadju najverjetneje prispeva k težavi?",
       "explanation": "Sveži pridelki in pekovski izdelki so med najpogosteje zavrženimi živili, saj imajo razmeroma kratek rok uporabnosti in jih pogosto kupimo preveč.",
       "options": {
@@ -1678,6 +2017,7 @@
       }
     },
     "Q5.4.5": {
+      "title": "Prekomerno uživanje in zavržena hrana",
       "question": "Katera trditev najbolje odraža razmerje med prekomernim uživanjem in zavrženo hrano?",
       "explanation": "Prekomerno uživanje in prekomerni nakupi pogosto pripeljejo do tega, da hrana ostane nepojedena, kar poveča tako količino odpadkov v gospodinjstvu kot okoljske vplive njene pridelave.",
       "options": {
@@ -1688,6 +2028,7 @@
       }
     },
     "Q6.1.1": {
+      "title": "Trajnosten vnos beljakovin",
       "question": "Želite povečati vnos beljakovin in hkrati zmanjšati vpliv svoje prehrane na okolje. Katera tedenska sprememba je najbolj skladna s sedanjimi dokazi?",
       "options": {
         "A": "Jejte večje porcije rdečega mesa",
@@ -1698,6 +2039,7 @@
       "explanation": "Stročnice, oreški in polnozrnata žita zagotavljajo beljakovine in imajo običajno manjši okoljski vpliv kot številni živalski viri beljakovin. Raznolikost virov beljakovin koristi tako zdravju kot trajnosti."
     },
     "Q6.1.2": {
+      "title": "Primerjava beljakovinskih kosil",
       "question": "Dve kosili vsebujeta podobno količino beljakovin: solata iz leče in kvinoje ter sendvič s predelanim mesom. Katera trditev je najbolj točna?",
       "explanation": "Živila, bogata z beljakovinami, se razlikujejo po hranilih, ki jih spremljajo, kot so vlaknine, natrij, nasičene maščobe, vitamini in minerali. Pomembna je celotna beljakovinska sestava.",
       "options": {
@@ -1708,6 +2050,7 @@
       }
     },
     "Q6.1.3": {
+      "title": "Esencialne aminokisline",
       "question": "Oseba želi zmanjšati porabo mesa, a jo skrbi, ali bo dobila vse esencialne aminokisline. Katera strategija je najprimernejša?",
       "options": {
         "A": "Nadaljujte z mesom pri vsakem obroku",
@@ -1718,6 +2061,7 @@
       "explanation": "Različne rastlinske beljakovine se med seboj dopolnjujejo. V raznoliki prehrani kombinacija več rastlinskih virov beljakovin običajno zagotovi vse esencialne aminokisline."
     },
     "Q6.1.4": {
+      "title": "Navedbe o beljakovinah",
       "question": "Primerjate dve živili: izdelek A: „vir beljakovin“, izdelek B: „visoka vsebnost beljakovin“. Kaj lahko sklepate?",
       "options": {
         "A": "Izdelek B nujno vsebuje dvakrat več beljakovin",
@@ -1728,6 +2072,7 @@
       "explanation": "Po zakonodaji EU o prehranskih trditvah je izdelek lahko označen kot „z visoko vsebnostjo beljakovin“ le, če vsaj 20 % njegove energijske vrednosti izvira iz beljakovin. Za oznako „vir beljakovin“ je potrebnih vsaj 12 %."
     },
     "Q6.1.5": {
+      "title": "Uravnoteženi viri beljakovin",
       "question": "Kateri prehranski vzorec je najbolj skladen tako s cilji trajnostnosti kot s sedanjimi prehranskimi priporočili?",
       "options": {
         "A": "Večino beljakovin dobiti iz rdečega in predelanega mesa",
@@ -1738,6 +2083,7 @@
       "explanation": "Zdrava in trajnostna prehrana se praviloma opira na raznolike vire beljakovin in ne le na enega samega. Stročnice, ribe, oreški, mlečni izdelki in zmerne količine mesa lahko vsi prispevajo k zadostnemu vnosu beljakovin in podpirajo kakovost prehrane."
     },
     "Q6.2.1": {
+      "title": "Bolj zdrave maščobe",
       "question": "Želite izboljšati kakovost maščob v svoji prehrani, hkrati pa ohraniti obroke okusne in sitne. Katera zamenjava je najbolj skladna s sedanjimi priporočili?",
       "explanation": "SZO priporoča, da nasičene maščobe, kadar je mogoče, nadomestimo z nenasičenimi. Oljčno olje je bogato z nenasičenimi maščobami, maslo pa z nasičenimi.",
       "options": {
@@ -1748,6 +2094,7 @@
       }
     },
     "Q6.2.2": {
+      "title": "Profil maščob v kosilih",
       "question": "Primerjate dve kosili s podobno količino beljakovin: solato iz leče in orehov ter sendvič s predelanim mesom. Katera trditev je najbolj točna?",
       "explanation": "Rastlinske beljakovine",
       "options": {
@@ -1758,6 +2105,7 @@
       }
     },
     "Q6.2.3": {
+      "title": "Oznaka „z malo maščob“",
       "question": "Na embalaži piše „z malo maščob“. Kako je to najbolje razumeti?",
       "explanation": "Nekateri izdelki z malo maščob to nadomestijo z dodanimi sladkorji ali drugimi sestavinami. Presoja celotnega hranilnega profila je bolj koristna kot osredotočanje zgolj na maščobe.",
       "options": {
@@ -1768,6 +2116,7 @@
       }
     },
     "Q6.2.4": {
+      "title": "Večerja za zdravo srce",
       "question": "Katera izbira večerje je najbolj skladna s priporočili za zdravje srca in s trajnostnimi prehranskimi vzorci?",
       "explanation": "Ribe zagotavljajo beljakovine skupaj z nenasičenimi maščobami, vključno z omega-3 maščobnimi kislinami. Nadomeščanje dela rdečega in predelanega mesa z ribami je povezano s koristmi za zdravje in lahko podpira bolj trajnostne prehranske vzorce.",
       "options": {
@@ -1778,6 +2127,7 @@
       }
     },
     "Q6.2.5": {
+      "title": "Transmaščobe",
       "question": "Želite zmanjšati tveganje, povezano z vnosom transmaščob. Katero živilo si najverjetneje zasluži dodatno pozornost?",
       "explanation": "Industrijsko proizvedene transmaščobe pogosto najdemo v ocvrtih živilih, pekovskih izdelkih in nekaterih pakiranih prigrizkih. SZO priporoča čim manjši vnos transmaščob, saj povečujejo tveganje za bolezni srca in ožilja in nimajo znanih koristi za zdravje.",
       "options": {
@@ -1788,6 +2138,7 @@
       }
     },
     "Q6.3.1": {
+      "title": "Manj prostih sladkorjev",
       "question": "Želite zmanjšati vnos prostih sladkorjev. Katera sprememba pri zajtrku bo verjetno imela največji učinek?",
       "explanation": "Sladkane pijače so v številnih starostnih skupinah v Evropi med največjimi viri prostih sladkorjev. Njihova zamenjava z vodo je eden najučinkovitejših načinov za zmanjšanje vnosa prostih sladkorjev.",
       "options": {
@@ -1798,6 +2149,7 @@
       }
     },
     "Q6.3.2": {
+      "title": "Skriti sladkorji",
       "question": "Kateri izdelek lahko kljub temu, da ga številni potrošniki dojemajo kot zdravega, vsebuje precejšnjo količino sladkorja?",
       "explanation": "SZO sladkorje, ki so naravno prisotni v sadnem soku, uvršča med proste sladkorje. Sadni sok lahko zato znatno prispeva k dnevnemu vnosu sladkorja.",
       "options": {
@@ -1808,6 +2160,7 @@
       }
     },
     "Q6.3.3": {
+      "title": "Navedba „brez dodanih sladkorjev“",
       "question": "Primerjate dva izdelka: izdelek A: „brez dodanih sladkorjev“, izdelek B: običajna različica. Kaj lahko sklepate iz navedbe na izdelku A?",
       "explanation": "Izdelki z oznako „brez dodanih sladkorjev“ lahko še vedno vsebujejo naravno prisotne sladkorje. Zakonodaja EU zahteva, da izdelki, kadar je to ustrezno, navedejo „vsebuje naravno prisotne sladkorje“.",
       "options": {
@@ -1818,6 +2171,7 @@
       }
     },
     "Q6.3.4": {
+      "title": "Prigrizki z malo sladkorja",
       "question": "Želite prigrizek, ki daje hranila, ne da bi se močno opiral na proste sladkorje. Katera možnost temu cilju najbolje ustreza?",
       "explanation": "Sadje, navadni mlečni izdelki in oreški dajejo hranila, kot so vlaknine, beljakovine, vitamini in minerali, medtem ko številni sladki prigrizki prispevajo predvsem proste sladkorje in kalorije.",
       "options": {
@@ -1828,6 +2182,7 @@
       }
     },
     "Q6.3.5": {
+      "title": "Priporočila glede sladkorja",
       "question": "Katera trditev najbolje odraža sedanja priporočila glede vnosa sladkorja?",
       "explanation": "EFSA je ugotovila, da varnega praga za dodane in proste sladkorje ni mogoče določiti, in priporoča čim manjši vnos v okviru zdrave in prehransko ustrezne prehrane.",
       "options": {
@@ -1838,6 +2193,7 @@
       }
     },
     "Q6.4.1": {
+      "title": "Manj natrija",
       "question": "Želite zmanjšati vnos natrija. Katera sprememba bo verjetno imela največji učinek?",
       "explanation": "V večini razvitih držav 70–80 % soli v prehrani izvira iz predelanih živil in hrane, zaužite zunaj doma, ne pa iz soli, dodane med kuhanjem ali pri mizi.",
       "options": {
@@ -1848,6 +2204,7 @@
       }
     },
     "Q6.4.2": {
+      "title": "Obroki z malo natrija",
       "question": "Kateri obrok bo najverjetneje vseboval manj natrija?",
       "explanation": "Sveža in minimalno predelana živila praviloma vsebujejo veliko manj natrija kot predelane mesnine, instant izdelki in pripravljeni obroki.",
       "options": {
@@ -1858,6 +2215,7 @@
       }
     },
     "Q6.4.3": {
+      "title": "Oznaka „z malo natrija“",
       "question": "Izdelek je označen kot „z malo natrija“. Kako je to najbolje razumeti?",
       "explanation": "Zmanjšanje natrija je koristno, a mora zdrava izbira upoštevati tudi druge dejavnike, kot so maščobe, sladkor, vlaknine in splošna kakovost živila.",
       "options": {
@@ -1868,6 +2226,7 @@
       }
     },
     "Q6.4.4": {
+      "title": "Okus brez soli",
       "question": "Obrokom želite dodati okus in hkrati zmanjšati vnos soli. Katera strategija je najbolj skladna s priporočili SZO?",
       "explanation": "SZO priporoča, da hrano začinimo z zelišči in začimbami, namesto da se močno zanašamo na sol.",
       "options": {
@@ -1878,6 +2237,7 @@
       }
     },
     "Q6.4.5": {
+      "title": "Viri natrija",
       "question": "Katera kategorija živil je v evropski prehrani običajno eden največjih virov natrija?",
       "explanation": "Pri evropskem prebivalstvu so pomembni viri natrija kruh, meso in mesni izdelki, sir ter mlečni izdelki.",
       "options": {
@@ -1888,6 +2248,7 @@
       }
     },
     "Q6.5.1": {
+      "title": "Zajtrk, bogat z vlakninami",
       "question": "Želite povečati vnos vlaknin. Kateri zajtrk bo najverjetneje pomagal?",
       "explanation": "Ovseni kosmiči, sadje in oreški so vsi pomembni",
       "options": {
@@ -1898,6 +2259,7 @@
       }
     },
     "Q6.5.2": {
+      "title": "Vlaknine v testeninah",
       "question": "Izbirate med dvema izdelkoma iz testenin. Katera možnost najverjetneje vsebuje več vlaknin?",
       "explanation": "Polnozrnati izdelki ohranijo več naravnih vlaknin zrna kot izdelki iz rafiniranih žit. Polnozrnate testenine so praviloma boljša",
       "options": {
@@ -1908,6 +2270,7 @@
       }
     },
     "Q6.5.3": {
+      "title": "Oznake polnozrnatih izdelkov",
       "question": "Na embalaži je navedeno, da izdelek vsebuje polnozrnata žita. Kateri podatek na etiketi bi najmočneje potrdil to navedbo?",
       "explanation": "Praktičen način prepoznavanja polnozrnatih živil je preveriti, ali se izrazi, kot so „polnozrnata pšenica“, „polnozrnati oves“ ali „polnozrnato“, pojavijo blizu začetka seznama sestavin.",
       "options": {
@@ -1918,6 +2281,7 @@
       }
     },
     "Q6.5.4": {
+      "title": "Vlaknine in prebava",
       "question": "Oseba želi izboljšati prebavo in preprečiti zaprtje. Katera navada je najbolj skladna s sedanjimi dokazi?",
       "explanation": "Prehranske vlaknine podpirajo delovanje črevesja, zlasti skupaj z zadostnim vnosom tekočine. Postopno povečevanje vlaknin lahko tudi zmanjša začasno napihnjenost in nelagodje.",
       "options": {
@@ -1928,6 +2292,7 @@
       }
     },
     "Q6.5.5": {
+      "title": "Vrste prehranskih vlaknin",
       "question": "Katera kombinacija živil najverjetneje zagotavlja raznolike vrste prehranskih vlaknin?",
       "explanation": "Različna z vlakninami bogata živila dajejo različne vrste topnih in netopnih vlaknin. Uživanje raznolikih stročnic, zelenjave, sadja in polnozrnatih žit podpira zdravje prebavil in splošno kakovost prehrane.",
       "options": {
@@ -1938,6 +2303,7 @@
       }
     },
     "Q6.6.1": {
+      "title": "Vitamini brez prehranskih dopolnil",
       "question": "Želite izboljšati vsebnost vitaminov v svoji prehrani brez jemanja prehranskih dopolnil. Katera navada je najbolj skladna s sedanjimi priporočili?",
       "explanation": "Sadje in zelenjava dajejo različne vitamine, minerale, vlaknine in antioksidante. Uživanje raznolikih rastlinskih živil izboljša skupni vnos mikrohranil in zmanjša tveganje za pomanjkanja.",
       "options": {
@@ -1948,6 +2314,7 @@
       }
     },
     "Q6.6.2": {
+      "title": "Vitamin D iz hrane",
       "question": "Oseba želi s hrano ohranjati ustrezno raven vitamina D. Kateri obrok bo najverjetneje prispeval k temu?",
       "explanation": "Naravna živila",
       "options": {
@@ -1958,6 +2325,7 @@
       }
     },
     "Q6.6.3": {
+      "title": "Vitamini pri veganski prehrani",
       "question": "Potrošnik se prehranjuje strogo vegansko. Kateremu vitaminu je treba nameniti posebno pozornost?",
       "explanation": "Vitamin B12 v naravi najdemo skoraj izključno v živilih živalskega izvora. Ljudje na vegetarijanski in zlasti veganski prehrani morda potrebujejo obogatena živila ali prehranska dopolnila za ustrezen vnos.",
       "options": {
@@ -1968,6 +2336,7 @@
       }
     },
     "Q6.6.4": {
+      "title": "Prigrizki z vitaminom C",
       "question": "Kateri prigrizek bo najverjetneje dober vir vitamina C?",
       "options": {
         "A": "Sir in krekerji",
@@ -1978,6 +2347,7 @@
       "explanation": "Sadje, kot so pomaranče, kivi in jagodičevje, ter številne vrste zelenjave so bogati z vitaminom C, ki prispeva k delovanju imunskega sistema in normalnemu nastajanju kolagena."
     },
     "Q6.6.5": {
+      "title": "Kuhanje in vitamini",
       "question": "Izbirate med dvema prilogama: zelenjava, kuhana v sopari, in zelenjava, kuhana zelo dolgo pri visoki temperaturi. Katera možnost bo verjetneje ohranila vitamine?",
       "explanation": "Prekomerno kuhanje lahko zmanjša vsebnost nekaterih vitaminov. SZO priporoča, da sadja in zelenjave ne prekuhavamo, da ohranimo pomembna hranila.",
       "options": {
@@ -1988,6 +2358,7 @@
       }
     },
     "Q6.7.1": {
+      "title": "Hranilno bogata kosila",
       "question": "Dve kosili vsebujeta podobno število kalorij. Katero kosilo bo verjetno hranilno bogatejše?",
       "explanation": "Kalorije merijo energijo, hranilna gostota pa odraža količino koristnih hranil. Obrok iz stročnic, zelenjave in polnozrnatih žit običajno daje več vlaknin, vitaminov, mineralov in rastlinskih snovi kot številne visoko predelane alternative s podobno vsebnostjo kalorij.",
       "options": {
@@ -1998,6 +2369,7 @@
       }
     },
     "Q6.7.2": {
+      "title": "Nizkokalorične pijače",
       "question": "Katera izbira pijače najverjetneje zmanjša nepotreben vnos kalorij?",
       "explanation": "Voda hidrira brez kalorij, medtem ko lahko sladke pijače dodajo znatno količino energije z majhno hranilno vrednostjo.",
       "options": {
@@ -2008,6 +2380,7 @@
       }
     },
     "Q6.7.3": {
+      "title": "Predelani prigrizki in kalorije",
       "question": "Zakaj lahko redno uživanje visoko predelanih prigrizkov oteži nadzor nad kalorijami?",
       "explanation": "Številna visoko predelana živila so energijsko gosta in jih je lahko zaužiti preveč, kar lahko prispeva k presežnemu vnosu kalorij in nezdravemu pridobivanju telesne teže.",
       "options": {
@@ -2018,6 +2391,7 @@
       }
     },
     "Q6.7.4": {
+      "title": "Trajnosten vnos kalorij",
       "question": "Katera trditev najbolje odraža trajnosten pristop k vnosu kalorij?",
       "options": {
         "A": "Zaužiti čim manj kalorij",
@@ -2028,6 +2402,7 @@
       "explanation": "Zdrava in trajnostna prehrana ni odvisna le od kalorij. Gre za pokrivanje energijskih potreb z živili, ki zagotavljajo esencialna hranila, in za zmanjševanje nepotrebne prekomerne porabe ter odpadkov."
     },
     "Q6.7.5": {
+      "title": "Prigrizki, ki nasitijo",
       "question": "Štirje prigrizki dajejo približno enako število kalorij. Kateri vas bo verjetneje dlje nasitil?",
       "explanation": "Živila z vlakninami, beljakovinami in zdravimi maščobami praviloma bolje nasitijo kot živila, ki vsebujejo predvsem dodane sladkorje.",
       "options": {

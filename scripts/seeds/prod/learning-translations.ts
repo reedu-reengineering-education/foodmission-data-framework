@@ -18,10 +18,11 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../../src/i18n/constants';
 export type LearningTranslationFile = {
   dimensions?: Record<string, string>;
   topics?: Record<string, string>;
-  foodFacts?: Record<string, { body?: string }>;
+  foodFacts?: Record<string, { title?: string; body?: string }>;
   quizzes?: Record<
     string,
     {
+      title?: string;
       question?: string;
       explanation?: string;
       options?: Record<string, string>;
@@ -204,6 +205,7 @@ export async function seedLearningTranslations(
         report.unknownCodes.push(`${locale}/FoodFact/${code}`);
         continue;
       }
+      await upsert('FoodFact', row.id, locale, 'title', fields.title);
       await upsert('FoodFact', row.id, locale, 'body', fields.body);
     }
 
@@ -213,6 +215,7 @@ export async function seedLearningTranslations(
         report.unknownCodes.push(`${locale}/Quiz/${code}`);
         continue;
       }
+      await upsert('Quiz', row.id, locale, 'title', fields.title);
       await upsert('Quiz', row.id, locale, 'question', fields.question);
       await upsert('Quiz', row.id, locale, 'explanation', fields.explanation);
 
