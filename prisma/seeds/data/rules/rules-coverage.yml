@@ -367,7 +367,7 @@ missions:
       notes:
         - 'Every day of the week: counts distinct days with a high-fibre breakfast'
         - 'Client contract: metadata.mealType set to BREAKFAST (same values as meal log typeOfMeal)'
-        - 'metadata.dayBucket is server-set (UTC day the event was recorded, not the meal day)'
+        - 'metadata.dayBucket is server-set from the event time; meal-log events are dated at the meal, so it is the meal''s UTC day'
   - code: M.A6.3
     shape: composite_threshold
     rule:
@@ -836,7 +836,7 @@ missions:
       progress: 'min(proteinDays / 7, 1)'
       notes:
         - 'Every day of the week: counts distinct days with at least one protein-rich meal'
-        - 'metadata.dayBucket is server-set (UTC day the event was recorded, not the meal day)'
+        - 'metadata.dayBucket is server-set from the event time; meal-log events are dated at the meal, so it is the meal''s UTC day'
   - code: M.B6.2
     shape: count_at_least
     rule:
@@ -851,7 +851,7 @@ missions:
       progress: 'min(fruitVegDays / 7, 1)'
       notes:
         - 'Every day of the week: counts distinct days with at least one extra fruit/vegetable serving'
-        - 'metadata.dayBucket is server-set (UTC day the event was recorded, not the meal day)'
+        - 'metadata.dayBucket is server-set from the event time; meal-log events are dated at the meal, so it is the meal''s UTC day'
   - code: M.B6.3
     shape: count_at_least
     rule:
@@ -879,7 +879,7 @@ missions:
       progress: 'min(wholegrainDays / 7, 1)'
       notes:
         - 'Every day of the week: counts distinct days with at least one whole-grain choice'
-        - 'metadata.dayBucket is server-set (UTC day the event was recorded, not the meal day)'
+        - 'metadata.dayBucket is server-set from the event time; meal-log events are dated at the meal, so it is the meal''s UTC day'
   - code: M.B6.5
     shape: count_at_least
     rule:

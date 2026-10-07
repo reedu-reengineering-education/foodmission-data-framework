@@ -144,6 +144,7 @@ describe('MealLogsService', () => {
         },
       },
       idempotencyKey: 'meal-logged:m1',
+      createdAt: loggedAt,
     });
   });
 
@@ -359,7 +360,7 @@ describe('MealLogsService', () => {
       );
     });
 
-    it('stamps flag and swap events with the meal day, not the recording day', async () => {
+    it('dates flag and swap events at the meal, not the recording time', async () => {
       const log = quickLog(
         [EventType.MEAL_MEAT_CONSUMED],
         [EventType.SWAP_BEEF_TO_CHICKEN],
@@ -379,6 +380,7 @@ describe('MealLogsService', () => {
         expect(input.metadata).toEqual(
           expect.objectContaining({ mealDayBucket: '2026-09-17' }),
         );
+        expect(input.createdAt).toEqual(log.timestamp);
       }
     });
 

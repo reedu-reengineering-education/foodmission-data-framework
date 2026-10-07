@@ -144,9 +144,13 @@ export class MealLogsService {
       throw handlePrismaError(error, 'create meal log', 'MealLog');
     }
 
-    const mealDayBucket = toDayBucket(
-      this.resolveLoggedAt(mealLog.timestamp, createMealLogDto.timestamp),
+    // Events are dated at the meal, not the request, so a catch-up log of
+    // past days lands on those days (dayBucket, rule windows) on the ledger.
+    const loggedAt = this.resolveLoggedAt(
+      mealLog.timestamp,
+      createMealLogDto.timestamp,
     );
+    const mealDayBucket = toDayBucket(loggedAt);
 
     // Best-effort: the meal log is already persisted, so a failure recording
     // the event must not surface as a create failure (the client would retry
@@ -180,6 +184,7 @@ export class MealLogsService {
           },
         },
         idempotencyKey: `meal-logged:${mealLog.id}`,
+        createdAt: loggedAt,
       });
     } catch (error) {
       this.logger.error(
@@ -188,7 +193,14 @@ export class MealLogsService {
       );
     }
 
-    await this.recordFlagEvents(mealLog, flags, sources, swaps, mealDayBucket);
+    await this.recordFlagEvents(
+      mealLog,
+      flags,
+      sources,
+      swaps,
+      loggedAt,
+      mealDayBucket,
+    );
 
     return this.toResponse(mealLog);
   }
@@ -234,10 +246,11 @@ export class MealLogsService {
     flags: MealFlagEventType[],
     sources: ReadonlyMap<EventTypeValue, FlagSource>,
     swaps: MealSwapEventType[],
+    loggedAt: Date,
     mealDayBucket: string,
   ): Promise<void> {
     for (const eventType of eventsForFlags(flags)) {
-      await this.recordBehaviouralEvent(mealLog, eventType, {
+      await this.recordBehaviouralEvent(mealLog, eventType, loggedAt, {
         mealLogId: mealLog.id,
         mealId: mealLog.mealId,
         mealType: mealLog.typeOfMeal,
@@ -248,7 +261,7 @@ export class MealLogsService {
     }
 
     for (const eventType of eventsForSwaps(swaps)) {
-      await this.recordBehaviouralEvent(mealLog, eventType, {
+      await this.recordBehaviouralEvent(mealLog, eventType, loggedAt, {
         mealLogId: mealLog.id,
         mealId: mealLog.mealId,
         mealType: mealLog.typeOfMeal,
@@ -261,6 +274,7 @@ export class MealLogsService {
   private async recordBehaviouralEvent(
     mealLog: MealLog,
     eventType: EventTypeValue,
+    loggedAt: Date,
     metadata: Record<string, unknown>,
     idempotencyKey = `${eventType}:${mealLog.id}`,
   ): Promise<void> {
@@ -271,6 +285,7 @@ export class MealLogsService {
         source: EventSource.MEAL_LOG,
         metadata,
         idempotencyKey,
+        createdAt: loggedAt,
       });
     } catch (error) {
       this.logger.error(
