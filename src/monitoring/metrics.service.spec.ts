@@ -57,96 +57,9 @@ describe('MetricsService', () => {
     });
   });
 
-  describe('setActiveConnections', () => {
-    it('should set active connections gauge', async () => {
-      service.setActiveConnections(10);
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain('active_connections 10');
-    });
-
-    it('should update active connections gauge', async () => {
-      service.setActiveConnections(5);
-      service.setActiveConnections(15);
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain('active_connections 15');
-    });
-  });
-
-  describe('setDatabaseConnections', () => {
-    it('should set database connections gauge', async () => {
-      service.setDatabaseConnections(3);
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain('database_connections 3');
-    });
-  });
-
-  describe('recordExternalApiCall', () => {
-    it('should record external API call success', async () => {
-      service.recordExternalApiCall('openfoodfacts', 'success');
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain(
-        'external_api_calls_total{service="openfoodfacts",status="success"} 1',
-      );
-    });
-
-    it('should record external API call error', async () => {
-      service.recordExternalApiCall('openfoodfacts', 'error');
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain(
-        'external_api_calls_total{service="openfoodfacts",status="error"} 1',
-      );
-    });
-
-    it('should record multiple external API calls', async () => {
-      service.recordExternalApiCall('openfoodfacts', 'success');
-      service.recordExternalApiCall('openfoodfacts', 'success');
-      service.recordExternalApiCall('openfoodfacts', 'error');
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain(
-        'external_api_calls_total{service="openfoodfacts",status="success"} 2',
-      );
-      expect(metrics).toContain(
-        'external_api_calls_total{service="openfoodfacts",status="error"} 1',
-      );
-    });
-  });
-
-  describe('recordCacheHit', () => {
-    it('should record cache hit', async () => {
-      service.recordCacheHit('cache');
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain('cache_hits_total{cache_type="cache"} 1');
-    });
-  });
-
-  describe('recordCacheMiss', () => {
-    it('should record cache miss', async () => {
-      service.recordCacheMiss('cache');
-
-      const metrics = await service.getMetrics();
-
-      expect(metrics).toContain('cache_misses_total{cache_type="cache"} 1');
-    });
-  });
-
   describe('getMetrics', () => {
     it('should return metrics in Prometheus format', async () => {
       service.recordHttpRequest('GET', '/api/test', 200, 0.1);
-      service.setActiveConnections(5);
 
       const metrics = await service.getMetrics();
 
@@ -154,10 +67,6 @@ describe('MetricsService', () => {
         '# HELP http_requests_total Total number of HTTP requests',
       );
       expect(metrics).toContain('# TYPE http_requests_total counter');
-      expect(metrics).toContain(
-        '# HELP active_connections Number of active connections',
-      );
-      expect(metrics).toContain('# TYPE active_connections gauge');
     });
 
     it('should include default Node.js metrics', async () => {

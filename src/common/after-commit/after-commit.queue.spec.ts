@@ -1,4 +1,9 @@
 import { AfterCommitQueue } from './after-commit.queue';
+import {
+  afterCommitQueuePending,
+  afterCommitTasksTotal,
+} from './after-commit.metrics';
+import { metricValue } from '../metrics/metric-value.testing';
 
 describe('AfterCommitQueue', () => {
   let queue: AfterCommitQueue;
@@ -112,5 +117,49 @@ describe('AfterCommitQueue', () => {
     expect(done).toBe(false);
     await queue.awaitIdle();
     expect(done).toBe(true);
+  });
+
+  it('counts task outcomes and drains the pending gauge', async () => {
+    const before = {
+      ok: await metricValue(afterCommitTasksTotal, { outcome: 'ok' }),
+      failed: await metricValue(afterCommitTasksTotal, { outcome: 'failed' }),
+      skipped: await metricValue(afterCommitTasksTotal, { outcome: 'skipped' }),
+    };
+    const pendingBefore = await metricValue(afterCommitQueuePending);
+
+    queue.schedule(
+      [
+        { label: 'ok', run: () => Promise.resolve() },
+        { label: 'boom', run: () => Promise.reject(new Error('boom')) },
+        {
+          label: 'never visible',
+          confirm: () => Promise.resolve(false),
+          run: () => Promise.resolve(),
+        },
+      ],
+      [],
+    );
+    expect(await metricValue(afterCommitQueuePending)).toBe(pendingBefore + 3);
+
+    await queue.awaitIdle();
+
+    expect(await metricValue(afterCommitQueuePending)).toBe(pendingBefore);
+    expect(await metricValue(afterCommitTasksTotal, { outcome: 'ok' })).toBe(
+      before.ok + 1,
+    );
+    expect(
+      await metricValue(afterCommitTasksTotal, { outcome: 'failed' }),
+    ).toBe(before.failed + 1);
+    expect(
+      await metricValue(afterCommitTasksTotal, { outcome: 'skipped' }),
+    ).toBe(before.skipped + 1);
+  });
+
+  it('does not touch the pending gauge for inline runs', async () => {
+    const pendingBefore = await metricValue(afterCommitQueuePending);
+
+    await queue.run([{ label: 'inline', run: () => Promise.resolve() }]);
+
+    expect(await metricValue(afterCommitQueuePending)).toBe(pendingBefore);
   });
 });
