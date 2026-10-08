@@ -3,6 +3,12 @@ import { ModuleRef } from '@nestjs/core';
 import { Prisma, UserEvent } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { buildEventMetadata, toDayBucket } from '../user-event.utils';
+import {
+  userEventEvaluationFailuresTotal,
+  userEventsRecordFailuresTotal,
+  userEventsRecordedTotal,
+  userEventsReplayedTotal,
+} from '../user-event.metrics';
 import { RulesService } from '../../rules/rules.service';
 import {
   QUEST_PROGRESS_RECOMPUTER,
@@ -95,6 +101,7 @@ export class UserEventService implements UserEventRecorder {
     try {
       await this.record(input);
     } catch (error) {
+      userEventsRecordFailuresTotal.inc({ event_type: input.eventType });
       this.logger.warn(
         `Failed to record ${input.eventType} for user ${input.userId}`,
         error instanceof Error ? error.message : error,
@@ -113,6 +120,7 @@ export class UserEventService implements UserEventRecorder {
         where: { idempotencyKey: input.idempotencyKey },
       });
       if (existing) {
+        this.countReplay(input);
         return { event: existing, replayed: true };
       }
     }
@@ -134,6 +142,11 @@ export class UserEventService implements UserEventRecorder {
           metadata,
           idempotencyKey: input.idempotencyKey ?? null,
         },
+      });
+
+      userEventsRecordedTotal.inc({
+        event_type: event.eventType,
+        source: event.source,
       });
 
       if (this.shouldEvaluateDerivedProgress(event.eventType)) {
@@ -178,6 +191,7 @@ export class UserEventService implements UserEventRecorder {
           where: { idempotencyKey: input.idempotencyKey },
         });
         if (existing) {
+          this.countReplay(input);
           return { event: existing, replayed: true };
         }
       }
@@ -193,6 +207,10 @@ export class UserEventService implements UserEventRecorder {
     try {
       await this.rulesService.evaluateUserEvent(userId, eventType, tx);
     } catch (error) {
+      userEventEvaluationFailuresTotal.inc({
+        stage: 'rules',
+        event_type: eventType,
+      });
       this.logger.error(
         `Derived progress evaluation failed for ${eventType} and user ${userId}`,
         error instanceof Error ? error.stack : error,
@@ -210,11 +228,22 @@ export class UserEventService implements UserEventRecorder {
         { afterCommit },
       );
     } catch (error) {
+      userEventEvaluationFailuresTotal.inc({
+        stage: 'badges',
+        event_type: event.eventType,
+      });
       this.logger.error(
         `Badge evaluation failed for ${event.eventType} and user ${event.userId}`,
         error instanceof Error ? error.stack : error,
       );
     }
+  }
+
+  private countReplay(input: RecordUserEventInput): void {
+    userEventsReplayedTotal.inc({
+      event_type: input.eventType,
+      source: input.source,
+    });
   }
 
   private shouldEvaluateDerivedProgress(eventType: string): boolean {

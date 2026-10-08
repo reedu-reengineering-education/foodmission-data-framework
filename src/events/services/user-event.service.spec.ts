@@ -5,6 +5,13 @@ import { EventSource, EventType } from '../event-types';
 import { RulesService } from '../../rules/rules.service';
 import { QUEST_PROGRESS_RECOMPUTER } from '../../quests/quest-progress.types';
 import { UserEventService } from './user-event.service';
+import {
+  userEventEvaluationFailuresTotal,
+  userEventsRecordFailuresTotal,
+  userEventsRecordedTotal,
+  userEventsReplayedTotal,
+} from '../user-event.metrics';
+import { metricValue as counterValue } from '../../common/metrics/metric-value.testing';
 
 describe('UserEventService', () => {
   let service: UserEventService;
@@ -104,6 +111,86 @@ describe('UserEventService', () => {
     } finally {
       jest.useRealTimers();
     }
+  });
+
+  it('counts fresh writes and replays in separate counters', async () => {
+    const labels = {
+      event_type: EventType.ONBOARDING_COMPLETED,
+      source: EventSource.ONBOARDING,
+    };
+    const recordedBefore = await counterValue(userEventsRecordedTotal, labels);
+    const replayedBefore = await counterValue(userEventsReplayedTotal, labels);
+
+    prisma.userEvent.findUnique.mockResolvedValueOnce(null);
+    prisma.userEvent.create.mockResolvedValue({
+      id: 'evt-1',
+      userId: 'u1',
+      eventType: labels.event_type,
+      source: labels.source,
+    });
+    await service.record({
+      userId: 'u1',
+      eventType: labels.event_type,
+      source: labels.source,
+      idempotencyKey: 'k1',
+    });
+
+    prisma.userEvent.findUnique.mockResolvedValueOnce({ id: 'evt-1' });
+    await service.record({
+      userId: 'u1',
+      eventType: labels.event_type,
+      source: labels.source,
+      idempotencyKey: 'k1',
+    });
+
+    expect(await counterValue(userEventsRecordedTotal, labels)).toBe(
+      recordedBefore + 1,
+    );
+    expect(await counterValue(userEventsReplayedTotal, labels)).toBe(
+      replayedBefore + 1,
+    );
+  });
+
+  it('counts dropped best-effort writes', async () => {
+    const labels = { event_type: EventType.APP_SESSION_OPENED };
+    const before = await counterValue(userEventsRecordFailuresTotal, labels);
+    prisma.userEvent.create.mockRejectedValue(new Error('db down'));
+
+    await service.recordBestEffort({
+      userId: 'u1',
+      eventType: EventType.APP_SESSION_OPENED,
+      source: EventSource.API,
+    });
+
+    expect(await counterValue(userEventsRecordFailuresTotal, labels)).toBe(
+      before + 1,
+    );
+  });
+
+  it('counts failed rule evaluations without failing the write', async () => {
+    const labels = { stage: 'rules', event_type: EventType.MEAL_LOGGED };
+    const before = await counterValue(userEventEvaluationFailuresTotal, labels);
+    prisma.userEvent.create.mockResolvedValue({
+      id: 'evt-1',
+      userId: 'u1',
+      eventType: EventType.MEAL_LOGGED,
+      source: EventSource.API,
+    });
+    rulesService.evaluateUserEvent.mockRejectedValue(new Error('boom'));
+
+    const result = await service.record(
+      {
+        userId: 'u1',
+        eventType: EventType.MEAL_LOGGED,
+        source: EventSource.API,
+      },
+      prisma as unknown as Prisma.TransactionClient,
+    );
+
+    expect(result.replayed).toBe(false);
+    expect(await counterValue(userEventEvaluationFailuresTotal, labels)).toBe(
+      before + 1,
+    );
   });
 
   it('replays on idempotencyKey', async () => {
