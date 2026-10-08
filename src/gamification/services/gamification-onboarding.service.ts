@@ -3,6 +3,7 @@ import { Prisma, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { DimensionLevelService } from './dimension-level.service';
 import { ProgressWheelService } from './progress-wheel.service';
 
 export function onboardingCompletedIdempotencyKey(userId: string): string {
@@ -23,11 +24,13 @@ export class GamificationOnboardingService {
     private readonly prisma: PrismaService,
     private readonly userEventService: UserEventService,
     private readonly progressWheelService: ProgressWheelService,
+    private readonly dimensionLevelService: DimensionLevelService,
   ) {}
 
   /**
    * First-time onboarding only: ensure wallet, seed the four sustainability
-   * progress wheels at stage 1 of the chosen profile, and record
+   * progress wheels at stage 1 of the chosen profile, infer one learning level
+   * per dimension from the survey answers, and record
    * ONBOARDING_COMPLETED — all in a single transaction. Later baseline
    * PATCHes no-op once that event exists.
    */
@@ -65,6 +68,8 @@ export class GamificationOnboardingService {
           segment,
           txClient,
         );
+
+        await this.dimensionLevelService.ensureForUser(user.id, txClient);
 
         await this.userEventService.record(
           {

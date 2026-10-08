@@ -8,6 +8,8 @@ import {
   NotFoundException,
   Delete,
   Query,
+  Param,
+  BadRequestException,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -16,6 +18,7 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiOkResponse,
+  ApiParam,
 } from '@nestjs/swagger';
 import { UserProfilesService } from '../services/user-profiles.service';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
@@ -24,6 +27,15 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
 import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
+import { LearningProgressService } from '../../gamification/services/learning-progress.service';
+import {
+  DimensionProgressDto,
+  KnowledgeProgressDto,
+} from '../../gamification/dto/learning-progress.dto';
+import {
+  KNOWLEDGE_KINDS,
+  KnowledgeKind,
+} from '../../gamification/knowledge-progress.config';
 import {
   GamificationProfileQueryDto,
   GamificationProfileResponseDto,
@@ -49,6 +61,7 @@ export class UserProfilesController {
     private readonly gamificationProfileService: GamificationProfileService,
     private readonly progressWheelService: ProgressWheelService,
     private readonly onboardingSurveyService: OnboardingSurveyService,
+    private readonly learningProgressService: LearningProgressService,
   ) {}
 
   @Get('me')
@@ -148,6 +161,81 @@ export class UserProfilesController {
     // Replace with automatic recordImpact() calls from meal-log / challenge
     // completion, then remove this endpoint or restrict it (admin/feature flag).
     return this.progressWheelService.recordImpact(userId, body.actionCode);
+  }
+
+  @Get('me/gamification/dimensions')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the level and available quests per dimension',
+    description:
+      'One level per learning dimension, inferred from the onboarding survey ' +
+      'and raised once the CO2, energy, water and land saved through that ' +
+      "dimension's wheel actions all reach the level's targets. Each " +
+      "dimension lists the quests at the user's level with their progress. " +
+      'Empty until onboarding is done.',
+  })
+  @ApiOkResponse({ type: [DimensionProgressDto] })
+  async getMyDimensions(
+    @CurrentUser('id') userId: string,
+  ): Promise<DimensionProgressDto[]> {
+    return this.learningProgressService.listDimensions(userId);
+  }
+
+  @Get('me/gamification/dimensions/:code')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({ name: 'code', example: 'DIET_CHANGES' })
+  @ApiOperation({
+    summary: 'Get one dimension with finished and open quest items',
+  })
+  @ApiOkResponse({ type: DimensionProgressDto })
+  async getMyDimension(
+    @CurrentUser('id') userId: string,
+    @Param('code') code: string,
+  ): Promise<DimensionProgressDto> {
+    return this.learningProgressService.getDimension(userId, code);
+  }
+
+  @Get('me/gamification/knowledge-progress')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the knowledge progress bars',
+    description:
+      'Health, food choices and food & waste: share of tagged items ' +
+      '(missions, challenges, quizzes answered correctly, food facts read) ' +
+      'finished across all quests, every dimension and level. The total ' +
+      'is fixed, so a bar only grows.',
+  })
+  @ApiOkResponse({ type: [KnowledgeProgressDto] })
+  async getMyKnowledgeProgress(
+    @CurrentUser('id') userId: string,
+  ): Promise<KnowledgeProgressDto[]> {
+    return this.learningProgressService.listKnowledge(userId);
+  }
+
+  @Get('me/gamification/knowledge-progress/:kind')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({ name: 'kind', enum: KNOWLEDGE_KINDS })
+  @ApiOperation({
+    summary: 'Get one knowledge bar with its finished and open items',
+  })
+  @ApiOkResponse({ type: KnowledgeProgressDto })
+  async getMyKnowledgeBar(
+    @CurrentUser('id') userId: string,
+    @Param('kind') kind: string,
+  ): Promise<KnowledgeProgressDto> {
+    if (!(KNOWLEDGE_KINDS as string[]).includes(kind)) {
+      throw new BadRequestException(
+        `kind must be one of ${KNOWLEDGE_KINDS.join(', ')}`,
+      );
+    }
+    return this.learningProgressService.getKnowledge(
+      userId,
+      kind as KnowledgeKind,
+    );
   }
 
   @Get('me/gamification/onboarding-survey')

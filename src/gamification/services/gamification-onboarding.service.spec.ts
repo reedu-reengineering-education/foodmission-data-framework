@@ -4,6 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { ProgressWheelService } from './progress-wheel.service';
+import { DimensionLevelService } from './dimension-level.service';
 import {
   GamificationOnboardingService,
   onboardingCompletedIdempotencyKey,
@@ -43,6 +44,10 @@ describe('GamificationOnboardingService', () => {
         { provide: PrismaService, useValue: prisma },
         { provide: UserEventService, useValue: userEventService },
         { provide: ProgressWheelService, useValue: progressWheelService },
+        {
+          provide: DimensionLevelService,
+          useValue: { ensureForUser: jest.fn().mockResolvedValue(undefined) },
+        },
       ],
     }).compile();
 

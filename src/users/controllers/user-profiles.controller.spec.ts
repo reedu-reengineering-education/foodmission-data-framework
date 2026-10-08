@@ -7,6 +7,7 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
 import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
+import { LearningProgressService } from '../../gamification/services/learning-progress.service';
 
 describe('UserProfilesController', () => {
   let controller: UserProfilesController;
@@ -74,6 +75,7 @@ describe('UserProfilesController', () => {
           provide: OnboardingSurveyService,
           useValue: onboardingSurveyService,
         },
+        { provide: LearningProgressService, useValue: {} },
       ],
     })
       .overrideGuard(DataBaseAuthGuard)

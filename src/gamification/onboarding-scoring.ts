@@ -1,5 +1,8 @@
 import { UserSegment, WeeklyBeefFrequency } from '@prisma/client';
-import { OnboardingBaselines } from './onboarding.utils';
+import {
+  OnboardingBaselineField,
+  OnboardingBaselines,
+} from './onboarding.utils';
 import {
   BenchmarkedOnboardingField,
   ONBOARDING_SURVEY_BENCHMARKS,
@@ -46,6 +49,18 @@ function beefRank(value: WeeklyBeefFrequency): number {
   return Math.round((index * 2) / MAX_BEEF_INDEX);
 }
 
+/** Segment a single onboarding answer points to (0-2 rank -> tier). */
+export function answerSegment(
+  field: OnboardingBaselineField,
+  value: string,
+): UserSegment {
+  const rank =
+    field === 'weeklyBeefConsumption'
+      ? beefRank(value as WeeklyBeefFrequency)
+      : benchmarkRank(field, value);
+  return RANK_SEGMENT[rank];
+}
+
 /**
  * Average sustainability rank (0 = advanced, 2 = beginner) across all five
  * onboarding baselines: the four benchmarked categories (Figure 9 user
@@ -56,10 +71,7 @@ export function computeAverageRank(baselines: OnboardingBaselines): number {
     benchmarkRank('weeklyMeatConsumption', baselines.weeklyMeatConsumption),
     benchmarkRank('weeklyFoodWaste', baselines.weeklyFoodWaste),
     benchmarkRank('weeklyUpfConsumption', baselines.weeklyUpfConsumption),
-    benchmarkRank(
-      'weeklyReusableOrRefill',
-      baselines.weeklyReusableOrRefill,
-    ),
+    benchmarkRank('weeklyReusableOrRefill', baselines.weeklyReusableOrRefill),
     beefRank(baselines.weeklyBeefConsumption),
   ];
   return ranks.reduce((sum, rank) => sum + rank, 0) / ranks.length;
@@ -77,8 +89,6 @@ export function rankToSegment(averageRank: number): UserSegment {
  * internally consistent (seeded users' segment matches their baselines
  * instead of being picked independently).
  */
-export function deriveUserSegment(
-  baselines: OnboardingBaselines,
-): UserSegment {
+export function deriveUserSegment(baselines: OnboardingBaselines): UserSegment {
   return rankToSegment(computeAverageRank(baselines));
 }

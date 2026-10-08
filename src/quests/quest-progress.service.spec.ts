@@ -5,6 +5,7 @@ import { PrismaService } from '../database/prisma.service';
 import { EventSource, EventType } from '../events/event-types';
 import { UserEventService } from '../events/services/user-event.service';
 import { CompletionRewardService } from '../gamification/services/completion-reward.service';
+import { DimensionLevelService } from '../gamification/services/dimension-level.service';
 import { QuestProgressService } from './quest-progress.service';
 
 type Item = { contentType: QuestContentType; contentCode: string };
@@ -34,7 +35,9 @@ function buildPrisma(items: Item[]) {
     quest: {
       findMany: jest
         .fn()
-        .mockResolvedValue([{ id: 'q1', code: 'QUEST.TEST.1', items }]),
+        .mockResolvedValue([
+          { id: 'q1', code: 'QUEST.TEST.1', dimensionId: 'd1', items },
+        ]),
       findUnique: jest
         .fn()
         .mockResolvedValue({ reward: { id: 'r1', xp: 15, points: 20 } }),
@@ -44,6 +47,7 @@ function buildPrisma(items: Item[]) {
       findUnique: jest.fn().mockResolvedValue(null),
       upsert: jest.fn().mockResolvedValue({}),
     },
+    userDimensionLevel: { findMany: jest.fn().mockResolvedValue([]) },
     missionProgress: { findMany: jest.fn().mockResolvedValue([]) },
     challengeProgress: { findMany: jest.fn().mockResolvedValue([]) },
     quizProgress: { findMany: jest.fn().mockResolvedValue([]) },
@@ -56,6 +60,7 @@ describe('QuestProgressService', () => {
   let prisma: ReturnType<typeof buildPrisma>;
   let userEventService: { record: jest.Mock };
   let completionRewardService: { awardCompletion: jest.Mock };
+  let dimensionLevelService: { levelUpIfComplete: jest.Mock };
   let service: QuestProgressService;
 
   function build(items: Item[]): QuestProgressService {
@@ -66,11 +71,15 @@ describe('QuestProgressService', () => {
     completionRewardService = {
       awardCompletion: jest.fn().mockResolvedValue({ xp: 15, points: 20 }),
     };
+    dimensionLevelService = {
+      levelUpIfComplete: jest.fn().mockResolvedValue(null),
+    };
     return new QuestProgressService(
       prisma as unknown as PrismaService,
       userEventService as unknown as UserEventService,
       completionRewardService as unknown as CompletionRewardService,
       new AfterCommitQueue(),
+      dimensionLevelService as unknown as DimensionLevelService,
     );
   }
 
@@ -274,17 +283,113 @@ describe('QuestProgressService', () => {
     });
   });
 
-  describe('candidate selection', () => {
-    it('skips quests already completed', async () => {
+  describe('dimension level-up', () => {
+    it('checks the dimension level only when a quest first completes', async () => {
       service = build([MISSION('M.1')]);
+      prisma.missionProgress.findMany.mockResolvedValue([
+        { mission: { code: 'M.1' } },
+      ]);
 
       await service.recomputeForUser('u1');
 
-      expect(prisma.questProgress.findMany).toHaveBeenCalledWith(
+      expect(dimensionLevelService.levelUpIfComplete).toHaveBeenCalledWith(
+        'u1',
+        'd1',
+      );
+    });
+
+    it('does not check when nothing completed', async () => {
+      service = build([MISSION('M.1'), MISSION('M.2')]);
+      prisma.missionProgress.findMany.mockResolvedValue([
+        { mission: { code: 'M.1' } },
+      ]);
+
+      await service.recomputeForUser('u1');
+
+      expect(dimensionLevelService.levelUpIfComplete).not.toHaveBeenCalled();
+    });
+
+    it('recomputes again after a level-up so new quests are picked up', async () => {
+      service = build([MISSION('M.1')]);
+      prisma.missionProgress.findMany.mockResolvedValue([
+        { mission: { code: 'M.1' } },
+      ]);
+      dimensionLevelService.levelUpIfComplete.mockResolvedValueOnce({
+        dimensionCode: 'DIET_CHANGES',
+        from: 'BEGINNER',
+        to: 'INTERMEDIATE',
+      });
+      // Second pass: q1 is already complete, so nothing new completes.
+      prisma.questProgress.findUnique
+        .mockResolvedValueOnce(null)
+        .mockResolvedValue({
+          progress: 100,
+          completed: true,
+          unlockedAt: new Date(),
+        });
+
+      await service.recomputeForUser('u1');
+
+      expect(prisma.quest.findMany).toHaveBeenCalledTimes(2);
+      expect(dimensionLevelService.levelUpIfComplete).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('candidate selection', () => {
+    it('skips quests already completed', async () => {
+      service = build([MISSION('M.1')]);
+      prisma.questProgress.findMany.mockResolvedValue([
+        { questId: 'q-done', completed: true },
+      ]);
+      prisma.userDimensionLevel.findMany.mockResolvedValue([
+        { dimensionId: 'd1', level: 'BEGINNER' },
+      ]);
+
+      await service.recomputeForUser('u1');
+
+      expect(prisma.quest.findMany).toHaveBeenLastCalledWith(
         expect.objectContaining({
-          where: { userId: 'u1', completed: false },
+          where: expect.objectContaining({
+            OR: expect.arrayContaining([
+              {
+                dimensionId: 'd1',
+                level: 'BEGINNER',
+                id: { notIn: ['q-done'] },
+              },
+            ]),
+          }),
         }),
       );
+    });
+
+    it('does not materialize an untouched quest that is only at the user level', async () => {
+      service = build([MISSION('M.1')]);
+      prisma.user.findUnique.mockResolvedValue({ currentQuestId: null });
+      prisma.userDimensionLevel.findMany.mockResolvedValue([
+        { dimensionId: 'd1', level: 'BEGINNER' },
+      ]);
+
+      const outcomes = await service.recomputeForUser('u1');
+
+      expect(outcomes).toEqual([]);
+      expect(prisma.questProgress.upsert).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('tracks a level quest once one of its items is finished', async () => {
+      service = build([MISSION('M.1'), MISSION('M.2')]);
+      prisma.user.findUnique.mockResolvedValue({ currentQuestId: null });
+      prisma.userDimensionLevel.findMany.mockResolvedValue([
+        { dimensionId: 'd1', level: 'BEGINNER' },
+      ]);
+      prisma.missionProgress.findMany.mockResolvedValue([
+        { mission: { code: 'M.1' } },
+      ]);
+
+      const [outcome] = await service.recomputeForUser('u1');
+
+      expect(outcome.progress).toBe(50);
+      expect(prisma.questProgress.upsert).toHaveBeenCalledTimes(1);
     });
 
     it('does nothing when the user has no current quest and no rows', async () => {
