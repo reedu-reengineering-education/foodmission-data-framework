@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { trackCronJob } from '../common/metrics/cron-job.metrics';
 import { MealLogAnalyticsService } from './meal-log/services/meal-log-analytics.service';
 import { ShoppingListAnalyticsService } from './shopping-list/services/shopping-list-analytics.service';
 
@@ -86,7 +87,9 @@ export class AnalyticsBatchCoordinator {
 
     for (const { name, service } of domains) {
       try {
-        const batchId = await service.runDailyAggregation();
+        const batchId = await trackCronJob(`analytics-daily:${name}`, () =>
+          service.runDailyAggregation(),
+        );
         this.logger.log(`[${name}] Daily batch generated: ${batchId}`);
       } catch (err) {
         this.logger.error(
