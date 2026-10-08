@@ -13,6 +13,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Roles } from 'nest-keycloak-connect';
 import {
   ApiTags,
   ApiOperation,
@@ -132,17 +133,25 @@ export class UserProfilesController {
     return this.progressWheelService.getWheelsForUser(userId);
   }
 
+  // Admin-only on purpose: wheels move automatically from meal logs (see
+  // MealLogsService.recordWheelImpacts). Open to users, any client could
+  // submit any actionCode any number of times and farm wheel progress and
+  // segment promotion. Kept for testing/support and for actions with no
+  // triggering event yet (packaging: REUSABLE_CONTAINER_USE, REFILL_PRODUCT).
   @Post('me/gamification/progress-wheels/impact')
+  @Roles('admin')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Record a validated action against the progress wheels',
+    summary:
+      '[Admin] Record a validated action against your own progress wheels',
     description:
       "Adds the action's impact to every wheel it affects. A wheel that " +
       'crosses 100% archives its stage, rolls any excess into the next ' +
       'stage, and starts a new cycle. Completing stage 5 promotes the user ' +
       'segment (BEGINNER -> INTERMEDIATE -> ADVANCED) and resets all wheels ' +
-      'to stage 1. Valid actionCodes are listed in the request body schema.',
+      'to stage 1. Valid actionCodes are listed in the request body schema. ' +
+      'Admin only: for users the wheels move automatically from meal logs.',
   })
   @ApiOkResponse({ type: RecordWheelImpactResultDto })
   @UsePipes(
@@ -156,10 +165,6 @@ export class UserProfilesController {
     @CurrentUser('id') userId: string,
     @Body() body: RecordWheelImpactDto,
   ): Promise<RecordWheelImpactResultDto> {
-    // TODO: Temporary. Any client can submit any actionCode any number of
-    // times, so users can farm wheel progress and trigger segment promotion.
-    // Replace with automatic recordImpact() calls from meal-log / challenge
-    // completion, then remove this endpoint or restrict it (admin/feature flag).
     return this.progressWheelService.recordImpact(userId, body.actionCode);
   }
 

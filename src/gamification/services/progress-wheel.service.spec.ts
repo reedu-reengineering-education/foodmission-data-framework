@@ -173,7 +173,7 @@ describe('ProgressWheelService', () => {
       prisma.user.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.recordImpact('u1', 'VEGETARIAN_SERVING_100G'),
+        service.recordImpact('u1', 'VEGETARIAN_MEAL'),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -181,7 +181,7 @@ describe('ProgressWheelService', () => {
       prisma.user.findUnique.mockResolvedValue({ segment: null });
 
       await expect(
-        service.recordImpact('u1', 'VEGETARIAN_SERVING_100G'),
+        service.recordImpact('u1', 'VEGETARIAN_MEAL'),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -204,10 +204,7 @@ describe('ProgressWheelService', () => {
           }),
         ]);
 
-      const result = await service.recordImpact(
-        'u1',
-        'VEGETARIAN_SERVING_100G',
-      );
+      const result = await service.recordImpact('u1', 'VEGETARIAN_MEAL');
 
       expect(tx.progressIndicator.update).toHaveBeenCalledTimes(4);
       expect(tx.progressIndicator.update).toHaveBeenNthCalledWith(
@@ -231,7 +228,7 @@ describe('ProgressWheelService', () => {
           userId: 'u1',
           eventType: EventType.PROGRESS_INDICATOR_UPDATED,
           metadata: expect.objectContaining({
-            actionCode: 'VEGETARIAN_SERVING_100G',
+            actionCode: 'VEGETARIAN_MEAL',
           }),
         }),
         tx,
@@ -261,10 +258,7 @@ describe('ProgressWheelService', () => {
           }),
         ]);
 
-      const result = await service.recordImpact(
-        'u1',
-        'VEGETARIAN_SERVING_100G',
-      );
+      const result = await service.recordImpact('u1', 'VEGETARIAN_MEAL');
 
       expect(tx.progressIndicator.update).toHaveBeenNthCalledWith(
         1,
@@ -313,10 +307,7 @@ describe('ProgressWheelService', () => {
           }),
         ]);
 
-      const result = await service.recordImpact(
-        'u1',
-        'VEGETARIAN_SERVING_100G',
-      );
+      const result = await service.recordImpact('u1', 'VEGETARIAN_MEAL');
 
       expect(tx.user.update).toHaveBeenCalledWith({
         where: { id: 'u1' },
@@ -377,10 +368,7 @@ describe('ProgressWheelService', () => {
           }),
         ]);
 
-      const result = await service.recordImpact(
-        'u1',
-        'VEGETARIAN_SERVING_100G',
-      );
+      const result = await service.recordImpact('u1', 'VEGETARIAN_MEAL');
 
       expect(tx.user.update).not.toHaveBeenCalled();
       expect(tx.progressIndicator.update).toHaveBeenCalledTimes(4);

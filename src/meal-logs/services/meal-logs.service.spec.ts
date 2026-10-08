@@ -22,10 +22,12 @@ import {
 import { UserEventService } from '../../events/services/user-event.service';
 import { MealItemRepository } from '../../meals/meal-items/repositories/meal-items.repository';
 import { OffMongoProductRepository } from '../../food-products/repositories/off-mongo-product.repository';
+import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 
 describe('MealLogsService', () => {
   let service: MealLogsService;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
+  let progressWheelService: { recordImpact: jest.Mock };
   const userId = 'user-1';
 
   const mockMealLogRepository = {
@@ -52,6 +54,7 @@ describe('MealLogsService', () => {
     userEventService = {
       record: jest.fn().mockResolvedValue({ event: {}, replayed: false }),
     };
+    progressWheelService = { recordImpact: jest.fn().mockResolvedValue({}) };
     mockMealItemRepository.findByMealId.mockResolvedValue([]);
     mockOffMongoProductRepository.findMealFactsByBarcodes.mockResolvedValue(
       new Map(),
@@ -68,6 +71,7 @@ describe('MealLogsService', () => {
           useValue: mockOffMongoProductRepository,
         },
         { provide: UserEventService, useValue: userEventService },
+        { provide: ProgressWheelService, useValue: progressWheelService },
       ],
     }).compile();
 
@@ -393,6 +397,72 @@ describe('MealLogsService', () => {
       );
 
       expect(result.id).toBe('log-1');
+    });
+
+    it('moves the wheels once per reported action', async () => {
+      const flags = [
+        EventType.MEAL_VEGAN,
+        EventType.MEAL_MEAT_FREE,
+        EventType.FOOD_WASTE_HALF_PLATE_SAVED,
+      ];
+      const swaps = [EventType.SWAP_SUGARY_DRINK_TO_WATER];
+      mockMealLogRepository.create.mockResolvedValue(quickLog(flags, swaps));
+
+      await service.create(
+        { typeOfMeal: TypeOfMeal.LUNCH, flags, swaps },
+        userId,
+      );
+
+      expect(
+        progressWheelService.recordImpact.mock.calls.map((call) => call[1]),
+      ).toEqual([
+        'VEGAN_MEAL',
+        'HALF_PLATE_SAVED',
+        'SUGARY_DRINK_TO_WATER_250ML',
+      ]);
+      expect(progressWheelService.recordImpact).toHaveBeenCalledWith(
+        userId,
+        'VEGAN_MEAL',
+        {
+          source: EventSource.MEAL_LOG,
+          subject: { type: 'MEAL_LOG', id: 'log-1' },
+        },
+      );
+    });
+
+    it('skips the wheels quietly before onboarding', async () => {
+      const flags = [EventType.MEAL_MEAT_FREE];
+      mockMealLogRepository.create.mockResolvedValue(quickLog(flags));
+      progressWheelService.recordImpact.mockRejectedValue(
+        new BadRequestException('no profile'),
+      );
+
+      const result = await service.create(
+        { typeOfMeal: TypeOfMeal.LUNCH, flags },
+        userId,
+      );
+
+      expect(result.id).toBe('log-1');
+    });
+
+    it('still returns the log when a wheel update fails', async () => {
+      const swaps = [
+        EventType.SWAP_BEEF_TO_PORK,
+        EventType.SWAP_PORK_TO_CHICKEN,
+      ];
+      mockMealLogRepository.create.mockResolvedValue(quickLog([], swaps));
+      progressWheelService.recordImpact.mockRejectedValueOnce(
+        new Error('db down'),
+      );
+
+      const result = await service.create(
+        { typeOfMeal: TypeOfMeal.LUNCH, swaps },
+        userId,
+      );
+
+      expect(result.id).toBe('log-1');
+      // One failure doesn't stop the remaining actions.
+      expect(progressWheelService.recordImpact).toHaveBeenCalledTimes(2);
     });
   });
   describe('flags derived from the meal items', () => {

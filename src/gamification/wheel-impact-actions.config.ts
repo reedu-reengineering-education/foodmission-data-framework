@@ -19,9 +19,12 @@ export interface WheelImpactAction {
  * when new entries are added.
  */
 export const WHEEL_IMPACT_ACTIONS = {
-  VEGETARIAN_SERVING_100G: {
-    code: 'VEGETARIAN_SERVING_100G',
-    label: 'Vegetarian serving (100 g)',
+  // A logged meal counts as one serving (Figure 1, 100 g values); portion
+  // size isn't tracked. Per meal the doc's day/3 would be higher, so this
+  // errs on the side of undercounting.
+  VEGETARIAN_MEAL: {
+    code: 'VEGETARIAN_MEAL',
+    label: 'Vegetarian meal',
     impact: {
       [ProgressIndicatorKind.CO2_REDUCTION]: 0.6,
       [ProgressIndicatorKind.ENERGY_REDUCTION]: 0.4,
@@ -29,14 +32,14 @@ export const WHEEL_IMPACT_ACTIONS = {
       [ProgressIndicatorKind.LAND_USE_REDUCTION]: 0.3,
     } satisfies WheelImpactDeltas,
   },
-  VEGAN_SERVING_100G: {
-    code: 'VEGAN_SERVING_100G',
-    label: 'Vegan serving (100 g)',
+  VEGAN_MEAL: {
+    code: 'VEGAN_MEAL',
+    label: 'Vegan meal',
     impact: {
       [ProgressIndicatorKind.CO2_REDUCTION]: 0.8,
-      [ProgressIndicatorKind.ENERGY_REDUCTION]: 0.4,
-      [ProgressIndicatorKind.WATER_SAVINGS]: 10,
-      [ProgressIndicatorKind.LAND_USE_REDUCTION]: 0.3,
+      [ProgressIndicatorKind.ENERGY_REDUCTION]: 0.5,
+      [ProgressIndicatorKind.WATER_SAVINGS]: 15,
+      [ProgressIndicatorKind.LAND_USE_REDUCTION]: 0.4,
     } satisfies WheelImpactDeltas,
   },
   BEEF_TO_PORK_100G: {
@@ -177,6 +180,27 @@ export const WHEEL_IMPACT_ACTIONS = {
       [ProgressIndicatorKind.ENERGY_REDUCTION]: 0.5,
       [ProgressIndicatorKind.WATER_SAVINGS]: 25,
       [ProgressIndicatorKind.LAND_USE_REDUCTION]: 0.3,
+    } satisfies WheelImpactDeltas,
+  },
+
+  REUSABLE_CONTAINER_USE: {
+    code: 'REUSABLE_CONTAINER_USE',
+    label: 'Reusable container (1 use)',
+    impact: {
+      [ProgressIndicatorKind.CO2_REDUCTION]: 0.15,
+      [ProgressIndicatorKind.ENERGY_REDUCTION]: 0.3,
+      [ProgressIndicatorKind.WATER_SAVINGS]: 2,
+      [ProgressIndicatorKind.LAND_USE_REDUCTION]: 0.01,
+    } satisfies WheelImpactDeltas,
+  },
+  REFILL_PRODUCT: {
+    code: 'REFILL_PRODUCT',
+    label: 'Refill product (1 refill)',
+    impact: {
+      [ProgressIndicatorKind.CO2_REDUCTION]: 0.2,
+      [ProgressIndicatorKind.ENERGY_REDUCTION]: 0.5,
+      [ProgressIndicatorKind.WATER_SAVINGS]: 3,
+      [ProgressIndicatorKind.LAND_USE_REDUCTION]: 0.02,
     } satisfies WheelImpactDeltas,
   },
 
