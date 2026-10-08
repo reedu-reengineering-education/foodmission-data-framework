@@ -79,6 +79,44 @@ describe('ProgressWheelService', () => {
     });
   });
 
+  describe('startWheelsAtSegment', () => {
+    it('keeps pre-survey progress when the survey says BEGINNER', async () => {
+      prisma.progressIndicator.upsert.mockResolvedValue({});
+
+      await service.startWheelsAtSegment('u1', UserSegment.BEGINNER);
+
+      for (const [args] of prisma.progressIndicator.upsert.mock.calls) {
+        expect(args.update).toEqual({});
+      }
+    });
+
+    it('restarts all wheels at stage 1 of a higher survey segment', async () => {
+      prisma.progressIndicator.upsert.mockResolvedValue({});
+
+      await service.startWheelsAtSegment('u1', UserSegment.INTERMEDIATE);
+
+      expect(prisma.progressIndicator.upsert).toHaveBeenCalledTimes(
+        SUSTAINABILITY_WHEEL_KINDS.length,
+      );
+      expect(prisma.progressIndicator.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            userId_kind: {
+              userId: 'u1',
+              kind: ProgressIndicatorKind.ENERGY_REDUCTION,
+            },
+          },
+          update: {
+            level: 1,
+            accumulatedValue: 0,
+            targetValue: 2.0, // INTERMEDIATE stage-1 ENERGY target
+            cycleStartedAt: expect.any(Date),
+          },
+        }),
+      );
+    });
+  });
+
   describe('getWheelsForUser', () => {
     it('throws when user is missing', async () => {
       prisma.user.findUnique.mockResolvedValue(null);
@@ -88,13 +126,31 @@ describe('ProgressWheelService', () => {
       );
     });
 
-    it('returns no wheels when the user has no segment yet', async () => {
+    it('shows BEGINNER wheels before the onboarding survey', async () => {
       prisma.user.findUnique.mockResolvedValue({ segment: null });
+      prisma.progressIndicator.upsert.mockResolvedValue({});
+      prisma.progressIndicator.findMany.mockResolvedValue([
+        {
+          id: 'pi-1',
+          kind: ProgressIndicatorKind.CO2_REDUCTION,
+          level: 1,
+          accumulatedValue: 0,
+          targetValue: 2,
+          allTimeTotal: 0,
+          cycleStartedAt: new Date('2026-07-01T00:00:00Z'),
+          lastUpdatedAt: new Date('2026-07-01T00:00:00Z'),
+        },
+      ]);
 
       const result = await service.getWheelsForUser('u1');
 
-      expect(result).toEqual([]);
-      expect(prisma.progressIndicator.upsert).not.toHaveBeenCalled();
+      expect(prisma.progressIndicator.upsert).toHaveBeenCalledTimes(
+        SUSTAINABILITY_WHEEL_KINDS.length,
+      );
+      expect(result[0]).toMatchObject({
+        profile: UserSegment.BEGINNER,
+        stage: 1,
+      });
     });
 
     it('ensures wheels exist, then maps them for display', async () => {
@@ -177,12 +233,31 @@ describe('ProgressWheelService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('throws when the user has no profile yet', async () => {
+    it('moves BEGINNER wheels before the survey but never promotes', async () => {
       prisma.user.findUnique.mockResolvedValue({ segment: null });
+      // CO2 at BEGINNER stage 5 completes; without a stored segment it just
+      // repeats stage 5 instead of promoting (no segment gets stored).
+      tx.$queryRaw
+        .mockResolvedValueOnce([
+          mockRow(ProgressIndicatorKind.CO2_REDUCTION, {
+            level: 5,
+            accumulatedValue: 24.5,
+            targetValue: 25,
+          }),
+        ])
+        .mockResolvedValue([mockRow(ProgressIndicatorKind.ENERGY_REDUCTION)]);
 
-      await expect(
-        service.recordImpact('u1', 'VEGETARIAN_MEAL'),
-      ).rejects.toThrow(BadRequestException);
+      const result = await service.recordImpact('u1', 'VEGETARIAN_MEAL');
+
+      expect(prisma.progressIndicator.upsert).toHaveBeenCalledTimes(
+        SUSTAINABILITY_WHEEL_KINDS.length,
+      );
+      expect(tx.user.update).not.toHaveBeenCalled();
+      expect(result.dimensionPromotion).toBeNull();
+      expect(result.wheels[0]).toMatchObject({
+        profile: UserSegment.BEGINNER,
+        stage: 5,
+      });
     });
 
     it('adds the delta to every affected wheel without completing a stage', async () => {

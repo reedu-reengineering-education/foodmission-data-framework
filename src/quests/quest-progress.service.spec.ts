@@ -60,7 +60,10 @@ describe('QuestProgressService', () => {
   let prisma: ReturnType<typeof buildPrisma>;
   let userEventService: { record: jest.Mock };
   let completionRewardService: { awardCompletion: jest.Mock };
-  let dimensionLevelService: { levelUpIfComplete: jest.Mock };
+  let dimensionLevelService: {
+    ensureForUser: jest.Mock;
+    levelUpIfComplete: jest.Mock;
+  };
   let service: QuestProgressService;
 
   function build(items: Item[]): QuestProgressService {
@@ -72,6 +75,7 @@ describe('QuestProgressService', () => {
       awardCompletion: jest.fn().mockResolvedValue({ xp: 15, points: 20 }),
     };
     dimensionLevelService = {
+      ensureForUser: jest.fn().mockResolvedValue(undefined),
       levelUpIfComplete: jest.fn().mockResolvedValue(null),
     };
     return new QuestProgressService(

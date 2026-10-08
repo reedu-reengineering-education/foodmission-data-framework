@@ -22,7 +22,6 @@ import { GamificationOnboardingService } from '../../gamification/services/gamif
 import {
   buildUserPreferences,
   extractOnboardingSurvey,
-  hasAllOnboardingBaselines,
 } from '../../gamification/onboarding.utils';
 import type { Prisma, User } from '@prisma/client';
 import { ProgressStatus } from '../../common/progress-status';
@@ -416,8 +415,9 @@ export class UserProfilesService {
   }
 
   /**
-   * When all five habit baselines are present, a client-chosen segment is set,
-   * and onboarding was touched (survey and/or segment), apply first-time side effects.
+   * When onboarding was touched (survey and/or segment) and a client-chosen
+   * segment is set, apply first-time side effects. Survey answers are all
+   * optional, so none of them is required here.
    */
   private async applyGamificationOnboardingIfReady(
     user: User,
@@ -427,10 +427,7 @@ export class UserProfilesService {
       (payload.preferences as { onboardingSurvey?: unknown } | undefined)
         ?.onboardingSurvey !== undefined;
     const segmentTouched = payload.segment !== undefined;
-    if (
-      (!surveyTouched && !segmentTouched) ||
-      !hasAllOnboardingBaselines(user)
-    ) {
+    if (!surveyTouched && !segmentTouched) {
       return user;
     }
 

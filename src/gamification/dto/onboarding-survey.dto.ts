@@ -1,35 +1,146 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEnum, IsOptional } from 'class-validator';
 import {
+  DailyFruitVegServings,
+  HabitFrequency,
+  LabelFamiliarity,
   UserSegment,
   WeeklyBeefFrequency,
   WeeklyFoodWasteRange,
+  WeeklyLegumeFrequency,
   WeeklyMeatRange,
   WeeklyReusableRange,
   WeeklyUpfRange,
 } from '@prisma/client';
 import { ProgressWheelDto } from './progress-wheel.dto';
 
+/** Every answer is optional: users may skip any question (send nothing). */
 export class OnboardingSurveyAnswersDto {
-  @ApiProperty({ enum: WeeklyMeatRange })
+  @ApiPropertyOptional({ enum: WeeklyMeatRange })
+  @IsOptional()
   @IsEnum(WeeklyMeatRange)
-  weeklyMeatConsumption!: WeeklyMeatRange;
+  weeklyMeatConsumption?: WeeklyMeatRange;
 
-  @ApiProperty({ enum: WeeklyBeefFrequency })
+  @ApiPropertyOptional({ enum: WeeklyBeefFrequency })
+  @IsOptional()
   @IsEnum(WeeklyBeefFrequency)
-  weeklyBeefConsumption!: WeeklyBeefFrequency;
+  weeklyBeefConsumption?: WeeklyBeefFrequency;
 
-  @ApiProperty({ enum: WeeklyFoodWasteRange })
+  @ApiPropertyOptional({ enum: WeeklyFoodWasteRange })
+  @IsOptional()
   @IsEnum(WeeklyFoodWasteRange)
-  weeklyFoodWaste!: WeeklyFoodWasteRange;
+  weeklyFoodWaste?: WeeklyFoodWasteRange;
 
-  @ApiProperty({ enum: WeeklyUpfRange })
+  @ApiPropertyOptional({ enum: WeeklyUpfRange })
+  @IsOptional()
   @IsEnum(WeeklyUpfRange)
-  weeklyUpfConsumption!: WeeklyUpfRange;
+  weeklyUpfConsumption?: WeeklyUpfRange;
 
-  @ApiProperty({ enum: WeeklyReusableRange })
+  @ApiPropertyOptional({ enum: WeeklyReusableRange })
+  @IsOptional()
   @IsEnum(WeeklyReusableRange)
-  weeklyReusableOrRefill!: WeeklyReusableRange;
+  weeklyReusableOrRefill?: WeeklyReusableRange;
+
+  @ApiPropertyOptional({
+    enum: WeeklyLegumeFrequency,
+    description:
+      'How often legumes (beans, lentils, chickpeas, peas) are eaten',
+  })
+  @IsOptional()
+  @IsEnum(WeeklyLegumeFrequency)
+  weeklyLegumeConsumption?: WeeklyLegumeFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description: 'How often the country of origin of food products is checked',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  checksCountryOfOrigin?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description:
+      'How often seasonal fruit and vegetables are chosen intentionally',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  choosesSeasonalProduce?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description:
+      'How often environmental or sustainability information is considered before purchasing food',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  considersSustainabilityInfo?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description:
+      'How often ingredient lists are read before purchasing packaged foods',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  readsIngredientLists?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: LabelFamiliarity,
+    description: 'Familiarity with sustainability-related labels and claims',
+  })
+  @IsOptional()
+  @IsEnum(LabelFamiliarity)
+  sustainabilityLabelFamiliarity?: LabelFamiliarity;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description: 'How often production methods influence purchasing decisions',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  productionMethodsInfluence?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description:
+      'How often recycling/reuse/disposal instructions on packaging are checked',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  checksPackagingDisposal?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description: 'How often meals are planned before shopping',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  plansMealsBeforeShopping?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description: 'How often leftovers are deliberately used for another meal',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  usesLeftovers?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: HabitFrequency,
+    description: 'How often whole-grain foods are chosen',
+  })
+  @IsOptional()
+  @IsEnum(HabitFrequency)
+  wholeGrainFrequency?: HabitFrequency;
+
+  @ApiPropertyOptional({
+    enum: DailyFruitVegServings,
+    description: 'Servings of fruit and vegetables usually consumed each day',
+  })
+  @IsOptional()
+  @IsEnum(DailyFruitVegServings)
+  dailyFruitVegServings?: DailyFruitVegServings;
 }
 
 export class OnboardingSurveyOptionDto {

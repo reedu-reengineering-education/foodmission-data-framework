@@ -1,4 +1,10 @@
-import { ContentLevel, UserSegment, WeeklyMeatRange } from '@prisma/client';
+import {
+  ContentLevel,
+  UserSegment,
+  WeeklyBeefFrequency,
+  WeeklyLegumeFrequency,
+  WeeklyMeatRange,
+} from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
@@ -50,24 +56,90 @@ describe('DimensionLevelService', () => {
             dimensionId: 'd-diet',
             level: ContentLevel.BEGINNER,
           },
-          // No survey question maps here: overall segment.
+          // Nothing answered here: skipped questions score 0.
           {
             userId: 'u1',
             dimensionId: 'd-prod',
-            level: ContentLevel.INTERMEDIATE,
+            level: ContentLevel.BEGINNER,
           },
         ],
         skipDuplicates: true,
       });
     });
 
-    it('does nothing before onboarding', async () => {
+    it('starts every dimension as BEGINNER before the survey', async () => {
       const { service, prisma } = build();
       prisma.user.findUnique.mockResolvedValue({ segment: null });
 
       await service.ensureForUser('u1');
 
-      expect(prisma.userDimensionLevel.createMany).not.toHaveBeenCalled();
+      expect(prisma.userDimensionLevel.createMany).toHaveBeenCalledWith({
+        data: [
+          { userId: 'u1', dimensionId: 'd-diet', level: ContentLevel.BEGINNER },
+          { userId: 'u1', dimensionId: 'd-prod', level: ContentLevel.BEGINNER },
+        ],
+        skipDuplicates: true,
+      });
+    });
+  });
+
+  describe('applySurveyLevels', () => {
+    const advancedDiet = {
+      weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
+      weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
+      weeklyLegumeConsumption: WeeklyLegumeFrequency.DAILY,
+    };
+
+    it('raises a pre-survey BEGINNER level to the survey score', async () => {
+      const { service, prisma } = build();
+      prisma.user.findUnique.mockResolvedValue(advancedDiet);
+      prisma.userDimensionLevel.findMany
+        .mockResolvedValueOnce([{ dimensionId: 'd-diet' }]) // ensureForUser
+        .mockResolvedValueOnce([
+          {
+            dimensionId: 'd-diet',
+            level: ContentLevel.BEGINNER,
+            dimension: { code: 'DIET_CHANGES' },
+          },
+          {
+            dimensionId: 'd-prod',
+            level: ContentLevel.BEGINNER,
+            dimension: { code: 'PRODUCTION_METHODS' },
+          },
+        ]);
+
+      await service.applySurveyLevels('u1');
+
+      expect(prisma.userDimensionLevel.updateMany).toHaveBeenCalledTimes(1);
+      expect(prisma.userDimensionLevel.updateMany).toHaveBeenCalledWith({
+        where: {
+          userId: 'u1',
+          dimensionId: 'd-diet',
+          level: ContentLevel.BEGINNER,
+        },
+        data: { level: ContentLevel.ADVANCED },
+      });
+    });
+
+    it('never lowers a level earned before the survey', async () => {
+      const { service, prisma } = build();
+      prisma.user.findUnique.mockResolvedValue({});
+      prisma.userDimensionLevel.findMany
+        .mockResolvedValueOnce([
+          { dimensionId: 'd-diet' },
+          { dimensionId: 'd-prod' },
+        ])
+        .mockResolvedValueOnce([
+          {
+            dimensionId: 'd-diet',
+            level: ContentLevel.INTERMEDIATE,
+            dimension: { code: 'DIET_CHANGES' },
+          },
+        ]);
+
+      await service.applySurveyLevels('u1');
+
+      expect(prisma.userDimensionLevel.updateMany).not.toHaveBeenCalled();
     });
   });
 

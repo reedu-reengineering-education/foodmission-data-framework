@@ -124,7 +124,8 @@ export class UserProfilesController {
     description:
       'CO2 reduction, energy reduction, water savings, land use reduction. ' +
       'Each wheel tracks the current stage (1-5) of the sustainability ' +
-      'profile chosen at onboarding; empty until the user has a profile.',
+      'profile set by the onboarding survey; BEGINNER until the survey is ' +
+      'submitted.',
   })
   @ApiOkResponse({ type: [ProgressWheelDto] })
   async getMyProgressWheels(
@@ -150,7 +151,8 @@ export class UserProfilesController {
       'crosses 100% archives its stage, rolls any excess into the next ' +
       'stage, and starts a new cycle. Completing stage 5 promotes the user ' +
       'segment (BEGINNER -> INTERMEDIATE -> ADVANCED) and resets all wheels ' +
-      'to stage 1. Valid actionCodes are listed in the request body schema. ' +
+      'to stage 1; before the onboarding survey stage 5 just repeats. ' +
+      'Valid actionCodes are listed in the request body schema. ' +
       'Admin only: for users the wheels move automatically from meal logs.',
   })
   @ApiOkResponse({ type: RecordWheelImpactResultDto })
@@ -249,9 +251,9 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Get the onboarding survey questions for the progress wheels',
     description:
-      'Static 5-question survey (habit frequency, 4 options each). Answers ' +
-      'map 1:1 to preferences.onboardingSurvey / the fields submitted via ' +
-      'POST of this same route.',
+      'Static 17-question survey grouped by learning dimension (4-5 options ' +
+      'each). Answers map 1:1 to preferences.onboardingSurvey / the fields ' +
+      'submitted via POST of this same route.',
   })
   @ApiOkResponse({ type: OnboardingSurveyDto })
   getOnboardingSurvey(): OnboardingSurveyDto {
@@ -266,10 +268,13 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Submit onboarding survey answers',
     description:
-      'Computes the sustainability profile (dimension) from the 5 answers, ' +
-      'persists it, applies first-time onboarding side effects (wallet + ' +
-      'progress wheels, idempotent), and returns the computed segment ' +
-      'together with the resulting progress wheels.',
+      'Every answer is optional (skipped questions are simply omitted). ' +
+      'Scores each learning dimension from its answered questions, derives ' +
+      'the sustainability profile (segment) from those levels (BEGINNER when ' +
+      'nothing was answered), persists it with the answers, applies ' +
+      'first-time onboarding side effects (wallet, progress wheels, ' +
+      'per-dimension starting levels; idempotent), and returns the computed ' +
+      'segment together with the resulting progress wheels.',
   })
   @ApiOkResponse({ type: OnboardingSurveyResultDto })
   @UsePipes(

@@ -3,7 +3,11 @@ import {
   extractOnboardingSurvey,
   formatUserRecordForApi,
 } from './onboarding.utils';
-import { WeeklyMeatRange } from '@prisma/client';
+import {
+  HabitFrequency,
+  LabelFamiliarity,
+  WeeklyMeatRange,
+} from '@prisma/client';
 
 describe('onboarding.utils', () => {
   it('extracts known onboarding survey fields', () => {
@@ -15,6 +19,21 @@ describe('onboarding.utils', () => {
     ).toEqual({
       weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
     });
+  });
+
+  it('extracts the optional per-dimension survey fields', () => {
+    expect(
+      extractOnboardingSurvey({
+        usesLeftovers: HabitFrequency.OFTEN,
+        sustainabilityLabelFamiliarity: LabelFamiliarity.FAMILIAR,
+      }),
+    ).toEqual({
+      usesLeftovers: HabitFrequency.OFTEN,
+      sustainabilityLabelFamiliarity: LabelFamiliarity.FAMILIAR,
+    });
+    expect(() =>
+      extractOnboardingSurvey({ usesLeftovers: LabelFamiliarity.FAMILIAR }),
+    ).toThrow('Invalid value for usesLeftovers');
   });
 
   it('rejects invalid onboarding survey enum values', () => {

@@ -430,21 +430,6 @@ describe('MealLogsService', () => {
       );
     });
 
-    it('skips the wheels quietly before onboarding', async () => {
-      const flags = [EventType.MEAL_MEAT_FREE];
-      mockMealLogRepository.create.mockResolvedValue(quickLog(flags));
-      progressWheelService.recordImpact.mockRejectedValue(
-        new BadRequestException('no profile'),
-      );
-
-      const result = await service.create(
-        { typeOfMeal: TypeOfMeal.LUNCH, flags },
-        userId,
-      );
-
-      expect(result.id).toBe('log-1');
-    });
-
     it('still returns the log when a wheel update fails', async () => {
       const swaps = [
         EventType.SWAP_BEEF_TO_PORK,

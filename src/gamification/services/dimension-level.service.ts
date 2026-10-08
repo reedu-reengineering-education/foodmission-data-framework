@@ -4,8 +4,15 @@ import { PrismaService } from '../../database/prisma.service';
 import { inferDimensionLevel, nextLevel } from '../dimension-levels.config';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { ONBOARDING_SURVEY_FIELDS } from '../onboarding.utils';
 
 type Db = PrismaService | Prisma.TransactionClient;
+
+const LEVEL_ORDER = Object.values(ContentLevel);
+
+const SURVEY_ANSWER_SELECT = Object.fromEntries(
+  ONBOARDING_SURVEY_FIELDS.map((field) => [field, true]),
+) as Record<(typeof ONBOARDING_SURVEY_FIELDS)[number], true>;
 
 export interface DimensionLevelUp {
   dimensionCode: string;
@@ -29,21 +36,15 @@ export class DimensionLevelService {
 
   /**
    * Creates the missing per-dimension levels from the user's onboarding
-   * answers. No-op before onboarding (no segment yet). Safe to call
-   * repeatedly; existing rows are never touched, so earned levels stick.
+   * answers; before the survey there are none, so every dimension starts as
+   * BEGINNER. Safe to call repeatedly; existing rows are never touched, so
+   * earned levels stick.
    */
   async ensureForUser(userId: string, db: Db = this.prisma): Promise<void> {
     const [user, dimensions, existing] = await Promise.all([
       db.user.findUnique({
         where: { id: userId },
-        select: {
-          segment: true,
-          weeklyMeatConsumption: true,
-          weeklyBeefConsumption: true,
-          weeklyFoodWaste: true,
-          weeklyUpfConsumption: true,
-          weeklyReusableOrRefill: true,
-        },
+        select: SURVEY_ANSWER_SELECT,
       }),
       db.dimension.findMany({ select: { id: true, code: true } }),
       db.userDimensionLevel.findMany({
@@ -51,21 +52,56 @@ export class DimensionLevelService {
         select: { dimensionId: true },
       }),
     ]);
-    if (!user?.segment) return;
+    if (!user) return;
 
     const have = new Set(existing.map((row) => row.dimensionId));
     const missing = dimensions.filter((d) => !have.has(d.id));
     if (missing.length === 0) return;
 
-    const segment = user.segment;
     await db.userDimensionLevel.createMany({
       data: missing.map((d) => ({
         userId,
         dimensionId: d.id,
-        level: inferDimensionLevel(d.code, user, segment),
+        level: inferDimensionLevel(d.code, user),
       })),
       skipDuplicates: true,
     });
+  }
+
+  /**
+   * Called once at onboarding: raises every dimension to the level its survey
+   * answers score. Never lowers one, so a level earned before the survey
+   * (pre-survey rows start as BEGINNER) is kept.
+   */
+  async applySurveyLevels(userId: string, db: Db = this.prisma): Promise<void> {
+    await this.ensureForUser(userId, db);
+    const [user, rows] = await Promise.all([
+      db.user.findUnique({
+        where: { id: userId },
+        select: SURVEY_ANSWER_SELECT,
+      }),
+      db.userDimensionLevel.findMany({
+        where: { userId },
+        select: {
+          dimensionId: true,
+          level: true,
+          dimension: { select: { code: true } },
+        },
+      }),
+    ]);
+    if (!user) return;
+
+    for (const row of rows) {
+      const scored = inferDimensionLevel(row.dimension.code, user);
+      if (LEVEL_ORDER.indexOf(scored) <= LEVEL_ORDER.indexOf(row.level)) {
+        continue;
+      }
+      // Guarded on the old level, like levelUpIfComplete().
+      await db.userDimensionLevel.updateMany({
+        where: { userId, dimensionId: row.dimensionId, level: row.level },
+        data: { level: scored },
+      });
+    }
   }
 
   /** The user's level in every dimension, in dimension display order. */

@@ -79,6 +79,40 @@ enum WeeklyReusableRange {
   TEN_PLUS
 }
 
+// Further onboarding survey answer scales (scored per learning dimension,
+// see src/gamification/dimension-levels.config.ts)
+enum WeeklyLegumeFrequency {
+  NEVER
+  LESS_THAN_ONCE_PER_WEEK
+  ONCE_PER_WEEK
+  SEVERAL_TIMES_PER_WEEK
+  DAILY
+}
+
+/// Five-step habit scale; per-question labels live in onboarding-survey.config.ts.
+enum HabitFrequency {
+  NEVER
+  RARELY
+  SOMETIMES
+  OFTEN
+  ALWAYS
+}
+
+enum LabelFamiliarity {
+  NOT_FAMILIAR
+  SLIGHTLY_FAMILIAR
+  MODERATELY_FAMILIAR
+  FAMILIAR
+  VERY_FAMILIAR
+}
+
+enum DailyFruitVegServings {
+  LESS_THAN_ONE
+  ONE_TO_TWO
+  THREE_TO_FOUR
+  FIVE_PLUS
+}
+
 enum UserSegment {
   BEGINNER
   INTERMEDIATE
@@ -118,11 +152,23 @@ model User {
   autoAddCheckedItemsToPantry Boolean            @default(true)
 
   // Gamification onboarding baselines
-  weeklyMeatConsumption  WeeklyMeatRange?
-  weeklyBeefConsumption  WeeklyBeefFrequency?
-  weeklyFoodWaste        WeeklyFoodWasteRange?
-  weeklyUpfConsumption   WeeklyUpfRange?
-  weeklyReusableOrRefill WeeklyReusableRange?
+  weeklyMeatConsumption          WeeklyMeatRange?
+  weeklyBeefConsumption          WeeklyBeefFrequency?
+  weeklyFoodWaste                WeeklyFoodWasteRange?
+  weeklyUpfConsumption           WeeklyUpfRange?
+  weeklyReusableOrRefill         WeeklyReusableRange?
+  weeklyLegumeConsumption        WeeklyLegumeFrequency?
+  checksCountryOfOrigin          HabitFrequency?
+  choosesSeasonalProduce         HabitFrequency?
+  considersSustainabilityInfo    HabitFrequency?
+  readsIngredientLists           HabitFrequency?
+  sustainabilityLabelFamiliarity LabelFamiliarity?
+  productionMethodsInfluence     HabitFrequency?
+  checksPackagingDisposal        HabitFrequency?
+  plansMealsBeforeShopping       HabitFrequency?
+  usesLeftovers                  HabitFrequency?
+  wholeGrainFrequency            HabitFrequency?
+  dailyFruitVegServings          DailyFruitVegServings?
 
   // Gamification identity / pacing
   segment        UserSegment?

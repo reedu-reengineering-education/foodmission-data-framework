@@ -30,6 +30,12 @@ import { getWheelImpactAction } from '../wheel-impact-actions.config';
 
 const INITIAL_STAGE = 1;
 
+/**
+ * Profile the wheels run at before the onboarding survey sets a segment. Not
+ * persisted on the user: a stored segment marks onboarding as done.
+ */
+const DEFAULT_WHEEL_SEGMENT = UserSegment.BEGINNER;
+
 type LockedIndicatorRow = {
   id: string;
   level: number;
@@ -94,7 +100,46 @@ export class ProgressWheelService {
     );
   }
 
-  /** Ensures the wheels exist, then returns them for display. */
+  /**
+   * Called once at onboarding with the survey segment. Wheels used before the
+   * survey ran at DEFAULT_WHEEL_SEGMENT: for that same segment their progress
+   * is kept, for any other one all four restart at stage 1 of the new segment
+   * (like a dimension promotion; allTimeTotal is kept).
+   */
+  async startWheelsAtSegment(
+    userId: string,
+    segment: UserSegment,
+    tx: Prisma.TransactionClient | PrismaService = this.prisma,
+  ): Promise<void> {
+    if (segment === DEFAULT_WHEEL_SEGMENT) {
+      await this.ensureWheelsForUser(userId, segment, tx);
+      return;
+    }
+    await Promise.all(
+      SUSTAINABILITY_WHEEL_KINDS.map((kind) => {
+        const stageOne = {
+          level: INITIAL_STAGE,
+          accumulatedValue: 0,
+          targetValue: getStageTarget(kind, segment, INITIAL_STAGE),
+        };
+        return tx.progressIndicator.upsert({
+          where: { userId_kind: { userId, kind } },
+          update: { ...stageOne, cycleStartedAt: new Date() },
+          create: {
+            userId,
+            kind,
+            precision: ProgressPrecision.SOFT,
+            ...stageOne,
+          },
+        });
+      }),
+    );
+  }
+
+  /**
+   * Ensures the wheels exist, then returns them for display. Before the
+   * onboarding survey they run at DEFAULT_WHEEL_SEGMENT.
+   */
   async getWheelsForUser(userId: string): Promise<ProgressWheelDto[]> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -104,13 +149,8 @@ export class ProgressWheelService {
       throw new NotFoundException('User not found');
     }
 
-    // Segment is chosen by the client at onboarding; a user without one yet
-    // has no wheels to show.
-    if (!user.segment) {
-      return [];
-    }
-
-    await this.ensureWheelsForUser(userId, user.segment);
+    const segment = user.segment ?? DEFAULT_WHEEL_SEGMENT;
+    await this.ensureWheelsForUser(userId, segment);
 
     const rows = await this.prisma.progressIndicator.findMany({
       where: { userId, kind: { in: [...SUSTAINABILITY_WHEEL_KINDS] } },
@@ -120,7 +160,7 @@ export class ProgressWheelService {
     return rows.map((row) =>
       toProgressWheelDto(
         { ...row, kind: row.kind as SustainabilityWheelKind },
-        user.segment as UserSegment,
+        segment,
       ),
     );
   }
@@ -140,6 +180,10 @@ export class ProgressWheelService {
    * of the new dimension — a fresh progression cycle for the whole profile,
    * not just the wheel that triggered it. ADVANCED has no ceiling above it;
    * its stage 5 keeps repeating.
+   *
+   * Before the onboarding survey the wheels run at DEFAULT_WHEEL_SEGMENT and
+   * never promote (that would store a segment); stage 5 just repeats until
+   * the survey sets the real one.
    */
   async recordImpact(
     userId: string,
@@ -162,12 +206,8 @@ export class ProgressWheelService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (!user.segment) {
-      throw new BadRequestException(
-        'User has no sustainability profile yet — complete onboarding first',
-      );
-    }
-    const segment = user.segment;
+    const onboarded = user.segment != null;
+    const segment = user.segment ?? DEFAULT_WHEEL_SEGMENT;
 
     await this.ensureWheelsForUser(userId, segment);
 
@@ -186,7 +226,7 @@ export class ProgressWheelService {
       let effectiveSegment = segment;
       let finalRows = results.map((r) => r.row);
 
-      if (results.some((r) => r.hitCapAtMaxStage)) {
+      if (onboarded && results.some((r) => r.hitCapAtMaxStage)) {
         const nextSegment = promoteSegment(segment);
         if (nextSegment) {
           dimensionPromotion = { from: segment, to: nextSegment };

@@ -16,7 +16,7 @@ describe('GamificationOnboardingService', () => {
     Pick<UserEventService, 'findByIdempotencyKey' | 'record'>
   >;
   let progressWheelService: jest.Mocked<
-    Pick<ProgressWheelService, 'ensureWheelsForUser'>
+    Pick<ProgressWheelService, 'startWheelsAtSegment'>
   >;
   let prisma: {
     userGamificationWallet: { upsert: jest.Mock };
@@ -30,7 +30,7 @@ describe('GamificationOnboardingService', () => {
     };
 
     progressWheelService = {
-      ensureWheelsForUser: jest.fn().mockResolvedValue(undefined),
+      startWheelsAtSegment: jest.fn().mockResolvedValue(undefined),
     };
 
     prisma = {
@@ -46,7 +46,9 @@ describe('GamificationOnboardingService', () => {
         { provide: ProgressWheelService, useValue: progressWheelService },
         {
           provide: DimensionLevelService,
-          useValue: { ensureForUser: jest.fn().mockResolvedValue(undefined) },
+          useValue: {
+            applySurveyLevels: jest.fn().mockResolvedValue(undefined),
+          },
         },
       ],
     }).compile();

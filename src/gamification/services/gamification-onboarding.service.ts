@@ -28,10 +28,11 @@ export class GamificationOnboardingService {
   ) {}
 
   /**
-   * First-time onboarding only: ensure wallet, seed the four sustainability
-   * progress wheels at stage 1 of the chosen profile, infer one learning level
-   * per dimension from the survey answers, and record
-   * ONBOARDING_COMPLETED — all in a single transaction. Later baseline
+   * First-time onboarding only: ensure wallet, move the four sustainability
+   * progress wheels from the pre-survey BEGINNER default to the chosen
+   * profile (see ProgressWheelService.startWheelsAtSegment), infer one
+   * learning level per dimension from the survey answers, and record
+   * ONBOARDING_COMPLETED — all in a single transaction. Later survey
    * PATCHes no-op once that event exists.
    */
   async applyOnboardingSideEffects(
@@ -63,13 +64,13 @@ export class GamificationOnboardingService {
           create: { userId: user.id, xp: 0, points: 0 },
         });
 
-        await this.progressWheelService.ensureWheelsForUser(
+        await this.progressWheelService.startWheelsAtSegment(
           user.id,
           segment,
           txClient,
         );
 
-        await this.dimensionLevelService.ensureForUser(user.id, txClient);
+        await this.dimensionLevelService.applySurveyLevels(user.id, txClient);
 
         await this.userEventService.record(
           {

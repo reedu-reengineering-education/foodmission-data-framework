@@ -1,33 +1,66 @@
 import {
+  DailyFruitVegServings,
+  HabitFrequency,
+  LabelFamiliarity,
   WeeklyBeefFrequency,
   WeeklyFoodWasteRange,
+  WeeklyLegumeFrequency,
   WeeklyMeatRange,
   WeeklyReusableRange,
   WeeklyUpfRange,
 } from '@prisma/client';
 
-export const ONBOARDING_BASELINE_FIELDS = [
+/**
+ * Onboarding survey answer columns, in survey order (Q1-Q17). Every
+ * question is optional; the answers score each learning dimension's starting
+ * level and the overall segment (dimension-levels.config.ts).
+ */
+export const ONBOARDING_SURVEY_FIELDS = [
   'weeklyMeatConsumption',
   'weeklyBeefConsumption',
-  'weeklyFoodWaste',
-  'weeklyUpfConsumption',
+  'weeklyLegumeConsumption',
+  'checksCountryOfOrigin',
+  'choosesSeasonalProduce',
+  'considersSustainabilityInfo',
+  'readsIngredientLists',
+  'sustainabilityLabelFamiliarity',
+  'productionMethodsInfluence',
   'weeklyReusableOrRefill',
+  'checksPackagingDisposal',
+  'weeklyFoodWaste',
+  'plansMealsBeforeShopping',
+  'usesLeftovers',
+  'weeklyUpfConsumption',
+  'wholeGrainFrequency',
+  'dailyFruitVegServings',
 ] as const;
 
-export type OnboardingBaselineField =
-  (typeof ONBOARDING_BASELINE_FIELDS)[number];
+export type OnboardingSurveyField = (typeof ONBOARDING_SURVEY_FIELDS)[number];
 
-const ONBOARDING_FIELD_ENUMS: Record<
-  OnboardingBaselineField, 
-  readonly string[]
-> = {
-  weeklyMeatConsumption: Object.values(WeeklyMeatRange),
-  weeklyBeefConsumption: Object.values(WeeklyBeefFrequency),
-  weeklyFoodWaste: Object.values(WeeklyFoodWasteRange),
-  weeklyUpfConsumption: Object.values(WeeklyUpfRange),
-  weeklyReusableOrRefill: Object.values(WeeklyReusableRange),
-};
+const HABIT_FREQUENCY_VALUES = Object.values(HabitFrequency);
 
+const ONBOARDING_FIELD_ENUMS: Record<OnboardingSurveyField, readonly string[]> =
+  {
+    weeklyMeatConsumption: Object.values(WeeklyMeatRange),
+    weeklyBeefConsumption: Object.values(WeeklyBeefFrequency),
+    weeklyFoodWaste: Object.values(WeeklyFoodWasteRange),
+    weeklyUpfConsumption: Object.values(WeeklyUpfRange),
+    weeklyReusableOrRefill: Object.values(WeeklyReusableRange),
+    weeklyLegumeConsumption: Object.values(WeeklyLegumeFrequency),
+    checksCountryOfOrigin: HABIT_FREQUENCY_VALUES,
+    choosesSeasonalProduce: HABIT_FREQUENCY_VALUES,
+    considersSustainabilityInfo: HABIT_FREQUENCY_VALUES,
+    readsIngredientLists: HABIT_FREQUENCY_VALUES,
+    sustainabilityLabelFamiliarity: Object.values(LabelFamiliarity),
+    productionMethodsInfluence: HABIT_FREQUENCY_VALUES,
+    checksPackagingDisposal: HABIT_FREQUENCY_VALUES,
+    plansMealsBeforeShopping: HABIT_FREQUENCY_VALUES,
+    usesLeftovers: HABIT_FREQUENCY_VALUES,
+    wholeGrainFrequency: HABIT_FREQUENCY_VALUES,
+    dailyFruitVegServings: Object.values(DailyFruitVegServings),
+  };
+
+/** The five weekly habit answers (Q1, Q2, Q10, Q12, Q15). */
 export interface OnboardingBaselines {
   weeklyMeatConsumption: WeeklyMeatRange;
   weeklyBeefConsumption: WeeklyBeefFrequency;
@@ -36,10 +69,10 @@ export interface OnboardingBaselines {
   weeklyReusableOrRefill: WeeklyReusableRange;
 }
 
-type OnboardingSurvey = Partial<Record<OnboardingBaselineField, string>>;
+type OnboardingSurvey = Partial<Record<OnboardingSurveyField, string>>;
 
-type OnboardingSurveyUser = Partial<
-  Record<OnboardingBaselineField, string | null | undefined>
+export type OnboardingSurveyUser = Partial<
+  Record<OnboardingSurveyField, string | null | undefined>
 >;
 
 /** Pick known onboardingSurvey fields into column updates; validate enum codes. */
@@ -50,7 +83,7 @@ export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
 
   const obj = survey as Record<string, unknown>;
   const result: OnboardingSurvey = {};
-  for (const field of ONBOARDING_BASELINE_FIELDS) {
+  for (const field of ONBOARDING_SURVEY_FIELDS) {
     if (obj[field] === undefined) continue;
     const value = obj[field];
     if (
@@ -62,13 +95,6 @@ export function extractOnboardingSurvey(survey: unknown): OnboardingSurvey {
     result[field] = value;
   }
   return result;
-}
-
-/** True when all five habit baseline columns are set. */
-export function hasAllOnboardingBaselines(
-  user: OnboardingSurveyUser,
-): user is OnboardingBaselines {
-  return ONBOARDING_BASELINE_FIELDS.every((field) => user[field] != null);
 }
 
 /** Merge stored preferences JSON with onboardingSurvey built from columns. */
@@ -86,7 +112,7 @@ export function buildUserPreferences(
   delete prefsWithoutSurvey.onboardingSurvey;
 
   const survey: OnboardingSurvey = {};
-  for (const field of ONBOARDING_BASELINE_FIELDS) {
+  for (const field of ONBOARDING_SURVEY_FIELDS) {
     const value = user[field];
     if (value != null) {
       survey[field] = value;
@@ -102,13 +128,13 @@ export function buildUserPreferences(
 /** Strip onboarding columns and attach normalized preferences for API responses. */
 export function formatUserRecordForApi<T extends Record<string, unknown>>(
   user: T,
-): Omit<T, OnboardingBaselineField> & { preferences: Record<string, unknown> } {
+): Omit<T, OnboardingSurveyField> & { preferences: Record<string, unknown> } {
   const preferences = buildUserPreferences(user.preferences, user);
   const formatted = { ...user, preferences } as Omit<
     T,
-    OnboardingBaselineField
+    OnboardingSurveyField
   > & { preferences: Record<string, unknown> };
-  for (const field of ONBOARDING_BASELINE_FIELDS) {
+  for (const field of ONBOARDING_SURVEY_FIELDS) {
     delete (formatted as Record<string, unknown>)[field];
   }
   return formatted;

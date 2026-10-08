@@ -265,8 +265,9 @@ export class MealLogsService {
   /**
    * Moves the sustainability wheels for what this log reports (vegan or
    * vegetarian meal, swaps, plate/expired food saved). Runs once per new meal
-   * log, so a retry can't double-count. Best-effort like the events above; a
-   * user who hasn't finished onboarding has no wheels and is skipped.
+   * log, so a retry can't double-count. Best-effort like the events above.
+   * Users who haven't done the onboarding survey yet move their default
+   * BEGINNER wheels.
    */
   private async recordWheelImpacts(
     mealLog: MealLog,
@@ -284,10 +285,6 @@ export class MealLogsService {
           },
         );
       } catch (error) {
-        if (error instanceof BadRequestException) {
-          // No wheels yet (onboarding not done): nothing to move.
-          return;
-        }
         this.logger.error(
           `Failed to record wheel impact ${actionCode} for meal log ${mealLog.id}`,
           error instanceof Error ? error.stack : error,

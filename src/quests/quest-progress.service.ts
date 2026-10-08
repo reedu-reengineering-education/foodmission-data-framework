@@ -165,6 +165,9 @@ export class QuestProgressService implements QuestProgressRecomputer {
           });
     }
 
+    // Level rows exist from the start (BEGINNER before the onboarding
+    // survey); create them lazily for users who predate that.
+    await this.dimensionLevelService.ensureForUser(userId);
     const [user, rows, levels] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: userId },
