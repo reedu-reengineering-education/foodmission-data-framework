@@ -6,6 +6,9 @@ import {
   shouldSkipObservabilityRoute,
 } from '../common/utils/observability-route-filter';
 
+/** Route label for requests no controller route matched. */
+export const UNMATCHED_ROUTE = 'unmatched';
+
 @Injectable()
 export class MonitoringMiddleware implements NestMiddleware {
   constructor(private readonly metricsService: MetricsService) {}
@@ -19,18 +22,15 @@ export class MonitoringMiddleware implements NestMiddleware {
 
     const startHrTime = process.hrtime();
 
-    // Extract route pattern for metrics (remove dynamic segments)
-    const route = this.extractRoutePattern(req);
-
-    // Capture response metrics when response finishes
     res.once('finish', () => {
       const hrDuration = process.hrtime(startHrTime);
       const durationInSeconds = hrDuration[0] + hrDuration[1] / 1e9;
 
-      // Record metrics
       this.metricsService.recordHttpRequest(
         req.method,
-        route,
+        // Resolved on finish: Express only sets req.route once the router has
+        // matched, which is after this middleware runs.
+        this.extractRoutePattern(req),
         res.statusCode,
         durationInSeconds,
       );
@@ -40,28 +40,15 @@ export class MonitoringMiddleware implements NestMiddleware {
   }
 
   /**
-   * Extract route pattern from request for consistent metrics
-   * Converts /api/food-products/123 to /api/food-products/:id
+   * Route template for the metrics label, e.g. `/api/v1/meal-logs/:id`.
+   * Requests that never matched a route (404 probes, body-parser rejections)
+   * share one label so scanner paths can't blow up label cardinality.
    */
   private extractRoutePattern(req: Request): string {
-    // If route is available from NestJS routing
-    if (req.route?.path) {
-      return req.route.path;
+    const routePath = (req.route as { path?: unknown } | undefined)?.path;
+    if (typeof routePath === 'string') {
+      return `${req.baseUrl || ''}${routePath}`;
     }
-
-    // Fallback: try to normalize common patterns
-    let route = req.path;
-
-    // Replace UUIDs and numeric IDs with parameter placeholders
-    route = route.replace(
-      /\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
-      '/:id',
-    );
-    route = route.replace(/\/\d+/g, '/:id');
-
-    // Replace other common patterns
-    route = route.replace(/\/[a-zA-Z0-9_-]{20,}/g, '/:token');
-
-    return route || req.path;
+    return UNMATCHED_ROUTE;
   }
 }
