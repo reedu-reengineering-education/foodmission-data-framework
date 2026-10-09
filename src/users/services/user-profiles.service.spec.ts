@@ -215,6 +215,35 @@ describe('UserProfilesService updateProfile gamification', () => {
     expect(result.segment).toBe(UserSegment.BEGINNER);
   });
 
+  it('applies side effects with skipped survey answers when a segment is set', async () => {
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      weeklyMeatConsumption: null,
+      segment: null,
+    });
+
+    const afterUpdate = {
+      ...mockUser,
+      weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+      segment: UserSegment.INTERMEDIATE,
+    };
+
+    (prisma.user.update as jest.Mock).mockResolvedValueOnce(afterUpdate);
+
+    await service.updateProfile('kc-1', {
+      segment: UserSegment.INTERMEDIATE,
+      preferences: {
+        onboardingSurvey: {
+          weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+        },
+      },
+    });
+
+    expect(
+      gamificationOnboarding.applyOnboardingSideEffects,
+    ).toHaveBeenCalledWith(afterUpdate, UserSegment.INTERMEDIATE);
+  });
+
   it('does not apply side effects when baselines are set without a segment', async () => {
     (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
       ...mockUser,

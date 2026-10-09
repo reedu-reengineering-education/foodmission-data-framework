@@ -3,6 +3,7 @@ import { Prisma, User, UserSegment } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { DimensionLevelService } from './dimension-level.service';
 import { ProgressWheelService } from './progress-wheel.service';
 
 export function onboardingCompletedIdempotencyKey(userId: string): string {
@@ -23,12 +24,15 @@ export class GamificationOnboardingService {
     private readonly prisma: PrismaService,
     private readonly userEventService: UserEventService,
     private readonly progressWheelService: ProgressWheelService,
+    private readonly dimensionLevelService: DimensionLevelService,
   ) {}
 
   /**
-   * First-time onboarding only: ensure wallet, seed the four sustainability
-   * progress wheels at stage 1 of the chosen profile, and record
-   * ONBOARDING_COMPLETED — all in a single transaction. Later baseline
+   * First-time onboarding only: ensure wallet, move the four sustainability
+   * progress wheels from the pre-survey BEGINNER default to the chosen
+   * profile (see ProgressWheelService.startWheelsAtSegment), infer one
+   * learning level per dimension from the survey answers, and record
+   * ONBOARDING_COMPLETED — all in a single transaction. Later survey
    * PATCHes no-op once that event exists.
    */
   async applyOnboardingSideEffects(
@@ -60,11 +64,13 @@ export class GamificationOnboardingService {
           create: { userId: user.id, xp: 0, points: 0 },
         });
 
-        await this.progressWheelService.ensureWheelsForUser(
+        await this.progressWheelService.startWheelsAtSegment(
           user.id,
           segment,
           txClient,
         );
+
+        await this.dimensionLevelService.applySurveyLevels(user.id, txClient);
 
         await this.userEventService.record(
           {

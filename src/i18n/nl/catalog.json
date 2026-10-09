@@ -130,7 +130,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Voedselkeuzes",
-    "FOOD_AND_WASTE": "Voedsel en afval",
+    "FOOD_WASTE": "Voedselverspilling",
     "HEALTH": "Gezondheid",
     "CO2_REDUCTION": "CO₂-reductie",
     "ENERGY_REDUCTION": "Energiebesparing",
@@ -167,6 +167,6 @@
   "contentTags": {
     "HEALTH": "Gezondheid",
     "FOOD_CHOICE": "Voedselkeuze",
-    "FOOD_AND_WASTE": "Voedsel en afval"
+    "FOOD_WASTE": "Voedselverspilling"
   }
 }

@@ -1,9 +1,13 @@
 import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
+  DailyFruitVegServings,
+  HabitFrequency,
+  LabelFamiliarity,
   UserSegment,
   WeeklyBeefFrequency,
   WeeklyFoodWasteRange,
+  WeeklyLegumeFrequency,
   WeeklyMeatRange,
   WeeklyReusableRange,
   WeeklyUpfRange,
@@ -24,12 +28,25 @@ describe('OnboardingSurveyService', () => {
     Pick<ProgressWheelService, 'getWheelsForUser'>
   >;
 
+  // Best answer on every question -> ADVANCED in every dimension.
   const answers = {
     weeklyMeatConsumption: WeeklyMeatRange.ZERO_TO_FOUR,
     weeklyBeefConsumption: WeeklyBeefFrequency.NEVER,
-    weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
-    weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
+    weeklyLegumeConsumption: WeeklyLegumeFrequency.DAILY,
+    checksCountryOfOrigin: HabitFrequency.ALWAYS,
+    choosesSeasonalProduce: HabitFrequency.ALWAYS,
+    considersSustainabilityInfo: HabitFrequency.ALWAYS,
+    readsIngredientLists: HabitFrequency.ALWAYS,
+    sustainabilityLabelFamiliarity: LabelFamiliarity.VERY_FAMILIAR,
+    productionMethodsInfluence: HabitFrequency.ALWAYS,
     weeklyReusableOrRefill: WeeklyReusableRange.TEN_PLUS,
+    checksPackagingDisposal: HabitFrequency.ALWAYS,
+    weeklyFoodWaste: WeeklyFoodWasteRange.ZERO,
+    plansMealsBeforeShopping: HabitFrequency.ALWAYS,
+    usesLeftovers: HabitFrequency.ALWAYS,
+    weeklyUpfConsumption: WeeklyUpfRange.ZERO_TO_THREE,
+    wholeGrainFrequency: HabitFrequency.ALWAYS,
+    dailyFruitVegServings: DailyFruitVegServings.FIVE_PLUS,
   };
 
   beforeEach(async () => {

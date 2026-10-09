@@ -23,21 +23,22 @@ import {
   SUSTAINABILITY_WHEEL_KINDS,
 } from '../../../src/gamification/progress-wheels.config';
 
-/** `userInfo.segment` overrides; otherwise derived from the five baselines. */
+/**
+ * `userInfo.segment` overrides; otherwise derived from the survey answers.
+ * Users without any answer stay un-onboarded (no segment).
+ */
 function resolveSeedSegment(userInfo: UserSeedData): UserSegment | undefined {
   if (userInfo.segment) return userInfo.segment;
 
-  const baselines: Partial<OnboardingBaselines> = {
+  const answers = {
     weeklyMeatConsumption: userInfo.weeklyMeatConsumption,
     weeklyBeefConsumption: userInfo.weeklyBeefConsumption,
     weeklyFoodWaste: userInfo.weeklyFoodWaste,
     weeklyUpfConsumption: userInfo.weeklyUpfConsumption,
     weeklyReusableOrRefill: userInfo.weeklyReusableOrRefill,
   };
-  const complete = Object.values(baselines).every((v) => v != null);
-  return complete
-    ? deriveUserSegment(baselines as OnboardingBaselines)
-    : undefined;
+  const answered = Object.values(answers).some((v) => v != null);
+  return answered ? deriveUserSegment(answers) : undefined;
 }
 
 /** Same first-cycle seeding ProgressWheelService.ensureWheelsForUser does. */
@@ -406,8 +407,8 @@ export async function seedUsers(prisma: PrismaClient) {
       weeklyUpfConsumption: pick(upfRanges),
       weeklyReusableOrRefill: pick(reusableRanges),
     };
-    // Segment derived from the baselines, same rubric as the onboarding
-    // survey would use, so generated users stay internally consistent too.
+    // Segment derived from the answers, same rubric as the onboarding
+    // survey uses, so generated users stay internally consistent too.
     const segment = deriveUserSegment(baselines);
     const profileEnums = {
       gender: pick(genders),

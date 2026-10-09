@@ -7,6 +7,7 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
 import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
+import { LearningProgressService } from '../../gamification/services/learning-progress.service';
 
 describe('UserProfilesController', () => {
   let controller: UserProfilesController;
@@ -74,6 +75,7 @@ describe('UserProfilesController', () => {
           provide: OnboardingSurveyService,
           useValue: onboardingSurveyService,
         },
+        { provide: LearningProgressService, useValue: {} },
       ],
     })
       .overrideGuard(DataBaseAuthGuard)
@@ -167,7 +169,7 @@ describe('UserProfilesController', () => {
   describe('recordProgressWheelImpact', () => {
     it('delegates to ProgressWheelService', async () => {
       const result = {
-        actionCode: 'VEGETARIAN_SERVING_100G',
+        actionCode: 'VEGETARIAN_MEAL',
         wheels: [],
         achievements: [],
       } as any;
@@ -175,12 +177,12 @@ describe('UserProfilesController', () => {
 
       await expect(
         controller.recordProgressWheelImpact('user-1', {
-          actionCode: 'VEGETARIAN_SERVING_100G',
+          actionCode: 'VEGETARIAN_MEAL',
         }),
       ).resolves.toEqual(result);
       expect(progressWheelService.recordImpact).toHaveBeenCalledWith(
         'user-1',
-        'VEGETARIAN_SERVING_100G',
+        'VEGETARIAN_MEAL',
       );
     });
   });

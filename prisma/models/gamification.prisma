@@ -5,7 +5,7 @@
 enum ProgressIndicatorKind {
   // SOFT bars
   FOOD_CHOICES
-  FOOD_AND_WASTE
+  FOOD_WASTE
   HEALTH
   // SOFT wheels
   CO2_REDUCTION
@@ -384,9 +384,30 @@ model Dimension {
   challenges     Challenge[]
   quests         Quest[]
   microLearnings MicroLearning[]
+  userLevels     UserDimensionLevel[]
 
   @@index([sortOrder])
   @@map("dimensions")
+}
+
+/// A user's level in one learning dimension. Starts at the level inferred from
+/// the onboarding survey (see dimension-levels.config.ts) and decides which
+/// quests are available in that dimension. Goes up once every available quest
+/// at the current level in that dimension is completed.
+/// Written only by DimensionLevelService, never from a client request.
+model UserDimensionLevel {
+  userId      String
+  dimensionId String
+  level       ContentLevel
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dimension Dimension @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, dimensionId])
+  @@index([dimensionId])
+  @@map("user_dimension_levels")
 }
 
 model Topic {

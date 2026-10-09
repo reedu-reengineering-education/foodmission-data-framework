@@ -34,6 +34,8 @@ import {
   FlagSource,
   mergeDerivedFlags,
 } from '../derive-meal-flags';
+import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
+import { wheelActionsForMealLog } from '../../gamification/meal-log-wheel-actions.config';
 
 @Injectable()
 export class MealLogsService {
@@ -69,6 +71,7 @@ export class MealLogsService {
     private readonly mealItemRepository: MealItemRepository,
     private readonly offMongoProductRepository: OffMongoProductRepository,
     private readonly userEventService: UserEventService,
+    private readonly progressWheelService: ProgressWheelService,
   ) {}
 
   private getOwnedMealOrThrow(mealId: string, userId: string) {
@@ -189,6 +192,7 @@ export class MealLogsService {
     }
 
     await this.recordFlagEvents(mealLog, flags, sources, swaps, mealDayBucket);
+    await this.recordWheelImpacts(mealLog, flags, swaps);
 
     return this.toResponse(mealLog);
   }
@@ -255,6 +259,37 @@ export class MealLogsService {
         mealDayBucket,
         ...swapSides(eventType),
       });
+    }
+  }
+
+  /**
+   * Moves the sustainability wheels for what this log reports (vegan or
+   * vegetarian meal, swaps, plate/expired food saved). Runs once per new meal
+   * log, so a retry can't double-count. Best-effort like the events above.
+   * Users who haven't done the onboarding survey yet move their default
+   * BEGINNER wheels.
+   */
+  private async recordWheelImpacts(
+    mealLog: MealLog,
+    flags: MealFlagEventType[],
+    swaps: MealSwapEventType[],
+  ): Promise<void> {
+    for (const actionCode of wheelActionsForMealLog(flags, swaps)) {
+      try {
+        await this.progressWheelService.recordImpact(
+          mealLog.userId,
+          actionCode,
+          {
+            source: EventSource.MEAL_LOG,
+            subject: { type: 'MEAL_LOG', id: mealLog.id },
+          },
+        );
+      } catch (error) {
+        this.logger.error(
+          `Failed to record wheel impact ${actionCode} for meal log ${mealLog.id}`,
+          error instanceof Error ? error.stack : error,
+        );
+      }
     }
   }
 

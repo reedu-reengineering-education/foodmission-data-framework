@@ -130,7 +130,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Matvalg",
-    "FOOD_AND_WASTE": "Mat og avfall",
+    "FOOD_WASTE": "Matsvinn",
     "HEALTH": "Helse",
     "CO2_REDUCTION": "CO₂-reduksjon",
     "ENERGY_REDUCTION": "Energireduksjon",
@@ -167,6 +167,6 @@
   "contentTags": {
     "HEALTH": "Helse",
     "FOOD_CHOICE": "Matvalg",
-    "FOOD_AND_WASTE": "Mat og avfall"
+    "FOOD_WASTE": "Matsvinn"
   }
 }

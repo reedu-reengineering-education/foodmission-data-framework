@@ -62,7 +62,7 @@ export class ChallengeResponseDto {
 
   @ApiProperty({
     description: 'Content tag codes derived from boolean flags',
-    example: ['FOOD_CHOICE', 'FOOD_AND_WASTE'],
+    example: ['FOOD_CHOICE', 'FOOD_WASTE'],
     type: [String],
   })
   @Expose()

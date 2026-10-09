@@ -108,6 +108,7 @@ export const EventType = {
   // ==========================================
   BADGE_EARNED: 'BADGE_EARNED',
   PROGRESS_INDICATOR_UPDATED: 'PROGRESS_INDICATOR_UPDATED',
+  DIMENSION_LEVEL_UP: 'DIMENSION_LEVEL_UP',
 
   // ==========================================
   // PERSONALIZATION (Foody cosmetics)
