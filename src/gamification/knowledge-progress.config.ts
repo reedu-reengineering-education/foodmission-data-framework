@@ -10,7 +10,7 @@ import { KnowledgeFlags } from './content-completion';
 export const KNOWLEDGE_KIND_FLAG = {
   [ProgressIndicatorKind.HEALTH]: 'health',
   [ProgressIndicatorKind.FOOD_CHOICES]: 'foodChoice',
-  [ProgressIndicatorKind.FOOD_AND_WASTE]: 'foodWaste',
+  [ProgressIndicatorKind.FOOD_WASTE]: 'foodWaste',
 } as const satisfies Partial<
   Record<ProgressIndicatorKind, keyof KnowledgeFlags>
 >;

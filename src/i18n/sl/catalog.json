@@ -130,7 +130,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Izbira hrane",
-    "FOOD_AND_WASTE": "Hrana in odpadki",
+    "FOOD_WASTE": "Zavržena hrana",
     "HEALTH": "Zdravje",
     "CO2_REDUCTION": "Zmanjšanje CO₂",
     "ENERGY_REDUCTION": "Zmanjšanje energije",
@@ -167,6 +167,6 @@
   "contentTags": {
     "HEALTH": "Zdravje",
     "FOOD_CHOICE": "Izbira hrane",
-    "FOOD_AND_WASTE": "Hrana in odpadki"
+    "FOOD_WASTE": "Zavržena hrana"
   }
 }

@@ -5,7 +5,7 @@
 enum ProgressIndicatorKind {
   // SOFT bars
   FOOD_CHOICES
-  FOOD_AND_WASTE
+  FOOD_WASTE
   HEALTH
   // SOFT wheels
   CO2_REDUCTION

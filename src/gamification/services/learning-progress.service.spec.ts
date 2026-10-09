@@ -114,7 +114,7 @@ describe('LearningProgressService', () => {
       },
       // FF.1 (open)
       {
-        kind: 'FOOD_AND_WASTE',
+        kind: 'FOOD_WASTE',
         finishedItems: 0,
         totalItems: 1,
         percentComplete: 0,

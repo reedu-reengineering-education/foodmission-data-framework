@@ -130,7 +130,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Επιλογές τροφίμων",
-    "FOOD_AND_WASTE": "Τρόφιμα και απόβλητα",
+    "FOOD_WASTE": "Σπατάλη τροφίμων",
     "HEALTH": "Υγεία",
     "CO2_REDUCTION": "Μείωση CO₂",
     "ENERGY_REDUCTION": "Μείωση ενέργειας",
@@ -167,6 +167,6 @@
   "contentTags": {
     "HEALTH": "Υγεία",
     "FOOD_CHOICE": "Επιλογή τροφίμων",
-    "FOOD_AND_WASTE": "Τρόφιμα και απόβλητα"
+    "FOOD_WASTE": "Σπατάλη τροφίμων"
   }
 }

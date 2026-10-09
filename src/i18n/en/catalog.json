@@ -129,7 +129,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Food choices",
-    "FOOD_AND_WASTE": "Food and waste",
+    "FOOD_WASTE": "Food waste",
     "HEALTH": "Health",
     "CO2_REDUCTION": "CO₂ reduction",
     "ENERGY_REDUCTION": "Energy reduction",
@@ -166,6 +166,6 @@
   "contentTags": {
     "HEALTH": "Health",
     "FOOD_CHOICE": "Food choice",
-    "FOOD_AND_WASTE": "Food and waste"
+    "FOOD_WASTE": "Food waste"
   }
 }
