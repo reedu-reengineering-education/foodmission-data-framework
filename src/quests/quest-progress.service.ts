@@ -39,12 +39,6 @@ type LoadedQuest = {
   code: string;
   dimensionId: string;
   items: QuestItemRef[];
-  /**
-   * Candidate only because it sits at the user's level in its dimension. Not
-   * materialized until the user finishes one of its items, so a recompute
-   * doesn't write a 0% row and event for every quest at every level.
-   */
-  levelOnly?: boolean;
 };
 
 export type QuestRecomputeOutcome = {
@@ -119,27 +113,17 @@ export class QuestProgressService implements QuestProgressRecomputer {
     }
 
     // Finishing the last quest of a level unlocks the next level's quests.
-    // Recompute once more so any of those already satisfied by shared items
-    // complete now; bounded, since levels stop at ADVANCED.
-    let leveledUp = false;
     for (const dimensionId of new Set(completedNow.map((o) => o.dimensionId))) {
-      if (
-        await this.dimensionLevelService.levelUpIfComplete(userId, dimensionId)
-      ) {
-        leveledUp = true;
-      }
-    }
-    if (leveledUp && !questIds) {
-      outcomes.push(...(await this.recomputeForUser(userId)));
+      await this.dimensionLevelService.levelUpIfComplete(userId, dimensionId);
     }
 
     return outcomes;
   }
 
   /**
-   * Candidates are the user's current quest, any quest they already have an
-   * unfinished progress row for, and every available quest at the user's
-   * current level in each dimension.
+   * The only candidate is the user's current quest: progress made while a
+   * quest isn't selected is never credited to it, as with its missions and
+   * challenges, whose rows are dropped when the user switches quests.
    *
    * Completed quests are deliberately excluded. A `QuizProgress.isCorrect` can
    * flip back to false on re-answer, which would drag an already-rewarded quest
@@ -166,57 +150,30 @@ export class QuestProgressService implements QuestProgressRecomputer {
     }
 
     // Level rows exist from the start (BEGINNER before the onboarding
-    // survey); create them lazily for users who predate that.
+    // survey); create them lazily for users who predate that, since a
+    // completion here may level the user up.
     await this.dimensionLevelService.ensureForUser(userId);
-    const [user, rows, levels] = await Promise.all([
-      this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { currentQuestId: true },
-      }),
-      this.prisma.questProgress.findMany({
-        where: { userId },
-        select: { questId: true, completed: true },
-      }),
-      this.prisma.userDimensionLevel.findMany({
-        where: { userId },
-        select: { dimensionId: true, level: true },
-      }),
-    ]);
-
-    const completedIds = rows.filter((r) => r.completed).map((r) => r.questId);
-    const trackedIds = [
-      ...new Set(
-        [
-          user?.currentQuestId,
-          ...rows.filter((r) => !r.completed).map((r) => r.questId),
-        ].filter((id): id is string => id != null),
-      ),
-    ];
-
-    if (trackedIds.length === 0 && levels.length === 0) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { currentQuestId: true },
+    });
+    const questId = user?.currentQuestId;
+    if (!questId) {
       return [];
     }
 
-    const quests = await this.prisma.quest.findMany({
-      where: {
-        available: true,
-        OR: [
-          { id: { in: trackedIds } },
-          ...levels.map((l) => ({
-            dimensionId: l.dimensionId,
-            level: l.level,
-            id: { notIn: completedIds },
-          })),
-        ],
-      },
+    const row = await this.prisma.questProgress.findUnique({
+      where: { userId_questId: { userId, questId } },
+      select: { completed: true },
+    });
+    if (row?.completed) {
+      return [];
+    }
+
+    return this.prisma.quest.findMany({
+      where: { id: questId, available: true },
       select,
     });
-
-    const tracked = new Set(trackedIds);
-    return quests.map((quest) => ({
-      ...quest,
-      levelOnly: !tracked.has(quest.id),
-    }));
   }
 
   private async recomputeQuest(
@@ -263,10 +220,6 @@ export class QuestProgressService implements QuestProgressRecomputer {
       where: { userId_questId: { userId, questId: quest.id } },
       select: { progress: true, completed: true, unlockedAt: true },
     });
-    if (quest.levelOnly && !previous && finished.size === 0) {
-      return null;
-    }
-
     const state = {
       source: 'DERIVED',
       total: scored.length,
