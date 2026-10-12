@@ -228,3 +228,58 @@ describe('grouped mission rules', () => {
     expect(outcome).toMatchObject({ completed: false, progress: 80 });
   });
 });
+
+describe('M.A4.3 (packaging trade-offs for 5 products)', () => {
+  const entry = loadRules().missions.find((m) => m.code === 'M.A4.3');
+  const reflected = (productId: string): UserEventRow => ({
+    eventType: 'PACKAGING_TRADE_OFF_REFLECTED',
+    createdAt: new Date('2026-01-02T12:00:00.000Z'),
+    metadata: { productId },
+  });
+  const at = new Date('2026-01-03T00:00:00.000Z');
+  const startedAt = new Date('2026-01-01T00:00:00.000Z');
+
+  it('completes with five distinct products', () => {
+    const events = ['p1', 'p2', 'p3', 'p4', 'p5'].map(reflected);
+    expect(evaluateRule(entry!.rule!, events, at, startedAt).completed).toBe(
+      true,
+    );
+  });
+
+  it('counts a repeated product once', () => {
+    const events = ['p1', 'p1', 'p2', 'p3', 'p4'].map(reflected);
+    const outcome = evaluateRule(entry!.rule!, events, at, startedAt);
+    expect(outcome).toMatchObject({ completed: false, progress: 80 });
+  });
+});
+
+describe('M.A2.2 (one product with two labels)', () => {
+  const entry = loadRules().missions.find((m) => m.code === 'M.A2.2');
+  const chosen = (productId: string, labels: unknown): UserEventRow => ({
+    eventType: 'SHOPPING_DOUBLE_LABEL_CHOSEN',
+    createdAt: new Date('2026-01-02T12:00:00.000Z'),
+    metadata: { productId, labels } as UserEventRow['metadata'],
+  });
+  const score = (events: UserEventRow[]) =>
+    evaluateRule(
+      entry!.rule!,
+      events,
+      new Date('2026-01-03T00:00:00.000Z'),
+      new Date('2026-01-01T00:00:00.000Z'),
+    ).completed;
+
+  it('completes with two different labels on one product', () => {
+    expect(score([chosen('p1', ['EU_ORGANIC', 'FAIRTRADE'])])).toBe(true);
+    expect(
+      score([chosen('p1', ['EU_ORGANIC']), chosen('p1', ['FAIRTRADE'])]),
+    ).toBe(true);
+  });
+
+  it('needs both labels on the same product', () => {
+    expect(score([chosen('p1', ['EU_ORGANIC', 'eu_organic'])])).toBe(false);
+    expect(
+      score([chosen('p1', ['EU_ORGANIC']), chosen('p2', ['FAIRTRADE'])]),
+    ).toBe(false);
+    expect(score([chosen('p1', undefined)])).toBe(false);
+  });
+});

@@ -32,6 +32,9 @@
  *   `flagSource` says who asserted the fact: `user`, `derived` or `both`.
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
+ * - **Double label** (`SHOPPING_DOUBLE_LABEL_CHOSEN`) — `{ productId, labels }`:
+ *   one product carrying ≥2 different sustainability labels, `labels` naming
+ *   each (e.g. `["EU_ORGANIC", "FAIRTRADE"]`).
  * - **NOVA category comparison** — `{ category, productIds }`: one event per
  *   comparison of NOVA classes across ≥3 products of the same food category.
  * - **NOVA vs score comparison** — `{ productId, comparedWith }`: one product's
@@ -163,6 +166,7 @@ export const EventType = {
   SHOPPING_LOCAL_CHOSEN: 'SHOPPING_LOCAL_CHOSEN',
   SHOPPING_SEASONAL_CHOSEN: 'SHOPPING_SEASONAL_CHOSEN',
   SHOPPING_CERTIFICATION_CHOSEN: 'SHOPPING_CERTIFICATION_CHOSEN',
+  SHOPPING_DOUBLE_LABEL_CHOSEN: 'SHOPPING_DOUBLE_LABEL_CHOSEN',
   SHOPPING_PACKAGING_INFO_CHECKED: 'SHOPPING_PACKAGING_INFO_CHECKED',
   SHOPPING_MULTICRITERIA_PURCHASE: 'SHOPPING_MULTICRITERIA_PURCHASE',
   SHOPPING_LIST_CREATED: 'SHOPPING_LIST_CREATED',
@@ -188,6 +192,7 @@ export const EventType = {
   PACKAGING_RECYCLABILITY_EVALUATED: 'PACKAGING_RECYCLABILITY_EVALUATED',
   PACKAGING_COMPARISON_MADE: 'PACKAGING_COMPARISON_MADE',
   PACKAGING_SMART_OBSERVED: 'PACKAGING_SMART_OBSERVED',
+  PACKAGING_TRADE_OFF_REFLECTED: 'PACKAGING_TRADE_OFF_REFLECTED',
 
   // ==========================================
   // 6. FOOD WASTE PREVENTION
@@ -280,6 +285,7 @@ export const CLIENT_RECORDABLE_EVENT_TYPES = [
   EventType.SHOPPING_LOCAL_CHOSEN,
   EventType.SHOPPING_SEASONAL_CHOSEN,
   EventType.SHOPPING_CERTIFICATION_CHOSEN,
+  EventType.SHOPPING_DOUBLE_LABEL_CHOSEN,
   EventType.SHOPPING_PACKAGING_INFO_CHECKED,
   EventType.SHOPPING_MULTICRITERIA_PURCHASE,
   // Food processing & scores
@@ -298,6 +304,7 @@ export const CLIENT_RECORDABLE_EVENT_TYPES = [
   EventType.PACKAGING_RECYCLABILITY_EVALUATED,
   EventType.PACKAGING_COMPARISON_MADE,
   EventType.PACKAGING_SMART_OBSERVED,
+  EventType.PACKAGING_TRADE_OFF_REFLECTED,
   // Food waste prevention
   EventType.FOOD_WASTE_HALF_PLATE_SAVED,
   EventType.FOOD_WASTE_FULL_PLATE_SAVED,
