@@ -20,6 +20,7 @@ describe('MissionProgressRepository', () => {
               findUnique: jest.fn(),
               findMany: jest.fn(),
               upsert: jest.fn(),
+              update: jest.fn(),
             },
           },
         },
@@ -107,7 +108,7 @@ describe('MissionProgressRepository', () => {
 
   describe('upsert', () => {
     it('should call prisma.missionProgress.upsert with create defaults', async () => {
-      const mockReturn = { id: '1' };
+      const mockReturn = { id: '1', startedAt: new Date() };
       (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue(
         mockReturn,
       );
@@ -135,6 +136,65 @@ describe('MissionProgressRepository', () => {
         include: { mission: true },
       });
       expect(result).toBe(mockReturn);
+    });
+
+    it('marks the mission FAILED and not completed when given up', async () => {
+      (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue({
+        startedAt: new Date(),
+      });
+
+      await repository.upsert('u1', 'm1', { failed: true, progress: 40 });
+
+      const call = (prisma.missionProgress.upsert as jest.Mock).mock
+        .calls[0][0];
+      expect(call.create).toEqual(
+        expect.objectContaining({ status: 'FAILED', completed: false }),
+      );
+      expect(call.update).toEqual(
+        expect.objectContaining({ status: 'FAILED', completed: false }),
+      );
+    });
+
+    it('sets startedAt when the mission is started at progress 0', async () => {
+      (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue({
+        startedAt: new Date(),
+      });
+
+      await repository.upsert('u1', 'm1', { progress: 0 });
+
+      const call = (prisma.missionProgress.upsert as jest.Mock).mock
+        .calls[0][0];
+      expect(call.create).toEqual(
+        expect.objectContaining({
+          progress: 0,
+          status: 'NOT_STARTED',
+          startedAt: expect.any(Date),
+        }),
+      );
+    });
+  });
+
+  describe('restart', () => {
+    it('resets the row for a new attempt with a fresh start time', async () => {
+      const row = { startedAt: new Date() };
+      (prisma.missionProgress.update as jest.Mock).mockResolvedValue(row);
+
+      const result = await repository.restart('u1', 'm1');
+
+      expect(prisma.missionProgress.update).toHaveBeenCalledWith({
+        where: { userId_missionId: { userId: 'u1', missionId: 'm1' } },
+        data: {
+          progress: 0,
+          completed: false,
+          status: 'NOT_STARTED',
+          startedAt: expect.any(Date),
+          state: { source: 'manual', mode: 'restart' },
+          ruleHash: null,
+          evaluatedAt: null,
+        },
+        include: { mission: true },
+      });
+      expect(result).toBe(row);
     });
   });
 });

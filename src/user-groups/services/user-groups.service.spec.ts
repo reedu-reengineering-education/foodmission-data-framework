@@ -309,7 +309,13 @@ describe('UserGroupsService', () => {
       expect(prismaService.$transaction).toHaveBeenCalledTimes(1);
       expect(tx.missionProgress.deleteMany).toHaveBeenCalled();
       expect(tx.challengeProgress.deleteMany).toHaveBeenCalled();
-      expect(tx.missionProgress.createMany).toHaveBeenCalled();
+      expect(tx.missionProgress.createMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.arrayContaining([
+            expect.objectContaining({ startedAt: expect.any(Date) }),
+          ]),
+        }),
+      );
       expect(tx.challengeProgress.createMany).toHaveBeenCalled();
     });
 

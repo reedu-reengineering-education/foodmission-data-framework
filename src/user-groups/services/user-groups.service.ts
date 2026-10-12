@@ -222,6 +222,10 @@ export class UserGroupService {
       ),
     ];
 
+    // Selecting the quest starts its missions and challenges, even at
+    // progress 0.
+    const startedAt = new Date();
+
     if (missionCodes.length > 0) {
       const missions = await tx.mission.findMany({
         where: { code: { in: missionCodes } },
@@ -235,6 +239,7 @@ export class UserGroupService {
           completed: false,
           status: ProgressStatus.NOT_STARTED,
           state: {},
+          startedAt,
         })),
       );
       if (missionRows.length > 0) {
@@ -258,6 +263,7 @@ export class UserGroupService {
           completed: false,
           status: ProgressStatus.NOT_STARTED,
           state: {},
+          startedAt,
         })),
       );
       if (challengeRows.length > 0) {

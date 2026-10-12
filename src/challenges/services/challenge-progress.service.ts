@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { RewardSourceType } from '@prisma/client';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
@@ -8,6 +13,8 @@ import { toPaginatedResponseDto } from '../../learning/utils/paginated';
 import { TranslationService } from '../../translations/services/translation.service';
 import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { EventSource, EventType } from '../../events/event-types';
+import { ProgressStatus } from '../../common/progress-status';
+import { progressEventKey } from '../../common/progress-event-keys';
 import {
   RecordUserEventInput,
   UserEventService,
@@ -21,6 +28,7 @@ type ChallengeProgressRow = {
   userId: string;
   completed: boolean;
   progress: number;
+  status?: string;
   startedAt?: Date | null;
   challenge?: { title?: string } | null;
 };
@@ -63,6 +71,7 @@ export class ChallengeProgressService {
         userId,
         completed: false,
         progress: 0,
+        status: ProgressStatus.NOT_STARTED,
         challengeTitle: titles[challenge.id],
         startedAt: null,
       };
@@ -110,6 +119,20 @@ export class ChallengeProgressService {
         challenge.id,
       );
 
+    if (updateDto.failed && updateDto.completed) {
+      throw new BadRequestException(
+        'A challenge cannot be failed and completed at once',
+      );
+    }
+    if (previous?.status === ProgressStatus.FAILED) {
+      throw new BadRequestException(
+        'This challenge has failed; restart it to try again',
+      );
+    }
+    if (updateDto.failed && previous?.completed) {
+      throw new BadRequestException('A completed challenge cannot be failed');
+    }
+
     const updated = await this.challengeProgressRepository.upsert(
       userId,
       challenge.id,
@@ -130,6 +153,7 @@ export class ChallengeProgressService {
         ...(updateDto.completed !== undefined
           ? { completed: updateDto.completed }
           : {}),
+        ...(updateDto.failed !== undefined ? { failed: updateDto.failed } : {}),
       },
     };
 
@@ -139,7 +163,13 @@ export class ChallengeProgressService {
         eventType: EventType.CHALLENGE_STARTED,
         source: EventSource.CHALLENGE,
         metadata,
-        idempotencyKey: `challenge-started:${userId}:${challenge.id}`,
+        idempotencyKey: progressEventKey({
+          kind: 'challenge',
+          transition: 'started',
+          userId,
+          id: challenge.id,
+          startedAt: updated.startedAt,
+        }),
       });
     } else if (
       previous != null &&
@@ -151,7 +181,33 @@ export class ChallengeProgressService {
         eventType: EventType.CHALLENGE_UPDATED,
         source: EventSource.CHALLENGE,
         metadata,
-        idempotencyKey: `challenge-updated:${userId}:${challenge.id}:${updated.progress}:${updated.completed}`,
+        idempotencyKey: progressEventKey({
+          kind: 'challenge',
+          transition: 'updated',
+          userId,
+          id: challenge.id,
+          startedAt: updated.startedAt,
+          progress: updated.progress,
+          completed: updated.completed,
+        }),
+      });
+    }
+
+    if (updated.status === ProgressStatus.FAILED) {
+      // Same key as the rules engine, so a manual and a rule-based failure
+      // record one event.
+      await this.emitProgressEvent({
+        userId,
+        eventType: EventType.CHALLENGE_FAILED,
+        source: EventSource.CHALLENGE,
+        metadata,
+        idempotencyKey: progressEventKey({
+          kind: 'challenge',
+          transition: 'failed',
+          userId,
+          id: challenge.id,
+          startedAt: updated.startedAt,
+        }),
       });
     }
 
@@ -163,7 +219,12 @@ export class ChallengeProgressService {
         eventType: EventType.CHALLENGE_COMPLETED,
         source: EventSource.CHALLENGE,
         metadata,
-        idempotencyKey: `challenge-completed:${userId}:${challenge.id}`,
+        idempotencyKey: progressEventKey({
+          kind: 'challenge',
+          transition: 'completed',
+          userId,
+          id: challenge.id,
+        }),
       });
     }
 
@@ -184,6 +245,55 @@ export class ChallengeProgressService {
       ...dto,
       reward,
     });
+  }
+
+  /**
+   * Restarts a FAILED challenge as a new attempt: progress 0, status NOT_STARTED
+   * and `startedAt` now, so its rule window starts over and events from the
+   * failed attempt no longer count. Only failed challenges can be restarted.
+   */
+  async restart(
+    codeOrId: string,
+    userId: string,
+    lang?: string,
+  ): Promise<ChallengeProgressResponseDto> {
+    this.logger.log(`Restarting challenge ${codeOrId} for user: ${userId}`);
+
+    const challenge = await this.requireChallenge(codeOrId);
+    const previous =
+      await this.challengeProgressRepository.findByUserIdAndChallengeId(
+        userId,
+        challenge.id,
+      );
+    if (previous?.status !== ProgressStatus.FAILED) {
+      throw new BadRequestException('Only a failed challenge can be restarted');
+    }
+
+    const restarted = await this.challengeProgressRepository.restart(
+      userId,
+      challenge.id,
+    );
+
+    await this.emitProgressEvent({
+      userId,
+      eventType: EventType.CHALLENGE_RESTARTED,
+      source: EventSource.CHALLENGE,
+      metadata: {
+        challengeId: challenge.id,
+        challengeCode: challenge.code,
+        source: EventSource.API,
+        previousStartedAt: previous.startedAt?.toISOString() ?? null,
+      },
+      idempotencyKey: progressEventKey({
+        kind: 'challenge',
+        transition: 'restarted',
+        userId,
+        id: challenge.id,
+        startedAt: restarted.startedAt,
+      }),
+    });
+
+    return this.mapRowsToDtos([restarted], lang).then((rows) => rows[0]);
   }
 
   /**
@@ -230,6 +340,7 @@ export class ChallengeProgressService {
       userId: row.userId,
       completed: row.completed,
       progress: row.progress,
+      status: row.status ?? ProgressStatus.NOT_STARTED,
       challengeTitle: titles[row.challengeId] ?? row.challenge?.title ?? '',
       startedAt: row.startedAt ?? null,
     }));

@@ -20,6 +20,7 @@ describe('ChallengeProgressRepository', () => {
               findUnique: jest.fn(),
               findMany: jest.fn(),
               upsert: jest.fn(),
+              update: jest.fn(),
             },
           },
         },
@@ -108,6 +109,7 @@ describe('ChallengeProgressRepository', () => {
         challengeId: 'c1',
         completed: true,
         progress: 1,
+        startedAt: new Date(),
       };
       (prisma.challengeProgress.upsert as jest.Mock).mockResolvedValue(
         mockReturn,
@@ -136,6 +138,65 @@ describe('ChallengeProgressRepository', () => {
         include: { challenge: true },
       });
       expect(result).toBe(mockReturn);
+    });
+
+    it('marks the challenge FAILED and not completed when given up', async () => {
+      (prisma.challengeProgress.upsert as jest.Mock).mockResolvedValue({
+        startedAt: new Date(),
+      });
+
+      await repository.upsert('u1', 'c1', { failed: true, progress: 40 });
+
+      const call = (prisma.challengeProgress.upsert as jest.Mock).mock
+        .calls[0][0];
+      expect(call.create).toEqual(
+        expect.objectContaining({ status: 'FAILED', completed: false }),
+      );
+      expect(call.update).toEqual(
+        expect.objectContaining({ status: 'FAILED', completed: false }),
+      );
+    });
+
+    it('sets startedAt when the challenge is started at progress 0', async () => {
+      (prisma.challengeProgress.upsert as jest.Mock).mockResolvedValue({
+        startedAt: new Date(),
+      });
+
+      await repository.upsert('u1', 'c1', { progress: 0 });
+
+      const call = (prisma.challengeProgress.upsert as jest.Mock).mock
+        .calls[0][0];
+      expect(call.create).toEqual(
+        expect.objectContaining({
+          progress: 0,
+          status: 'NOT_STARTED',
+          startedAt: expect.any(Date),
+        }),
+      );
+    });
+  });
+
+  describe('restart', () => {
+    it('resets the row for a new attempt with a fresh start time', async () => {
+      const row = { startedAt: new Date() };
+      (prisma.challengeProgress.update as jest.Mock).mockResolvedValue(row);
+
+      const result = await repository.restart('u1', 'c1');
+
+      expect(prisma.challengeProgress.update).toHaveBeenCalledWith({
+        where: { userId_challengeId: { userId: 'u1', challengeId: 'c1' } },
+        data: {
+          progress: 0,
+          completed: false,
+          status: 'NOT_STARTED',
+          startedAt: expect.any(Date),
+          state: { source: 'manual', mode: 'restart' },
+          ruleHash: null,
+          evaluatedAt: null,
+        },
+        include: { challenge: true },
+      });
+      expect(result).toBe(row);
     });
   });
 });

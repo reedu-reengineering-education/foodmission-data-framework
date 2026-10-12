@@ -205,7 +205,7 @@ describe('RulesService completion rewards', () => {
 
   it('does not award again for an already-completed challenge', async () => {
     prisma.challengeProgress.findMany.mockResolvedValue([
-      { challengeId: 'c1' },
+      { challengeId: 'c1', status: 'COMPLETED', startedAt: null },
     ]);
 
     await service.evaluateUserEvent('u1', 'MEAL_LOGGED');

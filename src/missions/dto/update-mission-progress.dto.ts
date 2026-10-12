@@ -19,4 +19,14 @@ export class UpdateMissionProgressDto {
   @IsOptional()
   @IsBoolean()
   completed?: boolean;
+
+  @ApiPropertyOptional({
+    description:
+      'Give up the mission: marks it FAILED. Final — a failed mission cannot be ' +
+      'updated again. Cannot be combined with completed: true.',
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  failed?: boolean;
 }
