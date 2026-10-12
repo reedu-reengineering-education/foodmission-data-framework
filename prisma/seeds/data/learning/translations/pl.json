@@ -2830,7 +2830,7 @@
     },
     "M.I5.4": {
       "title": "Portion Control Pro",
-      "goal": "Zapisuj co najmniej działania typu „Zaoszczędziłeś pół talerza”. Jak to zrobić: Zaczynaj każdy posiłek od mniejszej porcji i dodawaj więcej jedzenia tylko w razie potrzeby. Jeśli dzięki takiemu postępowaniu uda Ci się zaoszczędzić jedzenie, zapisz działanie typu „Zaoszczędziłeś pół talerza”.",
+      "goal": "Zapisz co najmniej 3 działania typu „Oszczędzone pół talerza”. Jak to zrobić: zaczynaj każdy posiłek od mniejszej porcji i dokładaj jedzenie tylko wtedy, gdy to konieczne. Jeśli dzięki temu uda Ci się zaoszczędzić jedzenie, zapisz działanie „Oszczędzone pół talerza”.",
       "whyItMatters": "Podawanie zbyt dużych porcji jest częstą przyczyną marnotrawstwa jedzenia na talerzach. Wielkość porcji ma istotny wpływ na marnotrawstwo żywności."
     },
     "M.I5.5": {
@@ -3318,399 +3318,399 @@
   },
   "quests": {
     "QUEST.DIET_CHANGES.BEGINNER.2": {
-      "name": "Ogranicz spożycie jednego posiłku mięsnego",
+      "name": "Poznaj swoje mięsne nawyki",
       "title": "Zmiany w diecie – poziom początkujący",
-      "description": "Zjedz o jeden posiłek mięsny mniej niż w poprzednim tygodniu, pamiętając, że ograniczenie spożycia czerwonego mięsa to jeden z najskuteczniejszych sposobów na zmniejszenie wpływu Twojej diety na środowisko."
+      "description": "Sprawdź, jak często mięso pojawia się w Twoich posiłkach, i poznaj jego wpływ na system żywnościowy. Zrozumienie obecnych nawyków to pierwszy krok do poprawy zarówno własnego zdrowia, jak i stanu środowiska, ponieważ ograniczenie spożycia mięsa może zmniejszyć emisje gazów cieplarnianych, zużycie gruntów i presję na zasoby naturalne, a jednocześnie sprzyjać zdrowszemu sposobowi odżywiania."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
-      "name": "Pierwsza wymiana w ramach programu „Sustainable Swap”",
+      "name": "Twoja pierwsza zamiana białka",
       "title": "Zmiany w diecie – poziom początkujący",
-      "description": "Zapisz 2 działania związane z zamianą białka, pamiętając przy tym, że zastąpienie części spożywanego mięsa roślinami strączkowymi może zmniejszyć wpływ Twojej diety na klimat."
+      "description": "Poznaj proste alternatywy dla mięsa, takie jak rośliny strączkowe, ryby, jaja, produkty mleczne, orzechy i nasiona. Urozmaicenie źródeł białka pomaga lepiej się odżywiać, a jednocześnie zmniejsza presję na grunty, wodę i klimat."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
-      "name": "Odkryj soczewicę",
+      "name": "Odkryj nowe produkty podstawowe",
       "title": "Zmiany w diecie – poziom początkujący",
-      "description": "Zapoznaj się z materiałem i wskaż dwie zalety soczewicy pod względem wartości odżywczych lub wpływu na środowisko, pamiętając jednocześnie, że komosa ryżowa zawiera wszystkie dziewięć niezbędnych aminokwasów, co czyni ją pełnowartościowym białkiem roślinnym."
+      "description": "Zrób pierwszy krok poza popularne produkty podstawowe, takie jak pszenica i ryż. Poznawanie alternatywnych produktów podstawowych może zwiększyć różnorodność diety i wprowadzić do niej produkty, które przyczyniają się do budowy bardziej odpornych systemów rolniczych."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
-      "name": "Dwa dni bezmięsne",
+      "name": "Mniej mięsa na co dzień",
       "title": "Zmiany w diecie – poziom średniozaawansowany",
-      "description": "Przetrwaj dwa dni bezmięsne, pamiętając przy tym, że produkcja wołowiny wymaga znacznie większej powierzchni niż produkcja białek pochodzenia roślinnego, takich jak groch czy tofu."
+      "description": "Zacznij zastępować niektóre posiłki mięsne alternatywami i eksperymentuj z elastycznymi zmianami w diecie. Stopniowe ograniczanie mięsa może poprawić jakość diety, urozmaicić podaż składników odżywczych i zmniejszyć ślad środowiskowy związany z hodowlą zwierząt."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
-      "name": "Kreator zrównoważonych zamian",
+      "name": "Poszerz wybór źródeł białka",
       "title": "Zmiany w diecie – poziom średniozaawansowany",
-      "description": "Zapisz 4 sposoby na urozmaicenie spożycia białka, pamiętając przy tym, że fasola, soczewica, groch i ciecierzyca należą do najbardziej zrównoważonych dostępnych źródeł białka."
+      "description": "Nabierz pewności w korzystaniu z szerszej gamy produktów bogatych w białko i dowiedz się, jak różne źródła białka wpływają na zdrowie i zrównoważony rozwój. Bardziej zróżnicowane spożycie białka pomaga pokryć zapotrzebowanie żywieniowe, a jednocześnie zmniejsza zależność od produktów o dużym wpływie na środowisko."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
-      "name": "Program ćwiczeń z wykorzystaniem sprzętu do ćwiczeń z oporem",
+      "name": "Urozmaić swój talerz",
       "title": "Zmiany w diecie – poziom średniozaawansowany",
-      "description": "Włącz rośliny strączkowe do czterech posiłków, pamiętając przy tym, że proso to rośliny uprawne o dużej odporności, które mogą rosnąć w gorących i suchych warunkach, przy niewielkiej ilości wody."
+      "description": "Eksperymentuj z alternatywnymi zbożami i produktami podstawowymi w codziennych posiłkach. Większa różnorodność diety może poprawić podaż składników odżywczych, a jednocześnie pomóc zmniejszyć zależność od niewielkiej liczby upraw dominujących na świecie."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Zostań w Zielonej Strefie",
+      "name": "Mistrz zrównoważonego białka",
       "title": "Zmiany w diecie – poziom zaawansowany",
-      "description": "Należy ograniczyć spożycie mięsa do mniej niż czterech posiłków tygodniowo, pamiętając jednocześnie, że produkcja zwierzęca zajmuje większość gruntów rolnych na świecie, dostarczając jednocześnie znacznie mniejszy udział kalorii i białka."
+      "description": "Wypracuj trwały sposób odżywiania, w którym mięso odgrywa mniejszą rolę. Rozumiejąc szersze skutki wyborów dotyczących białka, możesz wspierać różnorodność biologiczną, cele klimatyczne i ochronę zasobów, zachowując przy tym zbilansowaną i zdrową dietę."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
-      "name": "Przewaga białka roślinnego",
+      "name": "Mistrz różnorodności białka",
       "title": "Zmiany w diecie – poziom zaawansowany",
-      "description": "Większość posiłków zawierających białko należy czerpać ze źródeł białka innych niż mięso, pamiętając jednocześnie, że rośliny strączkowe w naturalny sposób poprawiają żyzność gleby poprzez wiązanie azotu z powietrza, co zmniejsza zapotrzebowanie na nawozy."
+      "description": "Twórz posiłki, które łączą wartości odżywcze, różnorodność i zrównoważony rozwój. Rozumiejąc mocne strony różnych źródeł białka, możesz wspierać zarówno długoterminowe zdrowie, jak i odporne systemy żywnościowe."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
-      "name": "Alternatywne nawyki związane z produktami pierwszej potrzeby",
+      "name": "Talerz gotowy na przyszłość",
       "title": "Zmiany w diecie – poziom zaawansowany",
-      "description": "Należy uwzględniać alternatywne produkty spożywcze stanowiące podstawę diety w co najmniej pięciu posiłkach, pamiętając przy tym, że komosa ryżowa jest obecnie uprawiana w ponad 70 krajach, co przyczynia się do dywersyfikacji światowej produkcji żywności."
+      "description": "Dowiedz się, jak alternatywne produkty podstawowe przyczyniają się do bezpieczeństwa żywnościowego, odporności na zmiany klimatu i różnorodności rolniczej. Poszerzając swoje wybory żywieniowe, wspierasz zarówno własne zdrowie, jak i bardziej zrównoważone systemy żywnościowe."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
-      "name": "Narzędzie do śledzenia pochodzenia",
+      "name": "Ziemia ukryta w jedzeniu",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Sprawdź kraj pochodzenia co najmniej 5 produktów spożywczych spożywanych w ciągu tygodnia, pamiętając przy tym, że około połowa powierzchni lądowej nadającej się do zamieszkania na świecie jest wykorzystywana do celów rolniczych."
+      "description": "Odkryj, ile ziemi potrzeba do produkcji różnych produktów spożywczych. Zrozumienie użytkowania gruntów pomaga wyjaśnić, jak wybory żywieniowe wpływają na lasy, ekosystemy i różnorodność biologiczną."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Woda ukryta w jedzeniu",
+      "name": "Liczy się każda kropla",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Około 70% światowego poboru wody słodkiej przeznacza się na potrzeby rolnictwa."
+      "description": "Sprawdź, ile wody kryje się za produktami, które jesz. Zrozumienie śladu wodnego pomaga powiązać codzienne posiłki z jednym z najważniejszych zasobów naszej planety."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Klimatyczny koszt posiłków",
+      "name": "Energia ukryta w jedzeniu",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Systemy żywnościowe odpowiadają za około jedną trzecią globalnej emisji gazów cieplarnianych."
+      "description": "Dowiedz się, jak wykorzystuje się energię do produkcji, przetwarzania i transportu żywności. Zrozumienie tych ukrytych kosztów energetycznych pomaga wyjaśnić, dlaczego wybory żywieniowe mają znaczenie dla zrównoważonego rozwoju."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Kilometry żywności",
+      "name": "Jedzenie przyjazne dla klimatu",
       "title": "Wybór produktów – dla początkujących",
-      "description": "Globalny transport żywności generuje co roku około 3 miliardów ton emisji ekwiwalentu CO₂."
+      "description": "Odkryj, jak wybory żywieniowe przyczyniają się do emisji gazów cieplarnianych. Zrozumienie śladu węglowego pomaga wskazać proste działania, które wspierają zdrowie zarówno planety, jak i ludzi."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
-      "name": "Wybór produktów – dla początkujących",
+      "name": "Prześledź drogę jedzenia",
       "title": "Wybór produktów – dla początkujących",
-      "description": "W codziennym życiu wybieraj praktyczne i zrównoważone rozwiązania żywieniowe."
+      "description": "Odkryj, jak żywność wędruje od pola do stołu i dlaczego transport ma znaczenie dla zrównoważonego rozwoju. Zrozumienie, czym są kilometry żywności, pozwala poznać część historii wpływu żywności na środowisko."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
-      "name": "Różnorodne pochodzenie",
+      "name": "Wybieraj żywność oszczędzającą ziemię",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Sprawdź, skąd pochodzą spożywane przez Ciebie produkty spożywcze, i zapisz co najmniej 3 posiłki przygotowane z lokalnych produktów, pamiętając przy tym, że wołowina jest jednym z produktów spożywczych wymagających największej powierzchni uprawnej spośród tych, które spożywają ludzie."
+      "description": "Naucz się porównywać produkty spożywcze pod względem ich wpływu na grunty rolne. Wybieranie żywności wymagającej mniej ziemi może zmniejszyć presję na siedliska naturalne, a jednocześnie wspierać zdrową i urozmaiconą dietę."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Zmarnowane jedzenie, zmarnowana woda",
+      "name": "Jedz z myślą o wodzie",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Marnowanie żywności powoduje również stratę ogromnych ilości wody wykorzystywanej do uprawy żywności."
+      "description": "Dowiedz się, jak wybory żywieniowe i marnowanie żywności wpływają na zużycie wody słodkiej. Oszczędzanie wody wspiera długoterminowe bezpieczeństwo żywnościowe i zmniejsza presję na środowisko."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "Ślad węglowy mięsa",
+      "name": "Mniej energii od pola do stołu",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Mięso, zwłaszcza wołowina i jagnięcina, ma znacznie większy ślad węglowy niż większość produktów pochodzenia roślinnego."
+      "description": "Poznaj sposoby na zmniejszenie śladu energetycznego swoich posiłków dzięki wyborom żywieniowym i ograniczaniu marnotrawstwa. Mniejsze zapotrzebowanie na energię często oznacza mniejszy wpływ na środowisko."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Emisje z transportu",
+      "name": "Zmniejsz ślad węglowy swojego jedzenia",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "Prawie jedna piąta emisji gazów cieplarnianych generowanych przez globalny system żywnościowy wynika z transportu żywności."
+      "description": "Poznaj praktyczne strategie ograniczania emisji poprzez codzienne decyzje żywieniowe. Wiele wyborów przyjaznych dla klimatu sprzyja też zdrowszym nawykom żywieniowym."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
-      "name": "Wybór produktów – poziom średniozaawansowany",
+      "name": "Nie tylko kilometry żywności",
       "title": "Wybór produktów – poziom średniozaawansowany",
-      "description": "W codziennym życiu wybieraj praktyczne i zrównoważone rozwiązania żywieniowe."
+      "description": "Sprawdź, jak transport, chłodzenie, sezonowość i metody produkcji wpływają na siebie nawzajem. Sama odległość nie przesądza o zrównoważeniu, a świadomi konsumenci dostrzegają szerszy obraz."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
-      "name": "Poza krajem pochodzenia",
+      "name": "Chroń przyrodę swoimi wyborami",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Wybierając produkty na co najmniej 3 posiłki, należy wziąć pod uwagę zarówno kraj pochodzenia, jak i jeden dodatkowy wskaźnik zrównoważonego rozwoju (np. certyfikację, metodę produkcji, sezonowość), pamiętając jednocześnie, że większość gruntów rolnych wykorzystuje się do wypasu zwierząt gospodarskich lub uprawy paszy dla zwierząt."
+      "description": "Zrozum, jak systemy żywnościowe konkurują o ziemię i jak decyzje żywieniowe wpływają na ochronę różnorodności biologicznej. Twoje wybory mogą pomóc chronić ekosystemy, a jednocześnie wspierać zrównoważoną produkcję żywności."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Ślad wodny w szczegółach",
+      "name": "Chroń nasze zasoby wodne",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Ślad wodny Twojej diety w dużym stopniu zależy od tego, co jesz."
+      "description": "Pogłęb swoją wiedzę o niedoborach wody i zrównoważonej konsumpcji. Mądre wybory żywieniowe mogą chronić ekosystemy słodkowodne, a jednocześnie wspierać zdrową dietę."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Emisje poza talerzem",
+      "name": "Napędzaj zrównoważony system żywnościowy",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Marnotrawstwo żywności powoduje co roku emisję miliardów ton ekwiwalentu CO₂."
+      "description": "Zrozum, jak systemy żywnościowe wykorzystują energię i jak wzorce konsumpcji wpływają na zapotrzebowanie na zasoby. Mądrzejsza konsumpcja przynosi korzyści zarówno środowisku, jak i przyszłemu bezpieczeństwu żywnościowemu."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Łańcuch chłodniczy i transport",
+      "name": "Zostań mistrzem niskoemisyjnego jedzenia",
       "title": "Wybór produktów – zaawansowane",
-      "description": "Chociaż transport żywności stanowi jedynie około 18% całkowitej długości tras transportu towarowego na świecie, to odpowiada on za około 27% emisji związanych z transportem towarowym."
+      "description": "Pogłęb swoją wiedzę o wpływie systemów żywnościowych na klimat. Twoje wybory mogą przyczynić się do zdrowszego stylu życia, a jednocześnie wspierać cele w zakresie łagodzenia zmian klimatu."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
-      "name": "Wybór produktów – zaawansowane",
+      "name": "Liczy się więcej niż odległość",
       "title": "Wybór produktów – zaawansowane",
-      "description": "W codziennym życiu wybieraj praktyczne i zrównoważone rozwiązania żywieniowe."
+      "description": "Dowiedz się, jak globalne łańcuchy dostaw wpływają na środowisko. Zrozumienie systemów transportowych może pomóc Ci dokonywać mądrzejszych wyborów, które wspierają zrównoważony rozwój i jakość żywności."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
-      "name": "NOVA Explorer",
+      "name": "Rozszyfruj przetwarzanie żywności",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Znajdź klasyfikację NOVA dla co najmniej trzech produktów spożywczych, pamiętając jednocześnie, że przetwórstwo spożywcze może zwiększyć bezpieczeństwo żywności i wydłużyć jej okres przydatności do spożycia."
+      "description": "Dowiedz się, jak żywność jest przetwarzana, zanim trafi na Twój talerz. Przetwarzanie wpływa na wartości odżywcze, wygodę, okres przydatności do spożycia i zrównoważony rozwój."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Lokalne z bliska",
+      "name": "Sprawdź, skąd pochodzi",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Krótkie łańcuchy dostaw mogą wspierać lokalną gospodarkę i jej odporność."
+      "description": "Zacznij zwracać uwagę na to, gdzie produkowana jest żywność. Informacje o kraju pochodzenia mogą pomóc konsumentom lepiej zrozumieć systemy żywnościowe i łańcuchy dostaw."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
-      "name": "Obserwator metody produkcji",
+      "name": "Rolnictwo za etykietą",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Poszukaj informacji na temat sposobu produkcji co najmniej pięciu produktów spożywczych, o ile takie informacje są dostępne, pamiętając przy tym, że gospodarstwa ekologiczne charakteryzują się większą różnorodnością biologiczną niż gospodarstwa konwencjonalne."
+      "description": "Odkryj, jak uprawia się i produkuje żywność. Praktyki rolnicze wpływają na różnorodność biologiczną, zdrowie gleby, zasoby wodne i jakość żywności."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
-      "name": "Jedno danie, wiele etapów",
+      "name": "Innowacje spożywcze na przyszłość",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Wybierz jeden produkt spożywczy i zastanów się, co mogło się wydarzyć na etapie przetwarzania surowców do momentu powstania gotowego produktu, który kupiłeś, pamiętając jednocześnie, że zróżnicowanie upraw i ras może zwiększyć odporność systemu żywnościowego."
+      "description": "Odkryj, jak hodowla nowych odmian i ras oraz innowacje pomagają systemom żywnościowym dostosować się do przyszłych wyzwań. Nowe technologie mogą przyczynić się do zrównoważonego rozwoju i bezpieczeństwa żywnościowego."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Podstawy sprawiedliwego handlu",
+      "name": "Ludzie stojący za Twoim jedzeniem",
       "title": "Metody produkcji – poziom początkujący",
-      "description": "Większość przypadków pracy dzieci na całym świecie dotyczy sektora rolnictwa."
+      "description": "Poznaj ludzką stronę produkcji żywności. Zrównoważone systemy żywnościowe zależą nie tylko od ochrony środowiska, ale także od sprawiedliwego traktowania pracowników i producentów."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
-      "name": "Porównaj poziomy przetwarzania",
+      "name": "Plusy i minusy przetwarzania",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Porównaj produkty spożywcze o różnych klasyfikacjach NOVA, wybierając co najmniej trzy produkty należące do tej samej kategorii żywności (np. trzy rodzaje sera). Różne metody przetwarzania wymagają bardzo zróżnicowanego zużycia energii."
+      "description": "Poznaj zalety i wady różnych stopni przetworzenia żywności. Dostrzeganie tych kompromisów pomaga dokonywać zdrowszych i bardziej zrównoważonych wyborów."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Co mówi pochodzenie",
+      "name": "Więcej niż kilometry żywności",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Pochodzenie żywności może dostarczyć przydatnych informacji dotyczących identyfikowalności i zrównoważonego rozwoju."
+      "description": "Dowiedz się, dlaczego pochodzenie żywności to tylko jeden z aspektów zrównoważonego rozwoju. Metody produkcji, sezonowość i transport również decydują o oddziaływaniu na środowisko."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
-      "name": "Wybór oparty na danych produkcyjnych",
+      "name": "Wybieraj lepsze rolnictwo",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Skorzystaj z klasyfikacji NOVA, systemu Green-Score lub informacji zawartych w wykazie składników, aby podjąć co najmniej pięć decyzji zakupowych. Skorzystaj z informacji na opakowaniach, serwisu Open Food Facts lub aplikacji do skanowania produktów spożywczych, pamiętając jednocześnie, że paski kwiatowe i siedliska dla zapylaczy mogą sprzyjać różnorodności biologicznej na terenach rolniczych."
+      "description": "Dowiedz się, jak metody produkcji wpływają na zrównoważony rozwój i zdrowie. Zrozumienie systemów rolniczych pomaga podejmować bardziej świadome decyzje zakupowe."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Hodowla o mniejszym wpływie",
+      "name": "Innowacje na Twoim talerzu",
       "title": "Metody produkcji – Poziom średniozaawansowany",
-      "description": "Hodowla zwierząt o niższej emisji metanu może ograniczyć wpływ hodowli na środowisko."
+      "description": "Dowiedz się, jak hodowla, ulepszona genetyka i alternatywne białka wpływają na produkcję żywności. Celem tych innowacji jest wytwarzanie żywności w sposób bardziej wydajny i zrównoważony."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Społeczna strona żywności",
+      "name": "Kupuj z myślą o wpływie społecznym",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "Zrównoważony charakter systemu żywnościowego obejmuje warunki społeczne i warunki pracy."
+      "description": "Dowiedz się, jak etykiety, certyfikaty i praktyki zaopatrzeniowe wiążą się z warunkami pracy i źródłami utrzymania. Wybory konsumentów mogą wpływać na zrównoważony rozwój społeczny."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
-      "name": "Narzędzie do śledzenia wielu wskaźników",
+      "name": "Czytanie między etykietami",
       "title": "Metody produkcji – poziom średniozaawansowany",
-      "description": "W przypadku czterech zakupionych produktów spożywczych porównaj klasyfikację NOVA z wskaźnikiem Green-Score lub Nutri-Score."
+      "description": "Etykiety żywności mogą dostarczać cennych informacji o wartościach odżywczych, stopniu przetworzenia i zrównoważonym rozwoju, ale żadna pojedyncza etykieta nie mówi wszystkiego. W tej wyprawie nauczysz się porównywać różne wskaźniki, takie jak klasyfikacja NOVA, Nutri-Score, Green-Score i wykaz składników, aby dokonywać bardziej świadomych wyborów żywieniowych. Zrozumienie, jak żywność jest produkowana i oceniana, może pomóc Ci wybierać produkty, które wspierają zarówno Twoje zdrowie, jak i bardziej zrównoważony system żywnościowy."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.1": {
-      "name": "Decyzje wielokryterialne",
+      "name": "Poza etykietami przetworzenia",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "W przypadku co najmniej trzech zakupów przed podjęciem decyzji warto wziąć pod uwagę zarówno klasyfikację NOVA, jak i wskaźnik Green-Score, pamiętając jednocześnie, że nie wszystkie przetworzone produkty spożywcze mają duży wpływ na środowisko."
+      "description": "Pogłęb swoje rozumienie przetwarzania żywności i dostrzegaj jego niuanse. Zrównoważony rozwój zależy od całego systemu żywnościowego, a nie tylko od tego, czy dany produkt jest przetworzony."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Odległość to nie wszystko",
+      "name": "Myśl globalnie, wybieraj mądrze",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Lokalna żywność nie zawsze jest najbardziej zrównoważonym wyborem."
+      "description": "Zrozum, jak powiązane są ze sobą handel światowy i systemy żywnościowe. Świadome wybory uwzględniają pochodzenie łącznie z innymi wskaźnikami zrównoważonego rozwoju."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Metody uprawy, które pomagają",
+      "name": "Wspieraj zrównoważone rolnictwo",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Agroleśnictwo polega na łączeniu uprawy drzew z uprawami rolnymi lub hodowlą zwierząt na tym samym terenie."
+      "description": "Sprawdź, jak innowacyjne praktyki rolnicze przyczyniają się do tworzenia odpornych i odpowiedzialnych środowiskowo systemów żywnościowych przy jednoczesnym utrzymaniu produkcji żywności."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Innowacje w gospodarstwie",
+      "name": "Odkrywca żywności przyszłości",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Edycja genomu może pomóc w opracowaniu roślin uprawnych, które będą bardziej odporne na stres klimatyczny."
+      "description": "Zrozum, jak innowacje mogą wspierać odporność na zmiany klimatu, ograniczać zużycie zasobów i zwiększać zrównoważenie systemu żywnościowego przy zachowaniu jakości odżywczej."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Kto uprawia naszą żywność",
+      "name": "Wspieraj sprawiedliwe systemy żywnościowe",
       "title": "Metody produkcji – poziom zaawansowany",
-      "description": "Kobiety odgrywają kluczową rolę w produkcji żywności, ale często mają mniejszy dostęp do zasobów."
+      "description": "Zrozum, jak globalne łańcuchy dostaw żywności wpływają na ludzi i społeczności. Etyczne wybory żywieniowe mogą przyczynić się do budowy bardziej sprawiedliwych i inkluzywnych systemów żywnościowych."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
-      "name": "Obserwator materiałów opakowaniowych",
+      "name": "Dlaczego opakowania są ważne",
       "title": "Opakowania – poziom początkujący",
-      "description": "Określ, z jakiego materiału wykonane są opakowania co najmniej pięciu produktów spożywczych spożywanych w ciągu tygodnia, pamiętając, że opakowania do żywności chronią produkty przed zanieczyszczeniami, wilgocią, tlenem i uszkodzeniami fizycznymi, przyczyniając się do zachowania bezpieczeństwa i jakości żywności."
+      "description": "Odkryj, jak opakowania chronią żywność i zapobiegają jej psuciu się. Dobre opakowanie może wspierać zarówno bezpieczeństwo żywności, jak i zrównoważony rozwój."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
-      "name": "Przewodnik po opakowaniach wielokrotnego użytku",
+      "name": "Użyj ponownie",
       "title": "Opakowania – poziom początkujący",
-      "description": "Wskaż co najmniej pięć przykładów opakowań na żywność wielokrotnego użytku lub z możliwością ponownego napełnienia, pamiętając jednocześnie, że opakowania wielokrotnego użytku stają się korzystne dla środowiska dopiero po tym, jak zostaną ponownie wykorzystane wystarczającą liczbę razy."
+      "description": "Odkryj, jak systemy opakowań wielokrotnego użytku ograniczają ilość odpadów. Drobne działania związane z ponownym użyciem mogą pomóc oszczędzać zasoby i zmniejszać wpływ na środowisko."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
-      "name": "Wybory oparte na informacjach o opakowaniach",
+      "name": "Opakowania z sensem",
       "title": "Opakowanie – Poziom średniozaawansowany",
-      "description": "Przy podejmowaniu co najmniej trzech decyzji zakupowych należy wziąć pod uwagę cechy opakowań, pamiętając jednocześnie, że wpływ produkcji żywności na środowisko jest często znacznie większy niż wpływ opakowań stosowanych do jej zabezpieczenia."
+      "description": "Dowiedz się, jak różne materiały opakowaniowe wpływają na marnowanie żywności, zużycie zasobów i możliwość recyklingu. Zrównoważone opakowania wiążą się z kompromisami, które nie zawsze są oczywiste."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
-      "name": "Wyszukiwarka możliwości ponownego wykorzystania",
+      "name": "Używaj ponownie, mniej wyrzucaj",
       "title": "Opakowanie – poziom średniozaawansowany",
-      "description": "W tym tygodniu przynajmniej dwa razy wybierz opakowania wielokrotnego użytku lub z możliwością ponownego napełnienia, pamiętając, że opakowania wielokrotnego użytku mogą zmniejszyć zapotrzebowanie na surowce pierwotne."
+      "description": "Dowiedz się, jak w praktyce działają systemy zwrotu, ponownego napełniania i wielokrotnego użytku. Udział konsumentów odgrywa kluczową rolę w skuteczności tych systemów."
     },
     "QUEST.PACKAGING.ADVANCED.1": {
-      "name": "Wielokryterialne decyzje dotyczące opakowań",
+      "name": "Myśl w kategoriach cyklu życia",
       "title": "Opakowania – zaawansowane",
-      "description": "W przypadku co najmniej trzech zakupów przed podjęciem decyzji warto rozważyć zarówno materiał opakowaniowy, jak i możliwości utylizacji po zakończeniu cyklu życia produktu, pamiętając jednocześnie, że opakowania jadalne mogą przyczynić się do zmniejszenia zależności od tworzyw sztucznych pochodzenia kopalnego poprzez zastąpienie tradycyjnych materiałów opakowaniowych alternatywami ulegającymi biodegradacji."
+      "description": "Spójrz na opakowania z perspektywy cyklu życia. Najbardziej zrównoważona opcja często zależy od produktu, jego okresu przydatności do spożycia i sposobu wykorzystania opakowania."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
-      "name": "Narzędzie do kształtowania nawyku ponownego wykorzystywania",
+      "name": "Mistrz opakowań w obiegu zamkniętym",
       "title": "Opakowania – zaawansowane",
-      "description": "Korzystaj z systemów opakowań wielokrotnego użytku lub z możliwością ponownego napełniania co najmniej pięć razy. Szukaj produktów sprzedawanych w ramach systemów kaucji zwrotnej lub ponownego napełniania, pamiętając jednocześnie, że każde opakowanie wielokrotnego użytku ma punkt progu rentowności, w którym staje się bardziej opłacalne niż alternatywne rozwiązania jednorazowe."
+      "description": "Sprawdź, jak opakowania wielokrotnego użytku przyczyniają się do realizacji celów gospodarki o obiegu zamkniętym. Zrozumienie systemów ponownego użycia pomaga wspierać bardziej zrównoważone nawyki konsumpcyjne."
     },
     "QUEST.FOOD_WASTE.BEGINNER.1": {
-      "name": "Zestaw do serwowania „Smart Serving”",
+      "name": "Liczy się każdy talerz",
       "title": "Marnotrawstwo żywności – poziom początkujący",
-      "description": "Wpis nr 5: „Half Plate” – zapisane działania, przy czym należy pamiętać, że gospodarstwa domowe wytwarzają więcej odpadów spożywczych niż jakikolwiek inny sektor w Unii Europejskiej."
+      "description": "Dowiedz się, jak wielkość porcji i nawyki związane z nakładaniem jedzenia wpływają na marnowanie żywności. Ograniczanie marnotrawstwa jedzenia na talerzu pozwala oszczędzać żywność, pieniądze i zasoby naturalne."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
-      "name": "Inteligentniejsze przechowywanie",
+      "name": "Zostaw na jutro",
       "title": "Marnotrawstwo żywności – poziom początkujący",
-      "description": "Należy uważnie zapoznać się z instrukcjami na opakowaniach dotyczącymi przechowywania żywności po otwarciu opakowania w przypadku co najmniej pięciu zakupionych produktów, pamiętając jednocześnie, że gospodarstwa domowe odpowiadają za ponad połowę odpadów spożywczych powstających w UE."
+      "description": "Poznaj podstawy bezpiecznego przechowywania i wykorzystywania resztek. Dobre zarządzanie żywnością pomaga zapobiegać marnotrawstwu i chroni jakość jedzenia."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
-      "name": "Przeglądarka etykiet datowych",
+      "name": "Pokonaj pułapkę terminów",
       "title": "Marnotrawstwo żywności – poziom początkujący",
-      "description": "Zarejestrowano 1 działanie związane ze spożyciem przeterminowanego produktu, mając na uwadze, że ponad połowa wszystkich odpadów spożywczych w Europie pochodzi z gospodarstw domowych."
+      "description": "Poznaj różnicę między jakością a bezpieczeństwem żywności. Rozumienie oznaczeń na etykietach może zapobiec niepotrzebnemu marnowaniu jedzenia bez narażania zdrowia."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
-      "name": "Test przewidywania wielkości porcji",
+      "name": "Kupuj tyle, ile potrzebujesz",
       "title": "Marnotrawstwo żywności – poziom początkujący",
-      "description": "Przed posiłkiem spróbuj oszacować, ile jedzenia prawdopodobnie zjesz. Po posiłku porównaj swoje szacunki z tym, co faktycznie zjadłeś, pamiętając przy tym, że w ostatnich dziesięcioleciach wielkość porcji w wielu krajach znacznie wzrosła."
+      "description": "Dowiedz się, jak nawyki zakupowe wpływają na marnowanie żywności i wydatki gospodarstwa domowego. Unikanie zbędnych zakupów pomaga ograniczyć marnotrawstwo i zużycie zasobów."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Zadanie 3: Rutynowa kontrola lodówki",
+      "name": "Nakładaj z głową",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Przed głównymi zakupami sprawdź zawartość lodówki lub spiżarni. Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnotrawstwa jedzenia na talerzu, pamiętając jednocześnie, że oferowanie mniejszych porcji może ograniczyć marnotrawstwo żywności w stołówkach i restauracjach."
+      "description": "Wypracuj nawyki, dzięki którym wielkość porcji będzie lepiej dopasowana do apetytu. Zapobieganie niepotrzebnym resztkom przynosi korzyści zarówno Twojemu samopoczuciu, jak i zrównoważonemu rozwojowi."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
-      "name": "Nawyk planowania posiłków",
+      "name": "Wykorzystaj resztki",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Przed głównymi zakupami przygotuj plan posiłków, pamiętając, że daty „najlepiej spożyć przed” odnoszą się do jakości."
+      "description": "Wypracuj praktyczne nawyki wykorzystywania resztek w kolejnych posiłkach. Ograniczanie wyrzucania resztek pozwala oszczędzać pieniądze i chroni zasoby wykorzystywane do produkcji żywności."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Zadanie 3: Rutynowa kontrola lodówki",
+      "name": "Zaplanuj, zanim się przeterminuje",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Przed większymi zakupami sprawdź zawartość lodówki lub spiżarni. Zanotuj co najmniej 3 działania związane ze spożyciem produktów po terminie ważności lub 3 działania związane z uniknięciem marnowania jedzenia, pamiętając, że szacuje się, że ilość odpadów spożywczych wytwarzanych przez gospodarstwa domowe w Europie wynosi około 69 milionów ton rocznie."
+      "description": "Wypracuj nawyki przechowywania i planowania, które pomogą Ci wykorzystać żywność, zanim się zmarnuje. Lepsze planowanie służy zarówno domowemu budżetowi, jak i środowisku."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
-      "name": "Portion Control Pro",
+      "name": "Zaplanuj, zanim kupisz",
       "title": "Marnotrawstwo żywności – poziom średniozaawansowany",
-      "description": "Należy odnotować co najmniej połowę działań z programu „Half Plate Saved”, pamiętając jednocześnie, że wpływ diety na środowisko zależy nie tylko od tego, co ludzie jedzą, ale także od tego, ile jedzą."
+      "description": "Sprawdź, jak promocje, wielkość porcji i decyzje zakupowe wpływają na marnowanie żywności. Lepsze planowanie służy zarówno Twojemu zdrowiu, jak i zrównoważonemu rozwojowi."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
-      "name": "Skupiamy się na eliminacji marnotrawstwa talerzowego",
+      "name": "Mniej marnuj, więcej zmieniaj",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "Zarejestruj co najmniej 7 akcji „Half Plate Saved”, pamiętając, że marnotrawstwo mięsa ma nieproporcjonalnie duży wpływ na skutki marnotrawstwa żywności dla klimatu."
+      "description": "Poznaj szersze skutki środowiskowe marnowania jedzenia na talerzu i zaawansowane strategie ograniczania marnotrawstwa w codziennych sytuacjach."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
-      "name": "Ekspert ds. zapobiegania wygaśnięciu",
+      "name": "Opanuj kuchnię zero waste",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "Należy rejestrować 4 działania związane z zużyciem produktów o upływającym terminie ważności, pamiętając jednocześnie, że mięso i nabiał są wprawdzie rzadziej marnowane, ale gdy już do tego dochodzi, ich wpływ na środowisko jest większy."
+      "description": "Wypracuj zaawansowane rutyny przechowywania, planowania i ponownego wykorzystywania żywności. Sprawne zarządzanie żywnością służy domowemu budżetowi, zdrowemu odżywianiu i zrównoważonemu rozwojowi."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
-      "name": "Ekspert ds. zasady „pierwsze weszło, pierwsze wyszło”",
+      "name": "Wyprzedź marnowanie żywności",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "W ciągu tygodnia uporządkuj lodówkę, zamrażarkę lub spiżarnię tak, aby produkty o najkrótszym pozostałym terminie przydatności do spożycia zawsze znajdowały się z przodu i były zużywane w pierwszej kolejności, pamiętając jednocześnie, że oferty typu „kup więcej” i rabaty hurtowe mogą skłaniać konsumentów do kupowania większej ilości żywności, niż są w stanie zużyć."
+      "description": "Opanuj techniki, które zapobiegają niepotrzebnemu przeterminowywaniu się żywności. Mądre planowanie przyczynia się do bardziej zrównoważonych wzorców konsumpcji."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
-      "name": "Tydzień planowania bezodpadowego",
+      "name": "Konsumuj świadomie",
       "title": "Marnotrawstwo żywności – poziom zaawansowany",
-      "description": "Zaplanuj wszystkie główne posiłki na cały tydzień przed pierwszą wyprawą na zakupy i kupuj wyłącznie produkty spożywcze, które masz w planach wykorzystać, pamiętając przy tym, że spożywanie większej ilości żywności niż potrzebuje organizm zwiększa zapotrzebowanie na zasoby rolnicze, takie jak ziemia, woda i energia."
+      "description": "Zrozum związek między nadmierną konsumpcją, marnotrawstwem a wpływem na środowisko. Przemyślana konsumpcja sprzyja zdrowszemu i bardziej zrównoważonemu stylowi życia."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
-      "name": "Białko na co dzień",
+      "name": "Mądrzej z białkiem",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Przynajmniej w jednym posiłku dziennie należy uwzględnić produkt bogaty w białko, pamiętając, że białko pomaga w budowie i regeneracji mięśni, tkanek, enzymów i hormonów."
+      "description": "Dowiedz się, dlaczego białko jest ważne, i poznaj różne produkty bogate w białko. Zróżnicowane wybory białkowe mogą wspierać zarówno zdrowie, jak i zrównoważony rozwój."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
-      "name": "Sprytna zamiana przekąsek",
+      "name": "Lepsze tłuszcze, lepsze wybory",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Wpis nr 5: Przekąska → Zamiana na owoce lub orzechy, pamiętając przy tym, że tłuszcze nienasycone są na ogół zdrowsze niż tłuszcze nasycone."
+      "description": "Poznaj różnicę między zdrowszymi a mniej zdrowymi tłuszczami. Jakość tłuszczów może wpływać na zdrowie w dłuższej perspektywie."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
-      "name": "Ulepszenie napoju",
+      "name": "Wytrop ukryte cukry",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Zapis 3: Zamiana napojów słodzonych na wodę, pamiętając, że napoje słodzone stanowią główne źródło cukru dodanego w wielu dietach."
+      "description": "Odkryj, gdzie najczęściej występują cukry w żywności i napojach. Ograniczenie cukrów wolnych może poprawić ogólną jakość diety."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.4": {
-      "name": "Wykrywacz soli",
+      "name": "Rzuć nawyk solenia",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Wybierz jeden produkt spożywczy w opakowaniu i ustal, ile soli zawiera on na 100 gramów, pamiętając przy tym, że większość ludzi spożywa ponad dwukrotnie więcej soli niż wynosi zalecane dzienne spożycie."
+      "description": "Dowiedz się, skąd pochodzi sól w diecie i dlaczego jej nadmiar ma znaczenie. Drobne zmiany mogą wspierać zdrowie układu sercowo-naczyniowego w dłuższej perspektywie."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
-      "name": "Tydzień pełnoziarnisty",
+      "name": "Nakarm swoje jelita",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Codziennie wybieraj produkt pełnoziarnisty. Wybieraj takie produkty jak chleb pełnoziarnisty, makaron pełnoziarnisty, płatki owsiane, brązowy ryż, chleb żytni, komosa ryżowa lub inne produkty pełnoziarniste, pamiętając przy tym, że większość Europejczyków spożywa mniej błonnika niż zalecane."
+      "description": "Poznaj rolę błonnika pokarmowego i produkty, które go zawierają. Błonnik wspiera zdrowie układu pokarmowego i ogólne samopoczucie."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
-      "name": "Dodaj jeszcze jeden owoc lub warzywo",
+      "name": "Ważne składniki odżywcze",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Dodaj codziennie do swojej diety jedną dodatkową porcję owoców lub warzyw, pamiętając przy tym, że niedobór witaminy D jest powszechnym zjawiskiem w całej Europie."
+      "description": "Dowiedz się, dlaczego witaminy są niezbędne dla zdrowia i gdzie znaleźć je w codziennych produktach. Urozmaicona dieta pomaga lepiej się odżywiać."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Kalorie to nie wszystko",
+      "name": "Energia z sensem",
       "title": "Wartości odżywcze – poziom początkujący",
-      "description": "Na świecie produkuje się już wystarczającą ilość kalorii, by wyżywić wszystkich ludzi."
+      "description": "Dowiedz się, czym są kalorie i dlaczego mają znaczenie. Zrozumienie, ile energii dostarczasz organizmowi, pomaga dokonywać zdrowszych wyborów żywieniowych."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
-      "name": "Zamiennik przetworzonego mięsa",
+      "name": "Lepsze nawyki białkowe",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Zapisz 2 zamiany „mięso przetworzone” na „rośliny strączkowe”, pamiętając, że większość osób dorosłych potrzebuje dziennie około 0,83 g białka na kilogram masy ciała."
+      "description": "Poznaj szerszą gamę źródeł białka i dowiedz się, jak przyczyniają się one do zbilansowanej diety. Wybór źródeł białka wpływa również na środowisko."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
-      "name": "Zwiększ spożycie zdrowych tłuszczów",
+      "name": "Wybieraj zdrowe tłuszcze",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Przynajmniej pięć razy wybierz źródło tłuszczów nienasyconych zamiast źródła tłuszczów nasyconych, pamiętając, że rodzaj spożywanych tłuszczów ma równie duże znaczenie jak ich ilość."
+      "description": "Poznaj praktyczne sposoby poprawy jakości spożywanych tłuszczów poprzez wybory żywieniowe. Wiele zdrowszych źródeł tłuszczu wiąże się też z bardziej zrównoważonym sposobem odżywiania."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
-      "name": "Porównanie napojów",
+      "name": "Przemyśl słodkie wybory",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Porównaj dwa słodkie napoje, które lubisz pić, i ustal, który z nich zawiera mniej cukru na 100 ml, pamiętając, że WHO zaleca ograniczenie spożycia cukrów wolnych do poziomu poniżej 10% dziennego zapotrzebowania energetycznego."
+      "description": "Dowiedz się, jak rozpoznawać i ograniczać niepotrzebne spożycie cukru. Zdrowsze wybory sprzyjają długotrwałemu dobremu samopoczuciu i lepszym nawykom żywieniowym."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
-      "name": "Stół bez soli",
+      "name": "Znajdź ukryty sód",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Przez cały tydzień nie dodawaj soli do potraw przy stole, pamiętając, że WHO zaleca spożywanie mniej niż 5 gramów soli dziennie."
+      "description": "Poznaj najczęstsze źródła sodu i odkryj praktyczne sposoby jego zastępowania. Ograniczenie sodu sprzyja zdrowszym nawykom żywieniowym."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
-      "name": "Błonnik w każdym posiłku",
+      "name": "Talerz bogaty w błonnik",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "W każdym głównym posiłku należy uwzględnić co najmniej jeden produkt bogaty w błonnik, pamiętając przy tym, że dorośli powinni spożywać co najmniej 25 gramów błonnika dziennie."
+      "description": "Poznaj praktyczne sposoby na zwiększenie spożycia błonnika dzięki codziennym produktom. Więcej błonnika często oznacza sposób odżywiania bogatszy w rośliny i bardziej zrównoważony."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Witaminy z talerza",
+      "name": "Jedz różnorodnie",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Zróżnicowana dieta pomaga zmniejszyć ryzyko wystąpienia niedoborów witamin."
+      "description": "Odkryj, jak różne produkty spożywcze dostarczają różnych witamin i składników mineralnych. Większa różnorodność diety sprzyja zarówno zdrowiu, jak i zrównoważonym wyborom żywieniowym."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Te same kalorie, inny wpływ",
+      "name": "Kalorie w kontekście",
       "title": "Wartości odżywcze – poziom średniozaawansowany",
-      "description": "Produkty spożywcze dostarczające taką samą liczbę kalorii mogą mieć bardzo zróżnicowany wpływ na środowisko."
+      "description": "Odkryj, dlaczego kalorie to tylko część wiedzy o odżywianiu. Jakość żywności i gęstość odżywcza są równie ważne."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Pełnowartościowe białka roślinne",
+      "name": "Mistrz różnorodności białka",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Spożywanie różnorodnych białek pochodzenia roślinnego pozwala na dostarczenie organizmowi wszystkich niezbędnych aminokwasów."
+      "description": "Opracuj strategię białkową, która równoważy jakość odżywczą i zrównoważony rozwój. Zrozumienie systemów produkcji białka pomaga dbać zarówno o zdrowie planety, jak i o własne."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Zrozumieć tłuszcze w diecie",
+      "name": "Mistrz jakości tłuszczów",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Tłuszcze powinny stanowić nie więcej niż około 30% całkowitego dziennego spożycia energii."
+      "description": "Zrozum rolę różnych tłuszczów dla zdrowia i w systemach żywnościowych. Świadome wybory wspierają zdrowie układu sercowo-naczyniowego i zrównoważoną dietę."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
-      "name": "Tydzień Świadomości na temat Cukru Dodanego",
+      "name": "Przejmij kontrolę nad cukrem",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Przez cały tydzień unikaj potraw i napojów, w których cukier dodany znajduje się wśród trzech pierwszych składników, pamiętając jednocześnie, że gotowanie w domu ułatwia kontrolowanie ilości dodawanego cukru."
+      "description": "Rozwiń umiejętność czytania etykiet żywności i rozpoznawania ukrytych źródeł cukru. Zrozumienie roli cukru sprzyja zdrowszej i bardziej świadomej konsumpcji."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
-      "name": "Obszar o wysokim stężeniu sodu",
+      "name": "Sód pod kontrolą",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Wskaż produkt spożywczy w swojej kuchni, który ma najwyższą zawartość soli na 100 gramów, pamiętając przy tym, że chleb, przetwory mięsne i sery stanowią główne źródła sodu w Europie."
+      "description": "Naucz się oceniać zawartość sodu i dokonywać świadomych wyborów żywieniowych. Większa świadomość sprzyja zarówno zdrowiu, jak i rozsądnej konsumpcji."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.5": {
-      "name": "Tydzień śniadań bogatych w błonnik",
+      "name": "Zadbaj o zdrowie jelit",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Zacznij każdy dzień od śniadania zawierającego znaczące źródło błonnika. Oprzyj swoje śniadanie na płatkach owsianych, produktach pełnoziarnistych, owocach, nasionach, orzechach lub innych produktach bogatych w błonnik, pamiętając, że wyższe spożycie błonnika wiąże się z mniejszym ryzykiem chorób serca i cukrzycy typu 2."
+      "description": "Zrozum, jak różne źródła błonnika wpływają na zdrowie w dłuższej perspektywie. Regularne wybieranie produktów bogatych w błonnik służy zarówno Twojemu zdrowiu, jak i zrównoważonej diecie."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
-      "name": "Tydzień Tęczy",
+      "name": "Solidna baza składników odżywczych",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Codziennie spożywaj produkty spożywcze w co najmniej pięciu różnych kolorach owoców i warzyw, pamiętając jednocześnie, że witamina B12 występuje głównie w produktach pochodzenia zwierzęcego."
+      "description": "Wypracuj dietę bogatą w różnorodne źródła składników odżywczych. Zrozumienie roli mikroskładników odżywczych pomaga zapobiegać niedoborom, a jednocześnie sprzyja zbilansowanemu i zrównoważonemu sposobowi odżywiania."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
-      "name": "Tydzień posiłków bogatych w składniki odżywcze",
+      "name": "Więcej niż kalorie",
       "title": "Wartości odżywcze – poziom zaawansowany",
-      "description": "Należy zadbać o to, aby każdy główny posiłek zawierał co najmniej trzy z poniższych składników: źródło białka, produkt bogaty w błonnik, owoce lub warzywa albo źródło zdrowych tłuszczów, pamiętając jednocześnie, że wykorzystanie upraw jako paszy dla zwierząt hodowlanych powoduje znaczne straty kaloryczne."
+      "description": "Zrozum, jak wzajemnie oddziałują na siebie kalorie, gęstość odżywcza, jakość żywności i zrównoważony rozwój. Zdrowa dieta opiera się na równowadze, a nie tylko na ilości dostarczanej energii."
     }
   },
   "meta": {

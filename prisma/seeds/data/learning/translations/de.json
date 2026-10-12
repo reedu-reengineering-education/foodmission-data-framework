@@ -2830,7 +2830,7 @@
     },
     "M.I5.4": {
       "title": "Portion Control Pro",
-      "goal": "Trage mindestens „Eine halbe Portion eingespart“ ein. So geht’s: Beginne jede Mahlzeit mit einer kleineren Portion und nimm dir nur bei Bedarf mehr zu. Wenn du durch dieses Verhalten Essen einsparen kannst, trage „Eine halbe Portion eingespart“ ein.",
+      "goal": "Erfassen Sie mindestens 3 „Half Plate Saved“-Aktionen. So geht’s: Beginnen Sie jede Mahlzeit mit einer kleineren Portion und nehmen Sie sich nur bei Bedarf mehr. Wenn Sie durch dieses Verhalten Lebensmittel einsparen, erfassen Sie eine „Half Plate Saved“-Aktion.",
       "whyItMatters": "Zu große Portionen sind eine häufige Ursache für Essensreste auf dem Teller. Die Portionsgröße ist ein wichtiger Faktor für Lebensmittelverschwendung."
     },
     "M.I5.5": {
@@ -3318,399 +3318,399 @@
   },
   "quests": {
     "QUEST.DIET_CHANGES.BEGINNER.2": {
-      "name": "Eine Fleischmahlzeit einsparen",
+      "name": "Die eigenen Fleischgewohnheiten kennen",
       "title": "Ernährungsumstellung – Anfänger",
-      "description": "Essen Sie eine Fleischmahlzeit weniger als in der vergangenen Woche. Weniger rotes Fleisch zu essen ist eine der wirksamsten Möglichkeiten, die Umweltauswirkungen der eigenen Ernährung zu verringern."
+      "description": "Finden Sie heraus, wie oft Fleisch in Ihren Mahlzeiten vorkommt, und erkunden Sie seine Auswirkungen auf das Ernährungssystem. Die eigenen Gewohnheiten zu verstehen ist der erste Schritt, um sowohl die persönliche Gesundheit als auch die ökologische Nachhaltigkeit zu verbessern – denn ein geringerer Fleischkonsum kann Treibhausgasemissionen, Flächenverbrauch und den Druck auf natürliche Ressourcen senken und zugleich eine gesündere Ernährungsweise fördern."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
-      "name": "Erster „Sustainable Swap“",
+      "name": "Ihr erster Proteintausch",
       "title": "Ernährungsumstellung – Anfänger",
-      "description": "Halten Sie zwei Maßnahmen zum Austausch von Proteinen fest. Wenn Sie einen Teil Ihres Fleischkonsums durch Hülsenfrüchte ersetzen, können Sie die Klimaauswirkungen Ihrer Ernährung verringern."
+      "description": "Entdecken Sie einfache Alternativen zu Fleisch wie Hülsenfrüchte, Fisch, Eier, Milchprodukte, Nüsse und Samen. Vielfältigere Proteinquellen verbessern die Nährstoffversorgung und verringern zugleich den Druck auf Flächen, Wasser und Klima."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
-      "name": "Entdecken Sie Linsen",
+      "name": "Neue Grundnahrungsmittel entdecken",
       "title": "Ernährungsumstellung – Anfänger",
-      "description": "Setzen Sie sich mit dem Thema auseinander und nennen Sie zwei Vorteile von Linsen in Bezug auf Ernährung oder Umwelt. Quinoa enthält alle neun essentiellen Aminosäuren und ist damit ein vollständiges pflanzliches Protein."
+      "description": "Gehen Sie einen ersten Schritt über gängige Grundnahrungsmittel wie Weizen und Reis hinaus. Alternative Grundnahrungsmittel zu entdecken kann die Vielfalt Ihrer Ernährung erhöhen und Ihnen Lebensmittel näherbringen, die zu widerstandsfähigeren Agrarsystemen beitragen."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
-      "name": "Zwei fleischfreie Tage",
+      "name": "Weniger Fleisch zur Routine machen",
       "title": "Ernährungsumstellung – Mittelstufe",
-      "description": "Halten Sie zwei fleischfreie Tage ein. Die Produktion von Rindfleisch erfordert deutlich mehr Land als die Herstellung pflanzlicher Proteine wie Erbsen oder Tofu."
+      "description": "Beginnen Sie, einige fleischhaltige Mahlzeiten durch Alternativen zu ersetzen, und probieren Sie flexible Ernährungsumstellungen aus. Ein schrittweise geringerer Fleischkonsum kann die Ernährungsqualität verbessern, die Nährstoffaufnahme vielfältiger machen und den ökologischen Fußabdruck der Tierhaltung verringern."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
-      "name": "Nachhaltiger Swap-Generator",
+      "name": "Ihre Proteinauswahl erweitern",
       "title": "Ernährungsumstellung – Mittelstufe",
-      "description": "Notieren Sie sich vier Maßnahmen zum Austausch von Proteinquellen. Bohnen, Linsen, Erbsen und Kichererbsen gehören zu den nachhaltigsten Proteinquellen, die es gibt."
+      "description": "Gewinnen Sie Sicherheit im Umgang mit einer größeren Vielfalt proteinreicher Lebensmittel und erfahren Sie, wie sich verschiedene Proteinquellen auf Gesundheit und Nachhaltigkeit auswirken. Eine abwechslungsreichere Proteinzufuhr unterstützt eine bedarfsgerechte Nährstoffversorgung und verringert die Abhängigkeit von Lebensmitteln mit hoher Umweltbelastung."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
-      "name": "Hülsenfrüchte-Routine",
+      "name": "Mehr Vielfalt auf dem Teller",
       "title": "Ernährungsumstellung – Mittelstufe",
-      "description": "Bauen Sie Hülsenfrüchte in vier Mahlzeiten ein. Hirse ist eine äußerst widerstandsfähige Kulturpflanze, die unter heißen, trockenen Bedingungen mit wenig Wasser wachsen kann."
+      "description": "Probieren Sie alternative Getreidesorten und Grundnahrungsmittel in Ihren alltäglichen Mahlzeiten aus. Eine vielfältigere Ernährung kann die Nährstoffaufnahme verbessern und dazu beitragen, die Abhängigkeit von wenigen weltweit dominierenden Kulturpflanzen zu verringern."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "In der grünen Zone bleiben",
+      "name": "Nachhaltige Proteinwahl meistern",
       "title": "Ernährungsumstellung – Fortgeschrittene",
-      "description": "Beschränken Sie sich auf weniger als vier Fleischmahlzeiten pro Woche. Die Tierhaltung beansprucht weltweit den größten Teil der landwirtschaftlichen Nutzfläche, liefert dabei jedoch nur einen viel geringeren Anteil an Kalorien und Eiweiß."
+      "description": "Entwickeln Sie eine dauerhafte Ernährungsweise, die weniger auf Fleisch setzt. Wenn Sie die weitreichenden Auswirkungen Ihrer Proteinwahl verstehen, können Sie Artenvielfalt, Klimaziele und den Schutz von Ressourcen unterstützen und sich dabei weiterhin ausgewogen und gesund ernähren."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
-      "name": "Mehrheit aus pflanzlichem Eiweiß",
+      "name": "Champion der Proteinvielfalt",
       "title": "Ernährungsumstellung – Fortgeschrittene",
-      "description": "Beziehen Sie den Großteil Ihrer proteinhaltigen Mahlzeiten aus nicht-fleischlichen Proteinquellen. Hülsenfrüchte verbessern auf natürliche Weise die Bodenfruchtbarkeit, indem sie Stickstoff aus der Luft binden und so den Bedarf an Düngemitteln verringern."
+      "description": "Stellen Sie Mahlzeiten zusammen, die Nährwert, Vielfalt und Nachhaltigkeit verbinden. Wenn Sie die Stärken verschiedener Proteinquellen kennen, können Sie sowohl Ihre langfristige Gesundheit als auch widerstandsfähige Ernährungssysteme unterstützen."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
-      "name": "Alternative Grundnahrungsmittel-Gewohnheit",
+      "name": "Den Teller zukunftsfähig machen",
       "title": "Ernährungsumstellung – Fortgeschrittene",
-      "description": "Beziehen Sie alternative Grundnahrungsmittel in mindestens fünf Mahlzeiten ein. Quinoa wird mittlerweile in mehr als 70 Ländern angebaut und trägt so zur Diversifizierung der weltweiten Nahrungsmittelproduktion bei."
+      "description": "Erfahren Sie, wie alternative Grundnahrungsmittel zu Ernährungssicherheit, Klimaresilienz und landwirtschaftlicher Vielfalt beitragen. Indem Sie Ihre Ernährung vielfältiger gestalten, unterstützen Sie sowohl Ihre eigene Gesundheit als auch nachhaltigere Ernährungssysteme."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
-      "name": "Herkunfts-Tracker",
+      "name": "Die Fläche hinter Ihrem Essen",
       "title": "Produktauswahl – Anfänger",
-      "description": "Ermitteln Sie das Herkunftsland von mindestens fünf Lebensmitteln, die Sie im Laufe der Woche verzehrt haben. Etwa die Hälfte der weltweit bewohnbaren Landfläche wird landwirtschaftlich genutzt."
+      "description": "Entdecken Sie, wie unterschiedlich viel Fläche für die Erzeugung verschiedener Lebensmittel benötigt wird. Ein Verständnis des Flächenverbrauchs zeigt, wie Ernährungsentscheidungen Wälder, Ökosysteme und die Artenvielfalt beeinflussen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Wasser hinter dem Essen",
+      "name": "Jeder Tropfen zählt",
       "title": "Produktauswahl – Anfänger",
-      "description": "Rund 70 % der weltweiten Süßwasserentnahmen werden für die Landwirtschaft genutzt."
+      "description": "Entdecken Sie, wie viel Wasser in den Lebensmitteln steckt, die Sie essen. Ein Verständnis des Wasserfußabdrucks verbindet alltägliche Mahlzeiten mit einer der wichtigsten Ressourcen unseres Planeten."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Klimakosten der Mahlzeiten",
+      "name": "Die Energie hinter Ihrem Essen",
       "title": "Produktauswahl – Anfänger",
-      "description": "Die Ernährungssysteme verursachen etwa ein Drittel der weltweiten Treibhausgasemissionen."
+      "description": "Erfahren Sie, wie Energie bei der Erzeugung, Verarbeitung und beim Transport von Lebensmitteln eingesetzt wird. Ein Verständnis dieser versteckten Energiekosten zeigt, warum Ernährungsentscheidungen für die Nachhaltigkeit wichtig sind."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Transportwege erklärt",
+      "name": "Klimafreundlich essen",
       "title": "Produktauswahl – Anfänger",
-      "description": "Der weltweite Transport von Lebensmitteln verursacht jährlich etwa 3 Milliarden Tonnen CO₂-Äquivalent-Emissionen."
+      "description": "Entdecken Sie, wie Ernährungsentscheidungen zu Treibhausgasemissionen beitragen. Ein Verständnis des CO₂-Fußabdrucks hilft, einfache Maßnahmen zu erkennen, die sowohl dem Planeten als auch der menschlichen Gesundheit zugutekommen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
-      "name": "Produktauswahl – Anfänger",
+      "name": "Dem Weg der Lebensmittel folgen",
       "title": "Produktauswahl – Anfänger",
-      "description": "Treffen Sie im Alltag praktische Entscheidungen für eine nachhaltige Ernährung."
+      "description": "Entdecken Sie, wie Lebensmittel vom Acker auf den Teller gelangen und warum der Transport für die Nachhaltigkeit wichtig ist. Ein Blick auf die Transportwege zeigt einen Teil der Umweltgeschichte hinter unseren Lebensmitteln."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
-      "name": "Vielfältige Ursprünge",
+      "name": "Flächensparende Lebensmittel wählen",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Verfolgen Sie die Herkunft der von Ihnen verzehrten Lebensmittel nach und notieren Sie mindestens drei Mahlzeiten mit lokal erzeugten Produkten, wobei Sie bedenken sollten, dass Rindfleisch zu den Lebensmitteln gehört, deren Produktion am meisten Land beansprucht."
+      "description": "Lernen Sie, Lebensmittel nach ihrem Bedarf an landwirtschaftlicher Fläche zu vergleichen. Die Wahl flächensparender Lebensmittel kann den Druck auf natürliche Lebensräume verringern und zugleich eine gesunde, abwechslungsreiche Ernährung unterstützen."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Verschwendetes Essen, verschwendetes Wasser",
+      "name": "Wasserbewusst essen",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Durch Lebensmittelverschwendung gehen zudem enorme Mengen an Wasser verloren, das für den Anbau von Lebensmitteln verwendet wurde."
+      "description": "Erfahren Sie, wie die Wahl der Lebensmittel und Lebensmittelverschwendung den Süßwasserverbrauch beeinflussen. Wassersparen unterstützt die langfristige Ernährungssicherheit und verringert die Belastung der Umwelt."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "CO₂-Fußabdruck von Fleisch",
+      "name": "Energie sparen vom Acker bis zum Teller",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Fleisch, insbesondere Rind- und Lammfleisch, hat einen deutlich höheren CO₂-Fußabdruck als die meisten pflanzlichen Lebensmittel."
+      "description": "Entdecken Sie, wie Sie den Energie-Fußabdruck Ihrer Mahlzeiten durch die Wahl Ihrer Lebensmittel und weniger Verschwendung senken können. Ein geringerer Energiebedarf bedeutet oft auch geringere Umweltauswirkungen."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Transportemissionen erkunden",
+      "name": "Den CO₂-Fußabdruck Ihres Essens senken",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Fast ein Fünftel der Treibhausgasemissionen des globalen Ernährungssystems entsteht durch den Transport von Lebensmitteln."
+      "description": "Lernen Sie praktische Strategien kennen, um mit alltäglichen Ernährungsentscheidungen Emissionen zu verringern. Viele klimafreundliche Entscheidungen fördern zugleich gesündere Essgewohnheiten."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
-      "name": "Produktauswahl – Mittelstufe",
+      "name": "Über Transportwege hinausblicken",
       "title": "Produktauswahl – Mittelstufe",
-      "description": "Treffen Sie im Alltag praktische Entscheidungen für eine nachhaltige Ernährung."
+      "description": "Entdecken Sie, wie Transport, Kühlung, Saisonalität und Produktionsmethoden zusammenwirken. Die Entfernung allein entscheidet nicht über die Nachhaltigkeit – informierte Verbraucher haben das Gesamtbild im Blick."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
-      "name": "Über das Herkunftsland hinaus",
+      "name": "Mit dem Essen die Natur schützen",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Berücksichtigen Sie bei der Auswahl von Produkten für mindestens drei Mahlzeiten sowohl das Herkunftsland als auch einen weiteren Nachhaltigkeitsindikator (z. B. Zertifizierung, Produktionsmethode, Saisonalität). Der Großteil der landwirtschaftlichen Flächen wird als Weideland für Vieh oder zum Anbau von Futtermitteln genutzt."
+      "description": "Verstehen Sie, wie Ernährungssysteme um Flächen konkurrieren und wie Ernährungsentscheidungen den Schutz der Artenvielfalt beeinflussen. Ihre Entscheidungen können dazu beitragen, Ökosysteme zu schützen und zugleich eine nachhaltige Lebensmittelproduktion zu unterstützen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Wasserfußabdruck im Detail",
+      "name": "Unsere Wasserressourcen schützen",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Der Wasserfußabdruck Ihrer Ernährung hängt stark davon ab, was Sie essen."
+      "description": "Vertiefen Sie Ihr Verständnis von Wasserknappheit und nachhaltigem Konsum. Eine kluge Wahl der Lebensmittel kann Süßwasserökosysteme schützen und zugleich eine gesunde Ernährung unterstützen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Emissionen über den Teller hinaus",
+      "name": "Ein nachhaltiges Ernährungssystem antreiben",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Lebensmittelverschwendung verursacht jährlich Milliarden Tonnen CO₂-Äquivalent-Emissionen."
+      "description": "Verstehen Sie, wie Ernährungssysteme Energie nutzen und wie Konsummuster den Ressourcenbedarf beeinflussen. Ein bewussterer Konsum kommt sowohl der Umwelt als auch der künftigen Ernährungssicherheit zugute."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Kühlkette und Transport",
+      "name": "Champion für CO₂-arme Ernährung",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Obwohl auf Lebensmittel nur etwa 18 % der weltweiten Frachttransportstrecken entfallen, verursachen sie rund 27 % der frachtbedingten Emissionen."
+      "description": "Vertiefen Sie Ihr Verständnis der Klimaauswirkungen im gesamten Ernährungssystem. Ihre Entscheidungen können zu einem gesünderen Lebensstil beitragen und zugleich Klimaschutzziele unterstützen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
-      "name": "Produktauswahl – Fortgeschrittene",
+      "name": "Über die Entfernung hinausdenken",
       "title": "Produktauswahl – Fortgeschrittene",
-      "description": "Treffen Sie im Alltag praktische Entscheidungen für eine nachhaltige Ernährung."
+      "description": "Erfahren Sie, wie globale Lieferketten die Umweltauswirkungen beeinflussen. Wenn Sie Transportsysteme verstehen, können Sie klügere Entscheidungen treffen, die Nachhaltigkeit und Lebensmittelqualität fördern."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
-      "name": "NOVA Explorer",
+      "name": "Lebensmittelverarbeitung entschlüsseln",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Suchen Sie nach der NOVA-Klassifizierung von mindestens drei Lebensmitteln. Die Lebensmittelverarbeitung kann die Lebensmittelsicherheit verbessern und die Haltbarkeit verlängern."
+      "description": "Erfahren Sie, wie Lebensmittel verändert werden, bevor sie auf Ihrem Teller landen. Die Lebensmittelverarbeitung beeinflusst Nährwert, Bequemlichkeit, Haltbarkeit und Nachhaltigkeit."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Regional genauer betrachtet",
+      "name": "Wissen, woher es kommt",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Kurze Lieferketten können die lokale Wirtschaft und die Widerstandsfähigkeit stärken."
+      "description": "Achten Sie zunehmend darauf, wo Lebensmittel erzeugt werden. Angaben zum Herkunftsland können Verbrauchern helfen, Ernährungssysteme und Lieferketten besser zu verstehen."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
-      "name": "Beobachter der Produktionsmethode",
+      "name": "Landwirtschaft hinter dem Etikett",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Suchen Sie nach Informationen darüber, wie mindestens fünf Lebensmittel hergestellt wurden, sofern diese Informationen verfügbar sind. Biobetriebe tragen zu einer größeren Artenvielfalt bei als konventionelle Betriebe."
+      "description": "Entdecken Sie, wie Lebensmittel angebaut und erzeugt werden. Landwirtschaftliche Praktiken beeinflussen Artenvielfalt, Bodengesundheit, Wasserressourcen und Lebensmittelqualität."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
-      "name": "Ein Lebensmittel, viele Schritte",
+      "name": "Lebensmittelinnovation für die Zukunft",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Wählen Sie ein Lebensmittel aus und gehen Sie der Frage nach, was zwischen den Rohzutaten und dem von Ihnen gekauften Endprodukt alles passiert sein könnte. Eine Diversifizierung der Kulturpflanzen und Tierrassen kann die Widerstandsfähigkeit des Ernährungssystems stärken."
+      "description": "Entdecken Sie, wie Züchtung und Innovation Ernährungssystemen helfen, sich an künftige Herausforderungen anzupassen. Neue Technologien können zu Nachhaltigkeit und Ernährungssicherheit beitragen."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Fairer Handel: Grundlagen",
+      "name": "Die Menschen hinter Ihrem Essen",
       "title": "Produktionsmethoden – Anfänger",
-      "description": "Die meisten Fälle von Kinderarbeit weltweit sind in der Landwirtschaft zu verzeichnen."
+      "description": "Entdecken Sie die menschliche Seite der Lebensmittelproduktion. Nachhaltige Ernährungssysteme hängen nicht nur vom Umweltschutz ab, sondern auch von einem fairen Umgang mit Arbeitskräften und Erzeugern."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
-      "name": "Verarbeitungsstufen vergleichen",
+      "name": "Vor- und Nachteile der Verarbeitung verstehen",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Vergleiche Lebensmittel mit unterschiedlichen NOVA-Einstufungen anhand von mindestens drei Produkten derselben Lebensmittelkategorie (z. B. drei Käsesorten). Die verschiedenen Verarbeitungsverfahren verbrauchen sehr unterschiedliche Mengen an Energie."
+      "description": "Entdecken Sie die Vor- und Nachteile unterschiedlicher Verarbeitungsgrade. Wer diese Zielkonflikte erkennt, kann gesündere und nachhaltigere Entscheidungen treffen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Was Herkunftsangaben verraten",
+      "name": "Mehr als nur Transportwege",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Die Herkunft von Lebensmitteln kann nützliche Informationen zur Rückverfolgbarkeit und Nachhaltigkeit liefern."
+      "description": "Erfahren Sie, warum die Herkunft von Lebensmitteln nur ein Teil der Nachhaltigkeit ist. Produktionsmethoden, Saisonalität und Transport beeinflussen gemeinsam die Umweltbilanz."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
-      "name": "Produktionsorientierte Entscheidung",
+      "name": "Bessere Landwirtschaft wählen",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Nutzen Sie die NOVA-Klassifizierung, den Green-Score oder Angaben zur Zutatenliste, um mindestens fünf Kaufentscheidungen zu treffen. Nutzen Sie Verpackungen, Open Food Facts oder Apps zum Scannen von Lebensmitteln. Blumenstreifen und Lebensräume für Bestäuber können die Artenvielfalt auf landwirtschaftlichen Betrieben fördern."
+      "description": "Erfahren Sie, wie Produktionsmethoden Nachhaltigkeit und Gesundheit beeinflussen. Ein Verständnis landwirtschaftlicher Systeme hilft, fundiertere Kaufentscheidungen zu treffen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Züchtung für weniger Wirkung",
+      "name": "Innovation auf dem Teller",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Die Züchtung von Tieren mit geringeren Methanemissionen kann die Auswirkungen der Tierhaltung verringern."
+      "description": "Erfahren Sie, wie Züchtung, verbesserte Genetik und alternative Proteine die Lebensmittelproduktion beeinflussen. Diese Innovationen sollen Lebensmittel effizienter und nachhaltiger erzeugen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Die soziale Seite des Essens",
+      "name": "Sozial bewusst einkaufen",
       "title": "Produktionsverfahren – Mittelstufe",
-      "description": "Zur Nachhaltigkeit des Ernährungssystems gehören auch soziale und arbeitsrechtliche Bedingungen."
+      "description": "Erfahren Sie, wie Labels, Zertifizierungen und Beschaffungspraktiken mit Arbeitsbedingungen und Lebensgrundlagen zusammenhängen. Kaufentscheidungen von Verbrauchern können die soziale Nachhaltigkeit beeinflussen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
-      "name": "Tracker für mehrere Indikatoren",
+      "name": "Zwischen den Etiketten lesen",
       "title": "Produktionsmethoden – Mittelstufe",
-      "description": "Vergleichen Sie für vier gekaufte Lebensmittel die NOVA-Klassifizierung entweder mit dem Green-Score oder dem Nutri-Score."
+      "description": "Lebensmitteletiketten können wertvolle Informationen über Nährwerte, Verarbeitung und Nachhaltigkeit liefern, doch kein einzelnes Label erzählt die ganze Geschichte. In dieser Quest lernen Sie, verschiedene Indikatoren wie NOVA-Einstufungen, Nutri-Score, Green-Score und Zutatenlisten zu vergleichen, um fundiertere Ernährungsentscheidungen zu treffen. Wenn Sie verstehen, wie Lebensmittel erzeugt und bewertet werden, können Sie Produkte wählen, die sowohl Ihre Gesundheit als auch ein nachhaltigeres Ernährungssystem unterstützen."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.1": {
-      "name": "Entscheidungen unter Berücksichtigung mehrerer Kriterien",
+      "name": "Über Verarbeitungslabels hinausdenken",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Berücksichtigen Sie bei mindestens drei Einkäufen sowohl die NOVA-Klassifizierung als auch den Green-Score, bevor Sie eine Entscheidung treffen. Nicht alle verarbeiteten Lebensmittel haben erhebliche Auswirkungen auf die Umwelt."
+      "description": "Entwickeln Sie ein differenziertes Verständnis der Lebensmittelverarbeitung. Nachhaltigkeit hängt vom gesamten Ernährungssystem ab – nicht nur davon, ob ein Lebensmittel verarbeitet ist oder nicht."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Entfernung ist nicht alles",
+      "name": "Global denken, klug wählen",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Regionale Lebensmittel sind nicht immer die nachhaltigste Wahl."
+      "description": "Verstehen Sie, wie globaler Handel und Ernährungssysteme zusammenhängen. Fundierte Entscheidungen berücksichtigen die Herkunft zusammen mit weiteren Nachhaltigkeitsindikatoren."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Anbaumethoden, die helfen",
+      "name": "Nachhaltige Landwirtschaft unterstützen",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Bei der Agroforstwirtschaft werden Bäume mit Ackerkulturen oder Viehhaltung auf derselben Fläche kombiniert."
+      "description": "Entdecken Sie, wie innovative Anbaumethoden zu widerstandsfähigen und umweltverantwortlichen Ernährungssystemen beitragen und dabei die Lebensmittelproduktion sichern."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Innovation auf dem Hof",
+      "name": "Entdecker der Lebensmittel von morgen",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Die Genom-Editierung könnte dazu beitragen, Nutzpflanzen zu entwickeln, die widerstandsfähiger gegenüber Klimastress sind."
+      "description": "Verstehen Sie, wie Innovationen die Klimaresilienz stärken, den Ressourcenverbrauch senken und die Nachhaltigkeit des Ernährungssystems verbessern können, ohne die Nährstoffqualität zu beeinträchtigen."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Wer unser Essen anbaut",
+      "name": "Faire Ernährungssysteme unterstützen",
       "title": "Produktionsverfahren – Fortgeschrittene",
-      "description": "Frauen spielen eine entscheidende Rolle in der Nahrungsmittelproduktion, haben jedoch oft weniger Zugang zu Ressourcen."
+      "description": "Verstehen Sie, wie globale Lebensmittellieferketten Menschen und Gemeinschaften betreffen. Ethische Ernährungsentscheidungen können zu faireren und inklusiveren Ernährungssystemen beitragen."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
-      "name": "Beobachter für Verpackungsmaterial",
+      "name": "Warum Verpackung wichtig ist",
       "title": "Verpackung – Für Anfänger",
-      "description": "Bestimmen Sie das Verpackungsmaterial von mindestens fünf Lebensmitteln, die Sie im Laufe der Woche verzehrt haben. Lebensmittelverpackungen schützen Produkte vor Verunreinigungen, Feuchtigkeit, Sauerstoff und mechanischen Beschädigungen und tragen so zur Gewährleistung der Lebensmittelsicherheit und -qualität bei."
+      "description": "Entdecken Sie, wie Verpackungen Lebensmittel schützen und ihren Verderb verhindern. Gute Verpackungen können sowohl die Lebensmittelsicherheit als auch die Nachhaltigkeit fördern."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
-      "name": "Spotter für wiederverwendbare Verpackungen",
+      "name": "Einfach wiederverwenden",
       "title": "Verpackung – Für Anfänger",
-      "description": "Finden Sie bei mindestens fünf Gelegenheiten Möglichkeiten für wiederverwendbare oder wiederbefüllbare Lebensmittelverpackungen. Wiederverwendbare Verpackungen sind erst dann umweltfreundlich, wenn sie ausreichend oft wiederverwendet wurden."
+      "description": "Entdecken Sie, wie Mehrwegverpackungssysteme Abfall reduzieren. Schon kleine Schritte der Wiederverwendung können helfen, Ressourcen zu schonen und Umweltauswirkungen zu verringern."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
-      "name": "Entscheidungen auf der Grundlage der Verpackungsangaben",
+      "name": "Verpackung mit Sinn",
       "title": "Verpackung – Mittelstufe",
-      "description": "Berücksichtigen Sie die Eigenschaften der Verpackung bei mindestens drei Kaufentscheidungen. Die Umweltauswirkungen der Lebensmittelproduktion sind oft weitaus größer als die der Verpackungen, die zum Schutz der Lebensmittel verwendet werden."
+      "description": "Erfahren Sie, wie verschiedene Verpackungsmaterialien Lebensmittelverschwendung, Ressourcenverbrauch und Recyclingfähigkeit beeinflussen. Nachhaltige Verpackung bringt Zielkonflikte mit sich, die nicht immer offensichtlich sind."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
-      "name": "Suchfunktion für Wiederverwendungsmöglichkeiten",
+      "name": "Mehrweg statt Müll",
       "title": "Verpackung – Mittelstufe",
-      "description": "Entscheiden Sie sich diese Woche mindestens zweimal für wiederverwendbare oder nachfüllbare Verpackungen. Wiederverwendbare Verpackungen können den Bedarf an neuen Rohstoffen senken."
+      "description": "Erfahren Sie, wie Rückgabe-, Nachfüll- und Mehrwegsysteme in der Praxis funktionieren. Die Beteiligung der Verbraucher spielt eine zentrale Rolle für die Wirksamkeit dieser Systeme."
     },
     "QUEST.PACKAGING.ADVANCED.1": {
-      "name": "Verpackungsentscheidungen unter Berücksichtigung mehrerer Kriterien",
+      "name": "In Lebenszyklen denken",
       "title": "Verpackung – Fortgeschrittene",
-      "description": "Berücksichtigen Sie bei mindestens drei Einkäufen sowohl das Verpackungsmaterial als auch die Entsorgungsmöglichkeiten, bevor Sie eine Entscheidung treffen. Essbare Verpackungen können dazu beitragen, die Abhängigkeit von Kunststoffen auf fossiler Basis zu verringern, indem herkömmliche Verpackungsmaterialien durch biologisch abbaubare Alternativen ersetzt werden."
+      "description": "Betrachten Sie Verpackungen aus der Perspektive ihres gesamten Lebenszyklus. Die nachhaltigste Option hängt oft vom Produkt, seiner Haltbarkeit und der Nutzung der Verpackung ab."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
-      "name": "Gewohnheitsbildner für Wiederverwendung",
+      "name": "Kreislauffähige Verpackungen meistern",
       "title": "Verpackung – Fortgeschrittene",
-      "description": "Verwenden Sie mindestens fünfmal wiederverwendbare oder nachfüllbare Verpackungssysteme. Halten Sie Ausschau nach Produkten, die im Rahmen von Pfand- oder Nachfüllsystemen verkauft werden. Jede wiederverwendbare Verpackung hat einen Schwellenwert, ab dem sie vorteilhafter ist als Einwegalternativen."
+      "description": "Entdecken Sie, wie Mehrwegverpackungen zu den Zielen der Kreislaufwirtschaft beitragen. Ein Verständnis von Mehrwegsystemen hilft, nachhaltigere Konsumgewohnheiten zu fördern."
     },
     "QUEST.FOOD_WASTE.BEGINNER.1": {
-      "name": "Einstieg in „Smart Serving“",
+      "name": "Jeder Teller zählt",
       "title": "Lebensmittelverschwendung – Für Anfänger",
-      "description": "Protokoll 5: „Half Plate Saved“-Maßnahmen. Haushalte verursachen mehr Lebensmittelabfälle als jeder andere Sektor in der Europäischen Union."
+      "description": "Erfahren Sie, wie Portionsgrößen und Gewohnheiten beim Servieren die Lebensmittelverschwendung beeinflussen. Weniger Tellerreste sparen Lebensmittel, Geld und Umweltressourcen."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
-      "name": "Intelligenter lagern",
+      "name": "Für morgen aufheben",
       "title": "Lebensmittelverschwendung – Einsteiger",
-      "description": "Lesen Sie unbedingt sorgfältig die Verpackungshinweise zur Lagerung von Lebensmitteln nach dem Öffnen der Verpackung für mindestens fünf gekaufte Produkte durch. Mehr als die Hälfte der in der EU anfallenden Lebensmittelabfälle entfällt auf private Haushalte."
+      "description": "Lernen Sie die Grundlagen der sicheren Aufbewahrung und Verwertung von Resten. Ein guter Umgang mit Lebensmitteln hilft, Verschwendung zu vermeiden, und erhält ihre Qualität."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
-      "name": "Datums-Label-Explorer",
+      "name": "Die Haltbarkeitsfalle umgehen",
       "title": "Lebensmittelverschwendung – Einsteiger",
-      "description": "Aktion „1 abgelaufenes Produkt verbraucht“ protokollieren. Mehr als die Hälfte aller Lebensmittelabfälle in Europa fällt in den Haushalten an."
+      "description": "Lernen Sie den Unterschied zwischen Lebensmittelqualität und Lebensmittelsicherheit kennen. Wenn Sie die Angaben auf dem Etikett verstehen, können Sie unnötige Verschwendung vermeiden, ohne Ihre Gesundheit zu gefährden."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
-      "name": "Test zur Portionsvorhersage",
+      "name": "Kaufen, was Sie brauchen",
       "title": "Lebensmittelverschwendung – Einsteiger",
-      "description": "Schätzen Sie vor einer Mahlzeit ab, wie viel Sie voraussichtlich essen werden. Vergleichen Sie nach der Mahlzeit Ihre Schätzung mit der tatsächlich verzehrten Menge. Die Portionsgrößen haben in vielen Ländern in den letzten Jahrzehnten erheblich zugenommen."
+      "description": "Erfahren Sie, wie Kaufgewohnheiten die Lebensmittelverschwendung und die Haushaltsausgaben beeinflussen. Unnötige Käufe zu vermeiden hilft, Abfall und Ressourcenverbrauch zu verringern."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
+      "name": "Klüger portionieren",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Überprüfen Sie vor dem großen Einkauf den Kühlschrank oder die Vorratskammer. Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Das Anbieten kleinerer Portionen kann die Essensreste in Kantinen und Restaurants verringern."
+      "description": "Entwickeln Sie Gewohnheiten, mit denen Sie Portionen besser an Ihren Appetit anpassen. Unnötige Reste zu vermeiden kommt sowohl dem eigenen Wohlbefinden als auch der Nachhaltigkeit zugute."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
-      "name": "Gewohnheit der Essensplanung",
+      "name": "Reste sinnvoll nutzen",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Erstellen Sie vor einem größeren Einkauf einen Speiseplan und beachten Sie dabei, dass sich das Mindesthaltbarkeitsdatum auf die Qualität bezieht."
+      "description": "Entwickeln Sie praktische Gewohnheiten, um Reste für künftige Mahlzeiten zu verwerten. Weniger weggeworfene Reste sparen Geld und schonen die Ressourcen, die für die Lebensmittelproduktion eingesetzt wurden."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Aufgabe 3: Routinemäßige Überprüfung des Kühlschranks",
+      "name": "Planen, bevor es abläuft",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Überprüfen Sie vor dem großen Einkauf Ihren Kühlschrank oder Ihre Vorratskammer. Erfassen Sie mindestens 3 Aktionen „Verbrauchte abgelaufene Produkte“ oder 3 Aktionen „Volles Teller gerettet“. Die Lebensmittelabfälle der privaten Haushalte in Europa werden auf etwa 69 Millionen Tonnen pro Jahr geschätzt."
+      "description": "Entwickeln Sie Lager- und Planungsgewohnheiten, die helfen, Lebensmittel zu verbrauchen, bevor sie zu Abfall werden. Bessere Planung schont sowohl das Budget als auch die Umwelt."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
-      "name": "Portion Control Pro",
+      "name": "Planen vor dem Einkauf",
       "title": "Lebensmittelverschwendung – Mittelstufe",
-      "description": "Erfassen Sie mindestens die „Half Plate Saved“-Maßnahmen. Die Auswirkungen einer Ernährung auf die Umwelt hängen nicht nur davon ab, was Menschen essen, sondern auch davon, wie viel sie essen."
+      "description": "Entdecken Sie, wie Sonderangebote, Portionsgrößen und Einkaufsentscheidungen die Lebensmittelverschwendung beeinflussen. Bessere Planung kommt sowohl der eigenen Gesundheit als auch der Nachhaltigkeit zugute."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
-      "name": "Fokus auf „Zero Plate Waste“",
+      "name": "Weniger Abfall, mehr Wirkung",
       "title": "Lebensmittelverschwendung – Fortgeschrittene",
-      "description": "Halten Sie mindestens 7 „Half Plate Saved“-Aktionen fest und denken Sie dabei daran, dass verschwendetes Fleisch überproportional zur Klimabelastung durch Lebensmittelverschwendung beiträgt."
+      "description": "Verstehen Sie die weitreichenden Umweltfolgen von Tellerresten und lernen Sie fortgeschrittene Strategien kennen, um Abfall in alltäglichen Situationen zu minimieren."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
-      "name": "Experte für die Vermeidung von Verfallsdaten",
+      "name": "Die Zero-Waste-Küche meistern",
       "title": "Lebensmittelverschwendung – Fortgeschrittene",
-      "description": "Erfassen Sie 4 Aktionen zum Verbrauch abgelaufener Produkte. Fleisch und Milchprodukte werden zwar seltener weggeworfen, verursachen aber einen größeren ökologischen Fußabdruck, wenn sie weggeworfen werden."
+      "description": "Entwickeln Sie fortgeschrittene Routinen für Lagerung, Planung und Wiederverwertung. Ein effizienter Umgang mit Lebensmitteln kommt dem Haushaltsbudget, der Ernährung und der Nachhaltigkeit zugute."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
-      "name": "Experte für „First-In, First-Out“",
+      "name": "Der Lebensmittelverschwendung zuvorkommen",
       "title": "Lebensmittelverschwendung – Fortgeschrittene",
-      "description": "Räumen Sie im Laufe der Woche Ihren Kühlschrank, Ihre Gefriertruhe oder Ihre Vorratskammer so auf, dass Lebensmittel mit der kürzesten Resthaltbarkeit immer ganz vorne stehen und zuerst verbraucht werden. Mehrfachkaufangebote und Mengenrabatte können Verbraucher dazu verleiten, mehr Lebensmittel zu kaufen, als sie verbrauchen können."
+      "description": "Meistern Sie Techniken, die verhindern, dass Lebensmittel unnötig ablaufen. Kluge Planung trägt zu nachhaltigeren Konsummustern bei."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
-      "name": "Woche der Zero-Waste-Planung",
+      "name": "Bewusst konsumieren",
       "title": "Lebensmittelverschwendung – Fortgeschrittene",
-      "description": "Planen Sie alle Hauptmahlzeiten der Woche vor Ihrem ersten Einkauf ein und kaufen Sie nur Lebensmittel, für die Sie bereits eine Verwendung geplant haben. Wenn man mehr isst, als der Körper benötigt, steigt der Bedarf an landwirtschaftlichen Ressourcen wie Land, Wasser und Energie."
+      "description": "Verstehen Sie den Zusammenhang zwischen Überkonsum, Verschwendung und Umweltauswirkungen. Ein bewusster Konsum unterstützt einen gesünderen und nachhaltigeren Lebensstil."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
-      "name": "Jeden Tag Eiweiß",
+      "name": "Klüger mit Protein",
       "title": "Nährwerte – Anfänger",
-      "description": "Nehmen Sie täglich zu mindestens einer Mahlzeit ein proteinreiches Lebensmittel zu sich. Protein trägt zum Aufbau und zur Regeneration von Muskeln, Gewebe, Enzymen und Hormonen bei."
+      "description": "Erfahren Sie, warum Protein wichtig ist, und entdecken Sie verschiedene proteinreiche Lebensmittel. Eine vielfältige Proteinauswahl kann sowohl die Gesundheit als auch die Nachhaltigkeit fördern."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
-      "name": "Clevere Snack-Alternative",
+      "name": "Bessere Fette, bessere Wahl",
       "title": "Nährwerte – Anfänger",
-      "description": "Tagebuch 5: Zwischenmahlzeit → Ersetzen durch Obst oder Nüsse. Ungesättigte Fette sind im Allgemeinen gesünder als gesättigte Fette."
+      "description": "Lernen Sie den Unterschied zwischen gesünderen und weniger gesunden Fetten kennen. Die Fettqualität kann die langfristige Gesundheit beeinflussen."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
-      "name": "Getränke-Upgrade",
+      "name": "Versteckten Zucker aufspüren",
       "title": "Nährwerte – Anfänger",
-      "description": "Protokoll 3: Ersatz von zuckerhaltigen Getränken durch Wasser. Zuckerhaltige Getränke sind in vielen Ernährungsweisen eine wichtige Quelle für zugesetzten Zucker."
+      "description": "Entdecken Sie, wo Zucker in Lebensmitteln und Getränken häufig vorkommt. Weniger freier Zucker kann die Ernährungsqualität insgesamt verbessern."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.4": {
-      "name": "Salz-Spürhund",
+      "name": "Die Salzgewohnheit ablegen",
       "title": "Nährwerte – Anfänger",
-      "description": "Wählen Sie ein verpacktes Lebensmittel aus und ermitteln Sie, wie viel Salz es pro 100 Gramm enthält. Die meisten Menschen nehmen mehr als das Doppelte der empfohlenen Salzaufnahme zu sich."
+      "description": "Erfahren Sie, woher das Salz in der Ernährung stammt und warum eine zu hohe Aufnahme problematisch ist. Kleine Veränderungen können die langfristige Herz-Kreislauf-Gesundheit unterstützen."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
-      "name": "Vollkornwoche",
+      "name": "Gutes für den Darm",
       "title": "Nährwerte – Anfänger",
-      "description": "Wählen Sie jeden Tag ein Vollkornprodukt. Entscheiden Sie sich für Lebensmittel wie Vollkornbrot, Vollkornnudeln, Haferflocken, braunen Reis, Roggenbrot, Quinoa oder andere Vollkornprodukte. Die meisten Europäer nehmen weniger Ballaststoffe zu sich, als empfohlen wird."
+      "description": "Entdecken Sie die Rolle von Ballaststoffen und die Lebensmittel, die sie enthalten. Ballaststoffe unterstützen die Verdauungsgesundheit und das allgemeine Wohlbefinden."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
-      "name": "Füge noch eine Obst- oder Gemüsesorte hinzu",
+      "name": "Nährstoffe, die zählen",
       "title": "Nährwerte – Anfänger",
-      "description": "Nehmen Sie täglich eine zusätzliche Portion Obst oder Gemüse in Ihren Speiseplan auf. Ein Vitamin-D-Mangel ist in ganz Europa weit verbreitet."
+      "description": "Erfahren Sie, warum Vitamine für die Gesundheit unverzichtbar sind und in welchen alltäglichen Lebensmitteln sie stecken. Eine abwechslungsreiche Ernährung trägt zu einer besseren Nährstoffversorgung bei."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Kalorien sind nicht alles",
+      "name": "Energie mit Bedacht",
       "title": "Nährwerte – Anfänger",
-      "description": "Weltweit werden bereits genügend Kalorien produziert, um alle Menschen zu ernähren."
+      "description": "Erfahren Sie, was Kalorien sind und warum sie wichtig sind. Ein Verständnis der Energiezufuhr hilft, gesündere Ernährungsentscheidungen zu treffen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
-      "name": "Ersatz für verarbeitetes Fleisch",
+      "name": "Bessere Proteingewohnheiten aufbauen",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Protokollieren Sie 2 Ersetzungen von Fleischprodukten durch Hülsenfrüchte. Die meisten Erwachsenen benötigen täglich etwa 0,83 g Eiweiß pro Kilogramm Körpergewicht."
+      "description": "Entdecken Sie ein breiteres Spektrum an Proteinquellen und erfahren Sie, wie sie zu einer ausgewogenen Ernährung beitragen. Die Wahl der Proteine beeinflusst auch die Umweltauswirkungen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
-      "name": "Mehr gesunde Fette",
+      "name": "Gesunde Fette wählen",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Wählen Sie mindestens fünfmal eine Quelle für ungesättigte Fette anstelle einer Quelle für gesättigte Fette. Die Art des Fetts, das man zu sich nimmt, ist genauso wichtig wie die Menge."
+      "description": "Entdecken Sie praktische Wege, die Fettqualität durch die Wahl Ihrer Lebensmittel zu verbessern. Viele gesündere Fettquellen gehen zugleich mit nachhaltigeren Ernährungsweisen einher."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
-      "name": "Getränkevergleich",
+      "name": "Süßes neu denken",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Vergleichen Sie zwei süße Getränke, die Sie gerne trinken, und ermitteln Sie, welches davon pro 100 ml weniger Zucker enthält. Die WHO empfiehlt, den Anteil an freiem Zucker auf weniger als 10 % der täglichen Energiezufuhr zu begrenzen."
+      "description": "Lernen Sie, unnötige Zuckerzufuhr zu erkennen und zu verringern. Gesündere Entscheidungen fördern das langfristige Wohlbefinden und bessere Essgewohnheiten."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
-      "name": "Salzfreier Tisch",
+      "name": "Verstecktes Natrium finden",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Fügen Sie den Speisen die ganze Woche über am Tisch kein Salz hinzu. Die WHO empfiehlt, weniger als 5 Gramm Salz pro Tag zu sich zu nehmen."
+      "description": "Entdecken Sie häufige Natriumquellen und praktische Möglichkeiten, sie zu ersetzen. Weniger Natrium unterstützt gesündere Essgewohnheiten."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
-      "name": "Ballaststoffe zu jeder Mahlzeit",
+      "name": "Der ballaststoffreiche Teller",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Nehmen Sie zu jeder Hauptmahlzeit mindestens ein ballaststoffreiches Lebensmittel zu sich. Erwachsene sollten täglich mindestens 25 Gramm Ballaststoffe zu sich nehmen."
+      "description": "Lernen Sie praktische Wege kennen, mit alltäglichen Lebensmitteln mehr Ballaststoffe aufzunehmen. Mehr Ballaststoffe bedeuten oft eine stärker pflanzenbasierte und nachhaltigere Ernährungsweise."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Vitamine vom Teller",
+      "name": "Nährstoffvielfalt auf dem Teller",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Eine abwechslungsreiche Ernährung trägt dazu bei, das Risiko von Vitaminmangel zu verringern."
+      "description": "Entdecken Sie, wie verschiedene Lebensmittel unterschiedliche Vitamine und Mineralstoffe liefern. Eine vielfältigere Ernährung unterstützt sowohl die Gesundheit als auch nachhaltige Ernährungsentscheidungen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Gleiche Kalorien, andere Wirkung",
+      "name": "Kalorien im Kontext",
       "title": "Nährwerte – Mittelstufe",
-      "description": "Lebensmittel mit dem gleichen Kaloriengehalt können sehr unterschiedliche Auswirkungen auf die Umwelt haben."
+      "description": "Entdecken Sie, warum Kalorien nur einen Teil der Ernährungsgeschichte erzählen. Lebensmittelqualität und Nährstoffdichte sind ebenso wichtig."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Vollständige pflanzliche Proteine",
+      "name": "Champion der Proteinvielfalt",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Der Verzehr verschiedener pflanzlicher Proteine kann alle essentiellen Aminosäuren liefern."
+      "description": "Entwickeln Sie eine Proteinstrategie, die Nährwertqualität und Nachhaltigkeit in Einklang bringt. Ein Verständnis von Proteinsystemen hilft, sowohl die Gesundheit des Planeten als auch die eigene Gesundheit zu fördern."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Nahrungsfette verstehen",
+      "name": "Fettqualität meistern",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Fett sollte nicht mehr als etwa 30 % der täglichen Gesamtenergiezufuhr ausmachen."
+      "description": "Verstehen Sie die Rolle verschiedener Fette für die Gesundheit und für Ernährungssysteme. Fundierte Entscheidungen unterstützen die Herz-Kreislauf-Gesundheit und eine nachhaltige Ernährung."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
-      "name": "Woche zur Sensibilisierung für zugesetzten Zucker",
+      "name": "Zucker unter Kontrolle",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Vermeiden Sie die ganze Woche über Speisen und Getränke, bei denen zugesetzter Zucker zu den ersten drei Zutaten gehört. Wenn man zu Hause kocht, lässt sich der Zuckerzusatz leichter kontrollieren."
+      "description": "Entwickeln Sie die Fähigkeit, sich bei Lebensmitteletiketten und versteckten Zuckerquellen zurechtzufinden. Ein besseres Verständnis von Zucker unterstützt einen gesünderen und bewussteren Konsum."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
-      "name": "Natrium-Hotspot",
+      "name": "Natrium bewusst im Blick",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Ermitteln Sie, welches Lebensmittel in Ihrer Küche den höchsten Salzgehalt pro 100 Gramm aufweist. Brot, Fleischwaren und Käse sind in Europa wichtige Natriumquellen."
+      "description": "Lernen Sie, den Natriumgehalt zu bewerten und fundierte Ernährungsentscheidungen zu treffen. Ein stärkeres Bewusstsein fördert sowohl die Gesundheit als auch einen klugen Konsum."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.5": {
-      "name": "Woche des ballaststoffreichen Frühstücks",
+      "name": "Darmgesundheit optimieren",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Beginnen Sie jeden Tag mit einem Frühstück, das reichlich Ballaststoffe enthält. Stellen Sie Ihr Frühstück vor allem aus Haferflocken, Vollkornprodukten, Obst, Samen, Nüssen oder anderen ballaststoffreichen Lebensmitteln zusammen. Eine höhere Ballaststoffzufuhr steht in Zusammenhang mit einem geringeren Risiko für Herzerkrankungen und Typ-2-Diabetes."
+      "description": "Verstehen Sie, wie verschiedene Ballaststoffquellen zur langfristigen Gesundheit beitragen. Die konsequente Wahl ballaststoffreicher Lebensmittel kommt sowohl der eigenen Gesundheit als auch einer nachhaltigen Ernährung zugute."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
-      "name": "Regenbogenwoche",
+      "name": "Nährstoff-Resilienz aufbauen",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Nehmen Sie täglich Lebensmittel aus mindestens fünf verschiedenen Obst- und Gemüsesorten in unterschiedlichen Farben zu sich. Vitamin B12 kommt hauptsächlich in tierischen Lebensmitteln vor."
+      "description": "Entwickeln Sie eine Ernährung mit vielfältigen Nährstoffquellen. Ein Verständnis von Mikronährstoffen hilft, Mängeln vorzubeugen, und fördert zugleich eine ausgewogene und nachhaltige Ernährungsweise."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
-      "name": "Woche der nährstoffreichen Mahlzeiten",
+      "name": "Mehr als Kalorien",
       "title": "Nährwerte – Fortgeschrittene",
-      "description": "Achten Sie darauf, dass jede Hauptmahlzeit mindestens drei der folgenden Bestandteile enthält: eine Proteinquelle, ein ballaststoffreiches Lebensmittel, Obst oder Gemüse oder eine Quelle für gesunde Fette. Die Verfütterung von Pflanzen an Nutztiere führt zu erheblichen Kalorienverlusten."
+      "description": "Verstehen Sie, wie Kalorien, Nährstoffdichte, Lebensmittelqualität und Nachhaltigkeit zusammenwirken. Bei einer gesunden Ernährung geht es um Ausgewogenheit, nicht nur um die Energiezufuhr."
     }
   },
   "badges": {

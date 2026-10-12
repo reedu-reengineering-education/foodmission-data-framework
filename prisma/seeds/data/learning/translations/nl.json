@@ -2830,7 +2830,7 @@
     },
     "M.I5.4": {
       "title": "Portion Control Pro",
-      "goal": "Noteer ten minste acties waarbij je een half bord hebt bespaard. Hoe doe je dat? Begin elke maaltijd met een kleinere portie en schep alleen meer op als dat nodig is. Als je op deze manier eten weet te besparen, noteer dan een actie waarbij je een half bord hebt bespaard.",
+      "goal": "Registreer ten minste 3 ‘Half Plate Saved’-acties. Hoe doe je dat? Begin elke maaltijd met een kleinere portie en schep alleen meer op als dat nodig is. Lukt het je om op deze manier eten te besparen, registreer dan een ‘Half Plate Saved’-actie.",
       "whyItMatters": "Te grote porties zijn een veelvoorkomende oorzaak van voedselverspilling. De grootte van de porties is een belangrijke factor bij voedselverspilling."
     },
     "M.I5.5": {
@@ -3318,399 +3318,399 @@
   },
   "quests": {
     "QUEST.DIET_CHANGES.BEGINNER.2": {
-      "name": "Eén vleesmaaltijd minder",
+      "name": "Ken je vleesgewoonten",
       "title": "Veranderingen in het eetpatroon - Beginner",
-      "description": "Eet één vleesmaaltijd minder dan vorige week. Minder rood vlees eten is een van de meest effectieve manieren om de milieu-impact van je eetpatroon te verminderen."
+      "description": "Ontdek hoe vaak vlees in je maaltijden voorkomt en verken de impact ervan op het voedselsysteem. Inzicht in je huidige gewoonten is de eerste stap naar een betere persoonlijke gezondheid en meer duurzaamheid, want minder vlees eten kan de uitstoot van broeikasgassen, het landgebruik en de druk op natuurlijke hulpbronnen verminderen en tegelijk een gezonder eetpatroon ondersteunen."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
-      "name": "Eerste duurzame ruilactie",
+      "name": "Je eerste eiwitruil",
       "title": "Veranderingen in het eetpatroon - Beginners",
-      "description": "Noteer 2 maatregelen om eiwitten te vervangen. Door een deel van je vleesconsumptie te vervangen door peulvruchten kun je de klimaatimpact van je eetpatroon verminderen."
+      "description": "Verken eenvoudige alternatieven voor vlees, zoals peulvruchten, vis, eieren, zuivelproducten, noten en zaden. Meer variatie in eiwitbronnen helpt je voeding te verbeteren en vermindert de druk op land, water en klimaat."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
-      "name": "Ontdek linzen",
+      "name": "Ontdek nieuwe basisvoedingsmiddelen",
       "title": "Veranderingen in het eetpatroon - Beginners",
-      "description": "Bestudeer de informatie en noem twee voordelen van linzen op het gebied van voeding of milieu. Quinoa bevat alle negen essentiële aminozuren en is daarmee een complete plantaardige eiwitbron."
+      "description": "Zet je eerste stap voorbij gangbare basisvoedingsmiddelen zoals tarwe en rijst. Alternatieve basisvoedingsmiddelen ontdekken kan je eetpatroon gevarieerder maken en je kennis laten maken met voedingsmiddelen die bijdragen aan veerkrachtigere landbouwsystemen."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
-      "name": "Twee vleesvrije dagen",
+      "name": "Eet stap voor stap minder vlees",
       "title": "Veranderingen in het voedingspatroon - Gemiddeld niveau",
-      "description": "Houd twee vleesvrije dagen aan. Voor de productie van rundvlees is veel meer land nodig dan voor de productie van plantaardige eiwitten zoals erwten of tofu."
+      "description": "Begin met het vervangen van sommige vleesmaaltijden door alternatieven en experimenteer met flexibele veranderingen in je eetpatroon. Geleidelijk minder vlees eten kan de kwaliteit van je voeding verbeteren, je voedingsstoffen gevarieerder maken en de milieuvoetafdruk van de veehouderij verkleinen."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
-      "name": "Duurzame ruilbouwer",
+      "name": "Verbreed je eiwitkeuzes",
       "title": "Veranderingen in het voedingspatroon - Gemiddeld niveau",
-      "description": "Noteer 4 manieren om eiwitten te vervangen. Bonen, linzen, erwten en kikkererwten behoren tot de meest duurzame eiwitbronnen die er zijn."
+      "description": "Gebruik met steeds meer vertrouwen een grotere variatie aan eiwitrijke voedingsmiddelen en ontdek hoe verschillende eiwitbronnen gezondheid en duurzaamheid beïnvloeden. Een gevarieerdere eiwitinname helpt je voldoende voedingsstoffen binnen te krijgen en maakt je minder afhankelijk van voedingsmiddelen met een grote impact."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
-      "name": "Routine voor peulvruchten",
+      "name": "Breng variatie op je bord",
       "title": "Veranderingen in het voedingspatroon - Gemiddeld niveau",
-      "description": "Neem peulvruchten op in vier maaltijden. Gierstsoorten zijn zeer veerkrachtige gewassen die onder hete, droge omstandigheden met weinig water kunnen groeien."
+      "description": "Experimenteer met alternatieve graansoorten en basisvoedingsmiddelen in je dagelijkse maaltijden. Een gevarieerder eetpatroon kan je inname van voedingsstoffen verbeteren en helpt de afhankelijkheid van een klein aantal wereldwijd dominante gewassen te verminderen."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Blijf in de Groene Zone",
+      "name": "Word meester in duurzame eiwitkeuzes",
       "title": "Veranderingen in het voedingspatroon - Gevorderd",
-      "description": "Beperk het aantal vleesmaaltijden tot minder dan vier per week. De veeteelt neemt wereldwijd het grootste deel van de landbouwgrond in beslag, terwijl deze sector slechts een veel kleiner aandeel van de calorieën en eiwitten levert."
+      "description": "Ontwikkel een blijvend eetpatroon waarin je minder op vlees leunt. Als je de bredere impact van je eiwitkeuzes begrijpt, kun je biodiversiteit, klimaatdoelen en het behoud van hulpbronnen ondersteunen en tegelijk gevarieerd en gezond blijven eten."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
-      "name": "Overwegend plantaardige eiwitten",
+      "name": "Kampioen eiwitvariatie",
       "title": "Veranderingen in het voedingspatroon - Gevorderd",
-      "description": "Haal het grootste deel van je eiwitrijke maaltijden uit niet-vleesachtige eiwitbronnen. Peulvruchten verbeteren op natuurlijke wijze de vruchtbaarheid van de bodem door stikstof uit de lucht te binden, waardoor er minder kunstmest nodig is."
+      "description": "Stel maaltijden samen die voeding, variatie en duurzaamheid combineren. Als je de sterke punten van verschillende eiwitbronnen begrijpt, draag je bij aan je gezondheid op de lange termijn én aan veerkrachtige voedselsystemen."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
-      "name": "Gewoonte om alternatieve basisvoedingsmiddelen te eten",
+      "name": "Maak je bord toekomstbestendig",
       "title": "Veranderingen in het voedingspatroon - Gevorderd",
-      "description": "Neem alternatieve basisvoedingsmiddelen op in ten minste vijf maaltijden. Quinoa wordt inmiddels in meer dan 70 landen verbouwd, wat bijdraagt aan de diversificatie van de wereldwijde voedselproductie."
+      "description": "Ontdek hoe alternatieve basisvoedingsmiddelen bijdragen aan voedselzekerheid, klimaatbestendigheid en diversiteit in de landbouw. Door je voedselkeuzes te verbreden, ondersteun je zowel je eigen gezondheid als duurzamere voedselsystemen."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
-      "name": "Oorsprongstracker",
+      "name": "Het land achter je eten",
       "title": "Productkeuzes - Beginners",
-      "description": "Zoek het land van herkomst op van ten minste vijf voedingsmiddelen die je deze week hebt gegeten. Ongeveer de helft van het bewoonbare land op aarde wordt gebruikt voor landbouw."
+      "description": "Ontdek hoeveel land er nodig is om verschillende voedingsmiddelen te produceren. Inzicht in landgebruik laat zien hoe voedselkeuzes van invloed zijn op bossen, ecosystemen en biodiversiteit."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Het water achter je eten",
+      "name": "Elke druppel telt",
       "title": "Productkeuzes - Beginners",
-      "description": "Ongeveer 70% van de wereldwijde zoetwateronttrekkingen wordt gebruikt voor de landbouw."
+      "description": "Ontdek hoeveel water er schuilgaat achter het eten dat je eet. Inzicht in watervoetafdrukken verbindt je dagelijkse maaltijden met een van de belangrijkste hulpbronnen van onze planeet."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "De klimaatkosten van maaltijden",
+      "name": "De energie achter je eten",
       "title": "Productkeuzes - Beginners",
-      "description": "Voedselsystemen zijn verantwoordelijk voor ongeveer een derde van de wereldwijde uitstoot van broeikasgassen."
+      "description": "Ontdek hoe energie wordt gebruikt om voedsel te produceren, te verwerken en te vervoeren. Inzicht in deze verborgen energiekosten laat zien waarom voedselkeuzes belangrijk zijn voor duurzaamheid."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Voedselkilometers uitgelegd",
+      "name": "Klimaatvriendelijk eten",
       "title": "Productkeuzes - Beginner",
-      "description": "Het wereldwijde voedseltransport veroorzaakt jaarlijks ongeveer 3 miljard ton CO₂-equivalente uitstoot."
+      "description": "Ontdek hoe voedselkeuzes bijdragen aan de uitstoot van broeikasgassen. Inzicht in de CO₂-voetafdruk helpt je eenvoudige acties te vinden die goed zijn voor zowel de planeet als de mens."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
-      "name": "Productkeuzes - Beginners",
+      "name": "Volg de reis van je eten",
       "title": "Productkeuzes - Beginners",
-      "description": "Maak in het dagelijks leven praktische, duurzame keuzes op het gebied van voeding."
+      "description": "Ontdek hoe voedsel van het land naar je bord reist en waarom transport belangrijk is voor duurzaamheid. Inzicht in voedselkilometers laat een deel van het milieuverhaal achter je eten zien."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
-      "name": "Diverse achtergronden",
+      "name": "Kies voor landzuinig voedsel",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Ga na waar de voedingsmiddelen die je eet vandaan komen en noteer ten minste drie maaltijden met lokaal geproduceerde producten. Rundvlees is een van de voedingsmiddelen die de meeste landbouwgrond in beslag nemen."
+      "description": "Leer voedingsmiddelen te vergelijken op hun impact op landbouwgrond. Door te kiezen voor voedingsmiddelen die weinig land vragen, kun je de druk op natuurlijke leefgebieden verminderen en toch gezond en gevarieerd eten."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Verspild eten, verspild water",
+      "name": "Eet met oog voor water",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Door voedselverspilling gaan ook enorme hoeveelheden water verloren die voor de teelt van voedsel worden gebruikt."
+      "description": "Ontdek hoe voedselkeuzes en voedselverspilling het zoetwaterverbruik beïnvloeden. Water besparen draagt bij aan voedselzekerheid op de lange termijn en vermindert de druk op het milieu."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "De CO₂-voetafdruk van vlees",
+      "name": "Minder energie van boer tot bord",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Vlees, met name rundvlees en lamsvlees, heeft een veel grotere CO₂-voetafdruk dan de meeste plantaardige voedingsmiddelen."
+      "description": "Verken manieren om de energievoetafdruk van je maaltijden te verkleinen via je voedselkeuzes en door minder te verspillen. Een lagere energievraag betekent vaak ook een kleinere milieu-impact."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Transportemissies verkennen",
+      "name": "Verklein de CO₂-voetafdruk van je eten",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Bijna een vijfde van de uitstoot van broeikasgassen door het wereldwijde voedselsysteem is afkomstig van het vervoer van voedsel."
+      "description": "Leer praktische strategieën om met je dagelijkse voedselkeuzes de uitstoot te verminderen. Veel klimaatvriendelijke keuzes dragen ook bij aan een gezonder eetpatroon."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
-      "name": "Productkeuzes - Gemiddeld niveau",
+      "name": "Kijk verder dan voedselkilometers",
       "title": "Productkeuzes - Gemiddeld niveau",
-      "description": "Maak in het dagelijks leven praktische, duurzame keuzes op het gebied van voeding."
+      "description": "Ontdek hoe transport, koeling, seizoen en productiemethoden op elkaar inwerken. Afstand alleen bepaalt niet hoe duurzaam iets is – bewuste consumenten zien het grotere geheel."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
-      "name": "Verder dan het land van herkomst",
+      "name": "Bescherm de natuur met je voedselkeuzes",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "Houd bij het kiezen van producten voor ten minste drie maaltijden rekening met zowel het land van herkomst als één aanvullende duurzaamheidsindicator (bijvoorbeeld certificering, productiemethode, seizoensgebondenheid). Het grootste deel van de landbouwgrond wordt gebruikt voor het weiden van vee of voor de teelt van veevoeder."
+      "description": "Begrijp hoe voedselsystemen concurreren om land en hoe je voedselkeuzes het behoud van biodiversiteit beïnvloeden. Met je keuzes kun je ecosystemen helpen beschermen en duurzame voedselproductie ondersteunen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Watervoetafdruk in detail",
+      "name": "Bescherm onze watervoorraden",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "De watervoetafdruk van je voedingspatroon hangt sterk af van wat je eet."
+      "description": "Verdiep je kennis over waterschaarste en duurzame consumptie. Slimme voedselkeuzes kunnen zoetwaterecosystemen beschermen en tegelijk een gezond eetpatroon ondersteunen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Uitstoot voorbij het bord",
+      "name": "Energie voor een duurzaam voedselsysteem",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "Voedselverspilling leidt jaarlijks tot miljarden tonnen CO₂-equivalente uitstoot."
+      "description": "Begrijp hoe voedselsystemen energie gebruiken en hoe consumptiepatronen de vraag naar hulpbronnen beïnvloeden. Slimmer consumeren is goed voor het milieu én voor de voedselzekerheid in de toekomst."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Koelketen en transport",
+      "name": "Word kampioen koolstofarm eten",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "Hoewel voedsel slechts ongeveer 18% van de totale vrachtvervoersafstanden wereldwijd uitmaakt, is het verantwoordelijk voor ongeveer 27% van de vrachtgerelateerde uitstoot."
+      "description": "Verdiep je kennis over de klimaatimpact in de hele voedselketen. Met je keuzes kun je bijdragen aan een gezondere levensstijl en tegelijk klimaatdoelen ondersteunen."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
-      "name": "Productkeuzes - Geavanceerd",
+      "name": "Denk verder dan afstand",
       "title": "Productkeuzes - Geavanceerd",
-      "description": "Maak in het dagelijks leven praktische, duurzame keuzes op het gebied van voeding."
+      "description": "Ontdek hoe wereldwijde toeleveringsketens de milieu-impact beïnvloeden. Inzicht in transportsystemen helpt je slimmere keuzes te maken die duurzaamheid en voedselkwaliteit ondersteunen."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
-      "name": "NOVA Explorer",
+      "name": "Ontcijfer voedselverwerking",
       "title": "Productiemethoden - Beginners",
-      "description": "Zoek de NOVA-classificatie van ten minste drie voedingsmiddelen. Voedselverwerking kan de voedselveiligheid verbeteren en de houdbaarheid verlengen."
+      "description": "Ontdek hoe voedingsmiddelen worden bewerkt voordat ze op je bord belanden. Voedselverwerking beïnvloedt voedingswaarde, gemak, houdbaarheid en duurzaamheid."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Lokaal, beter bekeken",
+      "name": "Weet waar het vandaan komt",
       "title": "Productiemethoden - Beginners",
-      "description": "Korte toeleveringsketens kunnen de lokale economieën en de veerkracht ondersteunen."
+      "description": "Let voortaan op waar je eten wordt geproduceerd. Informatie over het land van herkomst helpt consumenten om voedselsystemen en toeleveringsketens beter te begrijpen."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
-      "name": "Waarnemer van de productiemethode",
+      "name": "De landbouw achter het etiket",
       "title": "Productiemethoden - Beginners",
-      "description": "Zoek naar informatie over hoe ten minste vijf voedingsmiddelen zijn geproduceerd, voor zover deze informatie beschikbaar is. Biologische boerderijen dragen bij aan een grotere biodiversiteit dan conventionele boerderijen."
+      "description": "Ontdek hoe voedsel wordt geteeld en geproduceerd. Landbouwmethoden beïnvloeden de biodiversiteit, de bodemgezondheid, de watervoorraden en de voedselkwaliteit."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
-      "name": "Eén gerecht, veel stappen",
+      "name": "Voedselinnovatie voor de toekomst",
       "title": "Productiemethoden - Beginners",
-      "description": "Kies één voedingsproduct en ga na wat er mogelijk is gebeurd tussen de grondstoffen en het eindproduct dat je hebt gekocht. Door gewassen en rassen te diversifiëren kan de veerkracht van het voedselsysteem worden vergroot."
+      "description": "Ontdek hoe veredeling en innovatie voedselsystemen helpen zich aan te passen aan toekomstige uitdagingen. Nieuwe technologieën kunnen bijdragen aan duurzaamheid en voedselzekerheid."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Basis van fairtrade",
+      "name": "De mensen achter je eten",
       "title": "Productiemethoden - Beginners",
-      "description": "De landbouwsector is wereldwijd verantwoordelijk voor het grootste deel van de gevallen van kinderarbeid."
+      "description": "Ontdek de menselijke kant van voedselproductie. Duurzame voedselsystemen draaien niet alleen om milieubescherming, maar ook om een eerlijke behandeling van werknemers en producenten."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
-      "name": "Vergelijk verwerkingsniveaus",
+      "name": "Begrijp de afwegingen bij verwerking",
       "title": "Productiemethoden - Gemiddeld niveau",
-      "description": "Vergelijk voedingsmiddelen met verschillende NOVA-classificaties aan de hand van ten minste drie producten die tot dezelfde voedselcategorie behoren (bijvoorbeeld drie soorten kaas). Verschillende verwerkingsmethoden verbruiken heel uiteenlopende hoeveelheden energie."
+      "description": "Verken de voor- en nadelen van verschillende verwerkingsniveaus. Als je deze afwegingen herkent, kun je gezondere en duurzamere keuzes maken."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Wat herkomst je vertelt",
+      "name": "Verder dan voedselkilometers",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "De herkomst van levensmiddelen kan nuttige informatie opleveren over traceerbaarheid en duurzaamheid."
+      "description": "Ontdek waarom de herkomst van voedsel maar één onderdeel van duurzaamheid is. Productiemethoden, seizoen en transport bepalen allemaal mee hoe milieuvriendelijk een product is."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
-      "name": "Op productie gebaseerde keuze",
+      "name": "Kies voor betere landbouw",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "Gebruik de NOVA-classificatie, de Green-Score of informatie uit de ingrediëntenlijst als leidraad bij ten minste vijf aankoopbeslissingen. Maak gebruik van de verpakking, Open Food Facts of apps voor het scannen van voedingsmiddelen. Bloemenstroken en leefgebieden voor bestuivers kunnen de biodiversiteit op landbouwbedrijven bevorderen."
+      "description": "Ontdek hoe productiemethoden van invloed zijn op duurzaamheid en gezondheid. Inzicht in landbouwsystemen helpt je beter geïnformeerde aankoopbeslissingen te nemen."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Veredelen voor minder impact",
+      "name": "Innovatie op je bord",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "Het fokken van dieren met een lagere methaanuitstoot kan de impact van de veehouderij verminderen."
+      "description": "Ontdek hoe veredeling, verbeterde genetica en alternatieve eiwitten de voedselproductie beïnvloeden. Deze innovaties zijn erop gericht voedsel efficiënter en duurzamer te produceren."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "De sociale kant van voedsel",
+      "name": "Kopen met oog voor sociale impact",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "De duurzaamheid van het voedselsysteem omvat ook sociale en arbeidsomstandigheden."
+      "description": "Ontdek hoe keurmerken, certificeringen en inkooppraktijken samenhangen met arbeidsomstandigheden en bestaanszekerheid. Consumentenkeuzes kunnen de sociale duurzaamheid beïnvloeden."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
-      "name": "Tracker voor meerdere indicatoren",
+      "name": "Lezen tussen de etiketten",
       "title": "Productiemethoden - Gemiddeld",
-      "description": "Vergelijk voor vier gekochte voedingsmiddelen de NOVA-classificatie met de Green-Score of de Nutri-Score."
+      "description": "Etiketten op voedingsmiddelen kunnen waardevolle informatie geven over voedingswaarde, verwerking en duurzaamheid, maar geen enkel etiket vertelt het hele verhaal. In deze quest leer je verschillende indicatoren te vergelijken, zoals de NOVA-classificatie, de Nutri-Score, de Green-Score en ingrediëntenlijsten, zodat je beter geïnformeerde voedselkeuzes kunt maken. Als je begrijpt hoe voedingsmiddelen worden geproduceerd en beoordeeld, kun je producten kiezen die zowel je gezondheid als een duurzamer voedselsysteem ondersteunen."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.1": {
-      "name": "Beslissingen op basis van meerdere criteria",
+      "name": "Kijk verder dan verwerkingslabels",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Houd bij ten minste drie aankopen rekening met zowel de NOVA-classificatie als de Green-Score voordat je een beslissing neemt. Niet alle bewerkte voedingsmiddelen hebben een grote impact op het milieu."
+      "description": "Ontwikkel een genuanceerd beeld van voedselverwerking. Duurzaamheid hangt af van het hele voedselsysteem, niet alleen van de vraag of een voedingsmiddel bewerkt is of niet."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Afstand is niet alles",
+      "name": "Denk globaal, kies bewust",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Lokale voedingsmiddelen zijn niet altijd de meest duurzame keuze."
+      "description": "Begrijp hoe wereldhandel en voedselsystemen met elkaar verbonden zijn. Bij weloverwogen keuzes kijk je naar de herkomst in combinatie met andere duurzaamheidsindicatoren."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Landbouwmethoden die helpen",
+      "name": "Steun duurzame landbouw",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Bij agroforestry worden bomen gecombineerd met gewassen of vee op hetzelfde stuk land."
+      "description": "Ontdek hoe innovatieve landbouwmethoden bijdragen aan veerkrachtige en milieuverantwoorde voedselsystemen, terwijl de voedselproductie op peil blijft."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Innovatie op de boerderij",
+      "name": "Ontdekker van voedsel van de toekomst",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Genomische bewerking kan bijdragen aan de ontwikkeling van gewassen die beter bestand zijn tegen klimaatstress."
+      "description": "Begrijp hoe innovatie kan bijdragen aan klimaatbestendigheid, minder gebruik van hulpbronnen en duurzamere voedselsystemen, met behoud van de voedingskwaliteit."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Wie ons voedsel verbouwt",
+      "name": "Steun eerlijke voedselsystemen",
       "title": "Productiemethoden - Gevorderd",
-      "description": "Vrouwen spelen een cruciale rol in de voedselproductie, maar hebben vaak minder toegang tot middelen."
+      "description": "Begrijp hoe wereldwijde voedselketens mensen en gemeenschappen beïnvloeden. Ethische voedselkeuzes kunnen bijdragen aan eerlijkere en inclusievere voedselsystemen."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
-      "name": "Waarnemer voor verpakkingsmateriaal",
+      "name": "Waarom verpakking ertoe doet",
       "title": "Verpakking - Beginners",
-      "description": "Geef aan uit welk verpakkingsmateriaal ten minste vijf voedingsmiddelen bestaan die je deze week hebt gegeten. Voedselverpakkingen beschermen producten tegen verontreiniging, vocht, zuurstof en fysieke schade, waardoor de voedselveiligheid en -kwaliteit worden gewaarborgd."
+      "description": "Ontdek hoe verpakkingen voedsel beschermen en bederf voorkomen. Een goede verpakking kan zowel voedselveiligheid als duurzaamheid ondersteunen."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
-      "name": "Spotter voor herbruikbare verpakkingen",
+      "name": "Gebruik het opnieuw",
       "title": "Verpakking - Beginners",
-      "description": "Zoek bij ten minste vijf gelegenheden naar mogelijkheden voor herbruikbare of hervulbare voedselverpakkingen. Herbruikbare verpakkingen zijn pas milieuvriendelijk als ze vaak genoeg zijn hergebruikt."
+      "description": "Ontdek hoe herbruikbare verpakkingssystemen afval verminderen. Met kleine stappen in hergebruik help je grondstoffen te besparen en de milieu-impact te verkleinen."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
-      "name": "Keuzes op basis van verpakkingsinformatie",
+      "name": "Verpakking met een doel",
       "title": "Verpakking - Gemiddeld",
-      "description": "Houd bij het nemen van ten minste drie aankoopbeslissingen rekening met de eigenschappen van de verpakking. De milieu-impact van de productie van voedsel is vaak veel groter dan die van de verpakking die wordt gebruikt om het te beschermen."
+      "description": "Ontdek hoe verschillende verpakkingsmaterialen van invloed zijn op voedselverspilling, grondstoffengebruik en recyclebaarheid. Duurzaam verpakken vraagt om afwegingen die niet altijd voor de hand liggen."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
-      "name": "Zoekfunctie voor hergebruiksmogelijkheden",
+      "name": "Hergebruiken om te verminderen",
       "title": "Verpakking - Gemiddeld",
-      "description": "Kies deze week minstens twee keer voor herbruikbare of navulbare verpakkingen. Herbruikbare verpakkingen kunnen de vraag naar nieuwe grondstoffen verminderen."
+      "description": "Ontdek hoe statiegeld-, navul- en herbruikbare systemen in de praktijk werken. Deelname van consumenten speelt een sleutelrol in het succes van deze systemen."
     },
     "QUEST.PACKAGING.ADVANCED.1": {
-      "name": "Beslissingen over verpakkingen op basis van meerdere criteria",
+      "name": "Denk in levenscycli",
       "title": "Verpakking - Geavanceerd",
-      "description": "Houd bij ten minste drie aankopen rekening met zowel het verpakkingsmateriaal als de mogelijkheden voor afvalverwerking voordat u een keuze maakt. Eetbare verpakkingen kunnen helpen de afhankelijkheid van op fossiele brandstoffen gebaseerde kunststoffen te verminderen door conventionele verpakkingsmaterialen te vervangen door biologisch afbreekbare alternatieven."
+      "description": "Bekijk verpakkingen vanuit een levenscyclusperspectief. De duurzaamste optie hangt vaak af van het product, de houdbaarheid ervan en hoe de verpakking wordt gebruikt."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
-      "name": "Gewoontevormer voor hergebruik",
+      "name": "Word meester in circulair verpakken",
       "title": "Verpakking - Geavanceerd",
-      "description": "Gebruik minstens vijf keer herbruikbare of navulbare verpakkingssystemen. Zoek naar producten die via statiegeld- of navulsystemen worden verkocht. Elke herbruikbare verpakking heeft een break-evenpunt waarop deze voordeliger wordt dan alternatieven voor eenmalig gebruik."
+      "description": "Ontdek hoe herbruikbare verpakkingen bijdragen aan de doelen van de circulaire economie. Inzicht in hergebruiksystemen helpt je duurzamere consumptiegewoonten te ontwikkelen."
     },
     "QUEST.FOOD_WASTE.BEGINNER.1": {
-      "name": "Startpakket voor slim serveren",
+      "name": "Elk bord telt",
       "title": "Voedselverspilling - Beginners",
-      "description": "Log 5 Half Plate Opgeslagen acties. Huishoudens produceren meer voedselafval dan welke andere sector dan ook in de Europese Unie."
+      "description": "Ontdek hoe portiegroottes en opschepgewoonten voedselverspilling beïnvloeden. Minder restjes op je bord bespaart voedsel, geld en natuurlijke hulpbronnen."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
-      "name": "Slimmer opslaan",
+      "name": "Bewaar het voor morgen",
       "title": "Voedselverspilling - Beginners",
-      "description": "Zorg ervoor dat u de aanwijzingen op de verpakking zorgvuldig doorleest over hoe u voedsel na het openen van de verpakking moet bewaren voor ten minste vijf aangeschafte producten. Huishoudens zijn verantwoordelijk voor meer dan de helft van de voedselverspilling in de EU."
+      "description": "Leer de basis van het veilig bewaren en gebruiken van restjes. Goed omgaan met voedsel helpt verspilling te voorkomen en beschermt de kwaliteit van je eten."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
-      "name": "Datumlabel-verkenner",
+      "name": "Trap niet in de houdbaarheidsval",
       "title": "Voedselverspilling - Beginners",
-      "description": "Logboek 1: Actie ‘Verbruik van product waarvan de houdbaarheidsdatum is verstreken’. Meer dan de helft van alle voedselverspilling in Europa is afkomstig van huishoudens."
+      "description": "Leer het verschil tussen voedselkwaliteit en voedselveiligheid. Als je etiketten begrijpt, kun je onnodige verspilling voorkomen zonder je gezondheid in gevaar te brengen."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
-      "name": "Test voor het inschatten van portiegroottes",
+      "name": "Koop wat je nodig hebt",
       "title": "Voedselverspilling - Beginners",
-      "description": "Schat vóór de maaltijd in hoeveel je denkt te gaan eten. Vergelijk na de maaltijd je schatting met wat je daadwerkelijk hebt gegeten. De portiegroottes zijn in veel landen de afgelopen decennia aanzienlijk toegenomen."
+      "description": "Ontdek hoe je koopgewoonten voedselverspilling en je huishoudbudget beïnvloeden. Onnodige aankopen vermijden helpt verspilling en het gebruik van hulpbronnen te verminderen."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Opdracht 3: Routine voor het controleren van de koelkast",
+      "name": "Slimmer opscheppen",
       "title": "Voedselverspilling - Gemiddeld niveau",
-      "description": "Controleer je koelkast of voorraadkast voordat je een grote boodschappenronde gaat doen. Noteer ten minste 3 acties waarbij je producten waarvan de houdbaarheidsdatum was verstreken hebt geconsumeerd of 3 acties waarbij je hebt voorkomen dat er eten op je bord overbleef. Door kleinere porties aan te bieden, kan voedselverspilling in kantines en restaurants worden teruggedrongen."
+      "description": "Ontwikkel gewoonten waarmee je porties beter afstemt op je eetlust. Onnodige restjes voorkomen is goed voor je eigen welzijn én voor duurzaamheid."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
-      "name": "De gewoonte om maaltijden te plannen",
+      "name": "Maak iets van restjes",
       "title": "Voedselverspilling - Gemiddeld niveau",
-      "description": "Stel een maaltijdplan op voordat je een grote boodschappenronde gaat doen, en houd daarbij in gedachten dat houdbaarheidsdata betrekking hebben op de kwaliteit."
+      "description": "Ontwikkel praktische gewoonten om restjes te hergebruiken in nieuwe maaltijden. Minder restjes weggooien bespaart geld en spaart de hulpbronnen die voor de voedselproductie worden gebruikt."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Opdracht 3: Routine voor het controleren van de koelkast",
+      "name": "Plan voordat het verloopt",
       "title": "Voedselverspilling - Gemiddeld niveau",
-      "description": "Controleer je koelkast of voorraadkast voordat je een grote boodschappenronde gaat doen. Noteer ten minste 3 acties waarbij je producten waarvan de houdbaarheidsdatum was verstreken hebt geconsumeerd of 3 acties waarbij je een vol bord hebt gered. De hoeveelheid voedselafval van huishoudens in Europa wordt geschat op ongeveer 69 miljoen ton per jaar."
+      "description": "Ontwikkel bewaar- en planningsgewoonten die je helpen voedsel te gebruiken voordat het afval wordt. Beter plannen is goed voor je portemonnee én voor het milieu."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
-      "name": "Portion Control Pro",
+      "name": "Plan voordat je koopt",
       "title": "Voedselverspilling - Gemiddeld niveau",
-      "description": "Noteer ten minste de acties die onder ‘Half Plate Saved’ vallen. De milieu-impact van een voedingspatroon hangt niet alleen af van wat mensen eten, maar ook van hoeveel ze eten."
+      "description": "Ontdek hoe aanbiedingen, portiegroottes en aankoopbeslissingen voedselverspilling beïnvloeden. Beter plannen is goed voor je gezondheid én voor duurzaamheid."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
-      "name": "Aandacht voor nulverspilling van borden",
+      "name": "Minder verspillen, meer impact",
       "title": "Voedselverspilling - Gevorderd",
-      "description": "Registreer ten minste 7 ‘Half Plate Saved’-acties. Vleesafval draagt onevenredig veel bij aan de klimaatimpact van voedselverspilling."
+      "description": "Begrijp de bredere gevolgen van etensresten op je bord voor het milieu en leer geavanceerde strategieën om verspilling in alledaagse situaties tot een minimum te beperken."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
-      "name": "Expert op het gebied van het voorkomen van verval",
+      "name": "Word meester in de verspillingsvrije keuken",
       "title": "Voedselverspilling - Gevorderd",
-      "description": "Registreer 4 acties met betrekking tot het verbruik van producten waarvan de houdbaarheidsdatum is verstreken. Vlees en zuivelproducten worden misschien minder vaak weggegooid, maar hebben een grotere ecologische voetafdruk wanneer ze wel worden weggegooid."
+      "description": "Ontwikkel geavanceerde routines voor bewaren, plannen en hergebruiken. Efficiënt omgaan met voedsel is goed voor je huishoudbudget, je voeding en duurzaamheid."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
-      "name": "Expert op het gebied van First-In, First-Out",
+      "name": "Blijf voedselverspilling voor",
       "title": "Voedselverspilling - Gevorderd",
-      "description": "Zorg er gedurende de week voor dat je je koelkast, vriezer of voorraadkast zo inricht dat voedingsmiddelen met de kortste houdbaarheidstermijn altijd vooraan staan en als eerste worden gebruikt. Meervoudsaankoopaanbiedingen en bulkkortingen kunnen consumenten ertoe aanzetten meer voedsel te kopen dan ze kunnen verbruiken."
+      "description": "Beheers technieken die voorkomen dat voedingsmiddelen onnodig over de datum gaan. Slim plannen draagt bij aan duurzamere consumptiepatronen."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
-      "name": "Week van de afvalvrije planning",
+      "name": "Consumeer bewust",
       "title": "Voedselverspilling - Gevorderd",
-      "description": "Stel voor je eerste boodschappenronde alvast alle hoofdmaaltijden voor de week samen en koop alleen voedingsmiddelen waarvoor je al een bestemming hebt. Als er meer voedsel wordt gegeten dan het lichaam nodig heeft, neemt de vraag naar landbouwgrondstoffen zoals land, water en energie toe."
+      "description": "Begrijp het verband tussen overconsumptie, verspilling en milieu-impact. Bewust consumeren helpt een gezondere en duurzamere levensstijl te ondersteunen."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
-      "name": "Elke dag eiwitten",
+      "name": "Slimmer met eiwitten",
       "title": "Voedingswaarden - Beginners",
-      "description": "Zorg ervoor dat je elke dag in ten minste één maaltijd een eiwitrijk voedingsmiddel opneemt. Eiwitten helpen bij de opbouw en het herstel van spieren, weefsels, enzymen en hormonen."
+      "description": "Ontdek waarom eiwitten belangrijk zijn en leer verschillende eiwitrijke voedingsmiddelen kennen. Gevarieerde eiwitkeuzes kunnen zowel je gezondheid als duurzaamheid ondersteunen."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
-      "name": "Slimme snackruil",
+      "name": "Betere vetten, betere keuzes",
       "title": "Voedingswaarden - Beginners",
-      "description": "Logboek 5: Tussendoortjes → Kies voor fruit of noten. Onverzadigde vetten zijn over het algemeen gezonder dan verzadigde vetten."
+      "description": "Leer het verschil tussen gezondere en minder gezonde vetten. De kwaliteit van vetten kan je gezondheid op de lange termijn beïnvloeden."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
-      "name": "Drankupgrade",
+      "name": "Spoor verborgen suikers op",
       "title": "Voedingswaarden - Beginners",
-      "description": "Logboek 3: Vervanging van suikerhoudende dranken door water. Suikerhoudende dranken vormen in veel voedingspatronen een belangrijke bron van toegevoegde suiker."
+      "description": "Ontdek waar suikers vaak in voedingsmiddelen en dranken zitten. Minder vrije suikers eten kan de algehele kwaliteit van je voeding verbeteren."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.4": {
-      "name": "Zoutdetector",
+      "name": "Minder zout, meer gezondheid",
       "title": "Voedingswaarden - Beginners",
-      "description": "Kies één verpakt voedingsmiddel en bepaal hoeveel zout het per 100 gram bevat. De meeste mensen nemen meer dan twee keer de aanbevolen hoeveelheid zout tot zich."
+      "description": "Ontdek waar zout vandaan komt en waarom te veel zout een probleem is. Kleine veranderingen kunnen je hart en bloedvaten op de lange termijn gezond houden."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
-      "name": "Volkorenweek",
+      "name": "Voed je darmen",
       "title": "Voedingswaarden - Beginners",
-      "description": "Kies elke dag een volkorenproduct. Kies voedingsmiddelen zoals volkorenbrood, volkorenpasta, havermout, bruine rijst, roggebrood, quinoa of andere volkorenproducten. De meeste Europeanen eten minder vezels dan wordt aanbevolen."
+      "description": "Ontdek de rol van voedingsvezels en in welke voedingsmiddelen ze zitten. Vezels ondersteunen een gezonde spijsvertering en je algehele welzijn."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
-      "name": "Voeg nog een stuk fruit of groente toe",
+      "name": "Voedingsstoffen die ertoe doen",
       "title": "Voedingswaarden - Beginners",
-      "description": "Voeg elke dag één extra portie fruit of groenten toe aan je eetpatroon. Vitamine D-tekort komt in heel Europa veel voor."
+      "description": "Ontdek waarom vitamines essentieel zijn voor je gezondheid en in welke alledaagse voedingsmiddelen je ze vindt. Gevarieerd eten draagt bij aan een betere voeding."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Calorieën zijn niet alles",
+      "name": "Energie met een doel",
       "title": "Voedingswaarden - Beginners",
-      "description": "Er worden wereldwijd al genoeg calorieën geproduceerd om iedereen te voeden."
+      "description": "Ontdek wat calorieën zijn en waarom ze ertoe doen. Inzicht in je energie-inname helpt je gezondere voedselkeuzes te maken."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
-      "name": "Vervanging van vleesverwerkte producten",
+      "name": "Bouw betere eiwitgewoonten op",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Log 2: Vervang bewerkt vlees door peulvruchten. De meeste volwassenen hebben dagelijks ongeveer 0,83 g eiwit per kilogram lichaamsgewicht nodig."
+      "description": "Verken een breder scala aan eiwitbronnen en ontdek hoe ze bijdragen aan een evenwichtig eetpatroon. Je eiwitkeuzes beïnvloeden ook de milieu-impact."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
-      "name": "Upgrade naar gezonde vetten",
+      "name": "Kies gezonde vetten",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Kies minstens vijf keer voor een bron van onverzadigd vet in plaats van een bron van verzadigd vet. Het soort vet dat je eet, is net zo belangrijk als de hoeveelheid."
+      "description": "Verken praktische manieren om met je voedselkeuzes de kwaliteit van je vetinname te verbeteren. Veel gezondere vetbronnen gaan ook samen met duurzamere eetpatronen."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
-      "name": "Vergelijking van dranken",
+      "name": "Kies anders voor zoet",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Vergelijk twee zoete dranken die je graag drinkt en ga na welke minder suiker per 100 ml bevat. De WHO beveelt aan om de inname van vrije suikers te beperken tot minder dan 10% van de dagelijkse energie-inname."
+      "description": "Leer onnodige suikerinname te herkennen en te verminderen. Gezondere keuzes dragen bij aan je welzijn op de lange termijn en aan betere eetgewoonten."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
-      "name": "Zoutvrije tafel",
+      "name": "Vind het verborgen natrium",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Voeg de hele week door aan tafel geen zout toe aan het eten. De WHO adviseert om minder dan 5 gram zout per dag te consumeren."
+      "description": "Verken veelvoorkomende bronnen van natrium en ontdek praktische manieren om ze te vervangen. Minder natrium draagt bij aan een gezonder eetpatroon."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
-      "name": "Vezels bij elke maaltijd",
+      "name": "Stel een vezelrijk bord samen",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Zorg ervoor dat elke hoofdmaaltijd ten minste één vezelrijk voedingsmiddel bevat. Volwassenen zouden moeten streven naar ten minste 25 gram vezels per dag."
+      "description": "Ontdek praktische manieren om met alledaagse voedingsmiddelen meer vezels binnen te krijgen. Meer vezels betekent vaak een eetpatroon met meer plantaardig voedsel dat ook duurzamer is."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Vitamines van je bord",
+      "name": "Eet gevarieerd voor meer voedingsstoffen",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Een gevarieerd eetpatroon helpt het risico op vitaminetekorten te verminderen."
+      "description": "Ontdek hoe verschillende voedingsmiddelen verschillende vitamines en mineralen leveren. Een gevarieerder eetpatroon ondersteunt zowel je gezondheid als duurzame voedselkeuzes."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Zelfde calorieën, andere impact",
+      "name": "Calorieën in context",
       "title": "Voedingswaarden - Gemiddeld",
-      "description": "Voedingsmiddelen die evenveel calorieën bevatten, kunnen zeer uiteenlopende gevolgen voor het milieu hebben."
+      "description": "Ontdek waarom calorieën maar een deel van het voedingsverhaal zijn. Voedselkwaliteit en voedingsdichtheid zijn net zo belangrijk."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Complete plantaardige eiwitten",
+      "name": "Kampioen eiwitvariatie",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Door een gevarieerde hoeveelheid plantaardige eiwitten te eten, kun je alle essentiële aminozuren binnenkrijgen."
+      "description": "Ontwikkel een eiwitstrategie die voedingskwaliteit en duurzaamheid in balans brengt. Inzicht in hoe eiwitbronnen samenhangen helpt zowel de planeet als je eigen gezondheid."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Voedingsvetten begrijpen",
+      "name": "Word meester in vetkwaliteit",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Vet mag niet meer dan ongeveer 30% van de totale dagelijkse energie-inname uitmaken."
+      "description": "Begrijp de rol van verschillende vetten voor je gezondheid en in voedselsystemen. Weloverwogen keuzes ondersteunen een gezond hart en bloedvaten en een duurzaam eetpatroon."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
-      "name": "Week van de bewustwording rond toegevoegde suikers",
+      "name": "Neem de regie over suiker",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Vermijd de hele week door voedingsmiddelen of dranken waarbij toegevoegde suikers tot de eerste drie ingrediënten behoren. Door thuis te koken kun je de hoeveelheid toegevoegde suiker beter onder controle houden."
+      "description": "Ontwikkel de vaardigheden om etiketten te lezen en verborgen suikerbronnen te herkennen. Inzicht in suiker helpt je gezonder en bewuster te consumeren."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
-      "name": "Natrium-hotspot",
+      "name": "Word expert in natrium",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Zoek in je keuken het voedingsmiddel met het hoogste zoutgehalte per 100 gram. Brood, vleeswaren en kaas zijn belangrijke bronnen van natrium in Europa."
+      "description": "Ontwikkel het vermogen om het natriumgehalte te beoordelen en weloverwogen voedselkeuzes te maken. Meer bewustzijn ondersteunt zowel je gezondheid als slim consumeren."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.5": {
-      "name": "Week van het vezelrijke ontbijt",
+      "name": "Optimaliseer je darmgezondheid",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Begin elke dag met een ontbijt dat een aanzienlijke hoeveelheid vezels bevat. Stel je ontbijt samen op basis van haver, volkorenproducten, fruit, zaden, noten of andere vezelrijke voedingsmiddelen. Een hogere vezelinname gaat gepaard met een lager risico op hart- en vaatziekten en diabetes type 2."
+      "description": "Begrijp hoe verschillende vezelbronnen bijdragen aan je gezondheid op de lange termijn. Consequent kiezen voor vezelrijke voedingsmiddelen is goed voor je eigen gezondheid én voor een duurzaam eetpatroon."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
-      "name": "Regenboogweek",
+      "name": "Bouw een veerkrachtige voeding op",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Eet elke dag voedingsmiddelen in ten minste vijf verschillende fruit- en groentekleuren. Vitamine B12 komt vooral voor in dierlijke voedingsmiddelen."
+      "description": "Ontwikkel een eetpatroon met veel verschillende bronnen van voedingsstoffen. Inzicht in micronutriënten helpt tekorten te voorkomen en stimuleert een evenwichtig en duurzaam eetpatroon."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
-      "name": "Week van de voedzame maaltijd",
+      "name": "Verder dan calorieën",
       "title": "Voedingswaarden - Geavanceerd",
-      "description": "Zorg ervoor dat elke hoofdmaaltijd ten minste drie van de volgende elementen bevat: een eiwitbron, een vezelrijk voedingsmiddel, een stuk fruit of groente, of een bron van gezonde vetten. Het voeren van gewassen aan vee leidt tot aanzienlijke calorieverliezen."
+      "description": "Begrijp hoe calorieën, voedingsdichtheid, voedselkwaliteit en duurzaamheid op elkaar inwerken. Een gezond eetpatroon draait om balans, niet alleen om energie-inname."
     }
   },
   "meta": {

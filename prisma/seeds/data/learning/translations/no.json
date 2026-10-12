@@ -2830,7 +2830,7 @@
     },
     "M.I5.4": {
       "title": "Portion Control Pro",
-      "goal": "Registrer minst «Halv tallerken spart»-handlinger. Slik gjør du det: Begynn hvert måltid med en mindre porsjon, og ta bare mer mat hvis det er nødvendig. Hvis du klarer å spare mat ved å gjøre dette, registrerer du en «Halv tallerken spart»-handling.",
+      "goal": "Registrer minst 3 «Half Plate Saved»-handlinger. Slik gjør du det: Begynn hvert måltid med en mindre porsjon, og ta bare mer mat hvis det er nødvendig. Hvis du klarer å spare mat på denne måten, registrerer du en «Half Plate Saved»-handling.",
       "whyItMatters": "Å servere for store porsjoner er en vanlig årsak til matsvinn. Porsjonsstørrelsen er en viktig faktor som påvirker matsvinnet."
     },
     "M.I5.5": {
@@ -3318,399 +3318,399 @@
   },
   "quests": {
     "QUEST.DIET_CHANGES.BEGINNER.2": {
-      "name": "Kutt ut ett måltid med kjøtt",
+      "name": "Kjenn kjøttvanene dine",
       "title": "Endringer i kostholdet – Nybegynner",
-      "description": "Spis ett kjøttmåltid mindre enn i forrige uke, og husk at å spise mindre rødt kjøtt er en av de mest effektive måtene å redusere miljøpåvirkningen fra kostholdet ditt på."
+      "description": "Finn ut hvor ofte kjøtt inngår i måltidene dine, og utforsk hvilken påvirkning det har på matsystemet. Å forstå vanene du har i dag er det første steget mot å forbedre både din egen helse og den miljømessige bærekraften, siden et redusert kjøttforbruk kan gi lavere klimagassutslipp, mindre arealbruk og mindre press på naturressursene, samtidig som det bidrar til et sunnere kostholdsmønster."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
-      "name": "Første bærekraftige bytte",
+      "name": "Ditt første proteinbytte",
       "title": "Endringer i kostholdet – Nybegynner",
-      "description": "Noter ned to tiltak for å bytte ut proteinkilder, og husk samtidig at å erstatte en del av kjøttinntaket ditt med belgfrukter kan redusere kostholdets klimapåvirkning."
+      "description": "Utforsk enkle alternativer til kjøtt, som belgfrukter, fisk, egg, meieriprodukter, nøtter og frø. Et mer variert utvalg av proteinkilder bidrar til bedre ernæring og reduserer samtidig presset på areal, vann og klima."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
-      "name": "Oppdag linser",
+      "name": "Oppdag nye basismatvarer",
       "title": "Endringer i kostholdet – Nybegynner",
-      "description": "Gjennomgå informasjonen og finn to ernæringsmessige eller miljømessige fordeler ved linser, samtidig som du husker at quinoa inneholder alle de ni essensielle aminosyrene, noe som gjør den til et komplett planteprotein."
+      "description": "Ta det første steget utover vanlige basismatvarer som hvete og ris. Å utforske alternative basismatvarer kan gi et mer variert kosthold og introdusere matvarer som bidrar til mer robuste landbrukssystemer."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
-      "name": "To kjøttfrie dager",
+      "name": "Bygg en rutine med mindre kjøtt",
       "title": "Endringer i kostholdet – Mellomnivå",
-      "description": "Gjennomfør to kjøttfrie dager, og husk at produksjon av storfekjøtt krever mye mer areal enn produksjon av planteproteiner som erter eller tofu."
+      "description": "Begynn å erstatte noen kjøttbaserte måltider med alternativer, og eksperimenter med fleksible endringer i kostholdet. Å redusere kjøttforbruket gradvis kan forbedre kostholdskvaliteten, gi et mer variert næringsinntak og redusere miljøavtrykket knyttet til husdyrproduksjon."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
-      "name": "Verktøy for bærekraftig bytte",
+      "name": "Utvid proteinvalgene dine",
       "title": "Endringer i kostholdet – Mellomnivå",
-      "description": "Noter ned 4 tiltak for å bytte ut proteinkilder, og husk at bønner, linser, erter og kikerter er blant de mest bærekraftige proteinkildene som finnes."
+      "description": "Bli tryggere på å bruke et bredere utvalg av proteinrike matvarer, og lær hvordan ulike proteinkilder påvirker helse og bærekraft. Et mer variert proteininntak bidrar til et tilstrekkelig næringsinntak og reduserer avhengigheten av matvarer med stor miljøpåvirkning."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
-      "name": "Treningsprogram for benkpress",
+      "name": "Mer variasjon på tallerkenen",
       "title": "Endringer i kostholdet – Mellomnivå",
-      "description": "Inkluder belgfrukter i fire måltider, og husk at hirse er svært motstandsdyktige avlinger som kan vokse under varme, tørre forhold med lite vann."
+      "description": "Eksperimenter med alternative kornsorter og basismatvarer i hverdagsmåltidene. Et mer variert kosthold kan forbedre næringsinntaket og samtidig bidra til å redusere avhengigheten av noen få avlinger som dominerer globalt."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
-      "name": "Hold deg i den grønne sonen",
+      "name": "Mestre bærekraftige proteinvalg",
       "title": "Kostholdsendringer – Avansert",
-      "description": "Hold deg under fire kjøttmåltider per uke, og husk samtidig at husdyrproduksjonen opptar størstedelen av jordbruksarealet globalt, samtidig som den bidrar med en langt mindre andel av kalorier og proteiner."
+      "description": "Utvikle et varig kostholdsmønster som er mindre avhengig av kjøtt. Når du forstår de bredere konsekvensene av proteinvalgene dine, kan du bidra til biologisk mangfold, klimamål og ressursbevaring, samtidig som du opprettholder et balansert og sunt kosthold."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
-      "name": "Flertall av planteproteiner",
+      "name": "Mester i proteinmangfold",
       "title": "Kostholdsendringer – Avansert",
-      "description": "Sørg for at de fleste proteinrike måltidene kommer fra proteinkilder som ikke er kjøtt, samtidig som du husker at belgfrukter forbedrer jordens fruktbarhet på naturlig vis ved å binde nitrogen fra luften, noe som reduserer behovet for gjødsel."
+      "description": "Lag måltider som kombinerer ernæring, variasjon og bærekraft. Når du forstår styrkene ved ulike proteinkilder, kan du bidra både til god helse på lang sikt og til robuste matsystemer."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
-      "name": "Alternativ vane når det gjelder basismatvarer",
+      "name": "Fremtidssikre tallerkenen din",
       "title": "Kostholdsendringer – Avansert",
-      "description": "Inkluder alternative basismatvarer i minst fem måltider, og husk at quinoa dyrkes nå i mer enn 70 land, noe som bidrar til å diversifisere den globale matproduksjonen."
+      "description": "Lær hvordan alternative basismatvarer bidrar til matsikkerhet, klimarobusthet og mangfold i landbruket. Ved å utvide matvalgene dine støtter du både din egen helse og mer bærekraftige matsystemer."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
-      "name": "Opprinnelsessporing",
+      "name": "Se arealet bak maten din",
       "title": "Produktvalg – Nybegynner",
-      "description": "Finn opprinnelseslandet til minst fem matvarer du har spist i løpet av uken, og husk samtidig at omtrent halvparten av verdens beboelige landareal brukes til jordbruk."
+      "description": "Oppdag hvordan ulike matvarer krever ulike mengder areal å produsere. Å forstå arealbruk hjelper deg å se hvordan matvalg påvirker skoger, økosystemer og biologisk mangfold."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
-      "name": "Vannet bak maten",
+      "name": "Hver dråpe teller",
       "title": "Produktvalg – Nybegynner",
-      "description": "Omtrent 70 % av det globale ferskvannsforbruket går til landbruket."
+      "description": "Utforsk hvor mye vann som skjuler seg bak maten du spiser. Å forstå vannavtrykk hjelper deg å knytte hverdagsmåltidene til en av planetens viktigste ressurser."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
-      "name": "Måltidenes klimakostnad",
+      "name": "Energien bak maten din",
       "title": "Produktvalg – Nybegynner",
-      "description": "Matsystemene står for omtrent en tredjedel av de globale klimagassutslippene."
+      "description": "Lær hvordan energi brukes til å produsere, bearbeide og transportere mat. Å forstå disse skjulte energikostnadene forklarer hvorfor matvalg har betydning for bærekraften."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
-      "name": "Matens transportvei",
+      "name": "Klimavennlig kosthold",
       "title": "Produktvalg – Nybegynner",
-      "description": "Den globale mattransporten genererer om lag 3 milliarder tonn CO₂-ekvivalente utslipp hvert år."
+      "description": "Oppdag hvordan matvalg bidrar til klimagassutslipp. Å forstå karbonavtrykk hjelper deg å finne enkle tiltak som er bra for både planetens og menneskers helse."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
-      "name": "Produktvalg – Nybegynner",
+      "name": "Følg matens reise",
       "title": "Produktvalg – Nybegynner",
-      "description": "Ta praktiske og bærekraftige valg når det gjelder mat i hverdagen."
+      "description": "Oppdag hvordan maten reiser fra jord til bord, og hvorfor transport har betydning for bærekraften. Å forstå transportavstander avdekker en del av miljøhistorien bak maten."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
-      "name": "Mangfoldige opprinnelser",
+      "name": "Velg arealeffektiv mat",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Spor opprinnelsen til maten du spiser, og noter minst tre måltider med lokalt produserte produkter, samtidig som du husker at oksekjøtt er en av de matvarene som krever mest areal av alt folk spiser."
+      "description": "Lær å sammenligne matvarer ut fra hvor mye jordbruksareal de beslaglegger. Å velge arealeffektive matvarer kan redusere presset på naturlige habitater og samtidig bidra til et sunt og variert kosthold."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
-      "name": "Bortkastet mat, bortkastet vann",
+      "name": "Spis med vannet i tankene",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Matsvinn fører også til at enorme mengder vann som brukes til å dyrke mat, går til spille."
+      "description": "Lær hvordan matvalg og matsvinn påvirker bruken av ferskvann. Å spare vann bidrar til matsikkerhet på lang sikt og reduserer belastningen på miljøet."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
-      "name": "Kjøttets karbonavtrykk",
+      "name": "Mindre energi fra jord til bord",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Kjøtt, særlig oksekjøtt og lammekjøtt, har et mye større karbonavtrykk enn de fleste plantebaserte matvarer."
+      "description": "Utforsk måter å redusere energiavtrykket til måltidene dine på gjennom matvalg og mindre matsvinn. Lavere energibehov betyr ofte mindre miljøpåvirkning."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
-      "name": "Utforsk transportutslipp",
+      "name": "Kutt matens karbonavtrykk",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Nesten en femtedel av klimagassutslippene fra det globale matsystemet stammer fra transport av mat."
+      "description": "Lær praktiske strategier for å redusere utslipp gjennom kostholdsvalgene du tar i hverdagen. Mange klimavennlige valg fremmer også sunnere spisevaner."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
-      "name": "Produktvalg – Mellomnivå",
+      "name": "Se forbi transportavstanden",
       "title": "Produktvalg – Mellomnivå",
-      "description": "Ta praktiske og bærekraftige valg når det gjelder mat i hverdagen."
+      "description": "Utforsk hvordan transport, kjøling, sesong og produksjonsmetoder henger sammen. Avstand alene avgjør ikke hvor bærekraftig maten er, og opplyste forbrukere ser helheten."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
-      "name": "Utover opprinnelseslandet",
+      "name": "Beskytt naturen gjennom matvalg",
       "title": "Produktvalg – Avansert",
-      "description": "Når du velger produkter til minst tre måltider, bør du ta hensyn til både opprinnelseslandet og én ytterligere bærekraftsindikator (f.eks. sertifisering, produksjonsmetode, sesongvariasjon), samtidig som du husker at det meste av jordbruksarealet brukes til beite for husdyr eller til dyrking av dyrefôr."
+      "description": "Forstå hvordan matsystemene konkurrerer om areal, og hvordan kostholdsvalg påvirker bevaringen av biologisk mangfold. Valgene dine kan bidra til å beskytte økosystemer og samtidig støtte bærekraftig matproduksjon."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
-      "name": "Vannavtrykket i dybden",
+      "name": "Vern om vannressursene våre",
       "title": "Produktvalg – Avansert",
-      "description": "Vannavtrykket til kostholdet ditt avhenger i stor grad av hva du spiser."
+      "description": "Få en dypere forståelse av vannmangel og bærekraftig forbruk. Smarte matvalg kan beskytte ferskvannsøkosystemer og samtidig bidra til et sunt kosthold."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Utslipp utenfor tallerkenen",
+      "name": "Energi til et bærekraftig matsystem",
       "title": "Produktvalg – Avansert",
-      "description": "Matsvinn fører til utslipp på flere milliarder tonn CO₂-ekvivalenter hvert år."
+      "description": "Forstå hvordan matsystemene bruker energi, og hvordan forbruksmønstre påvirker ressursbehovet. Smartere forbruk er bra både for miljøet og for fremtidens matsikkerhet."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
-      "name": "Kjølekjede og frakt",
+      "name": "Bli mester i klimavennlig mat",
       "title": "Produktvalg – Avansert",
-      "description": "Selv om matvarer bare utgjør rundt 18 % av de globale godstransportavstandene, står de for rundt 27 % av de godstransportrelaterte utslippene."
+      "description": "Få en dypere forståelse av klimapåvirkningen i hele matsystemet. Valgene dine kan bidra til en sunnere livsstil og samtidig støtte målene om å begrense klimaendringene."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
-      "name": "Produktvalg – Avansert",
+      "name": "Tenk utover avstand",
       "title": "Produktvalg – Avansert",
-      "description": "Ta praktiske og bærekraftige valg når det gjelder mat i hverdagen."
+      "description": "Lær hvordan globale forsyningskjeder påvirker miljøet. Å forstå transportsystemene kan hjelpe deg å ta smartere valg som fremmer bærekraft og matkvalitet."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
-      "name": "NOVA Explorer",
+      "name": "Knekk koden på bearbeidet mat",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Finn NOVA-klassifiseringen for minst tre matvarer, og husk samtidig at næringsmiddelforedling kan forbedre matsikkerheten og forlenge holdbarheten."
+      "description": "Lær hvordan matvarer bearbeides før de havner på tallerkenen din. Bearbeiding påvirker næringsinnhold, bekvemmelighet, holdbarhet og bærekraft."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
-      "name": "Lokalmat på nært hold",
+      "name": "Vit hvor maten kommer fra",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Korte forsyningskjeder kan styrke lokale økonomier og øke motstandskraften."
+      "description": "Begynn å legge merke til hvor maten er produsert. Informasjon om opprinnelsesland kan hjelpe forbrukere å forstå matsystemer og forsyningskjeder bedre."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
-      "name": "Observatør for produksjonsmetode",
+      "name": "Landbruket bak etiketten",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Se etter informasjon om hvordan minst fem matvarer ble produsert der denne informasjonen er tilgjengelig, og husk samtidig at økologiske gårder bidrar til større biologisk mangfold enn konvensjonelle gårder."
+      "description": "Oppdag hvordan maten dyrkes og produseres. Landbrukspraksis påvirker biologisk mangfold, jordhelse, vannressurser og matkvalitet."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
-      "name": "Én matvare, mange trinn",
+      "name": "Matinnovasjon for fremtiden",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Velg en matvare og undersøk hva som kan ha skjedd mellom råvarene og det ferdige produktet du kjøpte, samtidig som du husker at diversifisering av avlinger og raser kan øke matsystemets motstandskraft."
+      "description": "Oppdag hvordan avl, foredling og innovasjon hjelper matsystemene med å tilpasse seg fremtidens utfordringer. Ny teknologi kan bidra til bærekraft og matsikkerhet."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.5": {
-      "name": "Rettferdig handel: grunnlaget",
+      "name": "Menneskene bak maten din",
       "title": "Produksjonsmetoder – Nybegynner",
-      "description": "Landbruket står for de fleste tilfellene av barnearbeid på verdensbasis."
+      "description": "Oppdag den menneskelige siden av matproduksjonen. Bærekraftige matsystemer avhenger ikke bare av miljøvern, men også av rettferdig behandling av arbeidere og produsenter."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
-      "name": "Sammenlign behandlingsnivåer",
+      "name": "Fordeler og ulemper ved bearbeiding",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Sammenlign matvarer med ulike NOVA-klassifiseringer på minst tre produkter som tilhører samme matvarekategori (f.eks. tre ostetyper). Ulike prosesseringsmetoder bruker svært forskjellige mengder energi."
+      "description": "Utforsk fordelene og ulempene ved ulike bearbeidingsgrader. Å kjenne til disse avveiningene hjelper deg å ta sunnere og mer bærekraftige valg."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
-      "name": "Hva opprinnelse forteller",
+      "name": "Mer enn transportavstand",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Matens opprinnelse kan gi nyttig informasjon om sporbarhet og bærekraft."
+      "description": "Lær hvorfor matens opprinnelse bare er én del av bærekraften. Produksjonsmetoder, sesong og transport påvirker alle hvor miljøvennlig maten er."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
-      "name": "Produksjonsbasert valg",
+      "name": "Velg bedre landbruk",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Bruk NOVA-klassifiseringen, Green-Score eller informasjon fra ingredienslisten som veiledning når du skal ta minst fem kjøpsbeslutninger. Bruk emballasjen, Open Food Facts eller apper for skanning av matvarer, og husk samtidig at blomsterstriper og habitater for bestøvere kan bidra til biologisk mangfold på gårder."
+      "description": "Lær hvordan produksjonsmetoder påvirker bærekraft og helse. Å forstå ulike landbrukssystemer gjør det lettere å ta mer informerte kjøpsbeslutninger."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
-      "name": "Avl for lavere avtrykk",
+      "name": "Innovasjon på tallerkenen",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Avl av dyr med lavere metanutslipp kan redusere husdyrholdets miljøpåvirkning."
+      "description": "Lær hvordan avl, forbedret genetikk og alternative proteiner påvirker matproduksjonen. Disse innovasjonene har som mål å produsere mat mer effektivt og bærekraftig."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
-      "name": "Matens sosiale side",
+      "name": "Handle sosialt bevisst",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "Bærekraft i matsystemet omfatter også sosiale forhold og arbeidsforhold."
+      "description": "Lær hvordan merkeordninger, sertifiseringer og innkjøpspraksis henger sammen med arbeidsforhold og levekår. Forbrukernes valg kan påvirke den sosiale bærekraften."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
-      "name": "Overvåking av flere indikatorer",
+      "name": "Les mellom etikettene",
       "title": "Produksjonsmetoder – Mellomnivå",
-      "description": "For fire innkjøpte matvarer skal du sammenligne NOVA-klassifiseringen med enten Green-Score eller Nutri-Score."
+      "description": "Matmerking kan gi verdifull informasjon om ernæring, bearbeiding og bærekraft, men ingen enkelt merking forteller hele historien. I dette eventyret lærer du å sammenligne ulike indikatorer som NOVA-klassifisering, Nutri-Score, Green-Score og ingredienslister, slik at du kan ta mer informerte matvalg. Når du forstår hvordan matvarer produseres og vurderes, blir det lettere å velge produkter som er bra både for helsen din og for et mer bærekraftig matsystem."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.1": {
-      "name": "Beslutninger basert på flere kriterier",
+      "name": "Tenk utover bearbeidingsmerkene",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Når du skal kjøpe minst tre varer, bør du vurdere både NOVA-klassifiseringen og Green-Score før du tar en beslutning, samtidig som du må huske på at ikke alle bearbeidede matvarer har stor miljøpåvirkning."
+      "description": "Utvikle en nyansert forståelse av matbearbeiding. Bærekraft avhenger av hele matsystemet, ikke bare av om en matvare er bearbeidet eller ikke."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
-      "name": "Avstand er ikke alt",
+      "name": "Tenk globalt, velg klokt",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Lokal mat er ikke alltid det mest bærekraftige alternativet."
+      "description": "Forstå hvordan global handel og matsystemer henger sammen. Informerte valg tar hensyn til opprinnelse sammen med andre bærekraftsindikatorer."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
-      "name": "Dyrkingsmetoder som hjelper",
+      "name": "Støtt bærekraftig landbruk",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Agroforestry innebærer å kombinere trær med avlinger eller husdyr på samme areal."
+      "description": "Utforsk hvordan innovative dyrkingsmetoder bidrar til robuste og miljøansvarlige matsystemer, samtidig som matproduksjonen opprettholdes."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
-      "name": "Innovasjon på gården",
+      "name": "Utforsker av fremtidens mat",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Genredigering kan bidra til å utvikle avlinger som er mer motstandsdyktige mot klimastress."
+      "description": "Forstå hvordan innovasjon kan styrke klimarobustheten, redusere ressursbruken og gjøre matsystemet mer bærekraftig, samtidig som ernæringskvaliteten opprettholdes."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
-      "name": "Hvem dyrker maten vår",
+      "name": "Støtt rettferdige matsystemer",
       "title": "Produksjonsmetoder – Avansert",
-      "description": "Kvinner spiller en avgjørende rolle i matproduksjonen, men har ofte dårligere tilgang til ressurser."
+      "description": "Forstå hvordan globale forsyningskjeder for mat påvirker mennesker og lokalsamfunn. Etiske matvalg kan bidra til mer rettferdige og inkluderende matsystemer."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
-      "name": "Observatør for emballasjemateriale",
+      "name": "Derfor er emballasje viktig",
       "title": "Emballasje – Nybegynner",
-      "description": "Identifiser emballasjematerialet til minst fem matvarer som er blitt spist i løpet av uken, og husk samtidig at matemballasje beskytter produktene mot forurensning, fuktighet, oksygen og fysiske skader, og bidrar dermed til å opprettholde matsikkerheten og kvaliteten."
+      "description": "Oppdag hvordan emballasje beskytter maten og hindrer at den blir dårlig. God emballasje kan bidra til både mattrygghet og bærekraft."
     },
     "QUEST.PACKAGING.BEGINNER.2": {
-      "name": "Gjenbrukbar emballasjevurderer",
+      "name": "Bruk om igjen",
       "title": "Emballasje – Nybegynner",
-      "description": "Finn frem alternativer for gjenbrukbar eller påfyllbar matemballasje ved minst fem anledninger, og husk at gjenbrukbar emballasje blir først miljøvennlig etter at den har blitt gjenbrukt et tilstrekkelig antall ganger."
+      "description": "Oppdag hvordan systemer for gjenbrukbar emballasje reduserer avfall. Små gjenbrukstiltak kan bidra til å spare ressurser og redusere miljøpåvirkningen."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
-      "name": "Valg basert på emballasjeinformasjon",
+      "name": "Emballasje med mening",
       "title": "Emballasje – Mellomnivå",
-      "description": "Ta hensyn til emballasjens egenskaper når du skal ta minst tre kjøpsbeslutninger, og husk samtidig at miljøpåvirkningen fra matproduksjonen er ofte langt større enn påvirkningen fra emballasjen som brukes til å beskytte maten."
+      "description": "Lær hvordan ulike emballasjematerialer påvirker matsvinn, ressursbruk og resirkulerbarhet. Bærekraftig emballasje innebærer avveininger som ikke alltid er åpenbare."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
-      "name": "Søk etter gjenbruksmuligheter",
+      "name": "Gjenbruk for å redusere",
       "title": "Emballasje – Mellomnivå",
-      "description": "Velg gjenbrukbare eller påfyllbare emballasjealternativer minst to ganger denne uken, og husk at gjenbrukbar emballasje kan redusere etterspørselen etter nye råvarer."
+      "description": "Lær hvordan pant-, påfyllings- og gjenbrukssystemer fungerer i praksis. Forbrukernes deltakelse er avgjørende for at disse systemene skal fungere godt."
     },
     "QUEST.PACKAGING.ADVANCED.1": {
-      "name": "Beslutninger om emballasje basert på flere kriterier",
+      "name": "Tenk i livsløp",
       "title": "Emballasje – Avansert",
-      "description": "Når du skal kjøpe minst tre produkter, bør du vurdere både emballasjematerialet og avhendingsmulighetene før du tar en beslutning, samtidig som du husker at spiselig emballasje kan bidra til å redusere avhengigheten av fossilbasert plast ved å erstatte konvensjonelle emballasjematerialer med biologisk nedbrytbare alternativer."
+      "description": "Se på emballasje i et livsløpsperspektiv. Det mest bærekraftige alternativet avhenger ofte av produktet, holdbarheten og hvordan emballasjen brukes."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
-      "name": "Verktøy for å utvikle vaner for gjenbruk",
+      "name": "Mestre sirkulær emballasje",
       "title": "Emballasje – Avansert",
-      "description": "Bruk gjenbrukbare eller påfyllbare emballasjesystemer ved minst fem anledninger. Se etter produkter som selges gjennom pant- eller påfyllingssystemer, og husk at hver gjenbrukbar emballasje har et break-even-punkt der den blir et bedre alternativ enn engangsemballasje."
+      "description": "Utforsk hvordan gjenbrukbar emballasje bidrar til målene for sirkulær økonomi. Å forstå gjenbrukssystemer bidrar til mer bærekraftige forbruksvaner."
     },
     "QUEST.FOOD_WASTE.BEGINNER.1": {
-      "name": "Smart serveringssett for nybegynnere",
+      "name": "Hver tallerken teller",
       "title": "Matsvinn – Nybegynner",
-      "description": "Logg 5: «Half Plate Saved»-tiltak, samtidig som man må huske på at husholdningene produserer mer matsvinn enn noen annen sektor i Den europeiske unionen."
+      "description": "Lær hvordan porsjonsstørrelser og serveringsvaner påvirker matsvinnet. Mindre matrester på tallerkenen sparer mat, penger og miljøressurser."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
-      "name": "Smartere lagring",
+      "name": "Spar det til i morgen",
       "title": "Matsvinn – Nybegynner",
-      "description": "Sørg for å lese pakningsanvisningene nøye om hvordan maten skal oppbevares etter at pakningen er åpnet, for minst fem av de kjøpte produktene, og husk samtidig at husholdningene står for mer enn halvparten av matsvinnet i EU."
+      "description": "Lær det grunnleggende om trygg oppbevaring og bruk av rester. God mathåndtering bidrar til å forebygge matsvinn og bevare matens kvalitet."
     },
     "QUEST.FOOD_WASTE.BEGINNER.3": {
-      "name": "Datoetikett-utforsker",
+      "name": "Unngå datofella",
       "title": "Matsvinn – Nybegynner",
-      "description": "Registrer 1 handling knyttet til forbruk av utgått produkt, samtidig som man må huske på at mer enn halvparten av alt matsvinn i Europa stammer fra husholdningene."
+      "description": "Lær forskjellen mellom matkvalitet og mattrygghet. Når du forstår datomerkingen, kan du unngå unødvendig matsvinn uten å sette helsen på spill."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
-      "name": "Test for å forutsi porsjonsstørrelse",
+      "name": "Kjøp det du trenger",
       "title": "Matsvinn – Nybegynner",
-      "description": "Før et måltid bør du anslå hvor mye mat du tror du kommer til å spise. Etter måltidet bør du sammenligne anslaget ditt med det du faktisk har spist, samtidig som du må huske på at porsjonsstørrelsene har økt betydelig i mange land de siste tiårene."
+      "description": "Lær hvordan handlevaner påvirker matsvinnet og husholdningsbudsjettet. Å unngå unødvendige innkjøp bidrar til mindre matsvinn og ressursbruk."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
-      "name": "Oppdrag 3: Rutine for kontroll av kjøleskapet",
+      "name": "Server smartere",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Registrer minst 3 handlinger av typen «Forbruk av utgåtte produkter» eller 3 handlinger av typen «Redusert matsvinn på tallerkenen», og husk at å tilby mindre porsjonsstørrelser kan redusere matsvinnet i kantiner og restauranter."
+      "description": "Bygg vaner som gjør det lettere å tilpasse porsjonene til appetitten. Å unngå unødvendige rester er bra både for ditt eget velvære og for bærekraften."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
-      "name": "Vanen med å planlegge måltider",
+      "name": "Gjør nytte av restene",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Lag en måltidsplan før du drar på en større handletur, og husk at «best før»-datoene angir kvaliteten."
+      "description": "Utvikle praktiske vaner for å bruke rester i nye måltider. Mindre svinn av rester sparer penger og bevarer ressursene som brukes i matproduksjonen."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
-      "name": "Oppdrag 3: Rutine for kontroll av kjøleskapet",
+      "name": "Planlegg før datoen går ut",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Sjekk kjøleskapet eller spiskammeret før du drar på en større handletur. Registrer minst 3 «Forbrukte utgåtte produkter»-handlinger eller 3 «Sparte fulle tallerkener»-handlinger, og husk at matavfallet fra husholdningene i Europa anslås til rundt 69 millioner tonn per år."
+      "description": "Utvikle vaner for oppbevaring og planlegging som hjelper deg å bruke maten før den blir til svinn. Bedre planlegging er bra både for økonomien og for miljøet."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
-      "name": "Portion Control Pro",
+      "name": "Planlegg før du handler",
       "title": "Matsvinn – Mellomnivå",
-      "description": "Noter ned minst «Half Plate Saved»-tiltak, og husk samtidig at miljøpåvirkningen av kostholdet avhenger ikke bare av hva folk spiser, men også av hvor mye de spiser."
+      "description": "Utforsk hvordan tilbud, porsjonsstørrelser og handlevalg påvirker matsvinnet. Bedre planlegging er bra både for helsen din og for bærekraften."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
-      "name": "Fokus på null avfall fra tallerkenene",
+      "name": "Kast mindre, utrett mer",
       "title": "Matsvinn – Avansert",
-      "description": "Registrer minst 7 «Half Plate Saved»-handlinger, og husk at kjøttsvinn bidrar i uforholdsmessig stor grad til matavfallets klimapåvirkning."
+      "description": "Forstå de bredere miljøkonsekvensene av matrester på tallerkenen, og lær avanserte strategier for å redusere svinnet i hverdagen."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
-      "name": "Ekspert på forebygging av utløp",
+      "name": "Mestre nullavfallskjøkkenet",
       "title": "Matsvinn – Avansert",
-      "description": "Registrer 4 handlinger knyttet til forbruk av utgåtte produkter, samtidig som man må huske på at kjøtt og meieriprodukter blir kanskje sjeldnere kastet, men har et større miljøavtrykk når de kastes."
+      "description": "Bygg avanserte rutiner for oppbevaring, planlegging og gjenbruk. Effektiv mathåndtering er bra for husholdningsbudsjettet, ernæringen og bærekraften."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
-      "name": "Ekspert på «først inn, først ut»-prinsippet",
+      "name": "Ligg i forkant av matsvinnet",
       "title": "Matsvinn – Avansert",
-      "description": "I løpet av uken bør du organisere kjøleskapet, fryseren eller spiskammeret slik at matvarer med kortest gjenværende holdbarhet alltid plasseres foran og brukes først, samtidig som du må huske på at tilbud på flerpakninger og mengderabatter kan få forbrukerne til å kjøpe mer mat enn de klarer å bruke."
+      "description": "Mestre teknikker som hindrer at matvarer går ut på dato unødvendig. Smart planlegging bidrar til mer bærekraftige forbruksmønstre."
     },
     "QUEST.FOOD_WASTE.ADVANCED.4": {
-      "name": "Planleggingsuken for null avfall",
+      "name": "Forbruk med omtanke",
       "title": "Matsvinn – Avansert",
-      "description": "Planlegg alle hovedmåltidene for uken før du drar på din første handletur, og kjøp kun matvarer som du har planlagt å bruke, samtidig som du husker at å spise mer mat enn kroppen trenger, øker etterspørselen etter landbruksressurser som jord, vann og energi."
+      "description": "Forstå sammenhengen mellom overforbruk, avfall og miljøpåvirkning. Gjennomtenkt forbruk bidrar til en sunnere og mer bærekraftig livsstil."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
-      "name": "Protein hver dag",
+      "name": "Smartere protein",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Sørg for å inkludere et proteinrikt matprodukt i minst ett måltid hver dag, og husk at protein bidrar til å bygge opp og reparere muskler, vev, enzymer og hormoner."
+      "description": "Lær hvorfor protein er viktig, og oppdag ulike proteinrike matvarer. Varierte proteinvalg kan være bra for både helse og bærekraft."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
-      "name": "Smart snackbytte",
+      "name": "Bedre fett, bedre valg",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Logg 5: Mellommåltid → Bytt ut med frukt eller nøtter, og husk at umettede fettstoffer er generelt sunnere enn mettede fettstoffer."
+      "description": "Lær forskjellen mellom sunnere og mindre sunt fett. Fettkvaliteten kan påvirke helsen på lang sikt."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
-      "name": "Oppgradering av drikke",
+      "name": "Finn det skjulte sukkeret",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Logg 3: Bytt ut sukkerholdige drikker med vann, og husk at sukkerholdige drikker er en viktig kilde til tilsatt sukker i mange kosthold."
+      "description": "Oppdag hvor sukker vanligvis finnes i mat og drikke. Å redusere inntaket av fritt sukker kan forbedre kostholdskvaliteten generelt."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.4": {
-      "name": "Salt Spotter",
+      "name": "Bli kvitt saltvanen",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Velg en ferdigpakket matvare og finn ut hvor mye salt den inneholder per 100 gram, og husk at de fleste inntar mer enn det dobbelte av det anbefalte saltinntaket."
+      "description": "Lær hvor saltet kommer fra, og hvorfor for høyt inntak har betydning. Små endringer kan bidra til god hjerte- og karhelse på lang sikt."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.5": {
-      "name": "Fullkornsuken",
+      "name": "Mat tarmen din",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Velg et fullkornsprodukt hver dag. Velg matvarer som fullkornsbrød, fullkornspasta, havre, brun ris, rugbrød, quinoa eller andre fullkornsprodukter, og husk at de fleste europeere inntar mindre fiber enn det som anbefales."
+      "description": "Oppdag hvilken rolle kostfiber spiller, og hvilke matvarer som inneholder det. Fiber bidrar til god fordøyelse og generelt velvære."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.6": {
-      "name": "Legg til én frukt eller grønnsak til",
+      "name": "Næringsstoffer som teller",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Legg til én ekstra porsjon frukt eller grønnsaker i kostholdet ditt hver dag, og husk samtidig at vitamin D-mangel er utbredt i hele Europa."
+      "description": "Lær hvorfor vitaminer er viktige for helsen, og hvor du finner dem i vanlige matvarer. Et variert kosthold bidrar til bedre ernæring."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
-      "name": "Kalorier er ikke alt",
+      "name": "Energi med mening",
       "title": "Næringsverdier – Nybegynner",
-      "description": "Verden produserer allerede nok kalorier til å brødfø alle."
+      "description": "Lær hva kalorier er, og hvorfor de har betydning. Å forstå energiinntaket hjelper deg å ta sunnere matvalg."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
-      "name": "Erstatning for bearbeidet kjøtt",
+      "name": "Bygg bedre proteinvaner",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Før inn 2 bytt av bearbeidet kjøtt mot belgfrukter, samtidig som du husker at de fleste voksne trenger omtrent 0,83 g protein per kilo kroppsvekt hver dag."
+      "description": "Utforsk et bredere utvalg av proteinkilder, og lær hvordan de bidrar til et balansert kosthold. Proteinvalgene påvirker også miljøet."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
-      "name": "Oppgradering til sunt fett",
+      "name": "Velg sunt fett",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Velg en kilde til umettet fett i stedet for en kilde til mettet fett ved minst fem anledninger, og husk at hvilken type fett du spiser, er like viktig som mengden."
+      "description": "Utforsk praktiske måter å forbedre fettkvaliteten på gjennom matvalgene dine. Mange sunnere fettkilder henger også sammen med mer bærekraftige kostholdsmønstre."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
-      "name": "Sammenligning av drikker",
+      "name": "Tenk nytt om søte valg",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Sammenlign to søte drikker som du liker å drikke, og finn ut hvilken som inneholder minst sukker per 100 ml. Husk samtidig at WHO anbefaler å begrense inntaket av fritt sukker til under 10 % av det daglige energiinntaket."
+      "description": "Lær å oppdage og redusere unødvendig sukkerinntak. Sunnere valg bidrar til velvære på lang sikt og bedre matvaner."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
-      "name": "Saltfritt bord",
+      "name": "Finn det skjulte natriumet",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Ikke tilsett salt i maten ved bordet i løpet av uken, og husk at WHO anbefaler å innta mindre enn 5 gram salt per dag."
+      "description": "Utforsk vanlige natriumkilder, og oppdag praktiske måter å erstatte dem på. Mindre natrium bidrar til sunnere spisevaner."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
-      "name": "Fiber til hvert måltid",
+      "name": "Lag en fiberrik tallerken",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Inkluder minst én fiberrik matvare i hvert hovedmåltid, og husk at voksne bør ha som mål å få i seg minst 25 gram kostfiber per dag."
+      "description": "Lær praktiske måter å øke fiberinntaket på gjennom vanlige matvarer. Mer fiber betyr ofte et mer plantebasert og bærekraftig kosthold."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
-      "name": "Vitaminer fra tallerkenen",
+      "name": "Spis for næringsmangfold",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Et variert kosthold bidrar til å redusere risikoen for vitaminmangel."
+      "description": "Oppdag hvordan ulike matvarer gir ulike vitaminer og mineraler. Et mer variert kosthold er bra både for helsen og for bærekraftige matvalg."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.7": {
-      "name": "Samme kalorier, ulik påvirkning",
+      "name": "Kalorier i sammenheng",
       "title": "Næringsverdier – Mellomnivå",
-      "description": "Matvarer som inneholder like mange kalorier, kan ha svært ulik miljøpåvirkning."
+      "description": "Oppdag hvorfor kalorier bare er en del av ernæringshistorien. Matkvalitet og næringstetthet er like viktig."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.1": {
-      "name": "Fullverdige planteproteiner",
+      "name": "Mester i proteinmangfold",
       "title": "Næringsverdier – Avansert",
-      "description": "Å spise en rekke ulike planteproteiner kan gi deg alle essensielle aminosyrer."
+      "description": "Utvikle en proteinstrategi som balanserer ernæringskvalitet og bærekraft. Å forstå proteinsystemer bidrar til både planetens og din egen helse."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
-      "name": "Forstå fettet i maten",
+      "name": "Mestre fettkvalitet",
       "title": "Næringsverdier – Avansert",
-      "description": "Fett bør utgjøre ikke mer enn ca. 30 % av det totale daglige energiinntaket."
+      "description": "Forstå hvilken rolle ulike typer fett spiller for helsen og matsystemene. Informerte valg bidrar til god hjerte- og karhelse og et bærekraftig kosthold."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
-      "name": "Uken for bevisstgjøring om tilsatt sukker",
+      "name": "Ta kontroll over sukkeret",
       "title": "Næringsverdier – Avansert",
-      "description": "Unngå mat og drikke der tilsatt sukker er blant de tre første ingrediensene gjennom hele uken, og husk at når man lager mat hjemme, er det lettere å kontrollere innholdet av tilsatt sukker."
+      "description": "Utvikle ferdigheter til å navigere i matmerking og skjulte sukkerkilder. Å forstå sukker bidrar til et sunnere og mer bevisst forbruk."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.4": {
-      "name": "Natrium-hotspot",
+      "name": "Bli natriumbevisst",
       "title": "Næringsverdier – Avansert",
-      "description": "Finn ut hvilke matvarer i kjøkkenet ditt som har det høyeste saltinnholdet per 100 gram, og husk at brød, kjøttprodukter og ost er viktige natriumkilder i Europa."
+      "description": "Utvikle evnen til å vurdere natriuminnholdet og ta informerte matvalg. Økt bevissthet er bra både for helsen og for smart forbruk."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.5": {
-      "name": "Fiberrik frokostuke",
+      "name": "Optimaliser tarmhelsen",
       "title": "Næringsverdier – Avansert",
-      "description": "Start hver dag med en frokost som inneholder en god kilde til fiber. Bygg frokosten opp rundt havre, fullkorn, frukt, frø, nøtter eller andre fiberrike matvarer, og husk at et høyere fiberinntak er knyttet til lavere risiko for hjertesykdom og type 2-diabetes."
+      "description": "Forstå hvordan ulike fiberkilder bidrar til god helse på lang sikt. Å velge fiberrike matvarer konsekvent er bra både for din egen helse og for et bærekraftig kosthold."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
-      "name": "Regnbueuken",
+      "name": "Bygg et robust næringsgrunnlag",
       "title": "Næringsverdier – Avansert",
-      "description": "Spis matvarer i minst fem forskjellige frukt- og grønnsaksfarger hver dag, og husk at vitamin B12 finnes hovedsakelig i animalske matvarer."
+      "description": "Utvikle et kosthold med varierte næringskilder. Å forstå mikronæringsstoffer bidrar til å forebygge mangler og fremmer samtidig et balansert og bærekraftig kostholdsmønster."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
-      "name": "Uken med næringsrike retter",
+      "name": "Mer enn kalorier",
       "title": "Næringsverdier – Avansert",
-      "description": "Sørg for at hvert hovedmåltid inneholder minst tre av følgende: en proteinkilde, en fiberrik matvare, en frukt eller grønnsak, eller en kilde til sunne fettstoffer, samtidig som du må huske på at når man bruker avlingsprodukter som fôr til husdyr, fører det til store kaloritap."
+      "description": "Forstå hvordan kalorier, næringstetthet, matkvalitet og bærekraft henger sammen. Et sunt kosthold handler om balanse, ikke bare om energiinntak."
     }
   },
   "meta": {
