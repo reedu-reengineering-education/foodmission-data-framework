@@ -170,6 +170,7 @@ model FoodFact {
   id         String       @id @default(uuid())
   code       String       @unique
   topicId    String
+  title      String
   body       String
   source     String?
   level      ContentLevel
@@ -214,6 +215,7 @@ model Quiz {
   id          String       @id @default(uuid())
   code        String       @unique
   topicId     String
+  title       String
   question    String
   explanation String
   source      String?

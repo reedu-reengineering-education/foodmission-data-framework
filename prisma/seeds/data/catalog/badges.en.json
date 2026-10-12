@@ -29,7 +29,7 @@
   },
   {
     "code": "MISSIONARY",
-    "name": "Missionary",
+    "name": "Mission Starter",
     "description": "Complete 3 missions.",
     "ruleCode": "MISSIONARY",
     "sortOrder": 5

@@ -11,7 +11,10 @@ export function buildFoodFactWhere(
   if (filters.foodChoice !== undefined) where.foodChoice = filters.foodChoice;
   if (filters.foodWaste !== undefined) where.foodWaste = filters.foodWaste;
   if (filters.search) {
-    where.body = { contains: filters.search, mode: 'insensitive' };
+    where.OR = [
+      { title: { contains: filters.search, mode: 'insensitive' } },
+      { body: { contains: filters.search, mode: 'insensitive' } },
+    ];
   }
 
   if (filters.topicCode || filters.dimensionCode) {
@@ -36,7 +39,10 @@ export function buildQuizWhere(
   if (filters.foodChoice !== undefined) where.foodChoice = filters.foodChoice;
   if (filters.foodWaste !== undefined) where.foodWaste = filters.foodWaste;
   if (filters.search) {
-    where.question = { contains: filters.search, mode: 'insensitive' };
+    where.OR = [
+      { title: { contains: filters.search, mode: 'insensitive' } },
+      { question: { contains: filters.search, mode: 'insensitive' } },
+    ];
   }
 
   if (filters.topicCode || filters.dimensionCode) {

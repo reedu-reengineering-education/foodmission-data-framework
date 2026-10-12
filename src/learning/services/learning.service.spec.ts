@@ -190,6 +190,7 @@ describe('LearningService', () => {
       id: 'ff1',
       code: 'FF.B1.1',
       topicId: 't1',
+      title: 'Fact title',
       body: 'Fact body',
       source: null,
       level: ContentLevel.BEGINNER,
@@ -211,6 +212,7 @@ describe('LearningService', () => {
       }),
     );
     expect(result.data).toHaveLength(1);
+    expect(result.data[0].title).toBe('Fact title');
     expect(result.data[0].body).toBe('Fact body');
     expect(result.meta).toMatchObject({
       page: 1,
@@ -227,6 +229,7 @@ describe('LearningService', () => {
       id: 'q1',
       code: 'Q.B1.1',
       topicId: 't1',
+      title: 'Best choice',
       question: 'Which is best?',
       explanation: 'Because reuse',
       source: null,
@@ -284,6 +287,7 @@ describe('LearningService', () => {
     expect(result.isCorrect).toBe(true);
     expect(result.completed).toBe(true);
     expect(result.quizCode).toBe('Q.B1.1');
+    expect(result.title).toBe('Best choice');
     expect(result.question).toBe('Which is best?');
   });
 
@@ -292,6 +296,7 @@ describe('LearningService', () => {
       id: 'q1',
       code: 'Q.B1.1',
       topicId: 't1',
+      title: 'Best choice',
       question: 'Which is best?',
       explanation: 'Because reuse',
       source: null,
@@ -310,6 +315,7 @@ describe('LearningService', () => {
       userId: 'u1',
       quizId: 'q1',
       quizCode: 'Q.B1.1',
+      title: 'Best choice',
       question: 'Which is best?',
       completed: false,
     });
@@ -334,6 +340,7 @@ describe('LearningService', () => {
           id: 'quiz-2',
           code: 'Q.B1.2',
           topicId: 't2',
+          title: 'Saving more',
           question: 'Which option saves more?',
           explanation: 'Because it is lower impact',
           source: null,
@@ -391,6 +398,7 @@ describe('LearningService', () => {
       expect(result).toMatchObject({
         id: 'quiz-2',
         code: 'Q.B1.2',
+        title: 'Saving more',
         question: 'Which option saves more?',
       });
 
@@ -413,6 +421,7 @@ describe('LearningService', () => {
           id: 'quiz-3',
           code: 'Q.B2.3',
           topicId: 't3',
+          title: 'Correct label',
           question: 'Which label is correct?',
           explanation: 'Because it is seasonal',
           source: null,
@@ -762,6 +771,7 @@ describe('LearningService', () => {
       id: 'q1',
       code: 'Q.B1.1',
       topicId: 't1',
+      title: 'Best choice',
       question: 'Which is best?',
       explanation: 'Because reuse',
       source: null,

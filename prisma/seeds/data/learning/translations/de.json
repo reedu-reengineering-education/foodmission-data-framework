@@ -37,758 +37,1009 @@
   },
   "foodFacts": {
     "FF1.1.1": {
+      "title": "Weniger rotes Fleisch, weniger Umweltbelastung",
       "body": "Weniger rotes Fleisch zu essen ist eine der wirksamsten Möglichkeiten, die Umweltauswirkungen der eigenen Ernährung zu verringern."
     },
     "FF1.1.2": {
+      "title": "Rindfleisch und Wälder",
       "body": "Eine geringere Rindfleischmenge kann den Druck auf Wälder und natürliche Lebensräume verringern."
     },
     "FF1.1.3": {
+      "title": "Weniger Fleisch, weniger Emissionen",
       "body": "Ernährungsweisen mit weniger Fleisch verursachen in der Regel weniger Treibhausgasemissionen."
     },
     "FF1.1.4": {
+      "title": "Mehr Pflanzen, weniger rotes Fleisch",
       "body": "Eine nachhaltige Ernährung enthält in der Regel mehr pflanzliche Lebensmittel und weniger rotes Fleisch."
     },
     "FF1.1.5": {
+      "title": "Flächenbedarf von Rindfleisch",
       "body": "Die Produktion von Rindfleisch erfordert deutlich mehr Land als die Herstellung pflanzlicher Proteine wie Erbsen oder Tofu."
     },
     "FF1.1.6": {
+      "title": "Fleisch und Wasserverbrauch",
       "body": "Ein geringerer Fleischkonsum kann den Wasserverbrauch im Zusammenhang mit der Lebensmittelproduktion senken."
     },
     "FF1.1.7": {
+      "title": "Fleisch und Antibiotika",
       "body": "Eine Reduzierung des Fleischkonsums könnte dazu beitragen, den Bedarf an Antibiotika in der Tierhaltung zu senken."
     },
     "FF1.1.8": {
+      "title": "Tierhaltung: Fläche vs. Kalorien",
       "body": "Die Tierhaltung beansprucht weltweit den größten Teil der landwirtschaftlichen Nutzfläche, liefert dabei jedoch nur einen viel geringeren Anteil an Kalorien und Eiweiß."
     },
     "FF1.1.9": {
+      "title": "Tierhaltung und biologische Vielfalt",
       "body": "Eine geringere Nachfrage nach tierischen Erzeugnissen kann durch die Verringerung der Flächenumwandlung zum Erhalt der biologischen Vielfalt beitragen."
     },
     "FF1.1.10": {
+      "title": "Hülsenfrüchte statt Fleisch",
       "body": "Durch den Ersatz einiger Fleischmahlzeiten durch Hülsenfrüchte lässt sich die Proteinaufnahme aufrechterhalten und gleichzeitig die Umweltbelastung verringern."
     },
     "FF1.2.1": {
+      "title": "Hülsenfrüchte senken die Klimawirkung",
       "body": "Wenn Sie einen Teil Ihres Fleischkonsums durch Hülsenfrüchte ersetzen, können Sie die Klimaauswirkungen Ihrer Ernährung verringern."
     },
     "FF1.2.2": {
+      "title": "Hülsenfrüchte: nahrhaft und umweltschonend",
       "body": "Hülsenfrüchte sind reich an Eiweiß, Ballaststoffen, Vitaminen und Mineralstoffen und haben gleichzeitig einen geringen ökologischen Fußabdruck."
     },
     "FF1.2.3": {
+      "title": "Vielfältige Proteinquellen",
       "body": "Die Diversifizierung der Proteinquellen trägt sowohl zur menschlichen Gesundheit als auch zur ökologischen Nachhaltigkeit bei."
     },
     "FF1.2.4": {
+      "title": "Die nachhaltigsten Proteinquellen",
       "body": "Bohnen, Linsen, Erbsen und Kichererbsen gehören zu den nachhaltigsten Proteinquellen, die es gibt."
     },
     "FF1.2.5": {
+      "title": "Hülsenfrüchte sparen Wasser",
       "body": "Hülsenfrüchte benötigen in der Regel weniger Wasser als viele tierische Proteinquellen."
     },
     "FF1.2.6": {
+      "title": "Hülsenfrüchte plus Getreide",
       "body": "Die Kombination von Hülsenfrüchten mit Getreide verbessert die Qualität des pflanzlichen Proteins."
     },
     "FF1.2.7": {
+      "title": "Eier und Milchprodukte vs. rotes Fleisch",
       "body": "Eier und Milchprodukte können Eiweiß liefern, das die Umwelt weniger belastet als rotes Fleisch."
     },
     "FF1.2.8": {
+      "title": "Hülsenfrüchte nähren den Boden",
       "body": "Hülsenfrüchte verbessern auf natürliche Weise die Bodenfruchtbarkeit, indem sie Stickstoff aus der Luft binden und so den Bedarf an Düngemitteln verringern."
     },
     "FF1.2.9": {
+      "title": "Insekten als Proteinquelle",
       "body": "Insekten sind reich an Nährstoffen und könnten in zukünftigen Ernährungssystemen zu einer wichtigen alternativen Proteinquelle werden."
     },
     "FF1.2.10": {
+      "title": "Pflanzliche Fleischalternativen",
       "body": "Pflanzliche Fleischalternativen können dazu beitragen, den Fleischkonsum zu senken, doch ihre Nährwertqualität variiert je nach Produkt."
     },
     "FF1.3.1": {
+      "title": "Quinoa: ein vollständiges Protein",
       "body": "Quinoa enthält alle neun essentiellen Aminosäuren und ist damit ein vollständiges pflanzliches Protein."
     },
     "FF1.3.2": {
+      "title": "Hülsenfrüchte und chronische Erkrankungen",
       "body": "Hülsenfrüchte sind nährstoffreiche Grundnahrungsmittel, die mit einem geringeren Risiko für chronische Erkrankungen in Verbindung gebracht werden."
     },
     "FF1.3.3": {
+      "title": "Mehr als Weizen, Reis und Mais",
       "body": "Alternative Anbaupflanzen tragen dazu bei, die Abhängigkeit von Weizen, Reis und Mais zu verringern."
     },
     "FF1.3.4": {
+      "title": "Widerstandsfähige Hirse",
       "body": "Hirse ist eine äußerst widerstandsfähige Kulturpflanze, die unter heißen, trockenen Bedingungen mit wenig Wasser wachsen kann."
     },
     "FF1.3.5": {
+      "title": "Hirse im Klimawandel",
       "body": "Hirse kann auch unter klimatischen Bedingungen weiterhin Nahrungsmittel liefern, unter denen andere Nutzpflanzen möglicherweise versagen."
     },
     "FF1.3.6": {
+      "title": "Vielfältige Kulturen, mehr Ernährungssicherheit",
       "body": "Der Anbau einer größeren Vielfalt an Grundnahrungsmitteln kann die Ernährungssicherheit und die Widerstandsfähigkeit gegenüber dem Klimawandel stärken."
     },
     "FF1.3.7": {
+      "title": "Quinoa erobert die Welt",
       "body": "Quinoa wird mittlerweile in mehr als 70 Ländern angebaut und trägt so zur Diversifizierung der weltweiten Nahrungsmittelproduktion bei."
     },
     "FF1.3.8": {
+      "title": "Vorzüge von Buchweizen",
       "body": "Buchweizen ist von Natur aus glutenfrei und reich an Ballaststoffen, Eiweiß und Antioxidantien."
     },
     "FF1.3.9": {
+      "title": "Eiweiß aus Amaranth",
       "body": "Amaranth enthält hochwertiges Eiweiß, darunter auch Lysin."
     },
     "FF1.3.10": {
+      "title": "Antioxidantien in alten Getreidesorten",
       "body": "Alte Getreidesorten wie Hirse, Quinoa und Amaranth enthalten wertvolle Antioxidantien."
     },
     "FF2.1.1": {
+      "title": "Landwirtschaft auf der Hälfte der Fläche",
       "body": "Etwa die Hälfte der weltweit bewohnbaren Landfläche wird landwirtschaftlich genutzt."
     },
     "FF2.1.2": {
+      "title": "Pflanzliches Protein spart Fläche",
       "body": "Die Produktion pflanzlicher Proteine erfordert in der Regel weitaus weniger Land als die Fleischproduktion."
     },
     "FF2.1.3": {
+      "title": "Pflanzliche Mahlzeiten machen Flächen frei",
       "body": "Die Entscheidung für mehr pflanzliche Mahlzeiten kann dazu beitragen, Flächen für die Renaturierung freizumachen."
     },
     "FF2.1.4": {
+      "title": "Weniger Rindfleisch, weniger Landverbrauch",
       "body": "Die Reduzierung des Rindfleischkonsums ist eine der größten Ernährungsumstellungen, um den Landverbrauch zu senken."
     },
     "FF2.1.5": {
+      "title": "Rindfleisch braucht am meisten Land",
       "body": "Rindfleisch ist eines der landintensivsten Lebensmittel, die Menschen konsumieren."
     },
     "FF2.1.6": {
+      "title": "Verschwendete Lebensmittel, verschwendete Flächen",
       "body": "Durch die Verringerung der Lebensmittelverschwendung könnte eine Fläche eingespart werden, die größer ist als manche Länder."
     },
     "FF2.1.7": {
+      "title": "Landwirtschaft braucht die Natur",
       "body": "Die Landwirtschaft ist auf gesunde Böden, Biodiversität und Ökosystemleistungen angewiesen."
     },
     "FF2.1.8": {
+      "title": "Flächen für Vieh und Futtermittel",
       "body": "Der Großteil der landwirtschaftlichen Flächen wird als Weideland für Vieh oder zum Anbau von Futtermitteln genutzt."
     },
     "FF2.1.9": {
+      "title": "Flächenausweitung und Artenvielfalt",
       "body": "Die Ausweitung landwirtschaftlicher Nutzflächen ist ein wesentlicher Faktor für den Verlust der Artenvielfalt."
     },
     "FF2.1.10": {
+      "title": "Degradierte Agrarflächen",
       "body": "Etwa 52 % der landwirtschaftlichen Flächen sind mäßig oder erheblich degradiert."
     },
     "FF2.2.1": {
+      "title": "Wasserverbrauch der Landwirtschaft",
       "body": "Rund 70 % der weltweiten Süßwasserentnahmen werden für die Landwirtschaft genutzt."
     },
     "FF2.2.2": {
+      "title": "Weniger tierische Produkte, weniger Wasser",
       "body": "Eine Ernährung mit weniger tierischen Produkten erfordert oft weniger Wasser."
     },
     "FF2.2.3": {
+      "title": "Nachhaltige Ernährung spart Wasser",
       "body": "Eine nachhaltige Ernährung kann den wasserbezogenen Verbrauch im Lebensmittelbereich um 20–50 % senken."
     },
     "FF2.2.4": {
+      "title": "Verschwendete Lebensmittel, verschwendetes Wasser",
       "body": "Durch Lebensmittelverschwendung gehen zudem enorme Mengen an Wasser verloren, das für den Anbau von Lebensmitteln verwendet wurde."
     },
     "FF2.2.5": {
+      "title": "Drohende Wasserknappheit",
       "body": "Wasserknappheit könnte bis zum Jahr 2050 in vielen Regionen die Nahrungsmittelproduktion gefährden."
     },
     "FF2.2.6": {
+      "title": "Abfall vermeiden, Wasser sparen",
       "body": "Die Vermeidung von Lebensmittelabfällen trägt zur Schonung der Süßwasserressourcen bei."
     },
     "FF2.2.7": {
+      "title": "Der Wasserfußabdruck Ihrer Ernährung",
       "body": "Der Wasserfußabdruck Ihrer Ernährung hängt stark davon ab, was Sie essen."
     },
     "FF2.2.8": {
+      "title": "Klügere Wasserbewirtschaftung",
       "body": "Eine Verbesserung der Wasserbewirtschaftung kann die Umweltauswirkungen der Landwirtschaft verringern."
     },
     "FF2.2.9": {
+      "title": "Steigende Bewässerung",
       "body": "Der Wasserverbrauch für die Bewässerung hat sich seit 1961 mehr als verdoppelt."
     },
     "FF2.2.10": {
+      "title": "Dünger und Wasserverschmutzung",
       "body": "Ein übermäßiger Düngemitteleinsatz trägt zur Wasserverschmutzung und zur Entstehung von Totzonen bei."
     },
     "FF2.3.1": {
+      "title": "Anteil der Ernährung an den Emissionen",
       "body": "Die Ernährungssysteme verursachen etwa ein Drittel der weltweiten Treibhausgasemissionen."
     },
     "FF2.3.2": {
+      "title": "Hülsenfrüchte senken Emissionen",
       "body": "Der Ersatz eines Teils des tierischen Proteins durch Hülsenfrüchte kann die durch die Ernährung verursachten Emissionen senken."
     },
     "FF2.3.3": {
+      "title": "Saisonale Lebensmittel, weniger Emissionen",
       "body": "Der Kauf von saisonalen Lebensmitteln kann dazu beitragen, die durch Lebensmittel verursachten Emissionen zu senken."
     },
     "FF2.3.4": {
+      "title": "Gleiche Kalorien, unterschiedlicher Fußabdruck",
       "body": "Lebensmittel mit dem gleichen Kaloriengehalt können einen sehr unterschiedlichen CO₂-Fußabdruck aufweisen."
     },
     "FF2.3.5": {
+      "title": "Fußabdruck von Rind- und Lammfleisch",
       "body": "Fleisch, insbesondere Rind- und Lammfleisch, hat einen deutlich höheren CO₂-Fußabdruck als die meisten pflanzlichen Lebensmittel."
     },
     "FF2.3.6": {
+      "title": "Emissionen vegetarischer Ernährung",
       "body": "Vegetarische Ernährungsweisen können zu deutlich geringeren Emissionen führen als fleischreiche Ernährungsweisen."
     },
     "FF2.3.7": {
+      "title": "Der Flexitarier-Effekt",
       "body": "Eine flexitarische Ernährung kann die Auswirkungen auf das Klima erheblich verringern."
     },
     "FF2.3.8": {
+      "title": "Emissionen durch Lebensmittelverschwendung",
       "body": "Lebensmittelverschwendung verursacht jährlich Milliarden Tonnen CO₂-Äquivalent-Emissionen."
     },
     "FF2.3.9": {
+      "title": "Wälder speichern Kohlenstoff",
       "body": "Der Schutz der Wälder verhindert umfangreiche Kohlenstoffemissionen durch Landnutzungsänderungen."
     },
     "FF2.3.10": {
+      "title": "Fruchtfolgen mit Leguminosen",
       "body": "Fruchtfolgen mit Leguminosen können den CO₂-Fußabdruck der Pflanzenproduktion verringern."
     },
     "FF2.4.1": {
+      "title": "Emissionen durch Lebensmitteltransport",
       "body": "Der weltweite Transport von Lebensmitteln verursacht jährlich etwa 3 Milliarden Tonnen CO₂-Äquivalent-Emissionen."
     },
     "FF2.4.2": {
+      "title": "Kühltransporte",
       "body": "Der Transport über große Entfernungen erfordert oft eine Kühlung, was den Energieverbrauch und den CO₂-Fußabdruck von Lebensmitteln erhöht."
     },
     "FF2.4.3": {
+      "title": "Saisonal wählen, weniger Transport",
       "body": "Die Auswahl saisonaler Lebensmittel und die Reduzierung unnötiger Transportwege können dazu beitragen, die Auswirkungen des Lebensmittelsystems auf das Klima zu verringern."
     },
     "FF2.4.4": {
+      "title": "Transportanteil an Lebensmittelemissionen",
       "body": "Fast ein Fünftel der Treibhausgasemissionen des globalen Ernährungssystems entsteht durch den Transport von Lebensmitteln."
     },
     "FF2.4.5": {
+      "title": "Transportwege von Obst und Gemüse",
       "body": "Obst und Gemüse sind weltweit für rund 36 % der durch den Transport von Lebensmitteln verursachten Emissionen verantwortlich."
     },
     "FF2.4.6": {
+      "title": "Die Kühlkette",
       "body": "Die Aufrechterhaltung einer lückenlosen Kühlkette ist unerlässlich, um die Qualität der Lebensmittel zu bewahren und Verderb während des Transports zu vermeiden."
     },
     "FF2.4.7": {
+      "title": "Emissionen: Transport vs. Anbau",
       "body": "Der Transport von Obst und Gemüse kann etwa doppelt so viele Treibhausgasemissionen verursachen wie deren Anbau."
     },
     "FF2.4.8": {
+      "title": "Emissionen durch Lebensmittelfracht",
       "body": "Obwohl auf Lebensmittel nur etwa 18 % der weltweiten Frachttransportstrecken entfallen, verursachen sie rund 27 % der frachtbedingten Emissionen."
     },
     "FF2.4.9": {
+      "title": "Verluste ohne Kühlung",
       "body": "Jedes Jahr gehen rund 526 Millionen Tonnen Lebensmittel aufgrund unzureichender Kühl- und Gefrieranlagen verloren oder werden verschwendet."
     },
     "FF2.4.10": {
+      "title": "Bessere Kühlketten",
       "body": "Eine Verbesserung der Kühlketteninfrastruktur kann Lebensmittelverluste verringern, die Ernährungssicherheit verbessern und die Auswirkungen auf die Umwelt verringern."
     },
     "FF3.1.1": {
+      "title": "Verarbeitung für mehr Sicherheit",
       "body": "Die Lebensmittelverarbeitung kann die Lebensmittelsicherheit verbessern und die Haltbarkeit verlängern."
     },
     "FF3.1.2": {
+      "title": "Verarbeitung verhindert Verschwendung",
       "body": "Durch die Verarbeitung lassen sich Lebensmittel länger haltbar machen und so Lebensmittelverschwendung verringern."
     },
     "FF3.1.3": {
+      "title": "Hochverarbeitete Lebensmittel",
       "body": "Hochverarbeitete Lebensmittel enthalten oft mehr Zucker, Salz und gesättigte Fettsäuren."
     },
     "FF3.1.4": {
+      "title": "Energieverbrauch der Verarbeitung",
       "body": "Die verschiedenen Verarbeitungsverfahren verbrauchen sehr unterschiedliche Mengen an Energie."
     },
     "FF3.1.5": {
+      "title": "Energiebedarf von Tiefkühlkost",
       "body": "Tiefkühlkost kann bei der Lagerung einen erheblichen Energieaufwand erfordern."
     },
     "FF3.1.6": {
+      "title": "Über den Hof hinaus",
       "body": "Verarbeitung, Verpackung und Transport tragen alle zu den Auswirkungen des Lebensmittelsystems bei."
     },
     "FF3.1.7": {
+      "title": "Nicht jede Verarbeitung schadet",
       "body": "Nicht alle verarbeiteten Lebensmittel haben erhebliche Auswirkungen auf die Umwelt."
     },
     "FF3.1.8": {
+      "title": "Effizient lagern und transportieren",
       "body": "Die Lebensmittelverarbeitung kann die Effizienz bei Lagerung und Transport verbessern."
     },
     "FF3.1.9": {
+      "title": "Die Technologie zählt",
       "body": "Die Haltbarkeit von verarbeiteten Lebensmitteln hängt von der Herstellungstechnologie ab."
     },
     "FF3.1.10": {
+      "title": "Der gesamte Lebenszyklus",
       "body": "Betrachtet man den gesamten Lebenszyklus von Lebensmitteln, ergibt sich ein umfassenderes Bild der Nachhaltigkeit, als wenn man sich nur auf die Verarbeitung konzentriert."
     },
     "FF3.2.1": {
+      "title": "Kurze Lieferketten",
       "body": "Kurze Lieferketten können die lokale Wirtschaft und die Widerstandsfähigkeit stärken."
     },
     "FF3.2.2": {
+      "title": "Saisonal und regional",
       "body": "Saisonale Lebensmittel aus der Region können den Lager- und Transportaufwand verringern."
     },
     "FF3.2.3": {
+      "title": "Herkunft ist nicht alles",
       "body": "Das Herkunftsland allein kann nicht darüber entscheiden, ob ein Lebensmittel nachhaltig ist."
     },
     "FF3.2.4": {
+      "title": "Herkunft und Rückverfolgbarkeit",
       "body": "Die Herkunft von Lebensmitteln kann nützliche Informationen zur Rückverfolgbarkeit und Nachhaltigkeit liefern."
     },
     "FF3.2.5": {
+      "title": "Boomender Lebensmittelhandel",
       "body": "Der weltweite Lebensmittelhandel hat in den letzten Jahrzehnten dramatisch zugenommen."
     },
     "FF3.2.6": {
+      "title": "Europas importierte Futtermittel",
       "body": "Viele europäische Ernährungssysteme sind auf importiertes Futtermittel und Rohstoffe angewiesen."
     },
     "FF3.2.7": {
+      "title": "Vertrauen in Herkunftsangaben",
       "body": "Verbraucher verbinden Herkunftsangaben oft mit Qualität und Sicherheit."
     },
     "FF3.2.8": {
+      "title": "Regional ist nicht immer nachhaltiger",
       "body": "Regionale Lebensmittel sind nicht immer die nachhaltigste Wahl."
     },
     "FF3.2.9": {
+      "title": "Herstellung zählt mehr als Entfernung",
       "body": "Oft ist es wichtiger, wie Lebensmittel hergestellt werden, als die Entfernung, die sie zurücklegen."
     },
     "FF3.2.10": {
+      "title": "Luft- vs. Seefracht",
       "body": "Lebensmittel, die per Luftfracht transportiert werden, können einen deutlich höheren CO₂-Fußabdruck haben als solche, die per Seefracht transportiert werden."
     },
     "FF3.3.1": {
+      "title": "Biobetriebe und Artenvielfalt",
       "body": "Biobetriebe tragen zu einer größeren Artenvielfalt bei als konventionelle Betriebe."
     },
     "FF3.3.2": {
+      "title": "Klimafreundliche Landwirtschaft",
       "body": "Klimafreundliche Landwirtschaft zielt darauf ab, die Widerstandsfähigkeit zu verbessern und gleichzeitig Emissionen zu reduzieren."
     },
     "FF3.3.3": {
+      "title": "Landwirtschaft im Gleichgewicht",
       "body": "Nachhaltige Landwirtschaft schafft ein Gleichgewicht zwischen Produktivität und Umweltschutz."
     },
     "FF3.3.4": {
+      "title": "Blumenstreifen für Bestäuber",
       "body": "Blumenstreifen und Lebensräume für Bestäuber können die Artenvielfalt auf landwirtschaftlichen Betrieben fördern."
     },
     "FF3.3.5": {
+      "title": "Ökolandbau ohne synthetische Mittel",
       "body": "Im ökologischen Landbau wird auf synthetische Düngemittel und Pflanzenschutzmittel verzichtet."
     },
     "FF3.3.6": {
+      "title": "Vielfalt im Anbau",
       "body": "Eine Diversifizierung des Anbaus hilft landwirtschaftlichen Betrieben, Schädlingen und Krankheiten zu widerstehen."
     },
     "FF3.3.7": {
+      "title": "Agroforstwirtschaft",
       "body": "Bei der Agroforstwirtschaft werden Bäume mit Ackerkulturen oder Viehhaltung auf derselben Fläche kombiniert."
     },
     "FF3.3.8": {
+      "title": "Integrierter Pflanzenschutz",
       "body": "Durch integrierten Pflanzenschutz wird die Abhängigkeit von chemischen Pflanzenschutzmitteln verringert."
     },
     "FF3.3.9": {
+      "title": "Präzisionslandwirtschaft",
       "body": "Präzisionslandwirtschaft kann den Düngemitteleinsatz und die Emissionen senken."
     },
     "FF3.3.10": {
+      "title": "Konservierende Landwirtschaft",
       "body": "Die konservierende Landwirtschaft verringert die Bodenbeeinträchtigung und schützt die Bodengesundheit."
     },
     "FF3.4.1": {
+      "title": "Vielfalt bei Pflanzen und Tierrassen",
       "body": "Eine Diversifizierung der Kulturpflanzen und Tierrassen kann die Widerstandsfähigkeit des Ernährungssystems stärken."
     },
     "FF3.4.2": {
+      "title": "Alternative Proteine",
       "body": "Alternative Proteine könnten die Abhängigkeit von der konventionellen Tierhaltung verringern."
     },
     "FF3.4.3": {
+      "title": "Züchtung im Gesamtkontext",
       "body": "Eine nachhaltige Zucht sollte mit umfassenderen Verbesserungen des Ernährungssystems einhergehen."
     },
     "FF3.4.4": {
+      "title": "Zucht für weniger Methan",
       "body": "Die Züchtung von Tieren mit geringeren Methanemissionen kann die Auswirkungen der Tierhaltung verringern."
     },
     "FF3.4.5": {
+      "title": "Alternative Fischfuttermittel",
       "body": "Alternative Futtermittel für die Aquakultur können den Druck auf die Wildfischbestände verringern."
     },
     "FF3.4.6": {
+      "title": "Klimaangepasste Nutzpflanzen",
       "body": "Durch genetische Verbesserung können Nutzpflanzen besser mit neuen ökologischen Herausforderungen umgehen."
     },
     "FF3.4.7": {
+      "title": "Produktive Tierhaltung",
       "body": "Durch die Steigerung der Tierproduktivität lässt sich der Ressourcenverbrauch pro Kilogramm Fleisch senken."
     },
     "FF3.4.8": {
+      "title": "Genom-Editierung",
       "body": "Die Genom-Editierung könnte dazu beitragen, Nutzpflanzen zu entwickeln, die widerstandsfähiger gegenüber Klimastress sind."
     },
     "FF3.4.9": {
+      "title": "Futtereffiziente Nutztiere",
       "body": "Durch selektive Züchtung lässt sich die Futterverwertung bei Nutztieren verbessern."
     },
     "FF3.4.10": {
+      "title": "Hydroponik und Aquaponik",
       "body": "Hydroponik- und Aquaponik-Systeme verbrauchen weitaus weniger Wasser als die konventionelle Landwirtschaft."
     },
     "FF3.5.1": {
+      "title": "Kinderarbeit in der Landwirtschaft",
       "body": "Die meisten Fälle von Kinderarbeit weltweit sind in der Landwirtschaft zu verzeichnen."
     },
     "FF3.5.2": {
+      "title": "Fairtrade für Landwirte",
       "body": "Fairtrade hat sich zum Ziel gesetzt, die Einkommen und Arbeitsbedingungen der Landwirte zu verbessern."
     },
     "FF3.5.3": {
+      "title": "Faire Preise",
       "body": "Fairer Handel fördert Transparenz und eine gerechte Preisgestaltung entlang der gesamten Lieferkette."
     },
     "FF3.5.4": {
+      "title": "Menschenwürdige Arbeitsbedingungen",
       "body": "Sichere und menschenwürdige Arbeitsbedingungen sind ein wesentlicher Bestandteil nachhaltiger Ernährungssysteme."
     },
     "FF3.5.5": {
+      "title": "Soziale Nachhaltigkeit",
       "body": "Zur Nachhaltigkeit des Ernährungssystems gehören auch soziale und arbeitsrechtliche Bedingungen."
     },
     "FF3.5.6": {
+      "title": "Gefährdete Beschäftigte im Lebensmittelsektor",
       "body": "Viele Beschäftigte im Lebensmittelsektor sind nach wie vor der Ausbeutung schutzlos ausgeliefert."
     },
     "FF3.5.7": {
+      "title": "Ethische Lebensmittelwahl",
       "body": "Verbraucher legen zunehmend Wert auf eine ethische und faire Lebensmittelproduktion."
     },
     "FF3.5.8": {
+      "title": "Frauen in der Nahrungsmittelproduktion",
       "body": "Frauen spielen eine entscheidende Rolle in der Nahrungsmittelproduktion, haben jedoch oft weniger Zugang zu Ressourcen."
     },
     "FF3.5.9": {
+      "title": "Kleinbauern",
       "body": "Kleinbauern produzieren einen großen Teil der weltweiten Nahrungsmittel."
     },
     "FF3.5.10": {
+      "title": "Umweltverträgliche und gerechte Ernährungssysteme",
       "body": "Nachhaltige Ernährungssysteme sollten umweltverträglich und sozial gerecht sein."
     },
     "FF4.1.1": {
+      "title": "Warum Verpackung wichtig ist",
       "body": "Lebensmittelverpackungen schützen Produkte vor Verunreinigungen, Feuchtigkeit, Sauerstoff und mechanischen Beschädigungen und tragen so zur Gewährleistung der Lebensmittelsicherheit und -qualität bei."
     },
     "FF4.1.2": {
+      "title": "Kunststoff verhindert Verderb",
       "body": "Kunststoffverpackungen können den Verderb von Lebensmitteln verringern, da sie leicht und strapazierfähig sind und leicht verderbliche Lebensmittel wirksam schützen."
     },
     "FF4.1.3": {
+      "title": "Ausgewogene Verpackung",
       "body": "Die nachhaltigste Verpackung schafft ein Gleichgewicht zwischen Materialeffizienz, Recyclingfähigkeit, Produktschutz und der Vermeidung von Lebensmittelabfällen."
     },
     "FF4.1.4": {
+      "title": "Umweltwirkung: Lebensmittel vs. Verpackung",
       "body": "Die Umweltauswirkungen der Lebensmittelproduktion sind oft weitaus größer als die der Verpackungen, die zum Schutz der Lebensmittel verwendet werden."
     },
     "FF4.1.5": {
+      "title": "Verpackung gegen Verschwendung",
       "body": "Eine gut durchdachte Verpackung kann Lebensmittelverschwendung verringern, indem sie die Haltbarkeit verlängert und Verderb während des Transports, der Lagerung und des Verzehrs zu Hause verhindert."
     },
     "FF4.1.6": {
+      "title": "Keine perfekte Verpackung",
       "body": "Es gibt kein einzelnes „nachhaltigstes“ Verpackungsmaterial; die Umweltverträglichkeit hängt vom gesamten Produktlebenszyklus ab."
     },
     "FF4.1.7": {
+      "title": "Essbare Verpackungen",
       "body": "Essbare Verpackungen können dazu beitragen, die Abhängigkeit von Kunststoffen auf fossiler Basis zu verringern, indem herkömmliche Verpackungsmaterialien durch biologisch abbaubare Alternativen ersetzt werden."
     },
     "FF4.1.8": {
+      "title": "Essbare Beschichtungen",
       "body": "Essbare Beschichtungen können die Haltbarkeit von Obst und Gemüse verlängern, indem sie den Feuchtigkeitsverlust verringern und die Atmung verlangsamen."
     },
     "FF4.1.9": {
+      "title": "Intelligente Verpackungen",
       "body": "Intelligente Verpackungen können Temperatur, Frische und Produktzustand überwachen und so dazu beitragen, Lebensmittelverluste entlang der gesamten Lieferkette zu reduzieren."
     },
     "FF4.1.10": {
+      "title": "Aktive Verpackungen",
       "body": "Aktive Verpackungen können mit Lebensmitteln interagieren, indem sie Sauerstoff oder Feuchtigkeit aufnehmen, wodurch die Produkte länger frisch bleiben."
     },
     "FF4.2.1": {
+      "title": "Mehrweg lohnt sich mit der Zeit",
       "body": "Wiederverwendbare Verpackungen sind erst dann umweltfreundlich, wenn sie ausreichend oft wiederverwendet wurden."
     },
     "FF4.2.2": {
+      "title": "Europas Verpackungsabfall",
       "body": "In Europa fallen jede Sekunde etwa 1,5 Tonnen Einwegverpackungsabfälle an."
     },
     "FF4.2.3": {
+      "title": "Recyclingquoten von Verpackungen",
       "body": "Nur etwa 40 % des Verpackungsabfalls in Europa werden recycelt."
     },
     "FF4.2.4": {
+      "title": "Mehrweg spart Rohstoffe",
       "body": "Wiederverwendbare Verpackungen können den Bedarf an neuen Rohstoffen senken."
     },
     "FF4.2.5": {
+      "title": "Häufigkeit der Wiederverwendung zählt",
       "body": "Die ökologischen Vorteile von Mehrwegverpackungen hängen davon ab, wie oft sie wiederverwendet werden."
     },
     "FF4.2.6": {
+      "title": "Transport und Reinigung",
       "body": "Transportwege und Reinigungsprozesse beeinflussen die Umweltbelastung durch Mehrwegverpackungssysteme."
     },
     "FF4.2.7": {
+      "title": "Der Schwellenwert",
       "body": "Jede wiederverwendbare Verpackung hat einen Schwellenwert, ab dem sie vorteilhafter ist als Einwegalternativen."
     },
     "FF4.2.8": {
+      "title": "Hohe Rücklaufquoten",
       "body": "Viele Rücknahmesysteme in Europa erreichen bereits Rücklaufquoten von 75 % oder mehr."
     },
     "FF4.2.9": {
+      "title": "Verpackung verlängert die Haltbarkeit",
       "body": "Verbesserte Verpackungssysteme können dazu beitragen, Lebensmittelabfälle zu reduzieren, indem sie die Haltbarkeit verlängern."
     },
     "FF4.2.10": {
+      "title": "Langlebige Transportverpackungen",
       "body": "Wiederverwendbare Transportverpackungen sind oft so konzipiert, dass sie viele Jahre lang im Umlauf bleiben."
     },
     "FF5.1.1": {
+      "title": "Haushalte verschwenden am meisten",
       "body": "Haushalte verursachen mehr Lebensmittelabfälle als jeder andere Sektor in der Europäischen Union."
     },
     "FF5.1.2": {
+      "title": "Ein Fünftel wird verschwendet",
       "body": "Weltweit wird etwa ein Fünftel der für Verbraucher verfügbaren Lebensmittel verschwendet."
     },
     "FF5.1.3": {
+      "title": "Einkaufslisten und Essenspläne",
       "body": "Einkaufslisten und die Essensplanung können dazu beitragen, Lebensmittelverschwendung im Haushalt zu reduzieren."
     },
     "FF5.1.4": {
+      "title": "Kleinere Portionen, weniger Abfall",
       "body": "Das Anbieten kleinerer Portionen kann die Essensreste in Kantinen und Restaurants verringern."
     },
     "FF5.1.5": {
+      "title": "Standardportionen, mehr Reste",
       "body": "Standardportionen führen oft zu unnötigen Essensresten."
     },
     "FF5.1.6": {
+      "title": "Überfluss am Buffet",
       "body": "In Restaurants mit Buffet nehmen sich viele Menschen mehr Essen, als sie essen können."
     },
     "FF5.1.7": {
+      "title": "Verschwendung und Klima",
       "body": "Lebensmittelverschwendung ist für einen erheblichen Anteil der Treibhausgasemissionen des Lebensmittelsystems verantwortlich."
     },
     "FF5.1.8": {
+      "title": "Verschwendetes Fleisch",
       "body": "Fleischabfälle tragen überproportional zu den klimabedingten Auswirkungen von Lebensmittelabfällen bei."
     },
     "FF5.1.9": {
+      "title": "Wäre Lebensmittelverschwendung ein Land",
       "body": "Wäre Lebensmittelverschwendung ein Land, wäre es einer der weltweit größten Verursacher von Treibhausgasemissionen."
     },
     "FF5.1.10": {
+      "title": "Verschwendete Nährstoffe",
       "body": "Lebensmittelverschwendung bedeutet auch eine Verschwendung von Nährstoffen wie Eiweiß und Ballaststoffen."
     },
     "FF5.2.1": {
+      "title": "Verschwendung beginnt zu Hause",
       "body": "Mehr als die Hälfte der in der EU anfallenden Lebensmittelabfälle entfällt auf private Haushalte."
     },
     "FF5.2.2": {
+      "title": "Lebensmittel richtig lagern",
       "body": "Die richtige Lagerung trägt dazu bei, Abfall zu vermeiden und die Lebensmittelsicherheit zu gewährleisten."
     },
     "FF5.2.3": {
+      "title": "Die Zwei-Stunden-Regel",
       "body": "Verderbliche Lebensmittel sollten grundsätzlich nicht länger als zwei Stunden bei Raumtemperatur stehen gelassen werden."
     },
     "FF5.2.4": {
+      "title": "Reste planen und verwerten",
       "body": "Eine bessere Planung und die Verwertung von Resten können Geld sparen und die Umweltbelastung verringern."
     },
     "FF5.2.5": {
+      "title": "Mindesthaltbarkeits- vs. Verbrauchsdatum",
       "body": "Mindesthaltbarkeitsdaten beziehen sich auf die Qualität, während Verbrauchsdaten die Lebensmittelsicherheit betreffen."
     },
     "FF5.2.6": {
+      "title": "Am häufigsten weggeworfen",
       "body": "Obst und Gemüse sind die Lebensmittel, die in Europa am häufigsten weggeworfen werden."
     },
     "FF5.2.7": {
+      "title": "Reste schnell abkühlen",
       "body": "Das schnelle Abkühlen von Essensresten beugt dem Bakterienwachstum vor."
     },
     "FF5.2.8": {
+      "title": "Weggeworfenes Fleisch und Milchprodukte",
       "body": "Fleisch und Milchprodukte werden zwar seltener weggeworfen, verursachen aber einen größeren ökologischen Fußabdruck, wenn sie weggeworfen werden."
     },
     "FF5.2.9": {
+      "title": "Aufteilen zum Abkühlen",
       "body": "Große Portionen kühlen schneller ab, wenn man sie auf kleinere Behälter verteilt."
     },
     "FF5.2.10": {
+      "title": "Luftdichte Behälter",
       "body": "Luftdichte Behälter sorgen dafür, dass Essensreste länger frisch bleiben."
     },
     "FF5.3.1": {
+      "title": "Haushalte: größte Abfallquelle",
       "body": "Mehr als die Hälfte aller Lebensmittelabfälle in Europa fällt in den Haushalten an."
     },
     "FF5.3.2": {
+      "title": "Zu viel einkaufen",
       "body": "Der Kauf von mehr Lebensmitteln als nötig ist eine der Hauptursachen für vermeidbare Lebensmittelverschwendung im Haushalt."
     },
     "FF5.3.3": {
+      "title": "Vor dem Einkauf nachsehen",
       "body": "Die Planung der Mahlzeiten und ein Blick in die Vorratsschränke vor dem Einkauf können dazu beitragen, übermäßige Einkäufe und Lebensmittelverschwendung zu vermeiden."
     },
     "FF5.3.4": {
+      "title": "Überschüsse einfrieren",
       "body": "Das Einfrieren von Lebensmittelresten, bevor sie verderben, kann ihre Haltbarkeit verlängern und Abfall vermeiden."
     },
     "FF5.3.5": {
+      "title": "69 Millionen Tonnen",
       "body": "Die Lebensmittelabfälle der privaten Haushalte in Europa werden auf etwa 69 Millionen Tonnen pro Jahr geschätzt."
     },
     "FF5.3.6": {
+      "title": "Verwirrung um Datumsangaben",
       "body": "Die Verwirrung hinsichtlich der Angaben „Mindestens haltbar bis“ und „Verbrauchen bis“ trägt erheblich zur unnötigen Lebensmittelverschwendung bei."
     },
     "FF5.3.7": {
+      "title": "Nach dem MHD noch unbedenklich",
       "body": "Viele Lebensmittel sind auch nach Ablauf des „Mindesthaltbarkeitsdatums“ noch unbedenklich, sofern sie richtig gelagert wurden."
     },
     "FF5.3.8": {
+      "title": "Mehrfachkauf-Fallen",
       "body": "Mehrfachkaufangebote und Mengenrabatte können Verbraucher dazu verleiten, mehr Lebensmittel zu kaufen, als sie verbrauchen können."
     },
     "FF5.3.9": {
+      "title": "Häufig zu viel gekauft",
       "body": "Frisches Obst, Gemüse, Milchprodukte und Backwaren gehören zu den Lebensmitteln, die am häufigsten aufgrund von Überkäufen weggeworfen werden."
     },
     "FF5.3.10": {
+      "title": "Abfälle im Blick behalten",
       "body": "Wenn Sie den Überblick über die Lebensmittel behalten, die Sie wegwerfen, können Sie Gewohnheiten erkennen, die zu übermäßigem Konsum und Verschwendung führen."
     },
     "FF5.4.1": {
+      "title": "Wachsende Portionen",
       "body": "Die Portionsgrößen haben in vielen Ländern in den letzten Jahrzehnten erheblich zugenommen."
     },
     "FF5.4.2": {
+      "title": "Größere Portionen, nicht satter",
       "body": "Größere Portionen führen oft dazu, dass Menschen mehr essen, ohne sich entsprechend satter zu fühlen."
     },
     "FF5.4.3": {
+      "title": "Gesund für Sie und den Planeten",
       "body": "Eine Reduzierung übermäßiger Nahrungsaufnahme kann sowohl der persönlichen Gesundheit als auch der ökologischen Nachhaltigkeit zugutekommen."
     },
     "FF5.4.4": {
+      "title": "Die Menge zählt",
       "body": "Die Auswirkungen einer Ernährung auf die Umwelt hängen nicht nur davon ab, was Menschen essen, sondern auch davon, wie viel sie essen."
     },
     "FF5.4.5": {
+      "title": "Überschüssige Kalorien, mehr Emissionen",
       "body": "Der Verzehr überschüssiger Kalorien trägt zu höheren Treibhausgasemissionen im Lebensmittelsystem bei, da mehr Lebensmittel produziert werden müssen."
     },
     "FF5.4.6": {
+      "title": "Umweltintensive Lebensmittel im Übermaß",
       "body": "Lebensmittel mit hohem ökologischen Fußabdruck haben noch größere Auswirkungen, wenn sie in übermäßigen Mengen verzehrt werden."
     },
     "FF5.4.7": {
+      "title": "Angemessene Portionen",
       "body": "Die Wahl angemessener Portionsgrößen kann dazu beitragen, sowohl eine übermäßige Kalorienaufnahme als auch den Ressourcenverbrauch zu reduzieren."
     },
     "FF5.4.8": {
+      "title": "Zu viel essen verbraucht Ressourcen",
       "body": "Wenn man mehr isst, als der Körper benötigt, steigt der Bedarf an landwirtschaftlichen Ressourcen wie Land, Wasser und Energie."
     },
     "FF5.4.9": {
+      "title": "Folgen des Überkonsums",
       "body": "Überkonsum trägt zu einer unnötigen Nachfrage nach Lebensmittelproduktion, Transport, Lagerung und Verpackung bei."
     },
     "FF5.4.10": {
+      "title": "Genug statt zu viel",
       "body": "Eine nachhaltige Ernährung zielt darauf ab, ausreichend zu essen, um den Nährstoffbedarf zu decken, und gleichzeitig übermäßigen Verzehr zu vermeiden."
     },
     "FF6.1.1": {
+      "title": "Was Protein leistet",
       "body": "Protein trägt zum Aufbau und zur Regeneration von Muskeln, Gewebe, Enzymen und Hormonen bei."
     },
     "FF6.1.2": {
+      "title": "Pflanzliches und tierisches Protein",
       "body": "Sowohl pflanzliche als auch tierische Lebensmittel können Eiweiß liefern."
     },
     "FF6.1.3": {
+      "title": "Hülsenfrüchte für Gesundheit und Planet",
       "body": "Ein Teil des roten Fleisches durch Hülsenfrüchte zu ersetzen, kommt der Gesundheit und der Nachhaltigkeit zugute."
     },
     "FF6.1.4": {
+      "title": "Wie viel Protein Sie brauchen",
       "body": "Die meisten Erwachsenen benötigen täglich etwa 0,83 g Eiweiß pro Kilogramm Körpergewicht."
     },
     "FF6.1.5": {
+      "title": "Pflanzliche Proteinquellen",
       "body": "Linsen, Bohnen, Erbsen, Nüsse und Samen sind hervorragende pflanzliche Proteinquellen."
     },
     "FF6.1.6": {
+      "title": "Das gesamte Nährstoffprofil",
       "body": "Entscheidend ist das gesamte Nährstoffprofil einer Proteinquelle, nicht nur ihr Proteingehalt."
     },
     "FF6.1.7": {
+      "title": "Pflanzliche Proteine kombinieren",
       "body": "Der Verzehr verschiedener pflanzlicher Proteine kann alle essentiellen Aminosäuren liefern."
     },
     "FF6.1.8": {
+      "title": "Aminosäuren in Quinoa",
       "body": "Quinoa ist ein vollwertiges pflanzliches Protein, das alle essentiellen Aminosäuren enthält."
     },
     "FF6.1.9": {
+      "title": "Proteinqualität",
       "body": "Die Proteinqualität hängt von der Verdaulichkeit und der Aminosäurenzusammensetzung ab."
     },
     "FF6.1.10": {
+      "title": "Zu viel Protein",
       "body": "In vielen Ländern mit hohem Einkommen wird mehr Eiweiß konsumiert als empfohlen."
     },
     "FF6.2.1": {
+      "title": "Ungesättigte vs. gesättigte Fette",
       "body": "Ungesättigte Fette sind im Allgemeinen gesünder als gesättigte Fette."
     },
     "FF6.2.2": {
+      "title": "Gesättigte Fette begrenzen",
       "body": "Die WHO empfiehlt, den Anteil an gesättigten Fettsäuren auf weniger als 10 % der täglichen Energiezufuhr zu begrenzen."
     },
     "FF6.2.3": {
+      "title": "Gesunde Fettquellen",
       "body": "Nüsse, Samen, Fisch und Olivenöl sind gute Quellen für gesunde Fette."
     },
     "FF6.2.4": {
+      "title": "Die Fettart zählt",
       "body": "Die Art des Fetts, das man zu sich nimmt, ist genauso wichtig wie die Menge."
     },
     "FF6.2.5": {
+      "title": "Transfette meiden",
       "body": "Transfette erhöhen das Risiko für Herzerkrankungen und haben keine bekannten gesundheitlichen Vorteile."
     },
     "FF6.2.6": {
+      "title": "Fette tauschen für ein gesundes Herz",
       "body": "Der Ersatz von gesättigten Fetten durch ungesättigte Fette kann die Herzgesundheit verbessern."
     },
     "FF6.2.7": {
+      "title": "Wie viel Fett",
       "body": "Fett sollte nicht mehr als etwa 30 % der täglichen Gesamtenergiezufuhr ausmachen."
     },
     "FF6.2.8": {
+      "title": "Fettarm, aber zuckerreich",
       "body": "Fettarme Fertigprodukte können dennoch einen hohen Zuckergehalt aufweisen."
     },
     "FF6.2.9": {
+      "title": "Transfette entfernen",
       "body": "Industriell hergestellte Transfette lassen sich entfernen, ohne dass dies Auswirkungen auf die Verfügbarkeit von Lebensmitteln hat."
     },
     "FF6.2.10": {
+      "title": "Fett und Vitamine",
       "body": "Fett hilft dem Körper, die Vitamine A, D, E und K aufzunehmen."
     },
     "FF6.3.1": {
+      "title": "Zuckerhaltige Getränke",
       "body": "Zuckerhaltige Getränke sind in vielen Ernährungsweisen eine wichtige Quelle für zugesetzten Zucker."
     },
     "FF6.3.2": {
+      "title": "Zucker und Zähne",
       "body": "Eine hohe Zuckeraufnahme trägt zur Entstehung von Karies bei."
     },
     "FF6.3.3": {
+      "title": "Zucker und Gewicht",
       "body": "Eine übermäßige Zuckeraufnahme steht im Zusammenhang mit Gewichtszunahme und Fettleibigkeit."
     },
     "FF6.3.4": {
+      "title": "Freien Zucker begrenzen",
       "body": "Die WHO empfiehlt, den Anteil an freiem Zucker auf weniger als 10 % der täglichen Energiezufuhr zu begrenzen."
     },
     "FF6.3.5": {
+      "title": "Zucker in Obst",
       "body": "Obst enthält natürlichen Zucker sowie Ballaststoffe und Vitamine."
     },
     "FF6.3.6": {
+      "title": "Weniger zuckerhaltige Getränke",
       "body": "Die Reduzierung des Konsums zuckerhaltiger Getränke ist eine wirksame Methode, um die Zuckeraufnahme zu senken."
     },
     "FF6.3.7": {
+      "title": "Selbst kochen, Zucker kontrollieren",
       "body": "Wenn man zu Hause kocht, lässt sich der Zuckerzusatz leichter kontrollieren."
     },
     "FF6.3.8": {
+      "title": "Leere Kalorien",
       "body": "Zucker liefert Energie, enthält aber nur wenige essentielle Nährstoffe."
     },
     "FF6.3.9": {
+      "title": "Unter 5 % Zucker",
       "body": "Eine Senkung des Gehalts an freiem Zucker auf unter 5 % könnte zusätzliche gesundheitliche Vorteile mit sich bringen."
     },
     "FF6.3.10": {
+      "title": "Zugesetzten Zucker erkennen",
       "body": "Das Lesen der Etiketten kann dabei helfen, Lebensmittel mit hohem Gehalt an zugesetztem Zucker zu erkennen."
     },
     "FF6.4.1": {
+      "title": "Zu viel Salz",
       "body": "Die meisten Menschen nehmen mehr als das Doppelte der empfohlenen Salzaufnahme zu sich."
     },
     "FF6.4.2": {
+      "title": "Salz und Herzgesundheit",
       "body": "Eine Reduzierung der Salzaufnahme senkt das Risiko für Herzerkrankungen und Schlaganfälle."
     },
     "FF6.4.3": {
+      "title": "Natrium: weltweite Folgen",
       "body": "Eine übermäßige Natriumaufnahme trägt weltweit zu Millionen von Todesfällen bei."
     },
     "FF6.4.4": {
+      "title": "Unter 5 Gramm Salz",
       "body": "Die WHO empfiehlt, weniger als 5 Gramm Salz pro Tag zu sich zu nehmen."
     },
     "FF6.4.5": {
+      "title": "Verstecktes Salz",
       "body": "Der größte Teil des Salzes in der Ernährung stammt aus verarbeiteten Lebensmitteln und aus Restaurantgerichten."
     },
     "FF6.4.6": {
+      "title": "Natrium und Blutdruck",
       "body": "Eine hohe Natriumzufuhr erhöht den Blutdruck."
     },
     "FF6.4.7": {
+      "title": "Kräuter statt Salz",
       "body": "Kräuter und Gewürze können beim Kochen als Salzersatz dienen."
     },
     "FF6.4.8": {
+      "title": "Natriumquellen in Europa",
       "body": "Brot, Fleischwaren und Käse sind in Europa wichtige Natriumquellen."
     },
     "FF6.4.9": {
+      "title": "Salzersatzprodukte",
       "body": "Natriumarme Salzersatzprodukte können geeigneten Erwachsenen dabei helfen, ihre Natriumaufnahme zu senken."
     },
     "FF6.4.10": {
+      "title": "Jedes Salz enthält Natrium",
       "body": "Meersalz, Himalaya-Salz und Speisesalz enthalten alle erhebliche Mengen an Natrium."
     },
     "FF6.5.1": {
+      "title": "Die Ballaststofflücke",
       "body": "Die meisten Europäer nehmen weniger Ballaststoffe zu sich, als empfohlen wird."
     },
     "FF6.5.2": {
+      "title": "Ballaststoffquellen",
       "body": "Vollkornprodukte, Obst, Gemüse und Hülsenfrüchte sind hervorragende Ballaststoffquellen."
     },
     "FF6.5.3": {
+      "title": "Wasser und Ballaststoffe",
       "body": "Ausreichend Wasser zu trinken trägt dazu bei, dass Ballaststoffe ihre Wirkung entfalten können."
     },
     "FF6.5.4": {
+      "title": "25 Gramm pro Tag",
       "body": "Erwachsene sollten täglich mindestens 25 Gramm Ballaststoffe zu sich nehmen."
     },
     "FF6.5.5": {
+      "title": "Ballaststoffe schrittweise erhöhen",
       "body": "Eine schrittweise Erhöhung der Ballaststoffzufuhr kann Verdauungsbeschwerden lindern."
     },
     "FF6.5.6": {
+      "title": "Gutes aus Vollkorn",
       "body": "Vollkornprodukte liefern Ballaststoffe sowie wichtige Nährstoffe."
     },
     "FF6.5.7": {
+      "title": "Ballaststoffe für die Verdauung",
       "body": "Ballaststoffe fördern eine gesunde Verdauung und Darmfunktion."
     },
     "FF6.5.8": {
+      "title": "Ballaststoffe und Krankheitsrisiko",
       "body": "Eine höhere Ballaststoffzufuhr steht in Zusammenhang mit einem geringeren Risiko für Herzerkrankungen und Typ-2-Diabetes."
     },
     "FF6.5.9": {
+      "title": "Lösliche und unlösliche Ballaststoffe",
       "body": "Sowohl lösliche als auch unlösliche Ballaststoffe tragen zur Gesundheit bei."
     },
     "FF6.5.10": {
+      "title": "Ballaststoffe machen satt",
       "body": "Ballaststoffreiche Lebensmittel können dazu beitragen, dass man sich länger satt fühlt."
     },
     "FF6.6.1": {
+      "title": "Vitamin-D-Mangel",
       "body": "Ein Vitamin-D-Mangel ist in ganz Europa weit verbreitet."
     },
     "FF6.6.2": {
+      "title": "Vitamin C",
       "body": "Vitamin C stärkt das Immunsystem und fördert die Wundheilung."
     },
     "FF6.6.3": {
+      "title": "Vitamine aus Obst und Gemüse",
       "body": "Obst und Gemüse liefern wichtige Vitamine und Antioxidantien."
     },
     "FF6.6.4": {
+      "title": "Vielfalt beugt Mangel vor",
       "body": "Eine abwechslungsreiche Ernährung trägt dazu bei, das Risiko von Vitaminmangel zu verringern."
     },
     "FF6.6.5": {
+      "title": "Vitamin-A-Quellen",
       "body": "Orangefarbenes und dunkelgrünes Gemüse sind gute Quellen für Vitamin-A-Vorstufen."
     },
     "FF6.6.6": {
+      "title": "Vitamin-E-Quellen",
       "body": "Nüsse, Samen und Pflanzenöle sind gute Vitamin-E-Quellen."
     },
     "FF6.6.7": {
+      "title": "Sonnenlicht und Vitamin D",
       "body": "Sonnenlicht ist die wichtigste Quelle für Vitamin D im Körper."
     },
     "FF6.6.8": {
+      "title": "Vitamin-B12-Quellen",
       "body": "Vitamin B12 kommt hauptsächlich in tierischen Lebensmitteln vor."
     },
     "FF6.6.9": {
+      "title": "B12 für Veganer",
       "body": "Veganer benötigen möglicherweise angereicherte Lebensmittel oder Nahrungsergänzungsmittel, um ausreichend Vitamin B12 aufzunehmen."
     },
     "FF6.6.10": {
+      "title": "Versteckter Hunger",
       "body": "Vitaminmangel kann auch dann auftreten, wenn reichlich Nahrung vorhanden ist."
     },
     "FF6.7.1": {
+      "title": "Genug Kalorien für alle",
       "body": "Weltweit werden bereits genügend Kalorien produziert, um alle Menschen zu ernähren."
     },
     "FF6.7.2": {
+      "title": "Nährstoffe vs. Kalorien",
       "body": "Nährstoffreiche Lebensmittel sind nicht immer dasselbe wie kalorienreiche Lebensmittel."
     },
     "FF6.7.3": {
+      "title": "Hochverarbeitete Kost und Überessen",
       "body": "Hochverarbeitete Lebensmittel könnten dazu führen, dass Menschen mehr Kalorien zu sich nehmen."
     },
     "FF6.7.4": {
+      "title": "Gleiche Kalorien, ungleiche Wirkung",
       "body": "Lebensmittel mit dem gleichen Kaloriengehalt können sehr unterschiedliche Auswirkungen auf die Umwelt haben."
     },
     "FF6.7.5": {
+      "title": "Mehr als Kalorienzählen",
       "body": "Bei einer nachhaltigen Ernährung geht es vor allem um die Auswahl der Lebensmittel und nicht nur um die Reduzierung der Kalorienzufuhr."
     },
     "FF6.7.6": {
+      "title": "Kalorienverluste vom Acker bis zum Teller",
       "body": "Mehr als die Hälfte der Kalorien in Lebensmitteln geht auf dem Weg vom Erzeuger bis auf den Teller verloren."
     },
     "FF6.7.7": {
+      "title": "Die drei großen Grundnahrungsmittel",
       "body": "Reis, Weizen und Mais liefern fast die Hälfte der weltweit aufgenommenen Kalorien."
     },
     "FF6.7.8": {
+      "title": "Kalorienverluste durch Verfütterung",
       "body": "Die Verfütterung von Pflanzen an Nutztiere führt zu erheblichen Kalorienverlusten."
     },
     "FF6.7.9": {
+      "title": "Rindfleischemissionen pro Kalorie",
       "body": "Rindfleisch verursacht pro Kalorie weitaus mehr Emissionen als die meisten pflanzlichen Lebensmittel."
     },
     "FF6.7.10": {
+      "title": "Effiziente Ernährungssysteme",
       "body": "Durch eine Steigerung der Effizienz des Ernährungssystems lässt sich die verfügbare Nährstoffmenge erhöhen, ohne dass mehr Lebensmittel produziert werden müssen."
     }
   },
   "quizzes": {
     "Q1.1.1": {
+      "title": "Klimafreundlichere Abendessen",
       "question": "Du möchtest die Umweltauswirkungen deiner Abendessen verringern. Welche Änderung hat wahrscheinlich den größten Effekt?",
       "explanation": "Weniger Rindfleisch zu essen hat in der Regel eine deutlich größere Wirkung als der Wechsel zwischen ähnlichen Lebensmitteln, weil die Viehhaltung stark zu Landnutzung, Wasserverbrauch und Treibhausgasemissionen beiträgt.",
       "options": {
@@ -799,6 +1050,7 @@
       }
     },
     "Q1.1.2": {
+      "title": "Wochenplan mit wenig Umweltwirkung",
       "question": "Welcher Wochenessensplan hat wahrscheinlich die geringsten Umweltauswirkungen?",
       "explanation": "Fleisch durch Hülsenfrüchte zu ersetzen bringt in der Regel größere Umweltvorteile als ein einfacher Wechsel zwischen verschiedenen tierischen Proteinen.",
       "options": {
@@ -809,6 +1061,7 @@
       }
     },
     "Q1.1.3": {
+      "title": "Ernährung und Flächenbedarf",
       "question": "Sie haben die Wahl zwischen zwei wöchentlichen Ernährungsweisen: Ernährungsweise A beinhaltet fast täglich rotes Fleisch. Ernährungsweise B orientiert sich am mediterranen Ernährungsmuster mit mehr Hülsenfrüchten, Gemüse und moderaten Fleischmengen. Welche Ernährungsweise erfordert voraussichtlich insgesamt weniger landwirtschaftliche Anbaufläche?",
       "explanation": "Die Produktion tierischer Lebensmittel erfordert in der Regel mehr Land als die Produktion pflanzlicher Lebensmittel. Eine Ernährung nach mediterranem Vorbild wird oft mit einem geringeren Flächenbedarf in Verbindung gebracht, gewährleistet aber dennoch eine ausreichende Nährstoffversorgung.",
       "options": {
@@ -819,6 +1072,7 @@
       }
     },
     "Q1.1.4": {
+      "title": "Nachhaltiges Mittagessen",
       "question": "Welche Option für das Mittagessen wäre im Allgemeinen am nachhaltigsten?",
       "explanation": "Mahlzeiten, bei denen Hülsenfrüchte und Gemüse im Mittelpunkt stehen, haben in der Regel geringere Umweltauswirkungen als Mahlzeiten, bei denen rotes Fleisch im Mittelpunkt steht.",
       "options": {
@@ -829,6 +1083,7 @@
       }
     },
     "Q1.1.5": {
+      "title": "Fleisch und öffentliche Gesundheit",
       "question": "Warum wird die Reduzierung des Fleischkonsums manchmal sowohl als Frage der öffentlichen Gesundheit als auch als Umweltproblem betrachtet?",
       "explanation": "Der umfangreiche Einsatz von Antibiotika in der Tierhaltung trägt zur Antibiotikaresistenz bei, die ein großes Problem für die öffentliche Gesundheit darstellt.",
       "options": {
@@ -838,6 +1093,7 @@
       }
     },
     "Q1.2.1": {
+      "title": "Rindfleisch ersetzen",
       "question": "Sie möchten Rindfleisch in einem Rezept ersetzen. Welcher Ersatz bietet ökologische Vorteile und trägt gleichzeitig dazu bei, den Nährwert zu erhalten?",
       "explanation": "Wenn man einen Teil des Verzehrs von rotem Fleisch durch Hülsenfrüchte ersetzt, kann man eine ausreichende Nährstoffzufuhr gewährleisten und gleichzeitig die Umweltbelastung verringern.",
       "options": {
@@ -848,6 +1104,7 @@
       }
     },
     "Q1.2.2": {
+      "title": "Proteinmix der Woche",
       "question": "Welche wöchentliche Proteinstrategie entspricht am ehesten den Empfehlungen der WHO?",
       "explanation": "Die WHO betont die Bedeutung einer abwechslungsreichen Ernährung und einer breiteren Auswahl an Eiweißquellen",
       "options": {
@@ -858,6 +1115,7 @@
       }
     },
     "Q1.2.3": {
+      "title": "Pflanzliche Fleischalternativen",
       "question": "Welche Aussage über pflanzliche Fleischalternativen ist am zutreffendsten?",
       "explanation": "Viele pflanzliche Fleischalternativen sind stark verarbeitet und enthalten oft erhebliche Mengen an Natrium. Ihre Auswirkungen auf Gesundheit und Umwelt können sehr unterschiedlich sein.",
       "options": {
@@ -868,6 +1126,7 @@
       }
     },
     "Q1.2.4": {
+      "title": "Protein für gesunde Böden",
       "question": "Welche Proteinquelle bietet sowohl ernährungsphysiologische Vorteile als auch Vorteile für die Bodengesundheit?",
       "options": {
         "A": "Kichererbsen",
@@ -878,6 +1137,7 @@
       "explanation": "Hülsenfrüchte verbessern die Bodenfruchtbarkeit durch Stickstoffbindung und liefern zugleich Eiweiß, Ballaststoffe, Vitamine und Mineralstoffe."
     },
     "Q1.2.5": {
+      "title": "Weniger rotes Fleisch in der Familie",
       "question": "Eine Familie möchte ihren Verzehr von rotem Fleisch reduzieren, ohne jedoch ganz auf tierische Produkte zu verzichten. Welche Änderung entspricht am ehesten den wissenschaftlichen Erkenntnissen?",
       "explanation": "Eine abwechslungsreiche Ernährung, die Hülsenfrüchte, Fisch, Eier und geringere Mengen an rotem Fleisch umfasst, geht mit einer gesünderen und nachhaltigeren Ernährung einher.",
       "options": {
@@ -888,6 +1148,7 @@
       }
     },
     "Q1.3.1": {
+      "title": "Mehr Vielfalt bei Getreide",
       "question": "Sie möchten Ihr Getreidesortiment diversifizieren und gleichzeitig die Eiweißqualität verbessern. Welche Option ist dabei besonders interessant?",
       "explanation": "Quinoa enthält alle neun essentiellen Aminosäuren und gilt als vollständiges Protein.",
       "options": {
@@ -898,6 +1159,7 @@
       }
     },
     "Q1.3.2": {
+      "title": "Widerstandsfähige Essgewohnheiten",
       "question": "Welche Ernährungsgewohnheit würde die Widerstandsfähigkeit des Ernährungssystems am besten fördern?",
       "explanation": "Eine vielfältige Pflanzenauswahl erhöht die Widerstandsfähigkeit gegenüber klimabedingten Störungen sowie Störungen auf den Märkten und in der Lieferkette.",
       "options": {
@@ -908,6 +1170,7 @@
       }
     },
     "Q1.3.3": {
+      "title": "Glutenfreie Getreidealternative",
       "question": "Eine Person mit Zöliakie sucht nach einer nährstoffreichen Alternative zu Getreide. Welche Option ist am besten geeignet?",
       "explanation": "Buchweizen ist von Natur aus glutenfrei und liefert Ballaststoffe, Eiweiß, Mineralstoffe sowie wertvolle bioaktive Substanzen.",
       "options": {
@@ -918,6 +1181,7 @@
       }
     },
     "Q1.3.4": {
+      "title": "Klimaresistente Kulturpflanzen",
       "question": "Ein Landwirt sucht nach einer klimaresistenten Kulturpflanze, die Hitze und Wasserknappheit verträgt. Welche Option wird durch die vorliegenden Erkenntnisse am besten gestützt?",
       "explanation": "Hirsearten können bei hohen Temperaturen, auf kargen Böden und unter wasserarmen Bedingungen wachsen, wodurch sie besonders widerstandsfähig gegenüber dem Klimawandel sind.",
       "options": {
@@ -928,6 +1192,7 @@
       }
     },
     "Q1.3.5": {
+      "title": "Warum Hülsenfrüchte wichtig sind",
       "question": "Warum spielen Hülsenfrüchte in einer nachhaltigen Ernährung oft eine so wichtige Rolle?",
       "explanation": "Hülsenfrüchte vereinen ernährungsphysiologische Vorteile mit Stickstofffixierung, einem geringeren Düngemittelbedarf und einem geringeren ökologischen Fußabdruck.",
       "options": {
@@ -938,6 +1203,7 @@
       }
     },
     "Q2.1.1": {
+      "title": "Ernährung und Artenvielfalt",
       "question": "Sie möchten, dass Ihre Ernährungsentscheidungen die Artenvielfalt besser fördern. Welcher Aspekt ist dabei am wichtigsten?",
       "explanation": "Die Ausweitung der Landwirtschaft ist einer der Hauptgründe für den Verlust von Lebensräumen und den Rückgang der Artenvielfalt. Lebensmittel, für deren Anbau weniger Land benötigt wird, belasten Wälder, Wiesen und andere natürliche Ökosysteme in der Regel weniger und tragen so zum Schutz der Artenvielfalt bei.",
       "options": {
@@ -948,6 +1214,7 @@
       }
     },
     "Q2.1.2": {
+      "title": "Werbung mit regionalem Rindfleisch",
       "question": "Ein Supermarkt wirbt für „Rindfleisch aus regionaler Produktion“ als nachhaltige Alternative. Welche Aussage stimmt am ehesten mit den Fakten überein?",
       "explanation": "Die Art der Lebensmittel ist oft wichtiger als ihre Herkunft. Pflanzliche Proteine benötigen in der Regel deutlich weniger Anbaufläche als Rindfleisch, unabhängig von ihrer Herkunft.",
       "options": {
@@ -958,6 +1225,7 @@
       }
     },
     "Q2.1.3": {
+      "title": "Proteinreiches Abendessen mit wenig Fläche",
       "question": "Sie planen ein proteinreiches Abendessen mit möglichst geringem Landverbrauch. Welche Option wird voraussichtlich am besten abschneiden?",
       "explanation": "Tierische Produkte erfordern in der Regel mehr Anbaufläche als pflanzliche Lebensmittel. Unter diesen Optionen ist die Mahlzeit auf Linsenbasis mit dem geringsten Flächenbedarf verbunden.",
       "options": {
@@ -968,6 +1236,7 @@
       }
     },
     "Q2.1.4": {
+      "title": "Artenvielfalt schützen",
       "question": "Ein Freund möchte durch seine Ernährungsentscheidungen die Belastung der Artenvielfalt verringern. Welcher Rat wäre dabei am ehesten wissenschaftlich fundiert?",
       "explanation": "Die Ausweitung der Landwirtschaft ist eine der Hauptursachen für den Verlust von Lebensräumen. Eine Verringerung der Nachfrage nach flächenintensiven Produkten trägt dazu bei, den Druck auf Wälder und natürliche Ökosysteme zu verringern.",
       "options": {
@@ -978,6 +1247,7 @@
       }
     },
     "Q2.1.5": {
+      "title": "Flächen-Fußabdruck",
       "question": "Welcher Kunde hat wahrscheinlich den geringsten Flächenverbrauch?",
       "explanation": "Wissenschaftliche Untersuchungen zeigen immer wieder, dass der Anteil an rotem Fleisch in der Ernährung einer der wichtigsten Faktoren für die ernährungsbedingte Landnutzung ist.",
       "options": {
@@ -988,6 +1258,7 @@
       }
     },
     "Q2.2.1": {
+      "title": "Kleinerer Wasser-Fußabdruck",
       "question": "Sie möchten den Wasser-Fußabdruck Ihrer Mahlzeiten verringern. Welche Gewohnheit dürfte dabei am wirksamsten sein?",
       "explanation": "Ein erheblicher Teil des bei der Lebensmittelproduktion verbrauchten Wassers geht verloren, wenn Lebensmittel weggeworfen werden. Die Verringerung der Lebensmittelverschwendung senkt direkt den Wasserbedarf.",
       "options": {
@@ -998,6 +1269,7 @@
       }
     },
     "Q2.2.2": {
+      "title": "Ernährung und Wasserbedarf",
       "question": "Zwei Personen nehmen täglich die gleiche Anzahl an Kalorien zu sich. Bei welcher Ernährungsweise ist insgesamt mit einem geringeren Wasserbedarf zu rechnen?",
       "options": {
         "A": "Eine Ernährung mit mehr Hülsenfrüchten und weniger tierischen Produkten",
@@ -1008,6 +1280,7 @@
       "explanation": "Der Wasserverbrauch sinkt in der Regel, wenn die Ernährung weniger tierische und mehr pflanzliche Lebensmittel enthält."
     },
     "Q2.2.3": {
+      "title": "Gemüse kurz vor dem Verderben",
       "question": "Sie finden in Ihrem Kühlschrank Gemüse, das kurz vor dem Verderben steht. Was ist die nachhaltigste Vorgehensweise?",
       "explanation": "Wenn man Lebensmittel verbraucht, bevor sie verderben, vermeidet man die Verschwendung von Wasser, Land und Energie, die bereits in ihre Herstellung investiert wurden.",
       "options": {
@@ -1018,6 +1291,7 @@
       }
     },
     "Q2.2.4": {
+      "title": "Wasserverbrauch und Ernährung",
       "question": "Welche Aussage spiegelt die Erkenntnisse zum Wasserverbrauch und zu einer nachhaltigen Ernährung am besten wider?",
       "options": {
         "A": "Jede vegetarische Ernährung verbraucht automatisch weniger Wasser",
@@ -1028,6 +1302,7 @@
       "explanation": "Studien zeigen, dass weniger tierische Lebensmittel den Wasserfußabdruck häufig senken; der gesamte Wasserverbrauch hängt jedoch weiterhin von der Zusammensetzung der Ernährung ab."
     },
     "Q2.2.5": {
+      "title": "Wassersparende Mahlzeiten",
       "question": "Welche Mahlzeit hat in der Regel den geringsten Wasser-Fußabdruck?",
       "explanation": "Pflanzliche Mahlzeiten erfordern in der Regel weniger Wasser",
       "options": {
@@ -1038,6 +1313,7 @@
       }
     },
     "Q2.3.1": {
+      "title": "Energie-Fußabdruck von Lebensmitteln",
       "question": "Ein Verbraucher möchte den Energie-Fußabdruck seiner Lebensmitteleinkäufe verringern. Welche Änderung dürfte die größte Wirkung haben?",
       "explanation": "Lebensmittelverschwendung bedeutet nicht nur den Verlust von Lebensmitteln, sondern auch den Verlust der gesamten Energie, die für deren Erzeugung, Verarbeitung, Transport, Lagerung und Zubereitung aufgewendet wurde. Die Reduzierung von Lebensmittelabfällen trägt dazu bei, den unnötigen Energieverbrauch im gesamten Lebensmittelsystem zu senken.",
       "options": {
@@ -1048,6 +1324,7 @@
       }
     },
     "Q2.3.2": {
+      "title": "Energieintensive Ernährung",
       "question": "Sie vergleichen vier Ernährungsweisen mit derselben Kalorienzufuhr. Bei welcher Ernährungsweise ist allgemein davon auszugehen, dass sie im gesamten Lebensmittelsystem mehr Energie erfordert?",
       "explanation": "Tierische Lebensmittel erfordern in der Regel einen höheren Energieaufwand, da sie mit der Futtermittelproduktion, intensiven landwirtschaftlichen Produktionssystemen, der Verarbeitung, der Kühlung und dem Transport verbunden sind.",
       "options": {
@@ -1058,6 +1335,7 @@
       }
     },
     "Q2.3.3": {
+      "title": "Energie entlang der Nahrungskette",
       "question": "Welche Stufe der Nahrungskette macht in vielen Regionen oft einen großen Anteil am gesamten Energieverbrauch aus?",
       "explanation": "Zwar wird Energie entlang der gesamten Nahrungskette verbraucht, doch ein erheblicher Teil davon entfällt häufig auf die Lebensmittelverarbeitung, den Transport, die Kühlung, den Einzelhandel, das Kochen und den Verzehr.",
       "options": {
@@ -1068,6 +1346,7 @@
       }
     },
     "Q2.3.4": {
+      "title": "Lebensmittelverluste verringern",
       "question": "Eine Entwicklungsagentur entscheidet darüber, wo sie investieren soll, um Lebensmittelverluste in einer ländlichen Agrarregion zu verringern. Welche Maßnahme dürfte erhebliche Vorteile bringen?",
       "explanation": "Etwa 13 % der weltweiten Lebensmittelproduktion gehen aufgrund unzureichender Kühlung verloren. Zuverlässige Kühlkettensysteme tragen dazu bei, die Lebensmittelqualität zu erhalten, Verluste zu reduzieren und die Effizienz des Lebensmittelsystems zu verbessern.",
       "options": {
@@ -1078,6 +1357,7 @@
       }
     },
     "Q2.3.5": {
+      "title": "Ernährungssysteme und Ökosysteme",
       "question": "Ein politischer Entscheidungsträger möchte die durch die Nahrungsmittelproduktion verursachte Belastung der Ökosysteme verringern. Welche Aussage spiegelt den aktuellen Wissensstand am besten wider?",
       "options": {
         "A": "Die Ernährungssysteme der Menschheit nutzen nur einen kleinen Teil der biologischen Produktivität der Erde",
@@ -1088,6 +1368,7 @@
       "explanation": "Menschliche Aktivitäten, insbesondere Landwirtschaft, Forstwirtschaft und Ernährungssysteme, beanspruchen rund 30 % der weltweiten Nettoprimärproduktion – weit über der vorgeschlagenen sicheren Grenze von 10 %. Das deutet auf erheblichen Druck auf Ökosysteme und biologische Vielfalt hin."
     },
     "Q2.4.1": {
+      "title": "Klimafreundlich ohne Vegetarismus",
       "question": "Sie möchten Ihren ökologischen Fußabdruck verringern, wollen aber nicht Vegetarier werden. Welche Strategie dürfte am wirksamsten sein?",
       "explanation": "Die Reduzierung des Verzehrs von rotem Fleisch ist eine der wirksamsten Ernährungsmaßnahmen zur Senkung der ernährungsbedingten Treibhausgasemissionen.",
       "options": {
@@ -1098,6 +1379,7 @@
       }
     },
     "Q2.4.2": {
+      "title": "Emissionen der Ernährung senken",
       "question": "Sie möchten den CO₂-Fußabdruck Ihrer Ernährung verringern. Welche Maßnahme dürfte die größte Wirkung haben?",
       "explanation": "Rund 30 % der weltweit produzierten Lebensmittel werden verschwendet, was jährlich zu Emissionen von etwa 3,3 Gigatonnen CO₂-Äquivalent führt. Durch die Vermeidung von Lebensmittelverschwendung lassen sich Emissionen entlang der gesamten Lebensmittelkette reduzieren, einschließlich Produktion, Verarbeitung, Transport und Entsorgung.",
       "options": {
@@ -1108,6 +1390,7 @@
       }
     },
     "Q2.4.3": {
+      "title": "Emissionen senken ohne neue Lebensmittel",
       "question": "Welche Maßnahme senkt die Emissionen, ohne dass Sie Ihre Einkaufsgewohnheiten ändern müssen?",
       "explanation": "Lebensmittelabfälle verursachen erhebliche Treibhausgasemissionen, da alle die",
       "options": {
@@ -1118,6 +1401,7 @@
       }
     },
     "Q2.4.4": {
+      "title": "Regionale Lebensmittel vs. Rindfleisch",
       "question": "Eine Person achtet zwar darauf, ausschließlich regionale Lebensmittel zu kaufen, isst aber weiterhin große Mengen Rindfleisch. Welche Aussage spiegelt die Fakten am besten wider?",
       "explanation": "Untersuchungen zeigen immer wieder, dass die Art der Lebensmittel – insbesondere der Verzehr von Rindfleisch – bei der Bestimmung der Klimaauswirkungen oft eine größere Rolle spielt als die Transportentfernung.",
       "options": {
@@ -1128,6 +1412,7 @@
       }
     },
     "Q2.4.5": {
+      "title": "Kohlenstoffärmere Ernährungsmuster",
       "question": "Welches Ernährungsmuster wird am häufigsten als kohlenstoffärmere Alternative zur typischen westlichen Ernährung genannt?",
       "explanation": "Flexitarische Ernährungsweisen verringern die Abhängigkeit von tierischen Produkten mit hoher Umweltbelastung, lassen aber dennoch einen gelegentlichen Verzehr zu.",
       "options": {
@@ -1138,6 +1423,7 @@
       }
     },
     "Q3.1.1": {
+      "title": "Verarbeitung und Nachhaltigkeit",
       "question": "Sie vergleichen zwei proteinreiche Mahlzeiten: einen Bohneneintopf aus einfachen Zutaten und pflanzliche Fleischnuggets. Welche Schlussfolgerung lässt sich anhand der vorliegenden Beweise am besten begründen?",
       "explanation": "Die Lebensmittelverarbeitung kann zwar den Energieverbrauch erhöhen, aber sie kann auch die Haltbarkeit verlängern und Lebensmittelabfälle reduzieren. Die Nachhaltigkeit hängt vom gesamten Lebenszyklus ab und nicht allein von der Verarbeitungsstufe.",
       "options": {
@@ -1148,6 +1434,7 @@
       }
     },
     "Q3.1.2": {
+      "title": "Fußabdruck der Verarbeitung",
       "question": "Wenn man zwei Lebensmittel mit ähnlichem Nährwert vergleicht, welcher Faktor könnte den ökologischen Fußabdruck eines der beiden Produkte erhöhen?",
       "explanation": "Erhitzen, Einfrieren, Trocknen, Mahlen und andere industrielle Verfahren können erheblich zur Umweltbelastung eines Lebensmittels beitragen.",
       "options": {
@@ -1158,6 +1445,7 @@
       }
     },
     "Q3.1.3": {
+      "title": "Weniger hochverarbeitete Lebensmittel",
       "question": "Ein Verbraucher möchte den Verzehr von hochverarbeiteten Lebensmitteln reduzieren. Welche Wahl unterstützt dieses Ziel am besten?",
       "explanation": "Minimal verarbeitete Lebensmittel enthalten in der Regel weniger Zusatzstoffe und tragen tendenziell zu einer besseren Gesamtqualität der Ernährung bei.",
       "options": {
@@ -1168,6 +1456,7 @@
       }
     },
     "Q3.1.4": {
+      "title": "Wozu Lebensmittelverarbeitung?",
       "question": "Warum spielt die Lebensmittelverarbeitung eine wichtige Rolle in Lebensmittelsystemen?",
       "explanation": "Die Verarbeitung kann die Lebensmittelsicherheit verbessern, die Qualität erhalten und eine effizientere Lagerung und einen effizienteren Transport von Lebensmitteln ermöglichen.",
       "options": {
@@ -1178,6 +1467,7 @@
       }
     },
     "Q3.1.5": {
+      "title": "Hochverarbeitete Lebensmittel",
       "question": "Welche Aussage über hochverarbeitete Lebensmittel ist am zutreffendsten?",
       "explanation": "Der Verarbeitungsgrad kann zwar nützliche Informationen liefern, doch müssen Lebensmittel dennoch im Einzelfall bewertet werden.",
       "options": {
@@ -1188,6 +1478,7 @@
       }
     },
     "Q3.2.1": {
+      "title": "Was „aus der Region“ bedeutet",
       "question": "Ein Produkt ist mit „aus der Region“ gekennzeichnet. Was lässt sich allein aus dieser Information schließen?",
       "explanation": "Das Herkunftsland liefert nützliche Informationen, doch die Nachhaltigkeit hängt von zahlreichen Faktoren ab, darunter die Produktionsmethode, die Transportart und die Saisonabhängigkeit.",
       "options": {
@@ -1198,6 +1489,7 @@
       }
     },
     "Q3.2.2": {
+      "title": "Regionale Produkte vergleichen",
       "question": "Sie vergleichen zwei lokale Produkte. Welche zusätzlichen Informationen wären am hilfreichsten?",
       "explanation": "Die Produktionsmethoden haben oft größere Auswirkungen auf die Umwelt als die Herkunft allein.",
       "options": {
@@ -1208,6 +1500,7 @@
       }
     },
     "Q3.2.3": {
+      "title": "Transport und Klima",
       "question": "Welcher Verkehrsträger verdient bei der Bewertung der Auswirkungen auf das Klima im Allgemeinen die größte Beachtung?",
       "explanation": "Der Luftverkehr kann die verkehrsbedingten Treibhausgasemissionen im Vergleich zu anderen Frachttransportarten erheblich erhöhen.",
       "options": {
@@ -1218,6 +1511,7 @@
       }
     },
     "Q3.2.4": {
+      "title": "Tomaten im Vergleich",
       "question": "Zwei Tomaten haben denselben Nährwert. Welche Information wäre für einen Vergleich der Nachhaltigkeit am hilfreichsten?",
       "explanation": "Produktionssysteme haben oft einen größeren Einfluss auf die Umwelt als das Herkunftsland allein.",
       "options": {
@@ -1228,6 +1522,7 @@
       }
     },
     "Q3.2.5": {
+      "title": "Herkunft von Lebensmitteln",
       "question": "Welche Aussage zur Herkunft von Lebensmitteln stimmt am ehesten mit den Belegen überein?",
       "explanation": "Die Herkunft von Lebensmitteln kann eine nützliche Information sein, muss jedoch im Zusammenhang mit den Produktionsmethoden, der Saisonabhängigkeit und dem Transport betrachtet werden.",
       "options": {
@@ -1238,6 +1533,7 @@
       }
     },
     "Q3.3.1": {
+      "title": "Integrierter Pflanzenschutz",
       "question": "Sie haben die Wahl zwischen zwei Apfelprodukten: Produkt A: „Hergestellt unter Anwendung des integrierten Pflanzenschutzes (IPM)“ Produkt B: Keine Angaben zur Anbaumethode Was lässt die Angabe „IPM“ höchstwahrscheinlich vermuten?",
       "explanation": "Der integrierte Pflanzenschutz kombiniert biologische, physikalische, kulturspezifische und, falls erforderlich, chemische Maßnahmen, um Schädlingsschäden zu reduzieren und gleichzeitig die Auswirkungen auf Umwelt und Gesundheit so gering wie möglich zu halten.",
       "options": {
@@ -1248,6 +1544,7 @@
       }
     },
     "Q3.3.2": {
+      "title": "Fruchtfolge",
       "question": "Sie kaufen Gemüse, und auf einer Verpackung wird darauf hingewiesen, dass der Betrieb Fruchtfolge betreibt und verschiedene Kulturen anbaut. Warum könnte diese Information relevant sein?",
       "explanation": "Eine Diversifizierung der Anbaukulturen und Fruchtfolgen verbessern die Bodenfruchtbarkeit, den Nährstoffkreislauf und die Widerstandsfähigkeit gegenüber Schädlingen und Krankheiten, wodurch der Bedarf an übermäßigem Einsatz chemischer Mittel verringert wird.",
       "options": {
@@ -1258,6 +1555,7 @@
       }
     },
     "Q3.3.3": {
+      "title": "Kaffee aus Schattenanbau",
       "question": "Sie haben die Wahl zwischen zwei Kaffeeprodukten: Kaffee A: Im Schattenanbau in einem Agroforstsystem angebaut; Kaffee B: Auf einer Monokultur-Plantage angebaut. Warum könnten manche Verbraucher Kaffee A bevorzugen?",
       "explanation": "Die Agroforstwirtschaft verbindet den Anbau von Bäumen mit der landwirtschaftlichen Produktion. Diese Systeme können die Bodengesundheit, die Artenvielfalt und die Kohlenstoffbindung verbessern.",
       "options": {
@@ -1268,6 +1566,7 @@
       }
     },
     "Q3.3.4": {
+      "title": "Ökologischer Landbau",
       "question": "Zwei Gemüseprodukte haben ähnliche Preise. Eines davon ist mit „Bio“ gekennzeichnet. Welches Merkmal der Landwirtschaft wird am ehesten mit dem Bio-Produkt in Verbindung gebracht?",
       "explanation": "Der ökologische Landbau setzt auf Methoden wie Fruchtfolge, Kompostausbringung, Deckfrüchte und biologische Schädlingsbekämpfung anstelle von synthetischen Pestiziden und Düngemitteln.",
       "options": {
@@ -1278,6 +1577,7 @@
       }
     },
     "Q3.3.5": {
+      "title": "Klimafreundliche Landwirtschaft",
       "question": "Sie haben die Wahl zwischen zwei Reisprodukten: Produkt A: Hergestellt im Rahmen klimafreundlicher Landwirtschaft Produkt B: Keine Angaben zur Anbaumethode Was ist das Hauptziel der klimafreundlichen Landwirtschaft?",
       "explanation": "Die klimafreundliche Landwirtschaft zielt darauf ab, die Produktivität zu steigern, die Widerstandsfähigkeit gegenüber dem Klimawandel zu stärken und die Treibhausgasemissionen zu senken.",
       "options": {
@@ -1288,6 +1588,7 @@
       }
     },
     "Q3.4.1": {
+      "title": "Trockenheitstolerante Pflanzen",
       "question": "Sie vergleichen zwei Tomatenprodukte. Das eine stammt von einer Tomatensorte, die so gezüchtet wurde, dass sie Trockenheit gut verträgt, während das andere von einer herkömmlichen Sorte stammt. Warum könnten manche Verbraucher die trockenheitstolerante Sorte als nachhaltiger ansehen?",
       "explanation": "Die Züchtung trockenheitstoleranter Kulturpflanzen kann dazu beitragen, die Produktion unter Wasserstress aufrechtzuerhalten und die Widerstandsfähigkeit gegenüber dem Klimawandel zu verbessern, auch wenn solche Pflanzen nach wie vor Wasser und eine gute landwirtschaftliche Bewirtschaftung benötigen.",
       "options": {
@@ -1298,6 +1599,7 @@
       }
     },
     "Q3.4.2": {
+      "title": "Moderne Pflanzenzüchtung",
       "question": "Sie stoßen auf ein Lebensmittel, das damit beworben wird, dass es aus einer klimaresistenten Pflanzensorte stammt, die mithilfe moderner Züchtungstechniken entwickelt wurde. Was ist der wichtigste Nachhaltigkeitsvorteil, der für diese Technologien angeführt wird?",
       "explanation": "Moderne Züchtungstechnologien zielen darauf ab, Pflanzensorten zu entwickeln, die unter sich verändernden Umweltbedingungen bessere Erträge erzielen und dazu beitragen, die Nahrungsmittelproduktion auch in Zukunft aufrechtzuerhalten.",
       "options": {
@@ -1308,6 +1610,7 @@
       }
     },
     "Q3.4.3": {
+      "title": "Nachhaltiges Fischfutter",
       "question": "Sie haben die Wahl zwischen zwei Fischprodukten. Das eine stammt von einem Aquakulturunternehmen, das Fischfutter aus Wildfisch teilweise durch Insektenmehl und Algenöle ersetzt. Was ist der wichtigste Nachhaltigkeitsgrund für diese Entscheidung?",
       "explanation": "In der Aquakultur werden zunehmend alternative Futtermittelzutaten wie Insektenmehl, Algenöle und Einzellerenproteine eingesetzt, um die Abhängigkeit von Wildfisch zu verringern.",
       "options": {
@@ -1318,6 +1621,7 @@
       }
     },
     "Q3.4.4": {
+      "title": "Alternative Proteine",
       "question": "Ein Supermarkt wirbt für Produkte, die Proteine aus Insekten, Mikroalgen oder Mykoprotein enthalten. Warum werden diese Proteinquellen in der Nachhaltigkeitsforschung häufig thematisiert?",
       "options": {
         "A": "Sie sind gesünder als herkömmliche Lebensmittel",
@@ -1328,6 +1632,7 @@
       "explanation": "Alternative Proteinquellen werden erforscht, weil sie helfen können, die Umweltbelastung der konventionellen Tierhaltung zu verringern und zugleich die künftige Ernährungssicherheit zu unterstützen."
     },
     "Q3.4.5": {
+      "title": "Futterverwertung in der Tierhaltung",
       "question": "Ein Fleischproduzent gibt an, dass sein Tierzuchtprogramm auf Futterverwertung ausgerichtet ist. Inwiefern könnte dies für die Nachhaltigkeit von Bedeutung sein?",
       "options": {
         "A": "Die Tiere werden automatisch gesünder",
@@ -1338,6 +1643,7 @@
       "explanation": "Nutztiere mit besserer Futterverwertung liefern dieselbe Menge Fleisch mit weniger Futtermitteln und verringern so die Umweltbelastung je Produktionseinheit."
     },
     "Q3.5.1": {
+      "title": "Fairtrade-Siegel",
       "question": "Sie haben die Wahl zwischen zwei Schokoladentafeln mit ähnlichen Nährwert- und Umweltangaben. Eine davon trägt das Fairtrade-Siegel. Welchen zusätzlichen Aspekt der Nachhaltigkeit soll das Fairtrade-Siegel in erster Linie berücksichtigen?",
       "explanation": "Fairtrade hat sich zum Ziel gesetzt, die Lebensgrundlagen durch faire Preise, Arbeitsschutz, Gemeindeentwicklung und bessere Handelsbedingungen für Produzenten und Arbeitnehmer zu verbessern.",
       "options": {
@@ -1348,6 +1654,7 @@
       }
     },
     "Q3.5.2": {
+      "title": "Soziale Nachhaltigkeit",
       "question": "Ein Verbraucher möchte beim Kauf von Obst sowohl ökologische als auch soziale Nachhaltigkeitsaspekte berücksichtigen. Welche Aussage stimmt am ehesten mit den aktuellen Erkenntnissen überein?",
       "explanation": "Untersuchungen zeigen, dass sich soziale und ökologische Auswirkungen unterschiedlich verteilen. In den Erzeugerländern können Arbeitsrisiken auftreten, selbst wenn die Umweltbilanz positiv erscheint.",
       "options": {
@@ -1358,6 +1665,7 @@
       }
     },
     "Q3.5.3": {
+      "title": "Zertifizierte Meeresfrüchte",
       "question": "Sie kaufen Meeresfrüchte und stellen fest, dass ein Produkt aus einer zertifizierten Fischerei stammt, die die Arbeitsbedingungen überwacht, während zu einem anderen Produkt keine Angaben gemacht werden. Warum könnten manche Verbraucher das zertifizierte Produkt bevorzugen?",
       "explanation": "Die Fischerei gilt als ein Sektor mit hohem Risiko für Arbeitsausbeutung. Zertifizierungsprogramme sehen zunehmend die Überwachung der Arbeits- und Menschenrechtsbedingungen vor.",
       "options": {
@@ -1368,6 +1676,7 @@
       }
     },
     "Q3.5.4": {
+      "title": "Kleinbauern unterstützen",
       "question": "Auf einer Kaffeeverpackung wird die Unterstützung von Kleinbauern hervorgehoben. Inwiefern ist diese Information für die Nachhaltigkeit relevant?",
       "explanation": "Soziale Nachhaltigkeit umfasst einen fairen Zugang zu Märkten, re",
       "options": {
@@ -1378,6 +1687,7 @@
       }
     },
     "Q3.5.5": {
+      "title": "Ethische Lebensmittelwahl",
       "question": "Welche Produktwahl entspricht am ehesten der Vorstellung, dass Nachhaltigkeit sowohl ethische als auch ökologische Aspekte umfasst?",
       "explanation": "Die Gemeinsame Forschungsstelle der Europäischen Kommission betont, dass nachhaltige Lebensmittelsysteme ökologisch nachhaltig, wirtschaftlich tragfähig sowie fair, inklusiv und ethisch sein müssen.",
       "options": {
@@ -1388,6 +1698,7 @@
       }
     },
     "Q4.1.1": {
+      "title": "Umweltwirkung von Verpackungen",
       "question": "Ein Verbraucher möchte die Umweltauswirkungen von Lebensmittelverpackungen verringern. Welche Aussage stimmt am ehesten mit den aktuellen Erkenntnissen überein?",
       "explanation": "Die Umweltauswirkungen der Lebensmittelproduktion sind oft weitaus größer als die der Verpackung selbst. Verpackungen, die Verderb und Lebensmittelverschwendung wirksam verhindern, können insgesamt Vorteile für die Umwelt bieten, selbst wenn dafür zusätzliche Materialien verwendet werden.",
       "options": {
@@ -1398,6 +1709,7 @@
       }
     },
     "Q4.1.2": {
+      "title": "Essbare Verpackungen",
       "question": "Ein Unternehmen steht vor der Entscheidung zwischen herkömmlichen Kunststoffverpackungen und einer essbaren Beschichtung für frisches Obst. Welcher potenzielle Umweltvorteil essbarer Verpackungen wird durch Forschungsergebnisse am besten belegt?",
       "explanation": "Essbare Verpackungen können zum Klimaschutz beitragen, indem sie bestimmte Materialien auf fossiler Basis ersetzen und die Haltbarkeit verlängern, wodurch Lebensmittelverschwendung vermieden wird.",
       "options": {
@@ -1408,6 +1720,7 @@
       }
     },
     "Q4.1.3": {
+      "title": "Verpackungsinnovationen",
       "question": "Welche Verpackungsinnovation wurde speziell dafür entwickelt, Informationen über den Zustand eines Lebensmittels zu liefern, anstatt dieses direkt zu konservieren?",
       "explanation": "Intelligente Verpackungen überwachen den Zustand von Lebensmitteln – beispielsweise deren Frische, den Temperaturverlauf oder das Verderbnisrisiko – oder geben entsprechende Informationen weiter. Im Gegensatz zu aktiven Verpackungen tragen sie nicht direkt zur Konservierung des Produkts bei.",
       "options": {
@@ -1418,6 +1731,7 @@
       }
     },
     "Q4.1.4": {
+      "title": "Verpackungsmaterialien",
       "question": "Welche Aussage über Verpackungsmaterialien ist am zutreffendsten?",
       "explanation": "Kein Verpackungsmaterial ist von Natur aus das nachhaltigste. Die Auswirkungen auf die Umwelt hängen von der Gewinnung, der Herstellung, dem Transport, den Wiederverwendungs- und Recyclingmöglichkeiten sowie dem zu schützenden Lebensmittelprodukt ab.",
       "options": {
@@ -1428,6 +1742,7 @@
       }
     },
     "Q4.1.5": {
+      "title": "EU-Verpackungshierarchie",
       "question": "Ein Supermarkt möchte die Nachhaltigkeit seiner Verpackungen verbessern und gleichzeitig die Lebensmittelqualität gewährleisten. Welche Strategie steht am besten im Einklang mit der EU-Verpackungshierarchie?",
       "explanation": "Die EU-Verpackungshierarchie sieht vor, zunächst unnötige Verpackungen zu reduzieren, dann Verpackungen nach Möglichkeit wiederzuverwenden und schließlich Materialien zu recyceln. Das Ziel besteht darin, Produkte zu schützen und gleichzeitig den Abfall zu minimieren.",
       "options": {
@@ -1438,6 +1753,7 @@
       }
     },
     "Q4.2.1": {
+      "title": "Mehrwegbehälter für Essen zum Mitnehmen",
       "question": "Sie haben zwei Optionen für Speisen zum Mitnehmen: Option A: Ein Einwegbehälter, der recycelt werden kann. Option B: Ein wiederverwendbarer Behälter, der an das Restaurant zurückgegeben werden muss. Welcher Faktor ist am wichtigsten, um zu entscheiden, ob Option B tatsächlich nachhaltiger ist?",
       "explanation": "Wiederverwendbare Verpackungen sind erst dann ökologisch vorteilhaft, wenn sie ihren ökologischen Break-even-Punkt (e-BEP) erreicht haben; das bedeutet, dass sie so oft wiederverwendet werden müssen, dass die anfänglichen Auswirkungen ihrer Herstellung ausgeglichen werden.",
       "options": {
@@ -1448,6 +1764,7 @@
       }
     },
     "Q4.2.2": {
+      "title": "Mehrwegbecher",
       "question": "Ein Café bietet ein Programm für wiederverwendbare Becher an. Welches Kundenverhalten trägt am meisten zum ökologischen Erfolg des Programms bei?",
       "explanation": "Die ökologischen Vorteile wiederverwendbarer Systeme hängen in erster Linie davon ab, dass eine hohe Anzahl von Wiederverwendungszyklen erreicht wird.",
       "options": {
@@ -1458,6 +1775,7 @@
       }
     },
     "Q4.2.3": {
+      "title": "Verpackungen beim Lieferdienst",
       "question": "Sie vergleichen zwei Essenslieferdienste: Dienst A verwendet Einwegverpackungen, die recycelt werden. Dienst B verwendet wiederverwendbare Behälter, die eingesammelt, gereinigt und wiederverwendet werden. Welche Aussage ist am zutreffendsten?",
       "explanation": "Wiederverwendbare Systeme können Einwegsysteme in ihrer Leistung übertreffen, doch hängt ihre Leistung von Faktoren wie Rücklaufquoten, Transport, Reinigung und der Anzahl der Wiederverwendungszyklen ab.",
       "options": {
@@ -1468,6 +1786,7 @@
       }
     },
     "Q4.2.4": {
+      "title": "Nachfüllstationen",
       "question": "Ein Supermarkt führt Nachfüllstationen für Produkte wie Müsli, Nudeln und Waschmittel ein. Welchen Nachhaltigkeitsvorteil sollen diese Systeme in erster Linie erzielen?",
       "explanation": "Wiederverwendungs- und Nachfüllsysteme sorgen dafür, dass Verpackungen länger im Umlauf bleiben, und verringern den Bedarf an neuen Materialien sowie den Verpackungsabfall.",
       "options": {
@@ -1478,6 +1797,7 @@
       }
     },
     "Q4.2.5": {
+      "title": "Angaben zu Mehrwegverpackungen",
       "question": "Auf einem Produktetikett wird angegeben, dass wiederverwendbare Verpackungen verwendet werden. Welche zusätzlichen Informationen wären für die Bewertung der Umweltverträglichkeit am hilfreichsten?",
       "explanation": "Die Anzahl der erreichten Wiederverwendungszyklen ist einer der wichtigsten Faktoren dafür, ob wiederverwendbare Verpackungen einen Beitrag zum Umweltschutz leisten.",
       "options": {
@@ -1488,6 +1808,7 @@
       }
     },
     "Q5.1.1": {
+      "title": "Bestellen ohne Reste",
       "question": "Sie bestellen in einem Restaurant das Mittagessen und sind sich nicht sicher, wie hungrig Sie sind. Welche Wahl trägt am ehesten dazu bei, Essensreste zu vermeiden?",
       "explanation": "Untersuchungen zeigen, dass das Angebot und die Auswahl kleinerer Portionen die Essensreste auf den Tellern deutlich reduzieren können, selbst wenn sich nur ein kleiner Teil der Gäste dafür entscheidet.",
       "options": {
@@ -1498,6 +1819,7 @@
       }
     },
     "Q5.1.2": {
+      "title": "Lebensmittelverschwendung am Buffet",
       "question": "Welches Verhalten trägt bei einem Buffet am ehesten dazu bei, Lebensmittelverschwendung zu reduzieren?",
       "explanation": "Untersuchungen in Buffets haben ergeben, dass viele Verbraucher mehr Essen nehmen, als sie tatsächlich essen. Wenn man mit kleineren Portionen beginnt, lässt sich diese übermäßige Auswahl reduzieren.",
       "options": {
@@ -1508,6 +1830,7 @@
       }
     },
     "Q5.1.3": {
+      "title": "Kleinere Portionen",
       "question": "Ein Restaurant führt eine kleinere Portionsgröße auf der Speisekarte ein. Welches Ergebnis würde am ehesten mit den vorliegenden Informationen übereinstimmen?",
       "explanation": "Studien zeigen, dass das Angebot kleinerer Portionen die Verschwendung erheblich reduzieren kann, selbst wenn sich nur relativ wenige Kunden dafür entscheiden.",
       "options": {
@@ -1518,6 +1841,7 @@
       }
     },
     "Q5.1.4": {
+      "title": "Lebensmittelverschwendung in der Kantine",
       "question": "In einer Kantine sehen Sie ein Schild, das die Gäste dazu auffordert, Lebensmittelverschwendung zu vermeiden. Welche Reaktion trägt am ehesten dazu bei, Essensreste zu vermeiden?",
       "explanation": "Verbraucher, die bewusst versuchen, das Essen auf ihrem Teller vollständig aufzuessen, lassen in der Regel weniger übrig. Ein Wechsel des Gerichts während der Mahlzeit kann die Verschwendung sogar noch erhöhen.",
       "options": {
@@ -1528,6 +1852,7 @@
       }
     },
     "Q5.1.5": {
+      "title": "Ursachen für Tellerreste",
       "question": "Welcher Faktor trägt am ehesten zur Verschwendung von Speisen in Restaurants und Kantinen bei?",
       "options": {
         "A": "Saisonale Menüs",
@@ -1538,6 +1863,7 @@
       "explanation": "Einheitliche Portionsgrößen berücksichtigen unterschiedliche Appetitgrößen oft nicht und gelten als systemische Ursache von Tellerresten."
     },
     "Q5.2.1": {
+      "title": "Reste aufbewahren",
       "question": "Sie haben Reste vom Abendessen, die Sie morgen essen möchten. Was ist der beste erste Schritt, um sowohl Lebensmittelverschwendung als auch Risiken für die Lebensmittelsicherheit zu vermeiden?",
       "explanation": "Bakterien vermehren sich bei Raumtemperatur rasch. Durch sofortiges Kühlen bleiben Essensreste genießbar, und die Wahrscheinlichkeit, dass sie weggeworfen werden müssen, sinkt.",
       "options": {
@@ -1548,6 +1874,7 @@
       }
     },
     "Q5.2.2": {
+      "title": "Joghurt nach dem Mindesthaltbarkeitsdatum",
       "question": "Sie finden einen Joghurt, dessen „Mindesthaltbarkeitsdatum“ bereits zwei Tage überschritten ist. Wie sollten Sie am besten vorgehen?",
       "explanation": "Das Mindesthaltbarkeitsdatum bezieht sich auf die Qualität der Lebensmittel, während das Verbrauchsdatum die Lebensmittelsicherheit betrifft. Viele Lebensmittel sind auch nach Ablauf des Mindesthaltbarkeitsdatums noch genießbar, sofern sie ordnungsgemäß gelagert wurden.",
       "options": {
@@ -1558,6 +1885,7 @@
       }
     },
     "Q5.2.3": {
+      "title": "Suppe aufbewahren",
       "question": "Sie haben einen großen Topf Suppe gekocht, den Sie für später in der Woche aufbewahren möchten. Wie lässt sich die Suppe am besten aufbewahren?",
       "explanation": "Kleinere Behälter kühlen schneller ab als ein großer Topf, wodurch sich die Zeit verkürzt, in der Lebensmittel Temperaturen ausgesetzt sind, die das Bakterienwachstum begünstigen.",
       "options": {
@@ -1568,6 +1896,7 @@
       }
     },
     "Q5.2.4": {
+      "title": "Reisreste sicher aufbewahren",
       "question": "Sie haben Reis übrig gekocht und möchten ihn am nächsten Tag zum Mittagessen verwenden. Welche Vorgehensweise ist am sichersten?",
       "explanation": "Gekochter Reis kann Bacillus cereus enthalten, ein Bakterium, das sich rasch vermehren kann, wenn der Reis bei Raumtemperatur stehen gelassen wird. Die richtige Lagerung hilft, lebensmittelbedingte Erkrankungen und unnötige Verschwendung zu vermeiden.",
       "options": {
@@ -1578,6 +1907,7 @@
       }
     },
     "Q5.2.5": {
+      "title": "Reste verwerten",
       "question": "Welche Gewohnheit im Haushalt trägt am ehesten dazu bei, dass aus Essensresten kein Abfall entsteht?",
       "explanation": "Viele Essensreste werden zu Abfall, weil sie in Vergessenheit geraten oder durch neu gekaufte Lebensmittel ersetzt werden. Eine bewusste Planung der Mahlzeiten unter Einbeziehung der vorhandenen Essensreste trägt dazu bei, Lebensmittelverschwendung zu reduzieren.",
       "options": {
@@ -1588,6 +1918,7 @@
       }
     },
     "Q5.3.1": {
+      "title": "Mindesthaltbarkeitsdatum",
       "question": "Sie finden einen Joghurt, dessen „Mindesthaltbarkeitsdatum“ zwei Tage zurückliegt. Die Verpackung ist ungeöffnet und der Joghurt wurde ordnungsgemäß im Kühlschrank aufbewahrt. Wie sollten Sie am besten vorgehen?",
       "explanation": "Viele Verbraucher verwechseln die Angaben „Mindestens haltbar bis“ und „Verbrauchen bis“. „Mindestens haltbar bis“ bezieht sich auf die Qualität, während „Verbrauchen bis“ die Sicherheit betrifft. Das Missverständnis dieser Angaben trägt erheblich zur vermeidbaren Lebensmittelverschwendung in Haushalten bei.",
       "options": {
@@ -1598,6 +1929,7 @@
       }
     },
     "Q5.3.2": {
+      "title": "Mengenrabatte",
       "question": "Ein Supermarkt bietet eine Aktion „3 kaufen, 2 gratis“ für frische Erdbeeren an. Welche Frage sollten Sie sich stellen, bevor Sie das Angebot annehmen?",
       "explanation": "Mehrfachkauf-Aktionen verleiten Verbraucher oft dazu, mehr zu kaufen, als sie verbrauchen können. Frische Produkte sind aufgrund ihrer kurzen Haltbarkeit besonders anfällig für Verschwendung.",
       "options": {
@@ -1608,6 +1940,7 @@
       }
     },
     "Q5.3.3": {
+      "title": "Lebensmittel kurz vor Ablauf",
       "question": "Sie überlegen, was Sie mit Lebensmitteln tun sollen, deren Verfallsdatum bald abläuft. Mit welcher Strategie lässt sich Lebensmittelverschwendung am ehesten vermeiden?",
       "explanation": "Die Mahlzeitenplanung und die vorrangige Verwendung von Lebensmitteln mit kürzerer Resthaltbarkeit gehören zu den wirksamsten Strategien im Haushalt, um Lebensmittelverschwendung zu reduzieren.",
       "options": {
@@ -1618,6 +1951,7 @@
       }
     },
     "Q5.3.4": {
+      "title": "Abgelaufene Lebensmittel vermeiden",
       "question": "Welcher Haushalt fällt voraussichtlich am wenigsten Abfall durch abgelaufene Lebensmittel an?",
       "explanation": "Viele Lebensmittel verfallen, weil Verbraucher vergessen, was sie bereits zu Hause haben, und doppelte Artikel kaufen. Der Überblick über den Vorratsbestand ist eine wichtige Strategie zur Vermeidung von Lebensmittelverschwendung.",
       "options": {
@@ -1628,6 +1962,7 @@
       }
     },
     "Q5.3.5": {
+      "title": "Lebensmittel vorschnell wegwerfen",
       "question": "Eine Familie wirft Lebensmittel kurz nach Ablauf des Verfallsdatums weg, weil sie Bedenken hinsichtlich der Lebensmittelsicherheit hat. Was ist den vorliegenden Erkenntnissen zufolge häufig der Grund für dieses Verhalten?",
       "explanation": "Untersuchungen zeigen, dass das falsche Verständnis von Haltbarkeitsangaben auf Lebensmitteln und die Sorge vor möglichen Gesundheitsrisiken zu den Hauptursachen für vermeidbare Lebensmittelverschwendung in europäischen Haushalten zählen.",
       "options": {
@@ -1638,6 +1973,7 @@
       }
     },
     "Q5.4.1": {
+      "title": "Familienessen planen",
       "question": "Sie planen ein Familienessen und möchten unnötige Lebensmittelverschwendung vermeiden. Welcher Ansatz ist dabei am ehesten hilfreich?",
       "explanation": "Eine übermäßige Zubereitung ist eine häufige Ursache für Lebensmittelverschwendung im Haushalt. Die Planung der Portionen entsprechend dem tatsächlichen Bedarf trägt dazu bei, überschüssige Lebensmittel zu vermeiden, die möglicherweise nie verzehrt werden.",
       "options": {
@@ -1648,6 +1984,7 @@
       }
     },
     "Q5.4.2": {
+      "title": "Rabatt auf Familienpackungen",
       "question": "Ein Supermarkt bietet einen großen Rabatt auf eine Familienpackung mit frischen Lebensmitteln an. Wie sollte man am nachhaltigsten darauf reagieren?",
       "explanation": "Der Kauf von mehr Lebensmitteln, als verbraucht werden kann, ist eine häufige Ursache für Lebensmittelverschwendung. Niedrigere Stückpreise bedeuten nicht zwangsläufig weniger Verschwendung, wenn die Lebensmittel später weggeworfen werden.",
       "options": {
@@ -1658,6 +1995,7 @@
       }
     },
     "Q5.4.3": {
+      "title": "Einkaufsgewohnheiten",
       "question": "Welches Einkaufsverhalten trägt am ehesten zu übermäßigem Konsum und Lebensmittelverschwendung bei?",
       "explanation": "Spontankäufe führen oft zu übermäßigen Einkäufen und erhöhen die Wahrscheinlichkeit, dass Lebensmittel ablaufen, bevor sie verzehrt werden.",
       "options": {
@@ -1668,6 +2006,7 @@
       }
     },
     "Q5.4.4": {
+      "title": "Weggeworfene frische Lebensmittel",
       "question": "In einem Haushalt werden häufig Brot, Obst und Gemüse weggeworfen. Welches zugrunde liegende Verhalten trägt am ehesten zu diesem Problem bei?",
       "explanation": "Frische Lebensmittel und Backwaren gehören zu den Lebensmitteln, die am häufigsten weggeworfen werden, da sie eine relativ kurze Haltbarkeit haben und oft in zu großen Mengen gekauft werden.",
       "options": {
@@ -1678,6 +2017,7 @@
       }
     },
     "Q5.4.5": {
+      "title": "Überkonsum und Verschwendung",
       "question": "Welche Aussage spiegelt den Zusammenhang zwischen übermäßigem Konsum und Lebensmittelverschwendung am besten wider?",
       "explanation": "Übermäßiger Konsum und übermäßige Einkäufe führen oft dazu, dass Lebensmittel ungenutzt bleiben, was sowohl den Hausmüll als auch die mit der Produktion dieser Lebensmittel verbundenen Umweltauswirkungen erhöht.",
       "options": {
@@ -1688,6 +2028,7 @@
       }
     },
     "Q6.1.1": {
+      "title": "Nachhaltige Proteinaufnahme",
       "question": "Sie möchten Ihre Proteinaufnahme erhöhen und gleichzeitig die Umweltbelastung durch Ihre Ernährung verringern. Welche wöchentliche Umstellung entspricht am ehesten dem aktuellen Stand der Forschung?",
       "options": {
         "A": "Iss größere Portionen rotes Fleisch",
@@ -1698,6 +2039,7 @@
       "explanation": "Hülsenfrüchte, Nüsse und Vollkornprodukte liefern Eiweiß und haben in der Regel geringere Umweltauswirkungen als viele tierische Proteinquellen. Eine Vielfalt an Proteinquellen ist für Gesundheit und Nachhaltigkeit vorteilhaft."
     },
     "Q6.1.2": {
+      "title": "Protein-Mittagessen im Vergleich",
       "question": "Zwei Mittagessen enthalten eine ähnliche Menge an Eiweiß: Linsen-Quinoa-Salat, Sandwich mit Fleischprodukten. Welche Aussage ist am zutreffendsten?",
       "explanation": "Proteinreiche Lebensmittel unterscheiden sich hinsichtlich der darin enthaltenen Nährstoffe wie Ballaststoffe, Natrium, gesättigte Fettsäuren, Vitamine und Mineralstoffe. Auf die Gesamtzusammensetzung der Proteine kommt es an.",
       "options": {
@@ -1708,6 +2050,7 @@
       }
     },
     "Q6.1.3": {
+      "title": "Essentielle Aminosäuren",
       "question": "Jemand möchte seinen Fleischkonsum reduzieren, hat aber Bedenken, ob er dadurch alle essentiellen Aminosäuren zu sich nimmt. Welche Strategie ist am besten geeignet?",
       "options": {
         "A": "Iss weiterhin zu jeder Mahlzeit Fleisch",
@@ -1718,6 +2061,7 @@
       "explanation": "Verschiedene pflanzliche Proteine ergänzen einander. In einer abwechslungsreichen Ernährung liefert die Kombination unterschiedlicher pflanzlicher Proteinquellen in der Regel alle essenziellen Aminosäuren."
     },
     "Q6.1.4": {
+      "title": "Angaben zum Proteingehalt",
       "question": "Sie vergleichen zwei Lebensmittel: Produkt A: „Proteinquelle“ Produkt B: „Proteinreich“ Welche Schlussfolgerung können Sie daraus ziehen?",
       "options": {
         "A": "Produkt B enthält zwangsläufig doppelt so viel Eiweiß",
@@ -1728,6 +2072,7 @@
       "explanation": "Nach der EU-Verordnung über nährwertbezogene Angaben darf ein Produkt nur dann als „proteinreich“ bezeichnet werden, wenn mindestens 20 % seines Energiegehalts aus Eiweiß stammen. Für „Proteinquelle“ sind mindestens 12 % erforderlich."
     },
     "Q6.1.5": {
+      "title": "Ausgewogene Proteinquellen",
       "question": "Welches Ernährungsmuster steht am ehesten im Einklang sowohl mit den Nachhaltigkeitszielen als auch mit den aktuellen Ernährungsempfehlungen?",
       "options": {
         "A": "Den größten Teil der Proteine aus rotem Fleisch und Fleischprodukten beziehen",
@@ -1738,6 +2083,7 @@
       "explanation": "Gesunde und nachhaltige Ernährung stützt sich in der Regel auf vielfältige Proteinquellen statt auf eine einzige. Hülsenfrüchte, Fisch, Nüsse, Milchprodukte und moderate Mengen Fleisch können alle zur ausreichenden Eiweißversorgung beitragen und zugleich die Ernährungsqualität fördern."
     },
     "Q6.2.1": {
+      "title": "Gesündere Fette",
       "question": "Sie möchten die Qualität der Fette in Ihrer Ernährung verbessern, ohne dabei auf genussvolle Mahlzeiten zu verzichten. Welche Alternative entspricht am ehesten den aktuellen Empfehlungen?",
       "explanation": "Die WHO empfiehlt, gesättigte Fette nach Möglichkeit durch ungesättigte Fette zu ersetzen. Olivenöl ist reich an ungesättigten Fetten, während Butter reich an gesättigten Fetten ist.",
       "options": {
@@ -1748,6 +2094,7 @@
       }
     },
     "Q6.2.2": {
+      "title": "Fettprofil von Mittagessen",
       "question": "Sie vergleichen zwei Mittagessen, die ähnliche Mengen an Eiweiß enthalten: Linsen-Walnuss-Salat, Sandwich mit Fleischprodukten. Welche Aussage ist am zutreffendsten?",
       "explanation": "Pflanzliches Protein",
       "options": {
@@ -1758,6 +2105,7 @@
       }
     },
     "Q6.2.3": {
+      "title": "Kennzeichnung „Fettarm“",
       "question": "Auf einer Verpackung steht „Fettarm“. Wie lässt sich das am besten interpretieren?",
       "explanation": "Manche fettarmen Produkte gleichen den Fettverlust durch den Zusatz von Zucker oder anderen Zutaten aus. Es ist sinnvoller, das gesamte Nährwertprofil zu betrachten, als sich allein auf den Fettgehalt zu konzentrieren.",
       "options": {
@@ -1768,6 +2116,7 @@
       }
     },
     "Q6.2.4": {
+      "title": "Herzgesundes Abendessen",
       "question": "Welche Option für das Abendessen entspricht am ehesten sowohl den Empfehlungen für die Herzgesundheit als auch nachhaltigen Ernährungsgewohnheiten?",
       "explanation": "Fisch liefert Eiweiß sowie ungesättigte Fette, darunter Omega-3-Fettsäuren. Der Ersatz eines Teils von rotem und verarbeitetem Fleisch durch Fisch geht mit gesundheitlichen Vorteilen einher und kann zu nachhaltigeren Ernährungsgewohnheiten beitragen.",
       "options": {
@@ -1778,6 +2127,7 @@
       }
     },
     "Q6.2.5": {
+      "title": "Transfette",
       "question": "Sie möchten das mit dem Verzehr von Transfetten verbundene Risiko verringern. Auf welches Lebensmittel sollten Sie dabei besonders achten?",
       "explanation": "Industriell hergestellte Transfette sind häufig in frittierten Lebensmitteln, Backwaren und einigen verpackten Snacks enthalten. Die WHO empfiehlt, die Aufnahme von Transfetten so gering wie möglich zu halten, da sie das Risiko für Herz-Kreislauf-Erkrankungen erhöhen und keinen bekannten gesundheitlichen Nutzen haben.",
       "options": {
@@ -1788,6 +2138,7 @@
       }
     },
     "Q6.3.1": {
+      "title": "Weniger freier Zucker",
       "question": "Sie möchten Ihre Aufnahme von freiem Zucker reduzieren. Welche Änderung beim Frühstück dürfte den größten Effekt haben?",
       "explanation": "Zuckerhaltige Getränke gehören in vielen Altersgruppen in Europa zu den größten Verursachern der Aufnahme von freiem Zucker. Der Ersatz dieser Getränke durch Wasser ist eine der wirksamsten Maßnahmen, um den Konsum von freiem Zucker zu senken.",
       "options": {
@@ -1798,6 +2149,7 @@
       }
     },
     "Q6.3.2": {
+      "title": "Versteckter Zucker",
       "question": "Welches Produkt kann möglicherweise noch erhebliche Mengen an Zucker enthalten, obwohl viele Verbraucher es als gesund wahrnehmen?",
       "explanation": "Die WHO stuft Zucker, der natürlicherweise in Fruchtsäften enthalten ist, als freien Zucker ein. Fruchtsäfte können daher erheblich zur täglichen Zuckeraufnahme beitragen.",
       "options": {
@@ -1808,6 +2160,7 @@
       }
     },
     "Q6.3.3": {
+      "title": "Angabe „Ohne Zuckerzusatz“",
       "question": "Sie vergleichen zwei Produkte: Produkt A: „Ohne Zuckerzusatz“ Produkt B: Normale Version Was lässt sich aus der Angabe auf Produkt A schließen?",
       "explanation": "Produkte mit der Kennzeichnung „ohne Zuckerzusatz“ können dennoch natürlich vorkommenden Zucker enthalten. Nach EU-Recht müssen Produkte gegebenenfalls den Hinweis „enthält natürlich vorkommenden Zucker“ tragen.",
       "options": {
@@ -1818,6 +2171,7 @@
       }
     },
     "Q6.3.4": {
+      "title": "Zuckerarme Snacks",
       "question": "Sie möchten einen Snack, der Nährstoffe liefert, ohne dabei stark auf freien Zucker zurückzugreifen. Welche Option passt am besten zu diesem Ziel?",
       "explanation": "Obst, naturbelassene Milchprodukte und Nüsse liefern Nährstoffe wie Ballaststoffe, Eiweiß, Vitamine und Mineralstoffe, während viele süße Snacks hauptsächlich freien Zucker und Kalorien enthalten.",
       "options": {
@@ -1828,6 +2182,7 @@
       }
     },
     "Q6.3.5": {
+      "title": "Empfehlungen zur Zuckeraufnahme",
       "question": "Welche Aussage spiegelt die aktuellen Empfehlungen zur Zuckeraufnahme am besten wider?",
       "explanation": "Die EFSA kam zu dem Schluss, dass kein sicherer Schwellenwert für zugesetzten und freien Zucker festgelegt werden könne, und empfiehlt, die Aufnahme im Rahmen einer gesunden und ernährungsphysiologisch ausgewogenen Ernährung so gering wie möglich zu halten.",
       "options": {
@@ -1838,6 +2193,7 @@
       }
     },
     "Q6.4.1": {
+      "title": "Weniger Natrium",
       "question": "Sie möchten Ihre Natriumaufnahme reduzieren. Welche Maßnahme dürfte den größten Effekt haben?",
       "explanation": "In den meisten Industrieländern stammen 70–80 % des in der Ernährung aufgenommenen Salzes aus verarbeiteten Lebensmitteln und Mahlzeiten, die außer Haus eingenommen werden, und nicht aus dem Salz, das beim Kochen oder am Tisch hinzugefügt wird.",
       "options": {
@@ -1848,6 +2204,7 @@
       }
     },
     "Q6.4.2": {
+      "title": "Natriumarme Mahlzeiten",
       "question": "Welche Mahlzeit enthält wahrscheinlich weniger Natrium?",
       "explanation": "Frische und nur minimal verarbeitete Lebensmittel enthalten in der Regel deutlich weniger Natrium als Fleischwaren, Fertigprodukte und Fertiggerichte.",
       "options": {
@@ -1858,6 +2215,7 @@
       }
     },
     "Q6.4.3": {
+      "title": "Kennzeichnung „natriumarm“",
       "question": "Ein Produkt ist mit „natriumarm“ gekennzeichnet. Wie lässt sich dies am besten interpretieren?",
       "explanation": "Eine Reduzierung des Natriumgehalts ist zwar vorteilhaft, doch bei einer gesunden Ernährung sollten auch andere Faktoren wie Fett, Zucker, Ballaststoffe und die allgemeine Qualität der Lebensmittel berücksichtigt werden.",
       "options": {
@@ -1868,6 +2226,7 @@
       }
     },
     "Q6.4.4": {
+      "title": "Geschmack ohne Salz",
       "question": "Sie möchten Ihren Mahlzeiten mehr Geschmack verleihen und gleichzeitig die Salzaufnahme reduzieren. Welche Strategie entspricht am ehesten den Empfehlungen der WHO?",
       "explanation": "Die WHO empfiehlt, Speisen mit Kräutern und Gewürzen zu würzen, anstatt sich stark auf Salz zu verlassen.",
       "options": {
@@ -1878,6 +2237,7 @@
       }
     },
     "Q6.4.5": {
+      "title": "Natriumquellen",
       "question": "Welche Lebensmittelgruppe trägt in der europäischen Ernährung in der Regel am stärksten zur Natriumaufnahme bei?",
       "explanation": "In europäischen Bevölkerungsgruppen gehören Brot, Fleisch und Fleischprodukte, Käse sowie Milchprodukte zu den wichtigsten Quellen der Natriumaufnahme.",
       "options": {
@@ -1888,6 +2248,7 @@
       }
     },
     "Q6.5.1": {
+      "title": "Ballaststoffreiches Frühstück",
       "question": "Sie möchten mehr Ballaststoffe zu sich nehmen. Welches Frühstück ist dafür am besten geeignet?",
       "explanation": "Hafer, Obst und Nüsse sind alle wichtig",
       "options": {
@@ -1898,6 +2259,7 @@
       }
     },
     "Q6.5.2": {
+      "title": "Ballaststoffe in Nudeln",
       "question": "Sie haben die Wahl zwischen zwei Nudelprodukten. Welche Variante enthält wahrscheinlich mehr Ballaststoffe?",
       "explanation": "Vollkornprodukte enthalten mehr der natürlichen Ballaststoffe des Getreides als Produkte aus raffiniertem Getreide. Vollkornnudeln sind im Allgemeinen eine bessere",
       "options": {
@@ -1908,6 +2270,7 @@
       }
     },
     "Q6.5.3": {
+      "title": "Vollkorn auf dem Etikett",
       "question": "Auf einer Verpackung wird angegeben, dass sie Vollkornprodukte enthält. Welche Angabe auf dem Etikett würde am deutlichsten darauf hindeuten, dass diese Angabe zutrifft?",
       "explanation": "Eine praktische Methode, Vollkornprodukte zu erkennen, besteht darin, zu prüfen, ob Begriffe wie „Vollkornweizen“, „Vollkornhafer“ oder „Vollkorn“ am Anfang der Zutatenliste stehen.",
       "options": {
@@ -1918,6 +2281,7 @@
       }
     },
     "Q6.5.4": {
+      "title": "Ballaststoffe und Verdauung",
       "question": "Eine Person möchte ihre Verdauungsgesundheit verbessern und Verstopfung vorbeugen. Welche Gewohnheit entspricht am ehesten dem aktuellen Stand der Forschung?",
       "explanation": "Ballaststoffe unterstützen die Darmfunktion, insbesondere in Verbindung mit einer ausreichenden Flüssigkeitszufuhr. Eine schrittweise Erhöhung der Ballaststoffzufuhr kann zudem dazu beitragen, vorübergehende Blähungen und Beschwerden zu lindern.",
       "options": {
@@ -1928,6 +2292,7 @@
       }
     },
     "Q6.5.5": {
+      "title": "Arten von Ballaststoffen",
       "question": "Welche Lebensmittelkombination liefert am ehesten eine Vielzahl verschiedener Ballaststoffarten?",
       "explanation": "Verschiedene ballaststoffreiche Lebensmittel liefern unterschiedliche Arten von löslichen und unlöslichen Ballaststoffen. Der Verzehr einer Vielzahl von Hülsenfrüchten, Gemüse, Obst und Vollkornprodukten fördert die Verdauungsgesundheit und die allgemeine Ernährungsqualität.",
       "options": {
@@ -1938,6 +2303,7 @@
       }
     },
     "Q6.6.1": {
+      "title": "Vitamine ohne Nahrungsergänzung",
       "question": "Sie möchten den Vitamingehalt Ihrer Ernährung verbessern, ohne Nahrungsergänzungsmittel einzunehmen. Welche Gewohnheit entspricht am ehesten den aktuellen Empfehlungen?",
       "explanation": "Obst und Gemüse liefern verschiedene Vitamine, Mineralstoffe, Ballaststoffe und Antioxidantien. Der Verzehr einer Vielzahl pflanzlicher Lebensmittel trägt dazu bei, die Gesamtzufuhr an Mikronährstoffen zu verbessern und das Risiko von Mangelerscheinungen zu verringern.",
       "options": {
@@ -1948,6 +2314,7 @@
       }
     },
     "Q6.6.2": {
+      "title": "Vitamin D aus der Nahrung",
       "question": "Jemand möchte über die Ernährung einen ausreichenden Vitamin-D-Spiegel aufrechterhalten. Welche Mahlzeit trägt am ehesten dazu bei?",
       "explanation": "Naturkost",
       "options": {
@@ -1958,6 +2325,7 @@
       }
     },
     "Q6.6.3": {
+      "title": "Vitaminbedarf bei veganer Ernährung",
       "question": "Ein Verbraucher ernährt sich streng vegan. Auf welches Vitamin sollte er besonders achten?",
       "explanation": "Vitamin B12 kommt in der Natur fast ausschließlich in tierischen Lebensmitteln vor. Menschen, die sich vegetarisch und insbesondere vegan ernähren, benötigen möglicherweise angereicherte Lebensmittel oder Nahrungsergänzungsmittel, um eine ausreichende Zufuhr sicherzustellen.",
       "options": {
@@ -1968,6 +2336,7 @@
       }
     },
     "Q6.6.4": {
+      "title": "Snacks mit Vitamin C",
       "question": "Welcher Snack ist am ehesten eine gute Vitamin-C-Quelle?",
       "options": {
         "A": "Käse und Cracker",
@@ -1978,6 +2347,7 @@
       "explanation": "Obst wie Orangen, Kiwis und Beeren sowie viele Gemüsesorten sind reich an Vitamin C, das zur Funktion des Immunsystems und zur normalen Kollagenbildung beiträgt."
     },
     "Q6.6.5": {
+      "title": "Kochen und Vitamine",
       "question": "Sie haben die Wahl zwischen zwei Beilagen: Gedünstetes Gemüse – Gemüse, das sehr lange bei hoher Temperatur gegart wurde. Bei welcher Variante bleiben die Vitamine eher erhalten?",
       "explanation": "Zu langes Garen kann den Gehalt einiger Vitamine verringern. Die WHO empfiehlt, Obst und Gemüse nicht zu lange zu garen, um wichtige Nährstoffe zu erhalten.",
       "options": {
@@ -1988,6 +2358,7 @@
       }
     },
     "Q6.7.1": {
+      "title": "Nährstoffreiche Mittagessen",
       "question": "Zwei Mittagessen enthalten eine ähnliche Anzahl an Kalorien. Welches Mittagessen ist wahrscheinlich nährstoffreicher?",
       "explanation": "Kalorien sind ein Maß für Energie, während die Nährstoffdichte die Menge der enthaltenen nützlichen Nährstoffe widerspiegelt. Eine Mahlzeit auf der Basis von Hülsenfrüchten, Gemüse und Vollkornprodukten liefert in der Regel mehr Ballaststoffe, Vitamine, Mineralstoffe und sekundäre Pflanzenstoffe als viele stark verarbeitete Alternativen mit ähnlichem Kaloriengehalt.",
       "options": {
@@ -1998,6 +2369,7 @@
       }
     },
     "Q6.7.2": {
+      "title": "Kalorienarme Getränke",
       "question": "Welche Getränkeauswahl trägt am ehesten dazu bei, eine unnötige Kalorienaufnahme zu reduzieren?",
       "explanation": "Wasser versorgt den Körper mit Flüssigkeit ohne Kalorien, während zuckerhaltige Getränke erhebliche Mengen an Energie liefern, dabei aber nur einen geringen Nährwert haben.",
       "options": {
@@ -2008,6 +2380,7 @@
       }
     },
     "Q6.7.3": {
+      "title": "Verarbeitete Snacks und Kalorien",
       "question": "Warum kann der regelmäßige Verzehr stark verarbeiteter Snacks die Kalorienkontrolle erschweren?",
       "explanation": "Viele hochverarbeitete Lebensmittel sind sehr kalorienreich und man neigt dazu, zu viel davon zu essen, was zu einer übermäßigen Kalorienaufnahme und einer ungesunden Gewichtszunahme führen kann.",
       "options": {
@@ -2018,6 +2391,7 @@
       }
     },
     "Q6.7.4": {
+      "title": "Nachhaltige Kalorienaufnahme",
       "question": "Welche Aussage spiegelt einen nachhaltigen Umgang mit der Kalorienaufnahme am besten wider?",
       "options": {
         "A": "So wenig Kalorien wie möglich zu sich nehmen",
@@ -2028,6 +2402,7 @@
       "explanation": "Eine gesunde und nachhaltige Ernährung dreht sich nicht nur um Kalorien. Es geht darum, den Energiebedarf zu decken, dabei nährstoffreiche Lebensmittel zu wählen und unnötigen Überkonsum sowie Verschwendung zu vermeiden."
     },
     "Q6.7.5": {
+      "title": "Sättigende Snacks",
       "question": "Vier Snacks liefern ungefähr die gleiche Anzahl an Kalorien. Welcher davon hält Sie wahrscheinlich länger satt?",
       "explanation": "Lebensmittel, die Ballaststoffe, Eiweiß und gesunde Fette enthalten, sorgen im Allgemeinen besser für ein Sättigungsgefühl als Lebensmittel, die hauptsächlich aus zugesetztem Zucker bestehen.",
       "options": {

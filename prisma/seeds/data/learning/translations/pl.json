@@ -37,758 +37,1009 @@
   },
   "foodFacts": {
     "FF1.1.1": {
+      "title": "Mniej czerwonego mięsa, mniejszy wpływ",
       "body": "Ograniczenie spożycia czerwonego mięsa to jeden z najskuteczniejszych sposobów na zmniejszenie wpływu Twojej diety na środowisko."
     },
     "FF1.1.2": {
+      "title": "Wołowina a lasy",
       "body": "Ograniczenie spożycia wołowiny może przyczynić się do zmniejszenia presji wywieranej na lasy i siedliska naturalne."
     },
     "FF1.1.3": {
+      "title": "Mniej mięsa, mniej emisji",
       "body": "Diety zawierające mniej mięsa zazwyczaj wiążą się z mniejszą emisją gazów cieplarnianych."
     },
     "FF1.1.4": {
+      "title": "Więcej roślin, mniej czerwonego mięsa",
       "body": "Zrównoważona dieta zazwyczaj obejmuje więcej produktów pochodzenia roślinnego i mniej czerwonego mięsa."
     },
     "FF1.1.5": {
+      "title": "Ślad powierzchniowy wołowiny",
       "body": "Produkcja wołowiny wymaga znacznie większej powierzchni niż produkcja białek pochodzenia roślinnego, takich jak groch czy tofu."
     },
     "FF1.1.6": {
+      "title": "Mięso a zużycie wody",
       "body": "Ograniczenie spożycia mięsa może przyczynić się do zmniejszenia zużycia wody związanego z produkcją żywności."
     },
     "FF1.1.7": {
+      "title": "Mięso a antybiotyki",
       "body": "Ograniczenie spożycia mięsa może przyczynić się do zmniejszenia zapotrzebowania na antybiotyki w hodowli zwierząt."
     },
     "FF1.1.8": {
+      "title": "Grunty pod hodowlę a kalorie",
       "body": "Produkcja zwierzęca zajmuje większość gruntów rolnych na świecie, dostarczając jednocześnie znacznie mniejszy udział kalorii i białka."
     },
     "FF1.1.9": {
+      "title": "Hodowla zwierząt a różnorodność biologiczna",
       "body": "Mniejszy popyt na produkty pochodzenia zwierzęcego może przyczynić się do ochrony różnorodności biologicznej poprzez ograniczenie przekształcania gruntów."
     },
     "FF1.1.10": {
+      "title": "Rośliny strączkowe zamiast mięsa",
       "body": "Zastąpienie części mączek mięsnych roślinami strączkowymi pozwala utrzymać spożycie białka przy jednoczesnym zmniejszeniu wpływu na środowisko."
     },
     "FF1.2.1": {
+      "title": "Rośliny strączkowe dla klimatu",
       "body": "Zastąpienie części spożywanego mięsa roślinami strączkowymi może zmniejszyć wpływ Twojej diety na klimat."
     },
     "FF1.2.2": {
+      "title": "Rośliny strączkowe: odżywcze i ekologiczne",
       "body": "Rośliny strączkowe są bogate w białko, błonnik, witaminy i minerały, a jednocześnie mają niewielki wpływ na środowisko."
     },
     "FF1.2.3": {
+      "title": "Zróżnicuj źródła białka",
       "body": "Zróżnicowanie źródeł białka przyczynia się zarówno do poprawy zdrowia ludzi, jak i do zrównoważonego rozwoju środowiska."
     },
     "FF1.2.4": {
+      "title": "Najbardziej zrównoważone źródła białka",
       "body": "Fasola, soczewica, groch i ciecierzyca należą do najbardziej zrównoważonych dostępnych źródeł białka."
     },
     "FF1.2.5": {
+      "title": "Rośliny strączkowe oszczędzają wodę",
       "body": "Rośliny strączkowe zazwyczaj wymagają mniej wody niż wiele źródeł białka pochodzenia zwierzęcego."
     },
     "FF1.2.6": {
+      "title": "Rośliny strączkowe i zboża",
       "body": "Połączenie roślin strączkowych ze zbożami poprawia jakość białka roślinnego."
     },
     "FF1.2.7": {
+      "title": "Jaja i produkty mleczne a czerwone mięso",
       "body": "Jaja i produkty mleczne mogą stanowić źródło białka o mniejszym wpływie na środowisko niż mięso czerwone."
     },
     "FF1.2.8": {
+      "title": "Rośliny strączkowe użyźniają glebę",
       "body": "Rośliny strączkowe w naturalny sposób poprawiają żyzność gleby poprzez wiązanie azotu z powietrza, co zmniejsza zapotrzebowanie na nawozy."
     },
     "FF1.2.9": {
+      "title": "Owady jako źródło białka",
       "body": "Owady są bogate w składniki odżywcze i mogą stać się ważnym alternatywnym źródłem białka w przyszłych systemach żywnościowych."
     },
     "FF1.2.10": {
+      "title": "Roślinne zamienniki mięsa",
       "body": "Roślinne zamienniki mięsa mogą przyczynić się do zmniejszenia spożycia mięsa, jednak ich wartość odżywcza różni się w zależności od produktu."
     },
     "FF1.3.1": {
+      "title": "Komosa ryżowa: pełnowartościowe białko",
       "body": "Komosa ryżowa zawiera wszystkie dziewięć niezbędnych aminokwasów, co czyni ją pełnowartościowym białkiem roślinnym."
     },
     "FF1.3.2": {
+      "title": "Rośliny strączkowe a choroby przewlekłe",
       "body": "Rośliny strączkowe to pożywne produkty spożywcze stanowiące podstawę diety, których spożywanie wiąże się z mniejszym ryzykiem wystąpienia chorób przewlekłych."
     },
     "FF1.3.3": {
+      "title": "Nie tylko pszenica, ryż i kukurydza",
       "body": "Uprawy alternatywne pomagają zmniejszyć zależność od pszenicy, ryżu i kukurydzy."
     },
     "FF1.3.4": {
+      "title": "Odporne proso",
       "body": "Proso to rośliny uprawne o dużej odporności, które mogą rosnąć w gorących i suchych warunkach, przy niewielkiej ilości wody."
     },
     "FF1.3.5": {
+      "title": "Proso w zmieniającym się klimacie",
       "body": "Proso może nadal dostarczać żywność nawet w warunkach klimatycznych, w których inne uprawy mogą zawieść."
     },
     "FF1.3.6": {
+      "title": "Różnorodne uprawy, większe bezpieczeństwo żywnościowe",
       "body": "Uprawa bardziej zróżnicowanych roślin podstawowych może przyczynić się do wzmocnienia bezpieczeństwa żywnościowego i odporności na zmiany klimatu."
     },
     "FF1.3.7": {
+      "title": "Komosa ryżowa podbija świat",
       "body": "Komosa ryżowa jest obecnie uprawiana w ponad 70 krajach, co przyczynia się do dywersyfikacji światowej produkcji żywności."
     },
     "FF1.3.8": {
+      "title": "Zalety gryki",
       "body": "Gryka jest z natury bezglutenowa i bogata w błonnik, białko oraz przeciwutleniacze."
     },
     "FF1.3.9": {
+      "title": "Białko amarantusa",
       "body": "Amarantus zawiera wysokiej jakości białko, w tym lizynę."
     },
     "FF1.3.10": {
+      "title": "Przeciwutleniacze w starożytnych zbożach",
       "body": "Starożytne zboża, takie jak proso, komosa ryżowa i amarantus, zawierają korzystne dla zdrowia związki przeciwutleniające."
     },
     "FF2.1.1": {
+      "title": "Rolnictwo zajmuje połowę lądów",
       "body": "Około połowa powierzchni lądowej nadającej się do zamieszkania na świecie jest wykorzystywana do celów rolniczych."
     },
     "FF2.1.2": {
+      "title": "Białko roślinne oszczędza ziemię",
       "body": "Produkcja białek roślinnych zazwyczaj wymaga znacznie mniej ziemi niż produkcja mięsa."
     },
     "FF2.1.3": {
+      "title": "Posiłki roślinne uwalniają ziemię",
       "body": "Wybieranie większej liczby posiłków opartych na produktach roślinnych może pomóc w uwolnieniu gruntów na potrzeby odbudowy przyrody."
     },
     "FF2.1.4": {
+      "title": "Mniej wołowiny, mniej ziemi",
       "body": "Ograniczenie spożycia wołowiny stanowi jedną z największych zmian w diecie, które pozwalają zmniejszyć wykorzystanie gruntów."
     },
     "FF2.1.5": {
+      "title": "Wołowina wymaga najwięcej ziemi",
       "body": "Wołowina jest jednym z produktów spożywczych wymagających największej powierzchni uprawnej spośród tych, które spożywają ludzie."
     },
     "FF2.1.6": {
+      "title": "Marnowanie żywności to marnowanie ziemi",
       "body": "Ograniczenie marnotrawstwa żywności pozwoliłoby zaoszczędzić powierzchnię większą niż niektóre kraje."
     },
     "FF2.1.7": {
+      "title": "Rolnictwo zależy od przyrody",
       "body": "Rolnictwo opiera się na zdrowych glebach, różnorodności biologicznej i usługach ekosystemowych."
     },
     "FF2.1.8": {
+      "title": "Ziemia pod hodowlę i paszę",
       "body": "Większość gruntów rolnych wykorzystuje się do wypasu zwierząt gospodarskich lub uprawy paszy dla zwierząt."
     },
     "FF2.1.9": {
+      "title": "Rozszerzanie upraw a różnorodność biologiczna",
       "body": "Rozszerzanie obszarów uprawnych jest jedną z głównych przyczyn utraty różnorodności biologicznej."
     },
     "FF2.1.10": {
+      "title": "Zdegradowane grunty rolne",
       "body": "Około 52% gruntów rolnych jest w umiarkowanym lub znacznym stopniu zdegradowanych."
     },
     "FF2.2.1": {
+      "title": "Zużycie wody w rolnictwie",
       "body": "Około 70% światowego poboru wody słodkiej przeznacza się na potrzeby rolnictwa."
     },
     "FF2.2.2": {
+      "title": "Mniej produktów zwierzęcych, mniej wody",
       "body": "Diety zawierające mniej produktów pochodzenia zwierzęcego często wymagają mniejszego spożycia wody."
     },
     "FF2.2.3": {
+      "title": "Zrównoważona dieta oszczędza wodę",
       "body": "Zrównoważona dieta może zmniejszyć zużycie wody związane z produkcją żywności o 20–50%."
     },
     "FF2.2.4": {
+      "title": "Marnowanie żywności to marnowanie wody",
       "body": "Marnowanie żywności powoduje również stratę ogromnych ilości wody wykorzystywanej do uprawy żywności."
     },
     "FF2.2.5": {
+      "title": "Nadchodzące niedobory wody",
       "body": "Do 2050 r. niedobory wody mogą zagrozić produkcji żywności w wielu regionach."
     },
     "FF2.2.6": {
+      "title": "Zapobiegaj marnowaniu, oszczędzaj wodę",
       "body": "Zapobieganie marnotrawstwu żywności przyczynia się do ochrony zasobów słodkiej wody."
     },
     "FF2.2.7": {
+      "title": "Ślad wodny Twojej diety",
       "body": "Ślad wodny Twojej diety w dużym stopniu zależy od tego, co jesz."
     },
     "FF2.2.8": {
+      "title": "Mądrzejsza gospodarka wodna",
       "body": "Poprawa gospodarki wodnej może zmniejszyć wpływ rolnictwa na środowisko."
     },
     "FF2.2.9": {
+      "title": "Coraz więcej nawadniania",
       "body": "Zużycie wody do nawadniania wzrosło ponad dwukrotnie od 1961 roku."
     },
     "FF2.2.10": {
+      "title": "Nawozy a zanieczyszczenie wody",
       "body": "Nadmierne stosowanie nawozów przyczynia się do zanieczyszczenia wody i powstawania martwych stref."
     },
     "FF2.3.1": {
+      "title": "Udział żywności w emisjach",
       "body": "Systemy żywnościowe odpowiadają za około jedną trzecią globalnej emisji gazów cieplarnianych."
     },
     "FF2.3.2": {
+      "title": "Rośliny strączkowe obniżają emisje",
       "body": "Zastąpienie części białka zwierzęcego roślinami strączkowymi może przyczynić się do zmniejszenia emisji związanych z żywieniem."
     },
     "FF2.3.3": {
+      "title": "Żywność sezonowa, mniej emisji",
       "body": "Kupowanie produktów sezonowych może pomóc w ograniczeniu emisji związanych z żywnością."
     },
     "FF2.3.4": {
+      "title": "Te same kalorie, różny ślad",
       "body": "Produkty spożywcze o tej samej wartości kalorycznej mogą charakteryzować się bardzo różnym śladem węglowym."
     },
     "FF2.3.5": {
+      "title": "Ślad węglowy wołowiny i jagnięciny",
       "body": "Mięso, zwłaszcza wołowina i jagnięcina, ma znacznie większy ślad węglowy niż większość produktów pochodzenia roślinnego."
     },
     "FF2.3.6": {
+      "title": "Emisje diety wegetariańskiej",
       "body": "Dieta wegetariańska może generować znacznie mniej emisji niż dieta oparta głównie na mięsie."
     },
     "FF2.3.7": {
+      "title": "Efekt fleksitariański",
       "body": "Dieta fleksitariańska może znacznie ograniczyć wpływ na klimat."
     },
     "FF2.3.8": {
+      "title": "Emisje z marnotrawstwa żywności",
       "body": "Marnotrawstwo żywności powoduje co roku emisję miliardów ton ekwiwalentu CO₂."
     },
     "FF2.3.9": {
+      "title": "Lasy magazynują węgiel",
       "body": "Ochrona lasów zapobiega znacznym emisjom dwutlenku węgla wynikającym ze zmiany przeznaczenia gruntów."
     },
     "FF2.3.10": {
+      "title": "Płodozmian z roślinami strączkowymi",
       "body": "Płodozmian z udziałem roślin strączkowych może zmniejszyć ślad węglowy produkcji roślinnej."
     },
     "FF2.4.1": {
+      "title": "Emisje z transportu żywności",
       "body": "Globalny transport żywności generuje co roku około 3 miliardów ton emisji ekwiwalentu CO₂."
     },
     "FF2.4.2": {
+      "title": "Transport chłodniczy",
       "body": "Transport na duże odległości często wymaga chłodzenia, co zwiększa zużycie energii i ślad węglowy żywności."
     },
     "FF2.4.3": {
+      "title": "Sezonowe wybory, mniej transportu",
       "body": "Wybieranie produktów sezonowych i ograniczenie zbędnego transportu może pomóc w zmniejszeniu wpływu systemu żywnościowego na klimat."
     },
     "FF2.4.4": {
+      "title": "Udział transportu w emisjach z żywności",
       "body": "Prawie jedna piąta emisji gazów cieplarnianych generowanych przez globalny system żywnościowy wynika z transportu żywności."
     },
     "FF2.4.5": {
+      "title": "Transport owoców i warzyw",
       "body": "Owoce i warzywa odpowiadają za około 36% emisji związanych z transportem żywności na całym świecie."
     },
     "FF2.4.6": {
+      "title": "Łańcuch chłodniczy",
       "body": "Utrzymanie nieprzerwanego łańcucha chłodniczego ma zasadnicze znaczenie dla zachowania jakości żywności i ograniczenia jej psucia się podczas transportu."
     },
     "FF2.4.7": {
+      "title": "Emisje z transportu a z uprawy",
       "body": "Transport owoców i warzyw może generować emisję gazów cieplarnianych około dwukrotnie większą niż ta powstająca podczas ich uprawy."
     },
     "FF2.4.8": {
+      "title": "Żywność w transporcie towarowym",
       "body": "Chociaż transport żywności stanowi jedynie około 18% całkowitej długości tras transportu towarowego na świecie, to odpowiada on za około 27% emisji związanych z transportem towarowym."
     },
     "FF2.4.9": {
+      "title": "Żywność tracona bez chłodzenia",
       "body": "Każdego roku około 526 milionów ton żywności ulega utracie lub marnotrawstwu z powodu nieodpowiednich systemów chłodniczych i mroźniczych."
     },
     "FF2.4.10": {
+      "title": "Lepsze łańcuchy chłodnicze",
       "body": "Udoskonalenie infrastruktury łańcucha chłodniczego może przyczynić się do ograniczenia strat żywności, poprawy bezpieczeństwa żywnościowego oraz zmniejszenia wpływu na środowisko."
     },
     "FF3.1.1": {
+      "title": "Przetwórstwo dla bezpieczeństwa",
       "body": "Przetwórstwo spożywcze może zwiększyć bezpieczeństwo żywności i wydłużyć jej okres przydatności do spożycia."
     },
     "FF3.1.2": {
+      "title": "Przetwórstwo zapobiega marnotrawstwu",
       "body": "Przetwórstwo może przyczynić się do ograniczenia marnotrawstwa żywności poprzez przedłużenie jej okresu przydatności do spożycia."
     },
     "FF3.1.3": {
+      "title": "Żywność wysoko przetworzona",
       "body": "Żywność wysoko przetworzona często zawiera więcej cukru, soli i tłuszczów nasyconych."
     },
     "FF3.1.4": {
+      "title": "Zużycie energii w przetwórstwie",
       "body": "Różne metody przetwarzania wymagają bardzo zróżnicowanego zużycia energii."
     },
     "FF3.1.5": {
+      "title": "Energia a mrożonki",
       "body": "Przechowywanie mrożonek może wymagać znacznych nakładów energii."
     },
     "FF3.1.6": {
+      "title": "Poza bramą gospodarstwa",
       "body": "Przetwórstwo, pakowanie i transport mają wpływ na funkcjonowanie systemu żywnościowego."
     },
     "FF3.1.7": {
+      "title": "Nie każde przetwarzanie szkodzi",
       "body": "Nie wszystkie przetworzone produkty spożywcze mają duży wpływ na środowisko."
     },
     "FF3.1.8": {
+      "title": "Wydajne przechowywanie i transport",
       "body": "Przetwórstwo spożywcze może poprawić efektywność przechowywania i transportu."
     },
     "FF3.1.9": {
+      "title": "Technologia ma znaczenie",
       "body": "Zrównoważony charakter przetworzonej żywności zależy od technologii produkcji."
     },
     "FF3.1.10": {
+      "title": "Pełny cykl życia",
       "body": "Analiza pełnego cyklu życia żywności pozwala uzyskać pełniejszy obraz zrównoważonego rozwoju niż skupianie się wyłącznie na przetwórstwie."
     },
     "FF3.2.1": {
+      "title": "Krótkie łańcuchy dostaw",
       "body": "Krótkie łańcuchy dostaw mogą wspierać lokalną gospodarkę i jej odporność."
     },
     "FF3.2.2": {
+      "title": "Sezonowo i lokalnie",
       "body": "Sezonowe produkty lokalne mogą zmniejszyć zapotrzebowanie na magazynowanie i transport."
     },
     "FF3.2.3": {
+      "title": "Pochodzenie to nie wszystko",
       "body": "Sam kraj pochodzenia nie pozwala stwierdzić, czy dany produkt spożywczy jest wytworzony w sposób zrównoważony."
     },
     "FF3.2.4": {
+      "title": "Pochodzenie i identyfikowalność",
       "body": "Pochodzenie żywności może dostarczyć przydatnych informacji dotyczących identyfikowalności i zrównoważonego rozwoju."
     },
     "FF3.2.5": {
+      "title": "Dynamiczny wzrost handlu żywnością",
       "body": "W ostatnich dziesięcioleciach światowy handel żywnością znacznie wzrósł."
     },
     "FF3.2.6": {
+      "title": "Importowana pasza w Europie",
       "body": "Wiele europejskich systemów żywnościowych jest uzależnionych od importowanej paszy i surowców."
     },
     "FF3.2.7": {
+      "title": "Zaufanie do oznaczeń pochodzenia",
       "body": "Konsumenci często kojarzą oznaczenia pochodzenia z jakością i bezpieczeństwem."
     },
     "FF3.2.8": {
+      "title": "Lokalne nie zawsze znaczy ekologiczne",
       "body": "Lokalna żywność nie zawsze jest najbardziej zrównoważonym wyborem."
     },
     "FF3.2.9": {
+      "title": "Sposób ważniejszy niż odległość",
       "body": "Sposób produkcji żywności często ma większe znaczenie niż odległość, jaką pokonuje."
     },
     "FF3.2.10": {
+      "title": "Transport lotniczy a morski",
       "body": "Żywność transportowana drogą lotniczą może mieć znacznie większy ślad węglowy niż żywność transportowana drogą morską."
     },
     "FF3.3.1": {
+      "title": "Gospodarstwa ekologiczne a różnorodność biologiczna",
       "body": "Gospodarstwa ekologiczne charakteryzują się większą różnorodnością biologiczną niż gospodarstwa konwencjonalne."
     },
     "FF3.3.2": {
+      "title": "Rolnictwo dostosowane do zmian klimatu",
       "body": "Rolnictwo dostosowane do zmian klimatu ma na celu zwiększenie odporności przy jednoczesnym ograniczeniu emisji."
     },
     "FF3.3.3": {
+      "title": "Rolnictwo w równowadze",
       "body": "Zrównoważone rolnictwo zapewnia równowagę między wydajnością a ochroną środowiska."
     },
     "FF3.3.4": {
+      "title": "Paski kwiatowe dla zapylaczy",
       "body": "Paski kwiatowe i siedliska dla zapylaczy mogą sprzyjać różnorodności biologicznej na terenach rolniczych."
     },
     "FF3.3.5": {
+      "title": "Rolnictwo ekologiczne bez syntetyków",
       "body": "W rolnictwie ekologicznym nie stosuje się nawozów syntetycznych ani pestycydów."
     },
     "FF3.3.6": {
+      "title": "Zróżnicowanie upraw",
       "body": "Zróżnicowanie upraw pomaga gospodarstwom rolnym w walce ze szkodnikami i chorobami."
     },
     "FF3.3.7": {
+      "title": "Agroleśnictwo",
       "body": "Agroleśnictwo polega na łączeniu uprawy drzew z uprawami rolnymi lub hodowlą zwierząt na tym samym terenie."
     },
     "FF3.3.8": {
+      "title": "Zintegrowana ochrona przed szkodnikami",
       "body": "Zintegrowana ochrona przed szkodnikami ogranicza zależność od pestycydów chemicznych."
     },
     "FF3.3.9": {
+      "title": "Rolnictwo precyzyjne",
       "body": "Rolnictwo precyzyjne może przyczynić się do zmniejszenia zużycia nawozów i emisji."
     },
     "FF3.3.10": {
+      "title": "Rolnictwo konserwujące",
       "body": "Rolnictwo konserwujące ogranicza naruszanie gleby i chroni jej zdrowie."
     },
     "FF3.4.1": {
+      "title": "Różnorodne uprawy i rasy",
       "body": "Zróżnicowanie upraw i ras może zwiększyć odporność systemu żywnościowego."
     },
     "FF3.4.2": {
+      "title": "Alternatywne źródła białka",
       "body": "Alternatywne źródła białka mogą zmniejszyć zależność od tradycyjnej hodowli zwierząt."
     },
     "FF3.4.3": {
+      "title": "Hodowla w szerszym kontekście",
       "body": "Zrównoważoną hodowlę należy połączyć z szerszymi zmianami na rzecz poprawy systemu żywnościowego."
     },
     "FF3.4.4": {
+      "title": "Hodowla ograniczająca emisję metanu",
       "body": "Hodowla zwierząt o niższej emisji metanu może ograniczyć wpływ hodowli na środowisko."
     },
     "FF3.4.5": {
+      "title": "Alternatywne pasze dla ryb",
       "body": "Alternatywne pasze dla akwakultury mogą zmniejszyć presję na dzikie stada ryb."
     },
     "FF3.4.6": {
+      "title": "Uprawy gotowe na zmiany klimatu",
       "body": "Ulepszenia genetyczne mogą pomóc uprawom w radzeniu sobie z nowymi wyzwaniami środowiskowymi."
     },
     "FF3.4.7": {
+      "title": "Wydajniejsza produkcja zwierzęca",
       "body": "Zwiększenie wydajności hodowli zwierząt może przyczynić się do zmniejszenia zużycia zasobów na kilogram mięsa."
     },
     "FF3.4.8": {
+      "title": "Edycja genomu",
       "body": "Edycja genomu może pomóc w opracowaniu roślin uprawnych, które będą bardziej odporne na stres klimatyczny."
     },
     "FF3.4.9": {
+      "title": "Lepsze wykorzystanie paszy",
       "body": "Selektywna hodowla może poprawić wydajność paszy u zwierząt hodowlanych."
     },
     "FF3.4.10": {
+      "title": "Hydroponika i akwaponika",
       "body": "Systemy hydroponiczne i akwaponiczne mogą zużywać znacznie mniej wody niż rolnictwo tradycyjne."
     },
     "FF3.5.1": {
+      "title": "Praca dzieci w rolnictwie",
       "body": "Większość przypadków pracy dzieci na całym świecie dotyczy sektora rolnictwa."
     },
     "FF3.5.2": {
+      "title": "Fairtrade dla rolników",
       "body": "Celem Fairtrade jest poprawa dochodów i warunków pracy rolników."
     },
     "FF3.5.3": {
+      "title": "Uczciwe ceny",
       "body": "Sprawiedliwy handel sprzyja przejrzystości i uczciwemu ustalaniu cen w łańcuchach dostaw."
     },
     "FF3.5.4": {
+      "title": "Godne warunki pracy",
       "body": "Bezpieczne i godne warunki pracy stanowią kluczowy element zrównoważonych systemów żywnościowych."
     },
     "FF3.5.5": {
+      "title": "Społeczny wymiar zrównoważenia",
       "body": "Zrównoważony charakter systemu żywnościowego obejmuje warunki społeczne i warunki pracy."
     },
     "FF3.5.6": {
+      "title": "Narażeni pracownicy sektora spożywczego",
       "body": "Wielu pracowników sektora spożywczego nadal jest narażonych na wyzysk."
     },
     "FF3.5.7": {
+      "title": "Etyczne wybory żywieniowe",
       "body": "Konsumenci coraz bardziej cenią sobie etyczną i sprawiedliwą produkcję żywności."
     },
     "FF3.5.8": {
+      "title": "Kobiety w produkcji żywności",
       "body": "Kobiety odgrywają kluczową rolę w produkcji żywności, ale często mają mniejszy dostęp do zasobów."
     },
     "FF3.5.9": {
+      "title": "Drobni rolnicy",
       "body": "Drobni rolnicy wytwarzają znaczną część światowej produkcji żywności."
     },
     "FF3.5.10": {
+      "title": "Ekologiczne i sprawiedliwe systemy żywnościowe",
       "body": "Zrównoważone systemy żywnościowe powinny być przyjazne dla środowiska i sprawiedliwe społecznie."
     },
     "FF4.1.1": {
+      "title": "Dlaczego opakowania są ważne",
       "body": "Opakowania do żywności chronią produkty przed zanieczyszczeniami, wilgocią, tlenem i uszkodzeniami fizycznymi, przyczyniając się do zachowania bezpieczeństwa i jakości żywności."
     },
     "FF4.1.2": {
+      "title": "Tworzywa sztuczne chronią przed psuciem",
       "body": "Opakowania z tworzyw sztucznych mogą ograniczyć psucie się żywności, ponieważ są lekkie, wytrzymałe i skutecznie chronią produkty łatwo psujące się."
     },
     "FF4.1.3": {
+      "title": "Opakowania w równowadze",
       "body": "Najbardziej ekologiczne opakowania zapewniają równowagę między efektywnym wykorzystaniem materiałów, możliwością recyklingu, ochroną produktu oraz zapobieganiem marnotrawstwu żywności."
     },
     "FF4.1.4": {
+      "title": "Wpływ żywności a wpływ opakowań",
       "body": "Wpływ produkcji żywności na środowisko jest często znacznie większy niż wpływ opakowań stosowanych do jej zabezpieczenia."
     },
     "FF4.1.5": {
+      "title": "Opakowania przeciw marnotrawstwu",
       "body": "Dobrze zaprojektowane opakowanie może ograniczyć marnotrawstwo żywności poprzez wydłużenie okresu przydatności do spożycia oraz zapobieganie psuciu się produktów podczas transportu, przechowywania i użytkowania w gospodarstwie domowym."
     },
     "FF4.1.6": {
+      "title": "Nie ma idealnego opakowania",
       "body": "Nie ma jednego „najbardziej zrównoważonego” materiału opakowaniowego; wpływ na środowisko zależy od całego cyklu życia produktu."
     },
     "FF4.1.7": {
+      "title": "Opakowania jadalne",
       "body": "Opakowania jadalne mogą przyczynić się do zmniejszenia zależności od tworzyw sztucznych pochodzenia kopalnego poprzez zastąpienie tradycyjnych materiałów opakowaniowych alternatywami ulegającymi biodegradacji."
     },
     "FF4.1.8": {
+      "title": "Powłoki jadalne",
       "body": "Powłoki jadalne mogą wydłużyć okres przydatności do spożycia owoców i warzyw poprzez ograniczenie utraty wilgoci i spowolnienie oddychania."
     },
     "FF4.1.9": {
+      "title": "Inteligentne opakowania",
       "body": "Inteligentne opakowania umożliwiają monitorowanie temperatury, świeżości i stanu produktu, przyczyniając się do ograniczenia strat żywności w całym łańcuchu dostaw."
     },
     "FF4.1.10": {
+      "title": "Opakowania aktywne",
       "body": "Opakowania aktywne mogą oddziaływać na żywność poprzez pochłanianie tlenu lub wilgoci, co pomaga dłużej zachować świeżość produktów."
     },
     "FF4.2.1": {
+      "title": "Wielokrotne użycie opłaca się z czasem",
       "body": "Opakowania wielokrotnego użytku stają się korzystne dla środowiska dopiero po tym, jak zostaną ponownie wykorzystane wystarczającą liczbę razy."
     },
     "FF4.2.2": {
+      "title": "Odpady opakowaniowe w Europie",
       "body": "W Europie co sekundę powstaje około 1,5 tony odpadów opakowaniowych jednorazowego użytku."
     },
     "FF4.2.3": {
+      "title": "Poziom recyklingu opakowań",
       "body": "W Europie poddaje się recyklingowi jedynie około 40% odpadów opakowaniowych."
     },
     "FF4.2.4": {
+      "title": "Ponowne użycie oszczędza surowce",
       "body": "Opakowania wielokrotnego użytku mogą zmniejszyć zapotrzebowanie na surowce pierwotne."
     },
     "FF4.2.5": {
+      "title": "Liczy się częstotliwość ponownego użycia",
       "body": "Korzyści dla środowiska wynikające ze stosowania opakowań wielokrotnego użytku zależą od tego, jak często są one ponownie wykorzystywane."
     },
     "FF4.2.6": {
+      "title": "Transport i czyszczenie",
       "body": "Odległości transportowe i procesy czyszczenia mają wpływ na oddziaływanie systemów opakowań wielokrotnego użytku na środowisko."
     },
     "FF4.2.7": {
+      "title": "Próg rentowności",
       "body": "Każde opakowanie wielokrotnego użytku ma punkt progu rentowności, w którym staje się bardziej opłacalne niż alternatywne rozwiązania jednorazowe."
     },
     "FF4.2.8": {
+      "title": "Wysokie wskaźniki zwrotu",
       "body": "Wiele systemów ponownego wykorzystania w Europie osiąga już wskaźniki zwrotu na poziomie 75% lub wyższym."
     },
     "FF4.2.9": {
+      "title": "Dłuższa przydatność dzięki opakowaniom",
       "body": "Udoskonalone systemy pakowania mogą przyczynić się do ograniczenia marnotrawstwa żywności poprzez wydłużenie okresu przydatności do spożycia."
     },
     "FF4.2.10": {
+      "title": "Trwałe opakowania transportowe",
       "body": "Opakowania transportowe wielokrotnego użytku są często projektowane tak, aby pozostawały w obiegu przez wiele lat."
     },
     "FF5.1.1": {
+      "title": "Gospodarstwa domowe marnują najwięcej",
       "body": "Gospodarstwa domowe wytwarzają więcej odpadów spożywczych niż jakikolwiek inny sektor w Unii Europejskiej."
     },
     "FF5.1.2": {
+      "title": "Jedna piąta trafia do kosza",
       "body": "Na całym świecie marnuje się około jednej piątej żywności dostępnej dla konsumentów."
     },
     "FF5.1.3": {
+      "title": "Listy zakupów i plany posiłków",
       "body": "Listy zakupów i planowanie posiłków mogą pomóc w ograniczeniu marnotrawstwa żywności w domu."
     },
     "FF5.1.4": {
+      "title": "Mniejsze porcje, mniej odpadów",
       "body": "Oferowanie mniejszych porcji może ograniczyć marnotrawstwo żywności w stołówkach i restauracjach."
     },
     "FF5.1.5": {
+      "title": "Standardowe porcje, więcej resztek",
       "body": "Standardowe porcje często powodują, że pozostają niepotrzebne resztki."
     },
     "FF5.1.6": {
+      "title": "Nadmiar jedzenia przy bufecie",
       "body": "W restauracjach z bufetem wiele osób nakłada sobie więcej jedzenia, niż jest w stanie zjeść."
     },
     "FF5.1.7": {
+      "title": "Marnotrawstwo a klimat",
       "body": "Marnotrawstwo żywności odpowiada za znaczną część emisji gazów cieplarnianych w systemie żywnościowym."
     },
     "FF5.1.8": {
+      "title": "Marnowane mięso",
       "body": "Marnotrawstwo mięsa ma nieproporcjonalnie duży wpływ na skutki marnotrawstwa żywności dla klimatu."
     },
     "FF5.1.9": {
+      "title": "Gdyby marnotrawstwo żywności było państwem",
       "body": "Gdyby marnotrawstwo żywności było państwem, należałoby do największych emitentów gazów cieplarnianych na świecie."
     },
     "FF5.1.10": {
+      "title": "Zmarnowane składniki odżywcze",
       "body": "Marnotrawstwo żywności oznacza również marnotrawstwo składników odżywczych, takich jak białko i błonnik."
     },
     "FF5.2.1": {
+      "title": "Marnotrawstwo zaczyna się w domu",
       "body": "Gospodarstwa domowe odpowiadają za ponad połowę odpadów spożywczych powstających w UE."
     },
     "FF5.2.2": {
+      "title": "Przechowuj żywność prawidłowo",
       "body": "Właściwe przechowywanie pomaga ograniczyć ilość odpadów i zapewnia bezpieczeństwo spożycia żywności."
     },
     "FF5.2.3": {
+      "title": "Zasada dwóch godzin",
       "body": "Żywności łatwo psującej się zasadniczo nie należy pozostawiać w temperaturze pokojowej dłużej niż dwie godziny."
     },
     "FF5.2.4": {
+      "title": "Planuj i wykorzystuj resztki",
       "body": "Lepsze planowanie i ponowne wykorzystanie resztek pozwala zaoszczędzić pieniądze i zmniejszyć wpływ na środowisko."
     },
     "FF5.2.5": {
+      "title": "„Najlepiej spożyć przed” a „należy spożyć do”",
       "body": "Terminy „najlepiej spożyć przed” odnoszą się do jakości, natomiast terminy „należy spożyć do” dotyczą bezpieczeństwa żywności."
     },
     "FF5.2.6": {
+      "title": "Najczęściej marnowana żywność",
       "body": "Owoce i warzywa to produkty spożywcze, których marnuje się najwięcej w Europie."
     },
     "FF5.2.7": {
+      "title": "Szybko schładzaj resztki",
       "body": "Szybkie schłodzenie resztek jedzenia pomaga zapobiegać rozwojowi bakterii."
     },
     "FF5.2.8": {
+      "title": "Marnowane mięso i nabiał",
       "body": "Mięso i nabiał są wprawdzie rzadziej marnowane, ale gdy już do tego dochodzi, ich wpływ na środowisko jest większy."
     },
     "FF5.2.9": {
+      "title": "Podziel, aby schłodzić",
       "body": "Duże porcje potraw szybciej stygną, gdy rozdzieli się je do mniejszych pojemników."
     },
     "FF5.2.10": {
+      "title": "Pojemniki hermetyczne",
       "body": "Pojemniki hermetyczne pozwalają dłużej zachować świeżość resztek jedzenia."
     },
     "FF5.3.1": {
+      "title": "Gospodarstwa domowe na czele marnotrawstwa",
       "body": "Ponad połowa wszystkich odpadów spożywczych w Europie pochodzi z gospodarstw domowych."
     },
     "FF5.3.2": {
+      "title": "Nadmierne zakupy",
       "body": "Kupowanie większej ilości żywności niż to konieczne jest jedną z głównych przyczyn marnotrawstwa żywności w gospodarstwie domowym, któremu można zapobiec."
     },
     "FF5.3.3": {
+      "title": "Sprawdź przed zakupami",
       "body": "Planowanie posiłków i sprawdzanie zawartości szafek przed pójściem na zakupy może pomóc ograniczyć nadmierne zakupy i marnotrawstwo żywności."
     },
     "FF5.3.4": {
+      "title": "Zamrażaj nadwyżki żywności",
       "body": "Zamrożenie nadwyżek żywności, zanim się zepsuje, pozwala przedłużyć jej okres przydatności do spożycia i ograniczyć marnotrawstwo."
     },
     "FF5.3.5": {
+      "title": "69 milionów ton",
       "body": "Szacuje się, że ilość odpadów spożywczych wytwarzanych przez gospodarstwa domowe w Europie wynosi około 69 milionów ton rocznie."
     },
     "FF5.3.6": {
+      "title": "Niejasne oznaczenia dat",
       "body": "Niejasności związane z oznaczeniami „najlepiej spożyć przed” i „termin przydatności do spożycia” w znacznym stopniu przyczyniają się do niepotrzebnego marnotrawstwa żywności."
     },
     "FF5.3.7": {
+      "title": "Bezpieczne po terminie „najlepiej spożyć przed”",
       "body": "Wiele produktów spożywczych można bezpiecznie spożywać nawet po upływie terminu „najlepiej spożyć przed”, o ile były one prawidłowo przechowywane."
     },
     "FF5.3.8": {
+      "title": "Pułapki promocji „kup więcej”",
       "body": "Oferty typu „kup więcej” i rabaty hurtowe mogą skłaniać konsumentów do kupowania większej ilości żywności, niż są w stanie zużyć."
     },
     "FF5.3.9": {
+      "title": "Produkty najczęściej kupowane w nadmiarze",
       "body": "Świeże owoce, warzywa, produkty mleczne i pieczywo należą do produktów spożywczych, które najczęściej się marnują z powodu kupowania ich w nadmiernych ilościach."
     },
     "FF5.3.10": {
+      "title": "Śledź, ile wyrzucasz",
       "body": "Śledzenie ilości wyrzucanej żywności może pomóc w zidentyfikowaniu nawyków prowadzących do nadmiernego spożycia i marnotrawstwa."
     },
     "FF5.4.1": {
+      "title": "Rosnące porcje",
       "body": "W ostatnich dziesięcioleciach wielkość porcji w wielu krajach znacznie wzrosła."
     },
     "FF5.4.2": {
+      "title": "Większe porcje bez większej sytości",
       "body": "Większe porcje często sprawiają, że ludzie jedzą więcej, nie odczuwając przy tym proporcjonalnie większego uczucia sytości."
     },
     "FF5.4.3": {
+      "title": "Zdrowo dla Ciebie i planety",
       "body": "Ograniczenie nadmiernego spożycia żywności może przynieść korzyści zarówno dla zdrowia osobistego, jak i dla zrównoważonego rozwoju środowiska."
     },
     "FF5.4.4": {
+      "title": "Liczy się, ile jesz",
       "body": "Wpływ diety na środowisko zależy nie tylko od tego, co ludzie jedzą, ale także od tego, ile jedzą."
     },
     "FF5.4.5": {
+      "title": "Nadmiar kalorii, więcej emisji",
       "body": "Spożywanie nadmiaru kalorii przyczynia się do wzrostu emisji gazów cieplarnianych w systemie żywnościowym, ponieważ konieczne jest wyprodukowanie większej ilości żywności."
     },
     "FF5.4.6": {
+      "title": "Nadmiar produktów o dużym śladzie",
       "body": "Produkty spożywcze o dużym śladzie środowiskowym mają jeszcze większy wpływ na środowisko, gdy są spożywane w nadmiernych ilościach."
     },
     "FF5.4.7": {
+      "title": "Odpowiednie porcje",
       "body": "Wybieranie odpowiednich wielkości porcji może pomóc ograniczyć zarówno nadmierne spożycie kalorii, jak i zużycie zasobów."
     },
     "FF5.4.8": {
+      "title": "Przejadanie się zużywa zasoby",
       "body": "Spożywanie większej ilości żywności niż potrzebuje organizm zwiększa zapotrzebowanie na zasoby rolnicze, takie jak ziemia, woda i energia."
     },
     "FF5.4.9": {
+      "title": "Skutki nadmiernej konsumpcji",
       "body": "Nadmierna konsumpcja przyczynia się do niepotrzebnego zapotrzebowania na produkcję żywności, jej transport, przechowywanie i pakowanie."
     },
     "FF5.4.10": {
+      "title": "Wystarczająco, nie za dużo",
       "body": "Zrównoważona dieta zachęca do spożywania posiłków w ilościach wystarczających do zaspokojenia potrzeb żywieniowych, przy jednoczesnym unikaniu nadmiernego spożycia."
     },
     "FF6.1.1": {
+      "title": "Do czego służy białko",
       "body": "Białko pomaga w budowie i regeneracji mięśni, tkanek, enzymów i hormonów."
     },
     "FF6.1.2": {
+      "title": "Białko roślinne i zwierzęce",
       "body": "Źródłem białka mogą być zarówno produkty pochodzenia roślinnego, jak i zwierzęcego."
     },
     "FF6.1.3": {
+      "title": "Rośliny strączkowe dla zdrowia i planety",
       "body": "Zastąpienie części czerwonego mięsa roślinami strączkowymi przynosi korzyści zarówno dla zdrowia, jak i zrównoważonego rozwoju."
     },
     "FF6.1.4": {
+      "title": "Ile białka potrzebujesz",
       "body": "Większość osób dorosłych potrzebuje dziennie około 0,83 g białka na kilogram masy ciała."
     },
     "FF6.1.5": {
+      "title": "Źródła białka roślinnego",
       "body": "Soczewica, fasola, groch, orzechy i nasiona to doskonałe źródła białka roślinnego."
     },
     "FF6.1.6": {
+      "title": "Całościowy profil odżywczy",
       "body": "Znaczenie ma całościowy profil odżywczy źródła białka, a nie tylko zawartość białka."
     },
     "FF6.1.7": {
+      "title": "Łącz białka roślinne",
       "body": "Spożywanie różnorodnych białek pochodzenia roślinnego pozwala na dostarczenie organizmowi wszystkich niezbędnych aminokwasów."
     },
     "FF6.1.8": {
+      "title": "Aminokwasy w komosie ryżowej",
       "body": "Komosa ryżowa to pełnowartościowe białko roślinne zawierające wszystkie niezbędne aminokwasy."
     },
     "FF6.1.9": {
+      "title": "Jakość białka",
       "body": "Jakość białka zależy od jego strawności i składu aminokwasowego."
     },
     "FF6.1.10": {
+      "title": "Za dużo białka",
       "body": "W wielu krajach o wysokim dochodzie spożycie białka przekracza zalecane wartości."
     },
     "FF6.2.1": {
+      "title": "Tłuszcze nienasycone a nasycone",
       "body": "Tłuszcze nienasycone są na ogół zdrowsze niż tłuszcze nasycone."
     },
     "FF6.2.2": {
+      "title": "Ogranicz tłuszcze nasycone",
       "body": "WHO zaleca ograniczenie spożycia tłuszczów nasyconych do poziomu poniżej 10% dziennego zapotrzebowania energetycznego."
     },
     "FF6.2.3": {
+      "title": "Źródła zdrowych tłuszczów",
       "body": "Orzechy, nasiona, ryby i oliwa z oliwek to dobre źródła zdrowych tłuszczów."
     },
     "FF6.2.4": {
+      "title": "Rodzaj tłuszczu ma znaczenie",
       "body": "Rodzaj spożywanych tłuszczów ma równie duże znaczenie jak ich ilość."
     },
     "FF6.2.5": {
+      "title": "Unikaj tłuszczów trans",
       "body": "Tłuszcze trans zwiększają ryzyko chorób serca i nie mają żadnych znanych korzyści zdrowotnych."
     },
     "FF6.2.6": {
+      "title": "Zamień tłuszcze dla zdrowia serca",
       "body": "Zastąpienie tłuszczów nasyconych tłuszczami nienasyconymi może poprawić stan zdrowia serca."
     },
     "FF6.2.7": {
+      "title": "Ile tłuszczu",
       "body": "Tłuszcze powinny stanowić nie więcej niż około 30% całkowitego dziennego spożycia energii."
     },
     "FF6.2.8": {
+      "title": "Mało tłuszczu, dużo cukru",
       "body": "Przetworzona żywność o niskiej zawartości tłuszczu może nadal zawierać duże ilości cukru."
     },
     "FF6.2.9": {
+      "title": "Eliminacja tłuszczów trans",
       "body": "Tłuszcze trans wytwarzane przemysłowo można wyeliminować bez wpływu na dostępność żywności."
     },
     "FF6.2.10": {
+      "title": "Tłuszcz a witaminy",
       "body": "Tłuszcz pomaga organizmowi wchłaniać witaminy A, D, E i K."
     },
     "FF6.3.1": {
+      "title": "Napoje słodzone",
       "body": "Napoje słodzone stanowią główne źródło cukru dodanego w wielu dietach."
     },
     "FF6.3.2": {
+      "title": "Cukier a zęby",
       "body": "Wysokie spożycie cukru przyczynia się do powstawania próchnicy."
     },
     "FF6.3.3": {
+      "title": "Cukier a masa ciała",
       "body": "Nadmierne spożycie cukru wiąże się z przyrostem masy ciała i otyłością."
     },
     "FF6.3.4": {
+      "title": "Ogranicz cukry wolne",
       "body": "WHO zaleca ograniczenie spożycia cukrów wolnych do poziomu poniżej 10% dziennego zapotrzebowania energetycznego."
     },
     "FF6.3.5": {
+      "title": "Cukier w owocach",
       "body": "Owoce zawierają naturalne cukry, a także błonnik i witaminy."
     },
     "FF6.3.6": {
+      "title": "Ogranicz napoje słodzone",
       "body": "Ograniczenie spożycia napojów słodzonych jest skutecznym sposobem na zmniejszenie spożycia cukru."
     },
     "FF6.3.7": {
+      "title": "Gotuj, by kontrolować cukier",
       "body": "Gotowanie w domu ułatwia kontrolowanie ilości dodawanego cukru."
     },
     "FF6.3.8": {
+      "title": "Puste kalorie",
       "body": "Cukier dostarcza energii, ale zawiera niewiele niezbędnych składników odżywczych."
     },
     "FF6.3.9": {
+      "title": "Poniżej 5% cukru",
       "body": "Obniżenie zawartości cukrów wolnych poniżej 5% może przynieść dodatkowe korzyści zdrowotne."
     },
     "FF6.3.10": {
+      "title": "Rozpoznaj cukier dodany",
       "body": "Czytanie etykiet może pomóc w rozpoznaniu produktów spożywczych o wysokiej zawartości cukru dodanego."
     },
     "FF6.4.1": {
+      "title": "Za dużo soli",
       "body": "Większość ludzi spożywa ponad dwukrotnie więcej soli niż wynosi zalecane dzienne spożycie."
     },
     "FF6.4.2": {
+      "title": "Sól a zdrowie serca",
       "body": "Ograniczenie spożycia soli zmniejsza ryzyko chorób serca i udaru mózgu."
     },
     "FF6.4.3": {
+      "title": "Globalne skutki nadmiaru sodu",
       "body": "Nadmierne spożycie sodu przyczynia się do milionów zgonów na całym świecie."
     },
     "FF6.4.4": {
+      "title": "Mniej niż 5 gramów soli",
       "body": "WHO zaleca spożywanie mniej niż 5 gramów soli dziennie."
     },
     "FF6.4.5": {
+      "title": "Ukryta sól",
       "body": "Większość soli spożywczej pochodzi z żywności przetworzonej oraz z posiłków serwowanych w restauracjach."
     },
     "FF6.4.6": {
+      "title": "Sód a ciśnienie krwi",
       "body": "Wysokie spożycie sodu powoduje wzrost ciśnienia krwi."
     },
     "FF6.4.7": {
+      "title": "Zioła zamiast soli",
       "body": "Zioła i przyprawy mogą pomóc w zastąpieniu soli podczas gotowania."
     },
     "FF6.4.8": {
+      "title": "Źródła sodu w Europie",
       "body": "Chleb, przetwory mięsne i sery stanowią główne źródła sodu w Europie."
     },
     "FF6.4.9": {
+      "title": "Substytuty soli",
       "body": "Substytuty soli o niskiej zawartości sodu mogą pomóc odpowiednim osobom dorosłym w ograniczeniu spożycia sodu."
     },
     "FF6.4.10": {
+      "title": "Każda sól to sód",
       "body": "Sól morska, sól himalajska i sól kuchenna zawierają znaczne ilości sodu."
     },
     "FF6.5.1": {
+      "title": "Za mało błonnika",
       "body": "Większość Europejczyków spożywa mniej błonnika niż zalecane."
     },
     "FF6.5.2": {
+      "title": "Źródła błonnika",
       "body": "Pełnoziarniste produkty, owoce, warzywa i rośliny strączkowe są doskonałym źródłem błonnika."
     },
     "FF6.5.3": {
+      "title": "Woda i błonnik",
       "body": "Picie odpowiedniej ilości wody wspomaga skuteczne działanie błonnika."
     },
     "FF6.5.4": {
+      "title": "25 gramów dziennie",
       "body": "Dorośli powinni spożywać co najmniej 25 gramów błonnika dziennie."
     },
     "FF6.5.5": {
+      "title": "Zwiększaj błonnik stopniowo",
       "body": "Stopniowe zwiększanie spożycia błonnika może złagodzić dolegliwości trawienne."
     },
     "FF6.5.6": {
+      "title": "Zalety produktów pełnoziarnistych",
       "body": "Pełnoziarniste produkty dostarczają błonnika, a także ważnych składników odżywczych."
     },
     "FF6.5.7": {
+      "title": "Błonnik dla trawienia",
       "body": "Błonnik wspomaga prawidłowe trawienie i pracę jelit."
     },
     "FF6.5.8": {
+      "title": "Błonnik a ryzyko chorób",
       "body": "Wyższe spożycie błonnika wiąże się z mniejszym ryzykiem chorób serca i cukrzycy typu 2."
     },
     "FF6.5.9": {
+      "title": "Błonnik rozpuszczalny i nierozpuszczalny",
       "body": "Zarówno błonnik rozpuszczalny, jak i nierozpuszczalny mają pozytywny wpływ na zdrowie."
     },
     "FF6.5.10": {
+      "title": "Błonnik syci na dłużej",
       "body": "Produkty bogate w błonnik mogą pomóc w utrzymaniu uczucia sytości przez dłuższy czas."
     },
     "FF6.6.1": {
+      "title": "Niedobór witaminy D",
       "body": "Niedobór witaminy D jest powszechnym zjawiskiem w całej Europie."
     },
     "FF6.6.2": {
+      "title": "Witamina C",
       "body": "Witamina C wzmacnia odporność i wspomaga gojenie się ran."
     },
     "FF6.6.3": {
+      "title": "Witaminy z owoców i warzyw",
       "body": "Owoce i warzywa dostarczają ważnych witamin i przeciwutleniaczy."
     },
     "FF6.6.4": {
+      "title": "Różnorodność zapobiega niedoborom",
       "body": "Zróżnicowana dieta pomaga zmniejszyć ryzyko wystąpienia niedoborów witamin."
     },
     "FF6.6.5": {
+      "title": "Źródła witaminy A",
       "body": "Pomarańczowe i ciemnozielone warzywa są dobrym źródłem prekursorów witaminy A."
     },
     "FF6.6.6": {
+      "title": "Źródła witaminy E",
       "body": "Orzechy, nasiona i oleje roślinne są dobrym źródłem witaminy E."
     },
     "FF6.6.7": {
+      "title": "Słońce a witamina D",
       "body": "Światło słoneczne jest głównym źródłem witaminy D dla organizmu."
     },
     "FF6.6.8": {
+      "title": "Źródła witaminy B12",
       "body": "Witamina B12 występuje głównie w produktach pochodzenia zwierzęcego."
     },
     "FF6.6.9": {
+      "title": "Witamina B12 dla wegan",
       "body": "Weganie mogą potrzebować produktów wzbogaconych lub suplementów, aby zapewnić sobie odpowiednią ilość witaminy B12."
     },
     "FF6.6.10": {
+      "title": "Ukryty głód",
       "body": "Niedobory witamin mogą występować nawet przy obfitości pożywienia."
     },
     "FF6.7.1": {
+      "title": "Kalorii wystarczy dla wszystkich",
       "body": "Na świecie produkuje się już wystarczającą ilość kalorii, by wyżywić wszystkich ludzi."
     },
     "FF6.7.2": {
+      "title": "Składniki odżywcze a kalorie",
       "body": "Pokarmy bogate w składniki odżywcze nie zawsze są tym samym, co pokarmy bogate w kalorie."
     },
     "FF6.7.3": {
+      "title": "Żywność wysoko przetworzona a przejadanie się",
       "body": "Żywność wysoko przetworzona może skłaniać ludzi do spożywania większej ilości kalorii."
     },
     "FF6.7.4": {
+      "title": "Te same kalorie, różny wpływ",
       "body": "Produkty spożywcze dostarczające taką samą liczbę kalorii mogą mieć bardzo zróżnicowany wpływ na środowisko."
     },
     "FF6.7.5": {
+      "title": "Nie tylko liczenie kalorii",
       "body": "Zrównoważona dieta skupia się na wyborze produktów spożywczych, a nie tylko na ograniczeniu kalorii."
     },
     "FF6.7.6": {
+      "title": "Kalorie tracone od gospodarstwa do talerza",
       "body": "Ponad połowa kalorii zawartych w żywności jest tracona na drodze od gospodarstwa do talerza."
     },
     "FF6.7.7": {
+      "title": "Trzy podstawowe zboża",
       "body": "Ryż, pszenica i kukurydza dostarczają prawie połowę światowego zapotrzebowania na kalorie."
     },
     "FF6.7.8": {
+      "title": "Straty kalorii w uprawach paszowych",
       "body": "Wykorzystanie upraw jako paszy dla zwierząt hodowlanych powoduje znaczne straty kaloryczne."
     },
     "FF6.7.9": {
+      "title": "Emisje wołowiny na kalorię",
       "body": "Wołowina generuje znacznie więcej emisji na kalorię niż większość produktów pochodzenia roślinnego."
     },
     "FF6.7.10": {
+      "title": "Wydajne systemy żywnościowe",
       "body": "Zwiększenie wydajności systemu żywnościowego może zapewnić lepszy dostęp do składników odżywczych bez konieczności zwiększania produkcji żywności."
     }
   },
   "quizzes": {
     "Q1.1.1": {
+      "title": "Bardziej ekologiczne kolacje",
       "question": "Chcesz zmniejszyć wpływ swoich kolacji na środowisko. Która zmiana przyniesie prawdopodobnie największy efekt?",
       "explanation": "Ograniczenie spożycia wołowiny ma zazwyczaj znacznie większy wpływ niż zamiana jednego produktu spożywczego na inny o podobnych właściwościach, ponieważ hodowla zwierząt w znacznym stopniu wpływa na użytkowanie gruntów, zużycie wody oraz emisję gazów cieplarnianych.",
       "options": {
@@ -799,6 +1050,7 @@
       }
     },
     "Q1.1.2": {
+      "title": "Plan posiłków przyjazny środowisku",
       "question": "Który tygodniowy plan posiłków prawdopodobnie będzie miał najmniejszy wpływ na środowisko?",
       "explanation": "Zastąpienie mięsa roślinami strączkowymi zazwyczaj przynosi większe korzyści dla środowiska niż zwykłe przechodzenie z jednego rodzaju białka zwierzęcego na inne.",
       "options": {
@@ -809,6 +1061,7 @@
       }
     },
     "Q1.1.3": {
+      "title": "Dieta a grunty rolne",
       "question": "Masz do wyboru dwie diety tygodniowe: dieta A obejmuje spożywanie czerwonego mięsa niemal codziennie, natomiast dieta B opiera się na modelu śródziemnomorskim, w którym przeważają rośliny strączkowe i warzywa, a mięso spożywa się w umiarkowanych ilościach. Która z tych diet, ogólnie rzecz biorąc, wymaga mniej gruntów rolnych?",
       "explanation": "Produkcja żywności pochodzenia zwierzęcego zazwyczaj wymaga większej powierzchni gruntów niż produkcja żywności pochodzenia roślinnego. Dieta w stylu śródziemnomorskim często wiąże się z mniejszym zapotrzebowaniem na grunty, a jednocześnie zapewnia odpowiednią wartość odżywczą.",
       "options": {
@@ -819,6 +1072,7 @@
       }
     },
     "Q1.1.4": {
+      "title": "Zrównoważony wybór na obiad",
       "question": "Która opcja obiadowa byłaby ogólnie najbardziej zrównoważona?",
       "explanation": "Posiłki oparte głównie na roślinach strączkowych i warzywach mają zazwyczaj mniejszy wpływ na środowisko niż posiłki oparte głównie na czerwonym mięsie.",
       "options": {
@@ -829,6 +1083,7 @@
       }
     },
     "Q1.1.5": {
+      "title": "Mięso a zdrowie publiczne",
       "question": "Dlaczego ograniczenie spożycia mięsa jest czasami postrzegane zarówno jako kwestia zdrowia publicznego, jak i kwestia środowiskowa?",
       "explanation": "Powszechne stosowanie antybiotyków w hodowli zwierząt przyczynia się do rozwoju oporności na środki przeciwdrobnoustrojowe, co stanowi poważny problem dla zdrowia publicznego.",
       "options": {
@@ -838,6 +1093,7 @@
       }
     },
     "Q1.2.1": {
+      "title": "Zastępowanie wołowiny",
       "question": "Chcesz zastąpić wołowinę w przepisie. Który zamiennik jest korzystniejszy dla środowiska, a jednocześnie pozwala zachować odpowiednią wartość odżywczą?",
       "explanation": "Zastąpienie części spożycia czerwonego mięsa roślinami strączkowymi pozwala zachować odpowiedni poziom spożycia składników odżywczych, jednocześnie zmniejszając wpływ na środowisko.",
       "options": {
@@ -848,6 +1104,7 @@
       }
     },
     "Q1.2.2": {
+      "title": "Białko w tygodniowym jadłospisie",
       "question": "Która strategia dotycząca tygodniowego spożycia białka najlepiej odpowiada zaleceniom WHO?",
       "explanation": "WHO podkreśla znaczenie różnorodności diety oraz szerszego wyboru źródeł białka",
       "options": {
@@ -858,6 +1115,7 @@
       }
     },
     "Q1.2.3": {
+      "title": "Roślinne zamienniki mięsa",
       "question": "Które z poniższych stwierdzeń dotyczących roślinnych zamienników mięsa jest najbardziej trafne?",
       "explanation": "Wiele roślinnych zamienników mięsa jest wysoko przetworzonych i często zawiera znaczne ilości sodu. Ich wpływ na zdrowie i środowisko może się znacznie różnić.",
       "options": {
@@ -868,6 +1126,7 @@
       }
     },
     "Q1.2.4": {
+      "title": "Białko dla zdrowej gleby",
       "question": "Które źródło białka zapewnia zarówno korzyści odżywcze, jak i korzystny wpływ na zdrowie gleby?",
       "options": {
         "A": "Ciecierzyca",
@@ -878,6 +1137,7 @@
       "explanation": "Rośliny strączkowe poprawiają żyzność gleby dzięki wiązaniu azotu, a jednocześnie dostarczają białka, błonnika, witamin i składników mineralnych."
     },
     "Q1.2.5": {
+      "title": "Mniej czerwonego mięsa w rodzinie",
       "question": "Pewna rodzina chce ograniczyć spożycie czerwonego mięsa, nie rezygnując jednak całkowicie z produktów pochodzenia zwierzęcego. Która zmiana najlepiej odzwierciedla wyniki badań?",
       "explanation": "Różnorodność diety, obejmująca rośliny strączkowe, ryby, jaja oraz mniejsze ilości czerwonego mięsa, wiąże się ze zdrowszą i bardziej zrównoważoną dietą.",
       "options": {
@@ -888,6 +1148,7 @@
       }
     },
     "Q1.3.1": {
+      "title": "Urozmaicaj zboża",
       "question": "Chcesz urozmaicić swój asortyment zbóż, poprawiając jednocześnie jakość białka. Która opcja jest szczególnie interesująca?",
       "explanation": "Komosa ryżowa zawiera wszystkie dziewięć niezbędnych aminokwasów i jest uznawana za białko pełnowartościowe.",
       "options": {
@@ -898,6 +1159,7 @@
       }
     },
     "Q1.3.2": {
+      "title": "Odporność systemu żywnościowego",
       "question": "Który nawyk żywieniowy najlepiej przyczyniłby się do zwiększenia odporności systemu żywnościowego?",
       "explanation": "Różnorodność upraw zwiększa odporność na zakłócenia związane z klimatem, rynkiem i łańcuchem dostaw.",
       "options": {
@@ -908,6 +1170,7 @@
       }
     },
     "Q1.3.3": {
+      "title": "Bezglutenowa alternatywa dla zbóż",
       "question": "Osoba cierpiąca na celiakię poszukuje bogatej w składniki odżywcze alternatywy dla zbóż. Która opcja jest najbardziej odpowiednia?",
       "explanation": "Gryka jest z natury bezglutenowa i dostarcza błonnika, białka, minerałów oraz korzystnych dla zdrowia związków bioaktywnych.",
       "options": {
@@ -918,6 +1181,7 @@
       }
     },
     "Q1.3.4": {
+      "title": "Uprawy odporne na zmiany klimatu",
       "question": "Rolnik poszukuje uprawy odpornej na zmiany klimatu, która dobrze znosi upały i niedobór wody. Która z poniższych opcji jest najlepiej poparta dowodami?",
       "explanation": "Proso może rosnąć w wysokich temperaturach, na ubogich glebach i w warunkach ograniczonego dostępu do wody, co sprawia, że jest szczególnie odporne na zmiany klimatu.",
       "options": {
@@ -928,6 +1192,7 @@
       }
     },
     "Q1.3.5": {
+      "title": "Znaczenie roślin strączkowych",
       "question": "Dlaczego rośliny strączkowe są często podkreślane w dietach zgodnych z zasadami zrównoważonego rozwoju?",
       "explanation": "Rośliny strączkowe łączą w sobie wartości odżywcze z wiązaniem azotu, zmniejszonym zapotrzebowaniem na nawozy oraz mniejszym wpływem na środowisko.",
       "options": {
@@ -938,6 +1203,7 @@
       }
     },
     "Q2.1.1": {
+      "title": "Żywność a różnorodność biologiczna",
       "question": "Chcesz, aby Twoje wybory żywieniowe w większym stopniu wspierały różnorodność biologiczną. Który z poniższych czynników jest dla Ciebie najważniejszy?",
       "explanation": "Rozwój rolnictwa jest jedną z głównych przyczyn utraty siedlisk i spadku różnorodności biologicznej. Żywność, której produkcja wymaga mniej ziemi, zazwyczaj wywiera mniejszy wpływ na lasy, łąki i inne naturalne ekosystemy, przyczyniając się tym samym do ochrony różnorodności biologicznej.",
       "options": {
@@ -948,6 +1214,7 @@
       }
     },
     "Q2.1.2": {
+      "title": "Deklaracje o lokalnej wołowinie",
       "question": "Supermarket promuje „wołowinę pochodzącą z lokalnych hodowli” jako rozwiązanie zgodne z zasadami zrównoważonego rozwoju. Które z poniższych stwierdzeń najlepiej odpowiada przedstawionym informacjom?",
       "explanation": "Rodzaj żywności często ma większe znaczenie niż jej pochodzenie. Białka roślinne zazwyczaj wymagają znacznie mniej ziemi niż wołowina, niezależnie od pochodzenia.",
       "options": {
@@ -958,6 +1225,7 @@
       }
     },
     "Q2.1.3": {
+      "title": "Białkowa kolacja oszczędzająca ziemię",
       "question": "Planujesz kolację bogatą w białko, która będzie miała jak najmniejszy wpływ na środowisko. Która z poniższych opcji najprawdopodobniej sprawdzi się najlepiej?",
       "explanation": "Produkty pochodzenia zwierzęcego zazwyczaj wymagają większej powierzchni uprawnej niż żywność pochodzenia roślinnego. Spośród tych opcji posiłek na bazie soczewicy wiąże się z najmniejszym zapotrzebowaniem na grunty.",
       "options": {
@@ -968,6 +1236,7 @@
       }
     },
     "Q2.1.4": {
+      "title": "Ochrona różnorodności biologicznej",
       "question": "Znajomy chce zmniejszyć presję na różnorodność biologiczną poprzez swoje wybory żywieniowe. Która rada byłaby najbardziej oparta na dowodach naukowych?",
       "explanation": "Rozwój rolnictwa jest jedną z głównych przyczyn utraty siedlisk. Ograniczenie popytu na produkty wymagające dużych areałów uprawnych przyczynia się do zmniejszenia presji na lasy i naturalne ekosystemy.",
       "options": {
@@ -978,6 +1247,7 @@
       }
     },
     "Q2.1.5": {
+      "title": "Ślad użytkowania gruntów",
       "question": "Który klient ma prawdopodobnie najmniejszy ślad związany z użytkowaniem gruntów?",
       "explanation": "Badania konsekwentnie wskazują, że ilość czerwonego mięsa w diecie jest jednym z najważniejszych czynników determinujących wykorzystanie gruntów związane z produkcją żywności.",
       "options": {
@@ -988,6 +1258,7 @@
       }
     },
     "Q2.2.1": {
+      "title": "Mniejszy ślad wodny",
       "question": "Chcesz zmniejszyć ślad wodny swoich posiłków. Który nawyk będzie prawdopodobnie najbardziej skuteczny?",
       "explanation": "Znaczna część wody wykorzystywanej w produkcji żywności jest w rzeczywistości marnowana, gdy żywność trafia do śmieci. Ograniczenie marnotrawstwa żywności bezpośrednio zmniejsza zapotrzebowanie na wodę.",
       "options": {
@@ -998,6 +1269,7 @@
       }
     },
     "Q2.2.2": {
+      "title": "Dieta a zużycie wody",
       "question": "Dwie osoby spożywają codziennie taką samą liczbę kalorii. Która dieta prawdopodobnie będzie wymagała ogólnie mniej wody?",
       "options": {
         "A": "Dieta zawierająca więcej roślin strączkowych i mniej produktów pochodzenia zwierzęcego",
@@ -1008,6 +1280,7 @@
       "explanation": "Zużycie wody zwykle spada, gdy dieta przesuwa się z produktów odzwierzęcych w stronę roślinnych."
     },
     "Q2.2.3": {
+      "title": "Warzywa bliskie zepsucia",
       "question": "W lodówce znalazłeś warzywa, które wkrótce się zepsują. Jakie działanie jest najbardziej zgodne z zasadami zrównoważonego rozwoju?",
       "explanation": "Wykorzystanie żywności, zanim się zepsuje, pozwala uniknąć marnowania wody, ziemi i energii, które zostały już zainwestowane w jej produkcję.",
       "options": {
@@ -1018,6 +1291,7 @@
       }
     },
     "Q2.2.4": {
+      "title": "Zużycie wody a zrównoważona dieta",
       "question": "Które stwierdzenie najlepiej odzwierciedla dane dotyczące zużycia wody i zrównoważonej diety?",
       "options": {
         "A": "Każda dieta wegetariańska z natury rzeczy wiąże się z mniejszym zużyciem wody",
@@ -1028,6 +1302,7 @@
       "explanation": "Badania pokazują, że ograniczenie produktów odzwierzęcych często zmniejsza ślad wodny, ale całkowite zużycie wody nadal zależy od składu diety."
     },
     "Q2.2.5": {
+      "title": "Posiłki oszczędzające wodę",
       "question": "Który posiłek zazwyczaj charakteryzuje się najmniejszym śladem wodnym?",
       "explanation": "Posiłki pochodzenia roślinnego zazwyczaj wymagają mniejszego zużycia wody",
       "options": {
@@ -1038,6 +1313,7 @@
       }
     },
     "Q2.3.1": {
+      "title": "Ślad energetyczny żywności",
       "question": "Konsument chce zmniejszyć ślad energetyczny związany z zakupami żywności. Która zmiana najprawdopodobniej przyniesie największy efekt?",
       "explanation": "Marnotrawstwo żywności oznacza nie tylko stratę samych produktów spożywczych, ale także stratę całej energii zużytej na ich wyprodukowanie, przetworzenie, transport, przechowywanie i przygotowanie. Ograniczenie marnotrawstwa przyczynia się do zmniejszenia niepotrzebnego zużycia energii w całym systemie żywnościowym.",
       "options": {
@@ -1048,6 +1324,7 @@
       }
     },
     "Q2.3.2": {
+      "title": "Energochłonne diety",
       "question": "Porównujesz cztery diety o tej samej wartości kalorycznej. Która z tych diet, ogólnie rzecz biorąc, będzie wymagała większego nakładu energii w całym systemie żywnościowym?",
       "explanation": "Żywność pochodzenia zwierzęcego zazwyczaj wymaga większego nakładu energii, ponieważ wiąże się z produkcją paszy, intensywnymi systemami hodowli, przetwórstwem, chłodnictwem i transportem.",
       "options": {
@@ -1058,6 +1335,7 @@
       }
     },
     "Q2.3.3": {
+      "title": "Energia w łańcuchu żywnościowym",
       "question": "Który etap łańcucha pokarmowego często odpowiada za znaczną część całkowitego zużycia energii w wielu regionach?",
       "explanation": "Chociaż energia jest wykorzystywana na wszystkich etapach łańcucha żywnościowego, znaczna jej część jest często zużywana podczas przetwarzania żywności, transportu, chłodzenia, sprzedaży detalicznej, gotowania i spożycia.",
       "options": {
@@ -1068,6 +1346,7 @@
       }
     },
     "Q2.3.4": {
+      "title": "Ograniczanie strat żywności",
       "question": "Agencja rozwoju rozważa, gdzie zainwestować, aby ograniczyć straty żywności w wiejskim regionie rolniczym. Które działanie przyniesie prawdopodobnie znaczące korzyści?",
       "explanation": "Około 13% światowej produkcji żywności ulega zniszczeniu z powodu niewystarczającego chłodzenia. Niezawodne systemy łańcucha chłodniczego pomagają zachować jakość żywności, ograniczyć straty i zwiększyć wydajność systemu żywnościowego.",
       "options": {
@@ -1078,6 +1357,7 @@
       }
     },
     "Q2.3.5": {
+      "title": "Systemy żywnościowe a ekosystemy",
       "question": "Decydent polityczny pragnie zmniejszyć presję wywieraną na ekosystemy przez produkcję żywności. Które z poniższych stwierdzeń najlepiej odzwierciedla aktualny stan wiedzy?",
       "options": {
         "A": "Systemy żywnościowe przeznaczone dla ludzi wykorzystują jedynie niewielką część produktywności biologicznej Ziemi",
@@ -1088,6 +1368,7 @@
       "explanation": "Działalność człowieka, zwłaszcza rolnictwo, leśnictwo i systemy żywnościowe, pochłania około 30% globalnej produkcji pierwotnej netto, znacznie powyżej proponowanej bezpiecznej granicy 10%. Wskazuje to na znaczną presję na ekosystemy i różnorodność biologiczną."
     },
     "Q2.4.1": {
+      "title": "Dla klimatu, ale bez wegetarianizmu",
       "question": "Chcesz zmniejszyć swój wpływ na klimat, ale nie chcesz przejść na wegetarianizm. Która strategia będzie prawdopodobnie najskuteczniejsza?",
       "explanation": "Ograniczenie spożycia czerwonego mięsa jest jednym z najskuteczniejszych działań żywieniowych mających na celu zmniejszenie emisji gazów cieplarnianych związanych z produkcją żywności.",
       "options": {
@@ -1098,6 +1379,7 @@
       }
     },
     "Q2.4.2": {
+      "title": "Ograniczanie emisji z diety",
       "question": "Chcesz zmniejszyć ślad węglowy swojej diety. Które z poniższych działań przyniesie prawdopodobnie największy efekt?",
       "explanation": "Około 30% żywności produkowanej na całym świecie jest marnowane, co powoduje emisję około 3,3 gigaton ekwiwalentu CO₂ rocznie. Zapobieganie marnotrawstwu żywności pozwala ograniczyć emisje w całym łańcuchu żywnościowym, w tym na etapie produkcji, przetwarzania, transportu i utylizacji.",
       "options": {
@@ -1108,6 +1390,7 @@
       }
     },
     "Q2.4.3": {
+      "title": "Mniej emisji bez zmiany zakupów",
       "question": "Które działanie pozwala ograniczyć emisje bez zmiany asortymentu kupowanych przez Ciebie produktów spożywczych?",
       "explanation": "Marnotrawstwo żywności powoduje znaczne emisje gazów cieplarnianych, ponieważ wszystkie resztki",
       "options": {
@@ -1118,6 +1401,7 @@
       }
     },
     "Q2.4.4": {
+      "title": "Żywność lokalna a wołowina",
       "question": "Pewna osoba skupia się wyłącznie na kupowaniu lokalnej żywności, ale nadal spożywa duże ilości wołowiny. Które stwierdzenie najlepiej odzwierciedla przedstawione fakty?",
       "explanation": "Badania konsekwentnie wskazują, że rodzaj żywności – a zwłaszcza spożycie wołowiny – często odgrywa większą rolę niż odległość transportu w określaniu wpływu na klimat.",
       "options": {
@@ -1128,6 +1412,7 @@
       }
     },
     "Q2.4.5": {
+      "title": "Niskoemisyjne sposoby odżywiania",
       "question": "Który sposób odżywiania jest najczęściej wskazywany jako niskoemisyjna alternatywa dla typowej diety zachodniej?",
       "explanation": "Dieta fleksitariańska ogranicza uzależnienie od produktów pochodzenia zwierzęcego o dużym wpływie na środowisko, jednocześnie pozwalając na ich sporadyczne spożywanie.",
       "options": {
@@ -1138,6 +1423,7 @@
       }
     },
     "Q3.1.1": {
+      "title": "Przetwarzanie a zrównoważony rozwój",
       "question": "Porównujesz dwa posiłki bogate w białko: gulasz fasolowy przygotowany z prostych składników oraz roślinne nuggetsy mięsne. Który wniosek najlepiej potwierdzają przedstawione dowody?",
       "explanation": "Przetwórstwo żywności może zwiększać zużycie energii, ale może też wydłużyć okres przydatności do spożycia i ograniczyć marnotrawstwo żywności. Zrównoważony rozwój zależy od całego cyklu życia produktu, a nie wyłącznie od etapu przetwórstwa.",
       "options": {
@@ -1148,6 +1434,7 @@
       }
     },
     "Q3.1.2": {
+      "title": "Ślad środowiskowy przetwarzania",
       "question": "Porównując dwa produkty spożywcze o podobnej wartości odżywczej, jaki czynnik mógłby zwiększyć ślad środowiskowy jednego z nich?",
       "explanation": "Procesy takie jak podgrzewanie, zamrażanie, suszenie, mielenie oraz inne procesy przemysłowe mogą w znacznym stopniu wpływać na oddziaływanie produktów spożywczych na środowisko.",
       "options": {
@@ -1158,6 +1445,7 @@
       }
     },
     "Q3.1.3": {
+      "title": "Mniej żywności wysoko przetworzonej",
       "question": "Konsument chce ograniczyć spożycie żywności wysoko przetworzonej. Który wybór najlepiej wspiera ten cel?",
       "explanation": "Żywność poddana minimalnej obróbce zazwyczaj zawiera mniej dodatków i zazwyczaj przyczynia się do poprawy ogólnej jakości diety.",
       "options": {
@@ -1168,6 +1456,7 @@
       }
     },
     "Q3.1.4": {
+      "title": "Rola przetwórstwa spożywczego",
       "question": "Dlaczego przetwórstwo spożywcze odgrywa ważną rolę w systemach żywnościowych?",
       "explanation": "Przetwarzanie może zwiększyć bezpieczeństwo żywności, zapewnić utrzymanie jej jakości oraz umożliwić jej bardziej efektywne przechowywanie i transport.",
       "options": {
@@ -1178,6 +1467,7 @@
       }
     },
     "Q3.1.5": {
+      "title": "Żywność wysoko przetworzona",
       "question": "Które z poniższych stwierdzeń dotyczących żywności wysoko przetworzonej jest najbardziej trafne?",
       "explanation": "Poziom przetworzenia może dostarczyć przydatnych informacji, jednak produkty spożywcze nadal należy oceniać indywidualnie.",
       "options": {
@@ -1188,6 +1478,7 @@
       }
     },
     "Q3.2.1": {
+      "title": "Co oznacza „lokalny”",
       "question": "Produkt jest oznaczony jako „lokalny”. Jakie wnioski można wyciągnąć na podstawie samej tej informacji?",
       "explanation": "Kraj pochodzenia dostarcza przydatnych informacji, jednak zrównoważony charakter zależy od wielu czynników, w tym od metody produkcji, sposobu transportu oraz sezonowości.",
       "options": {
@@ -1198,6 +1489,7 @@
       }
     },
     "Q3.2.2": {
+      "title": "Porównanie lokalnych produktów",
       "question": "Porównujesz dwa lokalne produkty. Jakie dodatkowe informacje byłyby najbardziej przydatne?",
       "explanation": "Metody produkcji często mają większy wpływ na środowisko niż samo pochodzenie produktu.",
       "options": {
@@ -1208,6 +1500,7 @@
       }
     },
     "Q3.2.3": {
+      "title": "Transport a klimat",
       "question": "Która metoda transportu zasługuje zasadniczo na największą uwagę przy ocenie wpływu na klimat?",
       "explanation": "Transport lotniczy może znacznie zwiększyć emisję gazów cieplarnianych związanych z transportem w porównaniu z innymi metodami przewozu towarów.",
       "options": {
@@ -1218,6 +1511,7 @@
       }
     },
     "Q3.2.4": {
+      "title": "Porównanie pomidorów",
       "question": "Dwa pomidory mają taką samą wartość odżywczą. Która informacja byłaby najbardziej przydatna przy porównywaniu ich zrównoważonego charakteru?",
       "explanation": "Systemy produkcyjne często mają większy wpływ na środowisko niż sam kraj pochodzenia.",
       "options": {
@@ -1228,6 +1522,7 @@
       }
     },
     "Q3.2.5": {
+      "title": "Pochodzenie żywności",
       "question": "Które stwierdzenie dotyczące pochodzenia żywności jest najbardziej zgodne z dowodami?",
       "explanation": "Pochodzenie żywności może stanowić przydatną informację, ale należy je rozpatrywać w połączeniu z metodami produkcji, sezonowością i transportem.",
       "options": {
@@ -1238,6 +1533,7 @@
       }
     },
     "Q3.3.1": {
+      "title": "Zintegrowana ochrona roślin",
       "question": "Masz do wyboru dwa produkty z jabłek: Produkt A: „Wyprodukowany z zastosowaniem zintegrowanej ochrony roślin (IPM)”; Produkt B: Brak informacji dotyczących uprawy. Co najprawdopodobniej sugeruje informacja o zastosowaniu IPM?",
       "explanation": "Zintegrowana ochrona przed szkodnikami łączy metody biologiczne, fizyczne, dostosowane do konkretnych upraw oraz, w razie potrzeby, chemiczne, mające na celu ograniczenie szkód powodowanych przez szkodniki przy jednoczesnym zminimalizowaniu wpływu na środowisko i zdrowie.",
       "options": {
@@ -1248,6 +1544,7 @@
       }
     },
     "Q3.3.2": {
+      "title": "Płodozmian",
       "question": "Kupujesz warzywa, a na jednym z opakowań zaznaczono, że gospodarstwo stosuje płodozmian i uprawia różne rośliny. Dlaczego ta informacja może być istotna?",
       "explanation": "Zróżnicowanie upraw i płodozmian poprawiają żyzność gleby, obieg składników odżywczych oraz odporność na szkodniki i choroby, zmniejszając tym samym zapotrzebowanie na nadmierne stosowanie środków chemicznych.",
       "options": {
@@ -1258,6 +1555,7 @@
       }
     },
     "Q3.3.3": {
+      "title": "Kawa uprawiana w cieniu",
       "question": "Masz do wyboru dwa rodzaje kawy: Kawa A: uprawiana w cieniu w systemie agroleśnym; Kawa B: produkowana na plantacji monokulturowej. Dlaczego niektórzy konsumenci mogą preferować kawę A?",
       "explanation": "Agroleśnictwo łączy uprawę drzew z produkcją rolniczą. Systemy te mogą poprawiać stan gleby, różnorodność biologiczną oraz sekwestrację dwutlenku węgla.",
       "options": {
@@ -1268,6 +1566,7 @@
       }
     },
     "Q3.3.4": {
+      "title": "Rolnictwo ekologiczne",
       "question": "Dwa produkty warzywne mają podobne ceny. Jeden z nich ma oznaczenie „ekologiczny”. Która cecha uprawy najprawdopodobniej wiąże się z produktem ekologicznym?",
       "explanation": "Rolnictwo ekologiczne opiera się na takich praktykach, jak płodozmian, stosowanie kompostu, uprawy okrywowe oraz biologiczna ochrona przed szkodnikami, zamiast syntetycznych pestycydów i nawozów.",
       "options": {
@@ -1278,6 +1577,7 @@
       }
     },
     "Q3.3.5": {
+      "title": "Rolnictwo dostosowane do zmian klimatu",
       "question": "Masz do wyboru dwa produkty ryżowe: Produkt A: Wyprodukowany z wykorzystaniem rolnictwa dostosowanego do zmian klimatu Produkt B: Brak informacji na temat sposobu uprawy Jaki jest główny cel rolnictwa dostosowanego do zmian klimatu?",
       "explanation": "Rolnictwo dostosowane do zmian klimatu ma na celu zwiększenie wydajności, wzmocnienie odporności na zmiany klimatu oraz ograniczenie emisji gazów cieplarnianych.",
       "options": {
@@ -1288,6 +1588,7 @@
       }
     },
     "Q3.4.1": {
+      "title": "Uprawy odporne na suszę",
       "question": "Porównujesz dwa produkty z pomidorów. Jeden pochodzi z odmiany uprawnej wyhodowanej tak, by była odporna na suszę, a drugi z odmiany konwencjonalnej. Dlaczego niektórzy konsumenci mogą uznać odmianę odporną na suszę za bardziej zrównoważoną?",
       "explanation": "Hodowla roślin odpornych na suszę może pomóc w utrzymaniu produkcji w warunkach niedoboru wody oraz zwiększyć odporność na zmiany klimatu, choć uprawy te nadal wymagają wody i właściwego zarządzania rolniczego.",
       "options": {
@@ -1298,6 +1599,7 @@
       }
     },
     "Q3.4.2": {
+      "title": "Nowoczesna hodowla roślin",
       "question": "Zauważasz produkt spożywczy reklamowany jako pochodzący z odmiany uprawnej odpornej na zmiany klimatu, wyhodowanej przy użyciu nowoczesnych technik hodowli roślin. Jaka jest główna korzyść w zakresie zrównoważonego rozwoju, którą przypisuje się tym technologiom?",
       "explanation": "Nowoczesne technologie hodowli mają na celu opracowanie odmian roślin uprawnych, które będą osiągać lepsze wyniki w zmieniających się warunkach środowiskowych i pomogą utrzymać produkcję żywności w przyszłości.",
       "options": {
@@ -1308,6 +1610,7 @@
       }
     },
     "Q3.4.3": {
+      "title": "Zrównoważona pasza dla ryb",
       "question": "Masz do wyboru dwa produkty rybne. Jeden z nich pochodzi z przedsiębiorstwa zajmującego się akwakulturą, które częściowo zastępuje paszę dla ryb, wytwarzaną z ryb dziko żyjących, mączką owadzią i olejami z alg. Jaka jest główna przesłanka związana ze zrównoważonym rozwojem, stojąca za tym wyborem?",
       "explanation": "W akwakulturze coraz częściej stosuje się alternatywne składniki paszowe, takie jak mączka z owadów, oleje z alg i białka jednokomórkowe, aby zmniejszyć zależność od ryb pochodzących z połowów dzikich",
       "options": {
@@ -1318,6 +1621,7 @@
       }
     },
     "Q3.4.4": {
+      "title": "Alternatywne źródła białka",
       "question": "Supermarket promuje produkty zawierające białko pochodzące z owadów, mikroalg lub mikoprotein. Dlaczego te źródła białka są często poruszane w badaniach dotyczących zrównoważonego rozwoju?",
       "options": {
         "A": "Są zdrowsze niż tradycyjne produkty spożywcze",
@@ -1328,6 +1632,7 @@
       "explanation": "Alternatywne źródła białka są badane, ponieważ mogą pomóc ograniczyć presję środowiskową związaną z konwencjonalną hodowlą zwierząt, wspierając jednocześnie przyszłe bezpieczeństwo żywnościowe."
     },
     "Q3.4.5": {
+      "title": "Efektywność wykorzystania paszy",
       "question": "Producent mięsa twierdzi, że jego program hodowli zwierząt koncentruje się na efektywności wykorzystania paszy. Dlaczego może to mieć znaczenie z punktu widzenia zrównoważonego rozwoju?",
       "options": {
         "A": "Zwierzęta automatycznie stają się zdrowsze",
@@ -1338,6 +1643,7 @@
       "explanation": "Zwierzęta o lepszym wykorzystaniu paszy dostarczają tę samą ilość mięsa przy mniejszym zużyciu paszy, co zmniejsza presję środowiskową na jednostkę produkcji."
     },
     "Q3.5.1": {
+      "title": "Znak Fairtrade",
       "question": "Masz do wyboru dwie tabliczki czekolady o podobnych wartościach odżywczych i informacjach dotyczących wpływu na środowisko. Jedna z nich posiada znak Fairtrade. Jaki dodatkowy aspekt zrównoważonego rozwoju ma na celu przede wszystkim znak Fairtrade?",
       "explanation": "Celem Fairtrade jest poprawa warunków życia poprzez zapewnienie sprawiedliwych cen, ochronę praw pracowniczych, rozwój społeczności oraz lepsze warunki handlowe dla producentów i pracowników.",
       "options": {
@@ -1348,6 +1654,7 @@
       }
     },
     "Q3.5.2": {
+      "title": "Zrównoważony rozwój społeczny",
       "question": "Konsument, kupując owoce, chce brać pod uwagę zarówno zrównoważony rozwój środowiskowy, jak i społeczny. Które z poniższych stwierdzeń najlepiej odpowiada aktualnym danym?",
       "explanation": "Badania wskazują, że skutki społeczne i środowiskowe rozkładają się w różny sposób. W krajach produkujących mogą występować zagrożenia związane z warunkami pracy, nawet jeśli wyniki w zakresie ochrony środowiska wydają się korzystne.",
       "options": {
@@ -1358,6 +1665,7 @@
       }
     },
     "Q3.5.3": {
+      "title": "Certyfikowane owoce morza",
       "question": "Kupujesz owoce morza i zauważasz, że jeden produkt pochodzi z certyfikowanego łowiska, które monitoruje warunki pracy, podczas gdy drugi nie zawiera żadnych informacji na ten temat. Dlaczego niektórzy konsumenci mogą preferować produkt certyfikowany?",
       "explanation": "Rybołówstwo uznaje się za sektor o wysokim ryzyku wykorzystywania pracowników. Programy certyfikacyjne w coraz większym stopniu obejmują monitorowanie warunków pracy i przestrzegania praw człowieka.",
       "options": {
@@ -1368,6 +1676,7 @@
       }
     },
     "Q3.5.4": {
+      "title": "Wsparcie drobnych rolników",
       "question": "Na opakowaniu kawy podkreślono wsparcie dla drobnych rolników. Dlaczego ta informacja ma znaczenie z punktu widzenia zrównoważonego rozwoju?",
       "explanation": "Zrównoważony rozwój społeczny obejmuje sprawiedliwy dostęp do rynków, re",
       "options": {
@@ -1378,6 +1687,7 @@
       }
     },
     "Q3.5.5": {
+      "title": "Etyczne wybory żywieniowe",
       "question": "Który produkt najlepiej odzwierciedla pogląd, że zrównoważony rozwój obejmuje zarówno kwestie etyczne, jak i środowiskowe?",
       "explanation": "Wspólne Centrum Badawcze Komisji Europejskiej podkreśla, że zrównoważone systemy żywnościowe muszą być zrównoważone pod względem środowiskowym, opłacalne ekonomicznie oraz sprawiedliwe, sprzyjające włączeniu społecznemu i etyczne.",
       "options": {
@@ -1388,6 +1698,7 @@
       }
     },
     "Q4.1.1": {
+      "title": "Wpływ opakowań na środowisko",
       "question": "Konsument pragnie zmniejszyć wpływ opakowań żywności na środowisko. Które z poniższych stwierdzeń jest najbardziej zgodne z aktualnym stanem wiedzy?",
       "explanation": "Wpływ produkcji żywności na środowisko jest często znacznie większy niż wpływ samego opakowania. Opakowania, które skutecznie zapobiegają psuciu się żywności i marnotrawstwu żywności, mogą przynosić ogólne korzyści dla środowiska, nawet jeśli wymagają użycia dodatkowych materiałów.",
       "options": {
@@ -1398,6 +1709,7 @@
       }
     },
     "Q4.1.2": {
+      "title": "Opakowania jadalne",
       "question": "Firma rozważa wybór między tradycyjnymi opakowaniami z tworzyw sztucznych a jadalną powłoką do pakowania świeżych owoców. Która z potencjalnych korzyści dla środowiska wynikających ze stosowania opakowań jadalnych znajduje najlepsze potwierdzenie w badaniach naukowych?",
       "explanation": "Opakowania jadalne mogą przyczynić się do łagodzenia zmian klimatycznych poprzez zastąpienie niektórych materiałów pochodzenia kopalnego oraz przedłużenie okresu przydatności do spożycia, co pomaga zapobiegać marnotrawstwu żywności.",
       "options": {
@@ -1408,6 +1720,7 @@
       }
     },
     "Q4.1.3": {
+      "title": "Innowacje w opakowaniach",
       "question": "Która z innowacji w dziedzinie opakowań została zaprojektowana specjalnie w celu dostarczania informacji o stanie produktu spożywczego, a nie w celu jego bezpośredniej konserwacji?",
       "explanation": "Inteligentne opakowania monitorują lub przekazują informacje dotyczące stanu żywności, takie jak świeżość, historia temperatury czy ryzyko zepsucia. W przeciwieństwie do opakowań aktywnych nie zapewniają one bezpośredniej ochrony produktu.",
       "options": {
@@ -1418,6 +1731,7 @@
       }
     },
     "Q4.1.4": {
+      "title": "Materiały opakowaniowe",
       "question": "Które stwierdzenie dotyczące materiałów opakowaniowych jest najbardziej trafne?",
       "explanation": "Żaden materiał opakowaniowy nie jest z natury rzeczy najbardziej ekologiczny. Wpływ na środowisko zależy od sposobu pozyskiwania surowców, produkcji, transportu, możliwości ponownego wykorzystania i recyklingu oraz od rodzaju chronionego produktu spożywczego.",
       "options": {
@@ -1428,6 +1742,7 @@
       }
     },
     "Q4.1.5": {
+      "title": "Unijna hierarchia opakowań",
       "question": "Sieć supermarketów chce zwiększyć zrównoważony charakter opakowań, zachowując jednocześnie jakość żywności. Która strategia najlepiej wpisuje się w unijną hierarchię opakowań?",
       "explanation": "W ramach unijnej hierarchii opakowań priorytetem jest przede wszystkim ograniczenie zbędnych opakowań, następnie ponowne wykorzystanie opakowań tam, gdzie to możliwe, a na końcu recykling materiałów. Celem jest ochrona produktów przy jednoczesnym zminimalizowaniu",
       "options": {
@@ -1438,6 +1753,7 @@
       }
     },
     "Q4.2.1": {
+      "title": "Pojemniki na wynos wielokrotnego użytku",
       "question": "Masz do wyboru dwie opcje na wynos: Opcja A: Pojemnik jednorazowy, który można poddać recyklingowi. Opcja B: Pojemnik wielokrotnego użytku, który należy zwrócić do restauracji. Który czynnik ma największe znaczenie przy ustalaniu, czy opcja B jest rzeczywiście bardziej ekologiczna?",
       "explanation": "Opakowania wielokrotnego użytku stają się bardziej przyjazne dla środowiska dopiero po osiągnięciu progu opłacalności środowiskowej (e-BEP), co oznacza, że muszą zostać ponownie wykorzystane wystarczającą liczbę razy, aby zrównoważyć początkowy wpływ ich produkcji na środowisko.",
       "options": {
@@ -1448,6 +1764,7 @@
       }
     },
     "Q4.2.2": {
+      "title": "Kubki wielokrotnego użytku",
       "question": "Kawiarnia prowadzi program kubków wielokrotnego użytku. Które zachowanie klientów w największym stopniu przyczynia się do sukcesu tego programu pod względem ochrony środowiska?",
       "explanation": "Korzyści dla środowiska wynikające z systemów wielokrotnego użytku zależą przede wszystkim od osiągnięcia dużej liczby cykli ponownego wykorzystania.",
       "options": {
@@ -1458,6 +1775,7 @@
       }
     },
     "Q4.2.3": {
+      "title": "Opakowania w dostawach jedzenia",
       "question": "Porównujesz dwie usługi dostawy jedzenia: Usługa A wykorzystuje opakowania jednorazowego użytku, które są poddawane recyklingowi. Usługa B wykorzystuje pojemniki wielokrotnego użytku, które są odbierane, czyszczone i ponownie wykorzystywane. Które stwierdzenie jest najbardziej trafne?",
       "explanation": "Systemy wielokrotnego użytku mogą przewyższać wydajnością systemy jednorazowego użytku, jednak ich wydajność zależy od takich czynników, jak wskaźniki zwrotów, transport, czyszczenie oraz liczba cykli ponownego użycia.",
       "options": {
@@ -1468,6 +1786,7 @@
       }
     },
     "Q4.2.4": {
+      "title": "Stacje do ponownego napełniania",
       "question": "Sieć supermarketów wprowadza stacje do ponownego napełniania takich produktów, jak płatki śniadaniowe, makaron i środki czyszczące. Jaką korzyść w zakresie zrównoważonego rozwoju mają przede wszystkim zapewnić te systemy?",
       "explanation": "Systemy ponownego wykorzystania i ponownego napełniania pozwalają na dłuższe utrzymywanie opakowań w obiegu oraz ograniczają zapotrzebowanie na nowe materiały i ilość odpadów opakowaniowych.",
       "options": {
@@ -1478,6 +1797,7 @@
       }
     },
     "Q4.2.5": {
+      "title": "Opakowania wielokrotnego użytku na etykiecie",
       "question": "Na etykiecie produktu podano, że wykorzystano w nim opakowanie wielokrotnego użytku. Jakie dodatkowe informacje byłyby najbardziej przydatne przy ocenie jego wpływu na środowisko?",
       "explanation": "Liczba osiągniętych cykli ponownego wykorzystania jest jednym z najważniejszych czynników decydujących o tym, czy opakowania wielokrotnego użytku przynoszą korzyści dla środowiska.",
       "options": {
@@ -1488,6 +1808,7 @@
       }
     },
     "Q5.1.1": {
+      "title": "Zamawianie bez marnowania",
       "question": "Zamawiasz lunch w restauracji i nie jesteś pewien, jak bardzo jesteś głodny. Który wybór najprawdopodobniej pozwoli ograniczyć marnotrawstwo jedzenia?",
       "explanation": "Badania pokazują, że oferowanie i wybieranie mniejszych porcji może znacznie ograniczyć marnotrawstwo jedzenia, nawet jeśli decyduje się na nie tylko niewielka część klientów.",
       "options": {
@@ -1498,6 +1819,7 @@
       }
     },
     "Q5.1.2": {
+      "title": "Marnowanie jedzenia przy bufecie",
       "question": "Które zachowanie podczas bufetu najprawdopodobniej przyczyni się do ograniczenia marnotrawstwa żywności?",
       "explanation": "Badania przeprowadzone w lokalach oferujących bufet „jedz, ile chcesz” wykazały, że wielu konsumentów nakłada sobie więcej jedzenia, niż faktycznie zje. Zaczynanie od mniejszych porcji pomaga ograniczyć nadmierne nakładanie jedzenia.",
       "options": {
@@ -1508,6 +1830,7 @@
       }
     },
     "Q5.1.3": {
+      "title": "Mniejsze porcje",
       "question": "Restauracja wprowadza do menu danie w mniejszej porcji. Który wynik byłby najbardziej zgodny z przedstawionymi informacjami?",
       "explanation": "Badania pokazują, że udostępnienie mniejszych porcji może znacznie ograniczyć ilość odpadów, nawet jeśli wybiera je stosunkowo niewielka liczba klientów.",
       "options": {
@@ -1518,6 +1841,7 @@
       }
     },
     "Q5.1.4": {
+      "title": "Marnowanie jedzenia w stołówce",
       "question": "W stołówce widzisz tabliczkę zachęcającą klientów do ograniczania marnotrawstwa żywności. Która z poniższych reakcji najprawdopodobniej przyczyni się do zmniejszenia ilości resztek?",
       "explanation": "Konsumenci, którzy świadomie starają się zjeść wszystko, co mają na talerzu, zazwyczaj pozostawiają mniej resztek. Zmiana dań w trakcie posiłku może w rzeczywistości zwiększyć ilość marnotrawstwa.",
       "options": {
@@ -1528,6 +1852,7 @@
       }
     },
     "Q5.1.5": {
+      "title": "Przyczyny resztek na talerzach",
       "question": "Który czynnik najprawdopodobniej przyczynia się do marnotrawstwa jedzenia w restauracjach i stołówkach?",
       "options": {
         "A": "Menu sezonowe",
@@ -1538,6 +1863,7 @@
       "explanation": "Ujednolicone wielkości porcji często nie uwzględniają różnic w apetycie i są uznawane za systemową przyczynę marnowania jedzenia na talerzu."
     },
     "Q5.2.1": {
+      "title": "Przechowywanie resztek",
       "question": "Zostały ci resztki z kolacji, które zamierzasz zjeść jutro. Jaki jest najlepszy pierwszy krok, aby zapobiec zarówno marnotrawstwu żywności, jak i zagrożeniom dla bezpieczeństwa żywności?",
       "explanation": "W temperaturze pokojowej bakterie rozmnażają się bardzo szybko. Szybkie schłodzenie pozwala zachować bezpieczeństwo spożycia resztek i zmniejsza prawdopodobieństwo, że zostaną one wyrzucone.",
       "options": {
@@ -1548,6 +1874,7 @@
       }
     },
     "Q5.2.2": {
+      "title": "Jogurt po terminie",
       "question": "Znalazłeś jogurt, którego termin przydatności do spożycia minął dwa dni temu. Jakie działanie jest najbardziej właściwe?",
       "explanation": "Termin „najlepiej spożyć przed” odnosi się do jakości żywności, natomiast termin „należy spożyć do” dotyczy bezpieczeństwa żywności. Wiele produktów spożywczych nadaje się do spożycia nawet po upływie terminu „najlepiej spożyć przed”, o ile były odpowiednio przechowywane.",
       "options": {
@@ -1558,6 +1885,7 @@
       }
     },
     "Q5.2.3": {
+      "title": "Przechowywanie zupy",
       "question": "Przygotowałeś duży garnek zupy, którą chcesz zachować na później w tym tygodniu. Jaki jest najlepszy sposób przechowywania?",
       "explanation": "Mniejsze pojemniki schładzają się szybciej niż duże garnki, co skraca czas, przez jaki żywność pozostaje w temperaturach sprzyjających rozwojowi bakterii.",
       "options": {
@@ -1568,6 +1896,7 @@
       }
     },
     "Q5.2.4": {
+      "title": "Bezpieczeństwo resztek ryżu",
       "question": "Ugotowałeś dodatkową porcję ryżu i chcesz ją wykorzystać na obiad następnego dnia. Która z poniższych metod jest najbezpieczniejsza?",
       "explanation": "Ugotowany ryż może zawierać bakterię Bacillus cereus, która może szybko się namnażać, gdy ryż pozostawi się w temperaturze pokojowej. Prawidłowe przechowywanie pomaga zapobiegać chorobom przenoszonym przez żywność oraz niepotrzebnemu marnotrawstwu.",
       "options": {
@@ -1578,6 +1907,7 @@
       }
     },
     "Q5.2.5": {
+      "title": "Wykorzystywanie resztek",
       "question": "Który nawyk domowy najprawdopodobniej ograniczy ilość resztek jedzenia zamieniających się w odpady?",
       "explanation": "Wiele resztek trafia do śmieci, ponieważ zostają zapomniane lub zastąpione świeżo zakupioną żywnością. Aktywne planowanie posiłków z uwzględnieniem dostępnych resztek pomaga ograniczyć marnotrawstwo żywności.",
       "options": {
@@ -1588,6 +1918,7 @@
       }
     },
     "Q5.3.1": {
+      "title": "Data „najlepiej spożyć przed”",
       "question": "Znalazłeś jogurt, którego termin „najlepiej spożyć przed” minął dwa dni temu. Opakowanie jest nieotwarte, a produkt był prawidłowo przechowywany w lodówce. Jakie działanie jest najbardziej właściwe?",
       "explanation": "Wielu konsumentów myli daty „najlepiej spożyć przed” i „termin przydatności do spożycia”. Data „najlepiej spożyć przed” odnosi się do jakości, natomiast „termin przydatności do spożycia” – do bezpieczeństwa. Niewłaściwe rozumienie tych oznaczeń w znacznym stopniu przyczynia się do powstawania marnotrawstwa żywności w gospodarstwach domowych, którego można by uniknąć.",
       "options": {
@@ -1598,6 +1929,7 @@
       }
     },
     "Q5.3.2": {
+      "title": "Promocje ilościowe",
       "question": "Supermarket organizuje promocję „Kup 3, a 2 dostaniesz gratis” na świeże truskawki. Jakie pytanie należy sobie zadać przed skorzystaniem z tej oferty?",
       "explanation": "Promocje typu „kup więcej” często skłaniają konsumentów do kupowania większej ilości produktów, niż są w stanie spożyć. Świeże produkty spożywcze są szczególnie narażone na marnotrawstwo ze względu na krótki okres przydatności do spożycia.",
       "options": {
@@ -1608,6 +1940,7 @@
       }
     },
     "Q5.3.3": {
+      "title": "Żywność z kończącym się terminem",
       "question": "Zastanawiasz się, co zrobić z żywnością, której termin przydatności do spożycia wkrótce upłynie. Która strategia najprawdopodobniej pozwoli ograniczyć marnotrawstwo żywności w największym stopniu?",
       "explanation": "Planowanie posiłków oraz priorytetowe traktowanie produktów spożywczych o krótszym pozostałym terminie przydatności do spożycia należą do najskuteczniejszych strategii stosowanych w gospodarstwach domowych w celu ograniczenia marnotrawstwa żywności.",
       "options": {
@@ -1618,6 +1951,7 @@
       }
     },
     "Q5.3.4": {
+      "title": "Unikanie przeterminowanej żywności",
       "question": "Które gospodarstwo domowe najprawdopodobniej wytworzy najmniej odpadów w postaci przeterminowanej żywności?",
       "explanation": "Wiele produktów spożywczych traci ważność, ponieważ konsumenci zapominają o tym, co już mają w domu, i kupują te same produkty ponownie. Świadomość stanu zapasów stanowi kluczową strategię zapobiegania marnotrawstwu żywności.",
       "options": {
@@ -1628,6 +1962,7 @@
       }
     },
     "Q5.3.5": {
+      "title": "Wyrzucanie żywności po terminie",
       "question": "Pewna rodzina wyrzuca żywność wkrótce po upływie terminu przydatności do spożycia, ponieważ obawia się o jej bezpieczeństwo. Jak wynika z danych, co często jest przyczyną takiego zachowania?",
       "explanation": "Badania pokazują, że błędna interpretacja dat ważności na etykietach produktów spożywczych oraz obawy dotyczące potencjalnych zagrożeń dla zdrowia należą do głównych przyczyn marnotrawstwa żywności w gospodarstwach domowych w Europie, któremu można zapobiec.",
       "options": {
@@ -1638,6 +1973,7 @@
       }
     },
     "Q5.4.1": {
+      "title": "Planowanie rodzinnej kolacji",
       "question": "Planujesz rodzinną kolację i chcesz uniknąć niepotrzebnego marnowania jedzenia. Które z poniższych rozwiązań najprawdopodobniej Ci w tym pomoże?",
       "explanation": "Nadmierne przygotowywanie posiłków jest częstą przyczyną marnotrawstwa żywności w gospodarstwach domowych. Planowanie porcji zgodnie z rzeczywistymi potrzebami pomaga ograniczyć nadmiar żywności, która może nigdy nie zostać spożyta.",
       "options": {
@@ -1648,6 +1984,7 @@
       }
     },
     "Q5.4.2": {
+      "title": "Promocje na rodzinne opakowania",
       "question": "Supermarket oferuje dużą zniżkę na rodzinne opakowanie świeżej żywności. Jaka jest najbardziej zrównoważona reakcja?",
       "explanation": "Kupowanie większej ilości żywności, niż można spożyć, jest częstą przyczyną marnotrawstwa żywności. Niższe ceny jednostkowe niekoniecznie oznaczają mniej marnotrawstwa, jeśli żywność zostanie później wyrzucona.",
       "options": {
@@ -1658,6 +1995,7 @@
       }
     },
     "Q5.4.3": {
+      "title": "Nawyki zakupowe",
       "question": "Który nawyk związany z zakupami najprawdopodobniej przyczynia się do nadmiernej konsumpcji i marnotrawstwa żywności?",
       "explanation": "Zakupy pod wpływem impulsu często prowadzą do kupowania zbyt dużej ilości produktów i zwiększają prawdopodobieństwo, że żywność straci ważność, zanim zostanie spożyta.",
       "options": {
@@ -1668,6 +2006,7 @@
       }
     },
     "Q5.4.4": {
+      "title": "Marnowana świeża żywność",
       "question": "W gospodarstwie domowym często wyrzuca się chleb, owoce i warzywa. Które z poniższych zachowań najprawdopodobniej przyczynia się do tego problemu?",
       "explanation": "Świeże warzywa i owoce oraz wyroby piekarnicze należą do produktów spożywczych, które najczęściej się marnują, ponieważ mają stosunkowo krótki okres przydatności do spożycia i często kupuje się ich zbyt dużo.",
       "options": {
@@ -1678,6 +2017,7 @@
       }
     },
     "Q5.4.5": {
+      "title": "Nadmierna konsumpcja a marnotrawstwo",
       "question": "Które z poniższych stwierdzeń najlepiej oddaje związek między nadmierną konsumpcją a marnotrawstwem żywności?",
       "explanation": "Nadmierne spożycie i nadmierne zakupy często powodują, że żywność pozostaje niezjedzona, co zwiększa zarówno ilość odpadów wytwarzanych w gospodarstwach domowych, jak i wpływ na środowisko związany z produkcją tej żywności.",
       "options": {
@@ -1688,6 +2028,7 @@
       }
     },
     "Q6.1.1": {
+      "title": "Zrównoważone spożycie białka",
       "question": "Chcesz zwiększyć spożycie białka, jednocześnie ograniczając wpływ swojej diety na środowisko. Która z poniższych zmian w planie tygodniowym jest najbardziej zgodna z aktualnym stanem wiedzy naukowej?",
       "options": {
         "A": "Jedz większe porcje czerwonego mięsa",
@@ -1698,6 +2039,7 @@
       "explanation": "Rośliny strączkowe, orzechy i produkty pełnoziarniste dostarczają białka i zwykle mają mniejszy wpływ na środowisko niż wiele zwierzęcych źródeł białka. Różnicowanie źródeł białka sprzyja zarówno zdrowiu, jak i zrównoważonemu rozwojowi."
     },
     "Q6.1.2": {
+      "title": "Porównanie białkowych obiadów",
       "question": "Dwa obiady zawierają podobną ilość białka: sałatka z soczewicy i komosy ryżowej oraz kanapka z wędliną. Które stwierdzenie jest najbardziej trafne?",
       "explanation": "Produkty bogate w białko różnią się pod względem zawartości innych składników odżywczych, takich jak błonnik, sód, tłuszcze nasycone, witaminy i minerały. Istotny jest ogólny skład odżywczy tych produktów.",
       "options": {
@@ -1708,6 +2050,7 @@
       }
     },
     "Q6.1.3": {
+      "title": "Niezbędne aminokwasy",
       "question": "Osoba ta chce ograniczyć spożycie mięsa, ale martwi się, czy zapewni sobie wszystkie niezbędne aminokwasy. Która strategia jest najbardziej odpowiednia?",
       "options": {
         "A": "Nadal jedz mięso przy każdym posiłku",
@@ -1718,6 +2061,7 @@
       "explanation": "Różne białka roślinne uzupełniają się wzajemnie. W urozmaiconej diecie łączenie wielu roślinnych źródeł białka zwykle dostarcza wszystkich niezbędnych aminokwasów."
     },
     "Q6.1.4": {
+      "title": "Oświadczenia dotyczące białka",
       "question": "Porównujesz dwa produkty spożywcze: Produkt A: „Źródło białka” Produkt B: „Wysoka zawartość białka” Jaki wniosek możesz wyciągnąć?",
       "options": {
         "A": "Produkt B zawiera z konieczności dwa razy więcej białka",
@@ -1728,6 +2072,7 @@
       "explanation": "Zgodnie z przepisami UE dotyczącymi oświadczeń żywieniowych produkt można oznaczyć jako „wysokobiałkowy” tylko wtedy, gdy co najmniej 20% jego wartości energetycznej pochodzi z białka. Oznaczenie „źródło białka” wymaga co najmniej 12%."
     },
     "Q6.1.5": {
+      "title": "Zbilansowane źródła białka",
       "question": "Który model żywieniowy jest najbardziej zgodny zarówno z celami zrównoważonego rozwoju, jak i aktualnymi zaleceniami żywieniowymi?",
       "options": {
         "A": "Największą część białka czerpiemy z czerwonego mięsa i mięsa przetworzonego",
@@ -1738,6 +2083,7 @@
       "explanation": "Zdrowe i zrównoważone diety opierają się zwykle na różnorodnych źródłach białka, a nie na jednym. Rośliny strączkowe, ryby, orzechy, nabiał i umiarkowane ilości mięsa mogą wspólnie zapewnić odpowiednią podaż białka i wspierać jakość diety."
     },
     "Q6.2.1": {
+      "title": "Zdrowsze tłuszcze",
       "question": "Chcesz poprawić jakość tłuszczów w swojej diecie, jednocześnie dbając o to, by posiłki były sycące. Która zamiana najlepiej odpowiada aktualnym zaleceniom?",
       "explanation": "WHO zaleca, aby w miarę możliwości zastępować tłuszcze nasycone tłuszczami nienasyconymi. Oliwa z oliwek jest bogata w tłuszcze nienasycone, podczas gdy masło zawiera dużo tłuszczów nasyconych.",
       "options": {
@@ -1748,6 +2094,7 @@
       }
     },
     "Q6.2.2": {
+      "title": "Profil tłuszczowy obiadów",
       "question": "Porównujesz dwa obiady zawierające podobne ilości białka: sałatkę z soczewicy i orzechów włoskich oraz kanapkę z wędliną. Które stwierdzenie jest najbardziej trafne?",
       "explanation": "Białko pochodzenia roślinnego",
       "options": {
@@ -1758,6 +2105,7 @@
       }
     },
     "Q6.2.3": {
+      "title": "Oznaczenie „Low Fat”",
       "question": "Na opakowaniu widnieje napis „Low Fat”. Jak najlepiej to zinterpretować?",
       "explanation": "Niektóre produkty o niskiej zawartości tłuszczu zawierają dodatek cukrów lub innych składników, aby zrównoważyć tę cechę. Bardziej przydatna jest ocena całego profilu odżywczego niż skupianie się wyłącznie na zawartości tłuszczu.",
       "options": {
@@ -1768,6 +2116,7 @@
       }
     },
     "Q6.2.4": {
+      "title": "Obiad zdrowy dla serca",
       "question": "Która opcja obiadowa najlepiej wpisuje się zarówno w zalecenia dotyczące zdrowia serca, jak i w zrównoważone nawyki żywieniowe?",
       "explanation": "Ryby są źródłem białka oraz tłuszczów nienasyconych, w tym kwasów tłuszczowych omega-3. Zastąpienie części czerwonego i przetworzonego mięsa rybami wiąże się z korzyściami zdrowotnymi i może przyczynić się do bardziej zrównoważonych nawyków żywieniowych.",
       "options": {
@@ -1778,6 +2127,7 @@
       }
     },
     "Q6.2.5": {
+      "title": "Tłuszcze trans",
       "question": "Chcesz zmniejszyć ryzyko związane ze spożyciem tłuszczów trans. Na który produkt spożywczy warto zwrócić szczególną uwagę?",
       "explanation": "Tłuszcze trans wytwarzane przemysłowo często występują w potrawach smażonych, wypiekach oraz niektórych pakowanych przekąskach. WHO zaleca ograniczenie spożycia tłuszczów trans do minimum, ponieważ zwiększają one ryzyko chorób sercowo-naczyniowych i nie przynoszą żadnych znanych korzyści zdrowotnych.",
       "options": {
@@ -1788,6 +2138,7 @@
       }
     },
     "Q6.3.1": {
+      "title": "Mniej cukrów wolnych",
       "question": "Chcesz ograniczyć spożycie cukrów wolnych. Która zmiana w śniadaniu przyniesie prawdopodobnie największy efekt?",
       "explanation": "Napoje słodzone cukrem należą do głównych źródeł spożycia cukru wolnego w wielu grupach wiekowych w Europie. Zastąpienie ich wodą jest jednym z najskuteczniejszych sposobów na ograniczenie spożycia cukru wolnego.",
       "options": {
@@ -1798,6 +2149,7 @@
       }
     },
     "Q6.3.2": {
+      "title": "Ukryty cukier",
       "question": "Który produkt może nadal zawierać znaczne ilości cukru, mimo że wielu konsumentów uważa go za zdrowy?",
       "explanation": "WHO klasyfikuje cukry naturalnie występujące w sokach owocowych jako cukry wolne. Soki owocowe mogą zatem w znacznym stopniu przyczyniać się do dziennego spożycia cukru.",
       "options": {
@@ -1808,6 +2160,7 @@
       }
     },
     "Q6.3.3": {
+      "title": "Oznaczenie „Bez dodatku cukru”",
       "question": "Porównujesz dwa produkty: Produkt A: „Bez dodatku cukru” Produkt B: Wersja standardowa Jakie wnioski możesz wyciągnąć na podstawie informacji podanej na produkcie A?",
       "explanation": "Produkty oznaczone jako „bez dodatku cukru” mogą nadal zawierać cukry występujące naturalnie. Przepisy UE wymagają, aby na produktach umieszczano informację „zawiera cukry występujące naturalnie”, jeśli ma to zastosowanie.",
       "options": {
@@ -1818,6 +2171,7 @@
       }
     },
     "Q6.3.4": {
+      "title": "Przekąski o niskiej zawartości cukru",
       "question": "Szukasz przekąski, która dostarcza składników odżywczych, a jednocześnie nie zawiera zbyt dużej ilości cukrów prostych. Która opcja najlepiej spełnia ten cel?",
       "explanation": "Owoce, naturalne produkty mleczne i orzechy dostarczają składników odżywczych, takich jak błonnik, białko, witaminy i minerały, podczas gdy wiele słodkich przekąsek dostarcza głównie cukrów prostych i kalorii.",
       "options": {
@@ -1828,6 +2182,7 @@
       }
     },
     "Q6.3.5": {
+      "title": "Zalecenia dotyczące cukru",
       "question": "Które z poniższych stwierdzeń najlepiej odzwierciedla aktualne zalecenia dotyczące spożycia cukru?",
       "explanation": "EFSA stwierdziła, że nie można ustalić bezpiecznego progu dla cukrów dodanych i wolnych, i zaleca, aby w ramach zdrowej i odpowiedniej pod względem odżywczym diety spożycie tych cukrów było jak najniższe.",
       "options": {
@@ -1838,6 +2193,7 @@
       }
     },
     "Q6.4.1": {
+      "title": "Ograniczanie sodu",
       "question": "Chcesz ograniczyć spożycie sodu. Która zmiana prawdopodobnie przyniesie największy efekt?",
       "explanation": "W większości krajów rozwiniętych 70–80% soli spożywanej w diecie pochodzi z przetworzonej żywności oraz posiłków spożywanych poza domem, a nie z soli dodawanej podczas gotowania lub przy stole.",
       "options": {
@@ -1848,6 +2204,7 @@
       }
     },
     "Q6.4.2": {
+      "title": "Posiłki o niskiej zawartości sodu",
       "question": "Który posiłek najprawdopodobniej zawiera mniej sodu?",
       "explanation": "Świeże i minimalnie przetworzone produkty spożywcze zawierają zazwyczaj znacznie mniej sodu niż przetworzone mięso, produkty instant i gotowe dania.",
       "options": {
@@ -1858,6 +2215,7 @@
       }
     },
     "Q6.4.3": {
+      "title": "Oznaczenie „o niskiej zawartości sodu”",
       "question": "Produkt jest oznaczony jako „o niskiej zawartości sodu”. Jak najlepiej to zinterpretować?",
       "explanation": "Ograniczenie spożycia sodu jest korzystne, ale przy dokonywaniu zdrowych wyborów należy również brać pod uwagę inne czynniki, takie jak zawartość tłuszczu, cukru i błonnika oraz ogólną jakość żywności.",
       "options": {
@@ -1868,6 +2226,7 @@
       }
     },
     "Q6.4.4": {
+      "title": "Smak bez soli",
       "question": "Chcesz wzbogacić smak swoich posiłków, jednocześnie ograniczając spożycie soli. Która strategia jest najbardziej zgodna z zaleceniami WHO?",
       "explanation": "WHO zaleca stosowanie ziół i przypraw do przyprawiania potraw zamiast nadmiernego używania soli.",
       "options": {
@@ -1878,6 +2237,7 @@
       }
     },
     "Q6.4.5": {
+      "title": "Źródła sodu",
       "question": "Która kategoria produktów spożywczych stanowi zazwyczaj jedno z największych źródeł sodu w diecie Europejczyków?",
       "explanation": "W populacjach europejskich do głównych źródeł spożycia sodu należą chleb, mięso i produkty mięsne, ser oraz produkty mleczne.",
       "options": {
@@ -1888,6 +2248,7 @@
       }
     },
     "Q6.5.1": {
+      "title": "Śniadanie bogate w błonnik",
       "question": "Chcesz zwiększyć spożycie błonnika. Które śniadanie najprawdopodobniej Ci w tym pomoże?",
       "explanation": "Owies, owoce i orzechy są bardzo ważne",
       "options": {
@@ -1898,6 +2259,7 @@
       }
     },
     "Q6.5.2": {
+      "title": "Błonnik w makaronie",
       "question": "Masz do wyboru dwa rodzaje makaronu. Która z tych opcji najprawdopodobniej zawiera więcej błonnika?",
       "explanation": "Produkty pełnoziarniste zachowują więcej naturalnego błonnika zbożowego niż produkty z mąki rafinowanej. Makaron z mąki pełnoziarnistej jest zazwyczaj lepszym",
       "options": {
@@ -1908,6 +2270,7 @@
       }
     },
     "Q6.5.3": {
+      "title": "Pełne ziarno na etykiecie",
       "question": "Na opakowaniu znajduje się informacja, że produkt zawiera pełnoziarniste składniki. Która informacja na etykiecie stanowiłaby najsilniejszy dowód na to, że informacja ta jest prawdziwa?",
       "explanation": "Praktycznym sposobem rozpoznania produktów pełnoziarnistych jest sprawdzenie, czy na początku listy składników znajdują się takie określenia, jak „pełnoziarnista pszenica”, „pełnoziarnisty owies” lub „pełnoziarniste”.",
       "options": {
@@ -1918,6 +2281,7 @@
       }
     },
     "Q6.5.4": {
+      "title": "Błonnik a trawienie",
       "question": "Osoba ta pragnie poprawić funkcjonowanie układu pokarmowego i zapobiegać zaparciom. Który nawyk jest najbardziej zgodny z aktualnym stanem wiedzy naukowej?",
       "explanation": "Błonnik pokarmowy wspomaga pracę jelit, zwłaszcza w połączeniu z odpowiednim spożyciem płynów. Stopniowe zwiększanie ilości błonnika może również pomóc w zmniejszeniu przejściowych wzdęć i dolegliwości.",
       "options": {
@@ -1928,6 +2292,7 @@
       }
     },
     "Q6.5.5": {
+      "title": "Rodzaje błonnika pokarmowego",
       "question": "Która kombinacja produktów spożywczych najprawdopodobniej zapewni różnorodność różnych rodzajów błonnika pokarmowego?",
       "explanation": "Różne produkty bogate w błonnik dostarczają różnych rodzajów błonnika rozpuszczalnego i nierozpuszczalnego. Spożywanie różnorodnych roślin strączkowych, warzyw, owoców i produktów pełnoziarnistych sprzyja zdrowiu układu pokarmowego i poprawia ogólną jakość diety.",
       "options": {
@@ -1938,6 +2303,7 @@
       }
     },
     "Q6.6.1": {
+      "title": "Witaminy bez suplementów",
       "question": "Chcesz zwiększyć zawartość witamin w swojej diecie bez sięgania po suplementy. Który nawyk jest najbardziej zgodny z aktualnymi zaleceniami?",
       "explanation": "Owoce i warzywa dostarczają różnych witamin, minerałów, błonnika i przeciwutleniaczy. Spożywanie różnorodnych produktów pochodzenia roślinnego pomaga zwiększyć ogólne spożycie mikroelementów i zmniejsza ryzyko wystąpienia ich niedoborów.",
       "options": {
@@ -1948,6 +2314,7 @@
       }
     },
     "Q6.6.2": {
+      "title": "Witamina D z pożywienia",
       "question": "Ktoś chce utrzymać odpowiedni poziom witaminy D poprzez dietę. Który posiłek najprawdopodobniej się do tego przyczyni?",
       "explanation": "Naturalna żywność",
       "options": {
@@ -1958,6 +2325,7 @@
       }
     },
     "Q6.6.3": {
+      "title": "Witaminy w diecie wegańskiej",
       "question": "Konsument stosuje ścisłą dietę wegańską. Na którą witaminę należy zwrócić szczególną uwagę?",
       "explanation": "Witamina B12 występuje naturalnie niemal wyłącznie w produktach pochodzenia zwierzęcego. Osoby stosujące dietę wegetariańską, a zwłaszcza wegańską, mogą potrzebować produktów wzbogaconych tą witaminą lub suplementów, aby zapewnić sobie odpowiednie jej spożycie.",
       "options": {
@@ -1968,6 +2336,7 @@
       }
     },
     "Q6.6.4": {
+      "title": "Przekąski z witaminą C",
       "question": "Która przekąska najprawdopodobniej stanowi dobre źródło witaminy C?",
       "options": {
         "A": "Ser i krakersy",
@@ -1978,6 +2347,7 @@
       "explanation": "Owoce takie jak pomarańcze, kiwi i jagody oraz wiele warzyw są bogate w witaminę C, która wspiera funkcjonowanie układu odpornościowego i prawidłowe tworzenie kolagenu."
     },
     "Q6.6.5": {
+      "title": "Gotowanie a witaminy",
       "question": "Masz do wyboru dwa dodatki: warzywa gotowane na parze oraz warzywa gotowane przez bardzo długi czas w wysokiej temperaturze. Która opcja z większym prawdopodobieństwem pozwoli zachować witaminy?",
       "explanation": "Zbyt długie gotowanie może zmniejszyć zawartość niektórych witamin. WHO zaleca, aby unikać zbyt długiego gotowania owoców i warzyw, co pomaga zachować ważne składniki odżywcze.",
       "options": {
@@ -1988,6 +2358,7 @@
       }
     },
     "Q6.7.1": {
+      "title": "Obiady bogate w składniki odżywcze",
       "question": "Dwa obiady zawierają podobną liczbę kalorii. Który z nich prawdopodobnie będzie bardziej odżywczy?",
       "explanation": "Kalorie są miarą energii, ale gęstość odżywcza odzwierciedla ilość dostarczanych korzystnych dla zdrowia składników odżywczych. Posiłek oparty na roślinach strączkowych, warzywach i produktach pełnoziarnistych zazwyczaj dostarcza więcej błonnika, witamin, minerałów i fitochemikaliów niż wiele wysoko przetworzonych produktów o podobnej zawartości kalorii.",
       "options": {
@@ -1998,6 +2369,7 @@
       }
     },
     "Q6.7.2": {
+      "title": "Niskokaloryczne napoje",
       "question": "Który napój najprawdopodobniej pozwoli ograniczyć spożycie zbędnych kalorii?",
       "explanation": "Woda zapewnia nawodnienie bez dostarczania kalorii, podczas gdy napoje słodzone mogą dostarczać znaczne ilości energii przy ograniczonej wartości odżywczej.",
       "options": {
@@ -2008,6 +2380,7 @@
       }
     },
     "Q6.7.3": {
+      "title": "Przetworzone przekąski a kalorie",
       "question": "Dlaczego regularne spożywanie wysoko przetworzonych przekąsek może utrudniać kontrolowanie spożycia kalorii?",
       "explanation": "Wiele produktów wysoko przetworzonych charakteryzuje się wysoką gęstością energetyczną i łatwo je spożyć w nadmiernych ilościach, co może przyczyniać się do nadmiernego spożycia kalorii i niezdrowego przyrostu masy ciała.",
       "options": {
@@ -2018,6 +2391,7 @@
       }
     },
     "Q6.7.4": {
+      "title": "Zrównoważone spożycie kalorii",
       "question": "Które stwierdzenie najlepiej odzwierciedla zrównoważone podejście do spożycia kalorii?",
       "options": {
         "A": "Spożywanie jak najmniejszej liczby kalorii",
@@ -2028,6 +2402,7 @@
       "explanation": "Zdrowa i zrównoważona dieta to nie tylko kalorie. Chodzi o pokrycie zapotrzebowania energetycznego przy wyborze produktów bogatych w niezbędne składniki odżywcze oraz o ograniczanie zbędnej nadkonsumpcji i marnowania żywności."
     },
     "Q6.7.5": {
+      "title": "Sycące przekąski",
       "question": "Cztery przekąski dostarczają mniej więcej taką samą liczbę kalorii. Która z nich zapewni Ci dłuższe uczucie sytości?",
       "explanation": "Produkty spożywcze zawierające błonnik, białko i zdrowe tłuszcze zazwyczaj zapewniają większe uczucie sytości niż te, które składają się głównie z cukrów dodanych.",
       "options": {

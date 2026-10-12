@@ -37,758 +37,1009 @@
   },
   "foodFacts": {
     "FF1.1.1": {
+      "title": "Menos carne roja, menos impacto",
       "body": "Reducir el consumo de carne roja es una de las formas más eficaces de reducir el impacto medioambiental de tu alimentación."
     },
     "FF1.1.2": {
+      "title": "Carne de vacuno y bosques",
       "body": "Reducir el consumo de carne de vacuno puede contribuir a aliviar la presión sobre los bosques y los hábitats naturales."
     },
     "FF1.1.3": {
+      "title": "Menos carne, menos emisiones",
       "body": "Las dietas con menos carne suelen generar menos emisiones de gases de efecto invernadero."
     },
     "FF1.1.4": {
+      "title": "Más vegetales, menos carne roja",
       "body": "Las dietas sostenibles suelen contener más alimentos de origen vegetal y menos carne roja."
     },
     "FF1.1.5": {
+      "title": "El uso del suelo de la carne de vacuno",
       "body": "La producción de carne de vacuno requiere mucha más tierra que la producción de proteínas vegetales, como los guisantes o el tofu."
     },
     "FF1.1.6": {
+      "title": "Carne y consumo de agua",
       "body": "Comer menos carne puede reducir el consumo de agua asociado a la producción de alimentos."
     },
     "FF1.1.7": {
+      "title": "Carne y antibióticos",
       "body": "Reducir el consumo de carne podría contribuir a disminuir la necesidad de utilizar antibióticos en la ganadería."
     },
     "FF1.1.8": {
+      "title": "Tierras ganaderas frente a calorías",
       "body": "La producción ganadera ocupa la mayor parte de las tierras agrícolas a nivel mundial, mientras que aporta una proporción mucho menor de calorías y proteínas."
     },
     "FF1.1.9": {
+      "title": "Ganadería y biodiversidad",
       "body": "Una menor demanda de productos ganaderos puede contribuir a la conservación de la biodiversidad al reducir la conversión de tierras."
     },
     "FF1.1.10": {
+      "title": "Cambia carne por legumbres",
       "body": "Sustituir algunas raciones de carne por legumbres permite mantener el aporte proteico y, al mismo tiempo, reducir el impacto medioambiental."
     },
     "FF1.2.1": {
+      "title": "Legumbres con menor impacto climático",
       "body": "Sustituir parte del consumo de carne por legumbres puede reducir el impacto climático de tu dieta."
     },
     "FF1.2.2": {
+      "title": "Legumbres: nutritivas y de bajo impacto",
       "body": "Las legumbres son ricas en proteínas, fibra, vitaminas y minerales, y además tienen una baja huella medioambiental."
     },
     "FF1.2.3": {
+      "title": "Diversifica tus proteínas",
       "body": "La diversificación de las fuentes de proteínas contribuye tanto a la salud humana como a la sostenibilidad medioambiental."
     },
     "FF1.2.4": {
+      "title": "Las proteínas más sostenibles",
       "body": "Las alubias, las lentejas, los guisantes y los garbanzos se encuentran entre las fuentes de proteínas más sostenibles que existen."
     },
     "FF1.2.5": {
+      "title": "Las legumbres ahorran agua",
       "body": "Las legumbres suelen necesitar menos agua que muchas fuentes de proteínas de origen animal."
     },
     "FF1.2.6": {
+      "title": "Legumbres más cereales",
       "body": "La combinación de legumbres y cereales mejora la calidad de la proteína vegetal."
     },
     "FF1.2.7": {
+      "title": "Huevos y lácteos frente a carne roja",
       "body": "Los huevos y los productos lácteos pueden aportar proteínas con un menor impacto medioambiental que la carne roja."
     },
     "FF1.2.8": {
+      "title": "Las legumbres nutren el suelo",
       "body": "Las legumbres mejoran de forma natural la fertilidad del suelo al fijar el nitrógeno del aire, lo que reduce la necesidad de utilizar fertilizantes."
     },
     "FF1.2.9": {
+      "title": "Insectos como proteína",
       "body": "Los insectos son ricos en nutrientes y podrían convertirse en una importante fuente alternativa de proteínas en los sistemas alimentarios del futuro."
     },
     "FF1.2.10": {
+      "title": "Alternativas vegetales a la carne",
       "body": "Las alternativas a la carne de origen vegetal pueden ayudar a reducir el consumo de carne, pero su calidad nutricional varía según el producto."
     },
     "FF1.3.1": {
+      "title": "Quinoa: una proteína completa",
       "body": "La quinoa contiene los nueve aminoácidos esenciales, lo que la convierte en una proteína vegetal completa."
     },
     "FF1.3.2": {
+      "title": "Legumbres y enfermedades crónicas",
       "body": "Las legumbres son alimentos básicos y nutritivos que se asocian a un menor riesgo de padecer enfermedades crónicas."
     },
     "FF1.3.3": {
+      "title": "Más allá del trigo, el arroz y el maíz",
       "body": "Los cultivos alternativos contribuyen a reducir la dependencia del trigo, el arroz y el maíz."
     },
     "FF1.3.4": {
+      "title": "Mijo resistente",
       "body": "Los mijo son cultivos muy resistentes que pueden crecer en condiciones de calor y sequía con poca agua."
     },
     "FF1.3.5": {
+      "title": "El mijo ante el cambio climático",
       "body": "Los mijo pueden seguir produciendo alimentos en condiciones climáticas en las que otros cultivos podrían fracasar."
     },
     "FF1.3.6": {
+      "title": "Más cultivos, más seguridad alimentaria",
       "body": "El cultivo de una mayor variedad de cultivos básicos puede reforzar la seguridad alimentaria y la resiliencia ante el cambio climático."
     },
     "FF1.3.7": {
+      "title": "La quinoa se globaliza",
       "body": "La quinoa se cultiva actualmente en más de 70 países, lo que contribuye a diversificar la producción alimentaria mundial."
     },
     "FF1.3.8": {
+      "title": "Beneficios del trigo sarraceno",
       "body": "El trigo sarraceno no contiene gluten de forma natural y es rico en fibra, proteínas y antioxidantes."
     },
     "FF1.3.9": {
+      "title": "Las proteínas del amaranto",
       "body": "El amaranto contiene proteínas de alta calidad, entre las que se encuentra la lisina."
     },
     "FF1.3.10": {
+      "title": "Antioxidantes en cereales ancestrales",
       "body": "Los cereales ancestrales, como el mijo, la quinoa y el amaranto, contienen compuestos antioxidantes beneficiosos."
     },
     "FF2.1.1": {
+      "title": "La agricultura ocupa la mitad del suelo",
       "body": "Aproximadamente la mitad de la superficie habitable del mundo se destina a la agricultura."
     },
     "FF2.1.2": {
+      "title": "La proteína vegetal ahorra suelo",
       "body": "La producción de proteínas vegetales suele requerir mucha menos superficie que la producción de carne."
     },
     "FF2.1.3": {
+      "title": "Comidas vegetales que liberan terreno",
       "body": "Optar por comidas más vegetales puede ayudar a liberar terreno para la restauración de la naturaleza."
     },
     "FF2.1.4": {
+      "title": "Menos vacuno, menos suelo",
       "body": "Reducir el consumo de carne de vacuno es uno de los cambios más importantes en la alimentación para reducir el uso del suelo."
     },
     "FF2.1.5": {
+      "title": "El vacuno, el que más suelo requiere",
       "body": "La carne de vacuno es uno de los alimentos que más superficie de tierra requiere de entre todos los que consumimos."
     },
     "FF2.1.6": {
+      "title": "Desperdiciar alimentos es desperdiciar suelo",
       "body": "Reducir el desperdicio de alimentos podría ahorrar una superficie de tierra mayor que la de algunos países."
     },
     "FF2.1.7": {
+      "title": "La agricultura depende de la naturaleza",
       "body": "La agricultura depende de suelos sanos, de la biodiversidad y de los servicios ecosistémicos."
     },
     "FF2.1.8": {
+      "title": "Tierras para ganado y piensos",
       "body": "La mayor parte de las tierras agrícolas se destinan al pastoreo de ganado o al cultivo de piensos."
     },
     "FF2.1.9": {
+      "title": "Expansión agrícola y biodiversidad",
       "body": "La expansión de las tierras de cultivo es uno de los principales factores que provocan la pérdida de biodiversidad."
     },
     "FF2.1.10": {
+      "title": "Tierras agrícolas degradadas",
       "body": "Alrededor del 52 % de las tierras agrícolas presenta una degradación moderada o significativa."
     },
     "FF2.2.1": {
+      "title": "El consumo de agua de la agricultura",
       "body": "Alrededor del 70 % de las extracciones de agua dulce a nivel mundial se destinan a la agricultura."
     },
     "FF2.2.2": {
+      "title": "Menos productos animales, menos agua",
       "body": "Las dietas con menos productos de origen animal suelen requerir menos agua."
     },
     "FF2.2.3": {
+      "title": "Las dietas sostenibles ahorran agua",
       "body": "Las dietas sostenibles pueden reducir el consumo de agua relacionado con la alimentación entre un 20 % y un 50 %."
     },
     "FF2.2.4": {
+      "title": "Desperdiciar alimentos es desperdiciar agua",
       "body": "El desperdicio de alimentos también supone un enorme desperdicio de agua utilizada para cultivarlos."
     },
     "FF2.2.5": {
+      "title": "Se avecina escasez de agua",
       "body": "La escasez de agua podría poner en peligro la producción alimentaria en muchas regiones de aquí a 2050."
     },
     "FF2.2.6": {
+      "title": "Evita el desperdicio, ahorra agua",
       "body": "Evitar el desperdicio de alimentos contribuye a conservar los recursos de agua dulce."
     },
     "FF2.2.7": {
+      "title": "La huella hídrica de tu dieta",
       "body": "La huella hídrica de tu alimentación depende en gran medida de lo que comas."
     },
     "FF2.2.8": {
+      "title": "Mejor gestión del agua",
       "body": "Mejorar la gestión del agua puede reducir el impacto medioambiental de la agricultura."
     },
     "FF2.2.9": {
+      "title": "El riego en aumento",
       "body": "El consumo de agua para riego se ha más que duplicado desde 1961."
     },
     "FF2.2.10": {
+      "title": "Fertilizantes y contaminación del agua",
       "body": "El uso excesivo de fertilizantes contribuye a la contaminación del agua y a la aparición de zonas muertas."
     },
     "FF2.3.1": {
+      "title": "La parte de las emisiones de los alimentos",
       "body": "Los sistemas alimentarios generan aproximadamente un tercio de las emisiones mundiales de gases de efecto invernadero."
     },
     "FF2.3.2": {
+      "title": "Las legumbres reducen emisiones",
       "body": "Sustituir parte de las proteínas animales por legumbres puede reducir las emisiones relacionadas con la alimentación."
     },
     "FF2.3.3": {
+      "title": "Alimentos de temporada, menos emisiones",
       "body": "Comprar alimentos de temporada puede ayudar a reducir las emisiones relacionadas con la alimentación."
     },
     "FF2.3.4": {
+      "title": "Mismas calorías, distintas huellas",
       "body": "Los alimentos con el mismo aporte calórico pueden tener huellas de carbono muy diferentes."
     },
     "FF2.3.5": {
+      "title": "La huella del vacuno y el cordero",
       "body": "La carne, sobre todo la de vacuno y la de cordero, tiene una huella de carbono mucho mayor que la mayoría de los alimentos de origen vegetal."
     },
     "FF2.3.6": {
+      "title": "Emisiones de la dieta vegetariana",
       "body": "Las dietas vegetarianas pueden generar unas emisiones considerablemente menores que las dietas ricas en carne."
     },
     "FF2.3.7": {
+      "title": "El efecto flexitariano",
       "body": "Las dietas flexitarianas pueden reducir considerablemente el impacto sobre el clima."
     },
     "FF2.3.8": {
+      "title": "Emisiones del desperdicio alimentario",
       "body": "El desperdicio de alimentos genera miles de millones de toneladas de emisiones equivalentes de CO₂ al año."
     },
     "FF2.3.9": {
+      "title": "Los bosques almacenan carbono",
       "body": "La protección de los bosques evita las grandes emisiones de carbono derivadas de la reconversión de los terrenos."
     },
     "FF2.3.10": {
+      "title": "Rotaciones con leguminosas",
       "body": "Las rotaciones de cultivos con leguminosas pueden reducir la huella de carbono de la producción agrícola."
     },
     "FF2.4.1": {
+      "title": "Emisiones del transporte de alimentos",
       "body": "El transporte mundial de alimentos genera cada año unas 3.000 millones de toneladas de emisiones equivalentes de CO₂."
     },
     "FF2.4.2": {
+      "title": "Transporte refrigerado",
       "body": "El transporte de larga distancia suele requerir refrigeración, lo que aumenta el consumo energético y la huella de carbono de los alimentos."
     },
     "FF2.4.3": {
+      "title": "De temporada, menos transporte",
       "body": "Elegir alimentos de temporada y reducir el transporte innecesario puede ayudar a disminuir el impacto climático del sistema alimentario."
     },
     "FF2.4.4": {
+      "title": "El peso del transporte en las emisiones",
       "body": "Casi una quinta parte de las emisiones de gases de efecto invernadero del sistema alimentario mundial provienen del transporte de alimentos."
     },
     "FF2.4.5": {
+      "title": "Kilómetros de frutas y verduras",
       "body": "Las frutas y verduras representan alrededor del 36 % de las emisiones relacionadas con el transporte de alimentos a nivel mundial."
     },
     "FF2.4.6": {
+      "title": "La cadena de frío",
       "body": "Mantener una cadena de frío ininterrumpida es esencial para preservar la calidad de los alimentos y reducir su deterioro durante el transporte."
     },
     "FF2.4.7": {
+      "title": "Emisiones: transporte frente a cultivo",
       "body": "El transporte de frutas y verduras puede generar aproximadamente el doble de emisiones de gases de efecto invernadero que las producidas durante su cultivo."
     },
     "FF2.4.8": {
+      "title": "Emisiones del transporte de mercancías",
       "body": "Aunque los alimentos solo representan alrededor del 18 % de las distancias recorridas en el transporte mundial de mercancías, generan aproximadamente el 27 % de las emisiones relacionadas con dicho transporte."
     },
     "FF2.4.9": {
+      "title": "Alimentos perdidos sin refrigeración",
       "body": "Cada año se pierden o se desperdician alrededor de 526 millones de toneladas de alimentos debido a unos sistemas de refrigeración e enfriamiento inadecuados."
     },
     "FF2.4.10": {
+      "title": "Mejores cadenas de frío",
       "body": "La mejora de la infraestructura de la cadena de frío puede reducir las pérdidas de alimentos, mejorar la seguridad alimentaria y reducir el impacto medioambiental."
     },
     "FF3.1.1": {
+      "title": "Transformación para la seguridad",
       "body": "La transformación de los alimentos puede mejorar la seguridad alimentaria y prolongar su vida útil."
     },
     "FF3.1.2": {
+      "title": "La transformación evita el desperdicio",
       "body": "La transformación de los alimentos puede contribuir a reducir el desperdicio alimentario, ya que permite conservar los alimentos durante más tiempo."
     },
     "FF3.1.3": {
+      "title": "Alimentos ultraprocesados",
       "body": "Los alimentos ultraprocesados suelen tener un mayor contenido de azúcar, sal y grasas saturadas."
     },
     "FF3.1.4": {
+      "title": "Energía del procesamiento",
       "body": "Los distintos métodos de procesamiento consumen cantidades de energía muy diferentes."
     },
     "FF3.1.5": {
+      "title": "Energía de los alimentos congelados",
       "body": "Los alimentos congelados pueden requerir una cantidad considerable de energía para su almacenamiento."
     },
     "FF3.1.6": {
+      "title": "Más allá de la granja",
       "body": "Tanto la transformación como el envasado y el transporte contribuyen a los impactos del sistema alimentario."
     },
     "FF3.1.7": {
+      "title": "No todo procesamiento es perjudicial",
       "body": "No todos los alimentos procesados tienen un gran impacto medioambiental."
     },
     "FF3.1.8": {
+      "title": "Almacenamiento y transporte eficientes",
       "body": "El procesamiento de alimentos puede mejorar la eficiencia en el almacenamiento y el transporte."
     },
     "FF3.1.9": {
+      "title": "La tecnología importa",
       "body": "La sostenibilidad de los alimentos procesados depende de la tecnología de producción."
     },
     "FF3.1.10": {
+      "title": "El ciclo de vida completo",
       "body": "Analizar el ciclo de vida completo de los alimentos ofrece una visión más completa de la sostenibilidad que centrarse únicamente en la transformación."
     },
     "FF3.2.1": {
+      "title": "Cadenas de suministro cortas",
       "body": "Las cadenas de suministro cortas pueden contribuir al desarrollo de las economías locales y a su resiliencia."
     },
     "FF3.2.2": {
+      "title": "De temporada y locales",
       "body": "Los alimentos locales de temporada pueden reducir las necesidades de almacenamiento y transporte."
     },
     "FF3.2.3": {
+      "title": "El origen no lo es todo",
       "body": "El país de origen por sí solo no puede determinar si un alimento es sostenible."
     },
     "FF3.2.4": {
+      "title": "Origen y trazabilidad",
       "body": "El origen de los alimentos puede aportar información útil sobre la trazabilidad y la sostenibilidad."
     },
     "FF3.2.5": {
+      "title": "Auge del comercio de alimentos",
       "body": "El comercio mundial de alimentos ha aumentado de forma espectacular en las últimas décadas."
     },
     "FF3.2.6": {
+      "title": "Los piensos importados de Europa",
       "body": "Muchos sistemas alimentarios europeos dependen de piensos y materias primas importados."
     },
     "FF3.2.7": {
+      "title": "Confianza en las etiquetas de origen",
       "body": "Los consumidores suelen asociar las etiquetas de origen con la calidad y la seguridad."
     },
     "FF3.2.8": {
+      "title": "Lo local no siempre es más sostenible",
       "body": "Los alimentos locales no siempre son la opción más sostenible."
     },
     "FF3.2.9": {
+      "title": "El cómo importa más que la distancia",
       "body": "A menudo, la forma en que se producen los alimentos es más importante que la distancia que recorren."
     },
     "FF3.2.10": {
+      "title": "Transporte aéreo frente a marítimo",
       "body": "Los alimentos transportados por vía aérea pueden tener una huella de carbono mucho mayor que los transportados por vía marítima."
     },
     "FF3.3.1": {
+      "title": "Explotaciones ecológicas y biodiversidad",
       "body": "Las explotaciones agrícolas ecológicas albergan una mayor biodiversidad que las explotaciones convencionales."
     },
     "FF3.3.2": {
+      "title": "Agricultura climáticamente inteligente",
       "body": "La agricultura climáticamente inteligente tiene como objetivo mejorar la resiliencia y, al mismo tiempo, reducir las emisiones."
     },
     "FF3.3.3": {
+      "title": "Agricultura equilibrada",
       "body": "La agricultura sostenible concilia la productividad con la protección del medio ambiente."
     },
     "FF3.3.4": {
+      "title": "Franjas de flores para polinizadores",
       "body": "Las franjas de flores y los hábitats para polinizadores pueden favorecer la biodiversidad en las explotaciones agrícolas."
     },
     "FF3.3.5": {
+      "title": "Ecológico sin productos sintéticos",
       "body": "La agricultura ecológica evita el uso de fertilizantes y pesticidas sintéticos."
     },
     "FF3.3.6": {
+      "title": "Diversificación de cultivos",
       "body": "La diversificación de cultivos ayuda a las explotaciones agrícolas a resistir las plagas y las enfermedades."
     },
     "FF3.3.7": {
+      "title": "Agrosilvicultura",
       "body": "La agrosilvicultura combina árboles con cultivos o ganado en una misma superficie."
     },
     "FF3.3.8": {
+      "title": "Gestión integrada de plagas",
       "body": "La gestión integrada de plagas reduce la dependencia de los plaguicidas químicos."
     },
     "FF3.3.9": {
+      "title": "Agricultura de precisión",
       "body": "La agricultura de precisión puede reducir el uso de fertilizantes y las emisiones."
     },
     "FF3.3.10": {
+      "title": "Agricultura de conservación",
       "body": "La agricultura de conservación reduce la alteración del suelo y protege su salud."
     },
     "FF3.4.1": {
+      "title": "Diversidad de cultivos y razas",
       "body": "La diversificación de los cultivos y las razas puede aumentar la resiliencia del sistema alimentario."
     },
     "FF3.4.2": {
+      "title": "Proteínas alternativas",
       "body": "Las proteínas alternativas podrían reducir la dependencia de la ganadería convencional."
     },
     "FF3.4.3": {
+      "title": "La cría en contexto",
       "body": "La ganadería sostenible debería ir acompañada de mejoras más amplias en el sistema alimentario."
     },
     "FF3.4.4": {
+      "title": "Cría para reducir el metano",
       "body": "La cría de animales que generen menos emisiones de metano puede reducir el impacto de la ganadería."
     },
     "FF3.4.5": {
+      "title": "Piensos alternativos para peces",
       "body": "Los piensos alternativos para la acuicultura pueden reducir la presión sobre las poblaciones de peces silvestres."
     },
     "FF3.4.6": {
+      "title": "Cultivos preparados para el clima",
       "body": "La mejora genética puede ayudar a los cultivos a hacer frente a los nuevos retos medioambientales."
     },
     "FF3.4.7": {
+      "title": "Ganado productivo",
       "body": "Mejorar la productividad animal puede reducir el consumo de recursos por kilogramo de carne."
     },
     "FF3.4.8": {
+      "title": "Edición genómica",
       "body": "La edición genómica podría contribuir al desarrollo de cultivos más resistentes al estrés climático."
     },
     "FF3.4.9": {
+      "title": "Ganado con mejor eficiencia alimentaria",
       "body": "La cría selectiva puede mejorar la eficiencia alimentaria del ganado."
     },
     "FF3.4.10": {
+      "title": "Hidroponía y acuaponía",
       "body": "Los sistemas hidropónicos y acuapónicos pueden consumir mucha menos agua que la agricultura convencional."
     },
     "FF3.5.1": {
+      "title": "Trabajo infantil en la agricultura",
       "body": "La agricultura es el sector en el que se registran la mayoría de los casos de trabajo infantil en todo el mundo."
     },
     "FF3.5.2": {
+      "title": "Fairtrade para los agricultores",
       "body": "Fairtrade tiene como objetivo mejorar los ingresos y las condiciones laborales de los agricultores."
     },
     "FF3.5.3": {
+      "title": "Precios justos",
       "body": "El comercio justo fomenta la transparencia y una fijación de precios justa en todas las cadenas de suministro."
     },
     "FF3.5.4": {
+      "title": "Condiciones de trabajo dignas",
       "body": "Las condiciones de trabajo seguras y dignas son un elemento clave de los sistemas alimentarios sostenibles."
     },
     "FF3.5.5": {
+      "title": "Sostenibilidad social",
       "body": "La sostenibilidad del sistema alimentario abarca las condiciones sociales y laborales."
     },
     "FF3.5.6": {
+      "title": "Trabajadores del sector alimentario vulnerables",
       "body": "Muchos trabajadores del sector alimentario siguen siendo vulnerables a la explotación."
     },
     "FF3.5.7": {
+      "title": "Elecciones alimentarias éticas",
       "body": "Los consumidores valoran cada vez más una producción alimentaria ética y justa."
     },
     "FF3.5.8": {
+      "title": "Mujeres en la producción alimentaria",
       "body": "Las mujeres desempeñan un papel fundamental en la producción alimentaria, pero a menudo tienen menos acceso a los recursos."
     },
     "FF3.5.9": {
+      "title": "Pequeños agricultores",
       "body": "Los pequeños agricultores producen una gran parte de los alimentos del mundo."
     },
     "FF3.5.10": {
+      "title": "Sistemas alimentarios sostenibles y justos",
       "body": "Los sistemas alimentarios sostenibles deben ser respetuosos con el medio ambiente y socialmente justos."
     },
     "FF4.1.1": {
+      "title": "Por qué importan los envases",
       "body": "Los envases alimentarios protegen los productos de la contaminación, la humedad, el oxígeno y los daños físicos, lo que contribuye a mantener la seguridad y la calidad de los alimentos."
     },
     "FF4.1.2": {
+      "title": "El plástico evita el deterioro",
       "body": "Los envases de plástico pueden reducir el deterioro de los alimentos, ya que son ligeros, resistentes y eficaces a la hora de proteger los alimentos perecederos."
     },
     "FF4.1.3": {
+      "title": "Envases equilibrados",
       "body": "El envase más sostenible combina de forma equilibrada la eficiencia en el uso de materiales, la reciclabilidad, la protección del producto y la prevención del desperdicio alimentario."
     },
     "FF4.1.4": {
+      "title": "Impacto del alimento frente al envase",
       "body": "El impacto medioambiental de la producción de alimentos suele ser mucho mayor que el del embalaje que se utiliza para protegerlos."
     },
     "FF4.1.5": {
+      "title": "Envases contra el desperdicio",
       "body": "Un envase bien diseñado puede reducir el desperdicio de alimentos al prolongar su vida útil y evitar que se estropeen durante el transporte, el almacenamiento y el consumo doméstico."
     },
     "FF4.1.6": {
+      "title": "No existe el envase perfecto",
       "body": "No existe un único material de embalaje que sea «el más sostenible»; el impacto medioambiental depende del ciclo de vida completo del producto."
     },
     "FF4.1.7": {
+      "title": "Envases comestibles",
       "body": "Los envases comestibles pueden ayudar a reducir la dependencia de los plásticos derivados de combustibles fósiles, al sustituir los materiales de envasado convencionales por alternativas biodegradables."
     },
     "FF4.1.8": {
+      "title": "Recubrimientos comestibles",
       "body": "Los recubrimientos comestibles pueden prolongar la vida útil de las frutas y verduras al reducir la pérdida de humedad y ralentizar la respiración."
     },
     "FF4.1.9": {
+      "title": "Envases inteligentes",
       "body": "Los envases inteligentes permiten controlar la temperatura, la frescura y el estado del producto, lo que contribuye a reducir las pérdidas alimentarias a lo largo de toda la cadena de suministro."
     },
     "FF4.1.10": {
+      "title": "Envases activos",
       "body": "Los envases activos pueden interactuar con los alimentos absorbiendo oxígeno o humedad, lo que ayuda a que los productos se mantengan frescos durante más tiempo."
     },
     "FF4.2.1": {
+      "title": "Reutilizar compensa con el tiempo",
       "body": "Los envases reutilizables solo resultan beneficiosos para el medio ambiente después de haber sido reutilizados un número suficiente de veces."
     },
     "FF4.2.2": {
+      "title": "Los residuos de envases en Europa",
       "body": "Europa genera aproximadamente 1,5 toneladas de residuos de envases de un solo uso cada segundo."
     },
     "FF4.2.3": {
+      "title": "Tasas de reciclaje de envases",
       "body": "Solo se recicla alrededor del 40 % de los residuos de envases en Europa."
     },
     "FF4.2.4": {
+      "title": "Reutilizar ahorra materias primas",
       "body": "Los envases reutilizables pueden reducir la demanda de materias primas vírgenes."
     },
     "FF4.2.5": {
+      "title": "Importa cuántas veces se reutiliza",
       "body": "Los beneficios medioambientales de los envases reutilizables dependen de la frecuencia con la que se reutilizan."
     },
     "FF4.2.6": {
+      "title": "Transporte y limpieza",
       "body": "Las distancias de transporte y los procesos de limpieza influyen en el impacto medioambiental de los sistemas de envases reutilizables."
     },
     "FF4.2.7": {
+      "title": "El umbral de rentabilidad",
       "body": "Cada envase reutilizable tiene un umbral de rentabilidad a partir del cual resulta más ventajoso que las alternativas de un solo uso."
     },
     "FF4.2.8": {
+      "title": "Altas tasas de devolución",
       "body": "Muchos sistemas de reutilización en Europa ya alcanzan tasas de devolución del 75 % o superiores."
     },
     "FF4.2.9": {
+      "title": "Envases que alargan la vida útil",
       "body": "Los sistemas de envasado mejorados pueden contribuir a reducir el desperdicio de alimentos al prolongar su vida útil."
     },
     "FF4.2.10": {
+      "title": "Embalajes de transporte duraderos",
       "body": "Los embalajes de transporte reutilizables suelen estar diseñados para permanecer en circulación durante muchos años."
     },
     "FF5.1.1": {
+      "title": "Los hogares, los que más desperdician",
       "body": "Los hogares generan más residuos alimentarios que cualquier otro sector de la Unión Europea."
     },
     "FF5.1.2": {
+      "title": "Se desperdicia una quinta parte",
       "body": "A nivel mundial, se desperdicia aproximadamente una quinta parte de los alimentos a los que tienen acceso los consumidores."
     },
     "FF5.1.3": {
+      "title": "Listas y planificación de comidas",
       "body": "Las listas de la compra y la planificación de las comidas pueden ayudar a reducir el desperdicio de alimentos en casa."
     },
     "FF5.1.4": {
+      "title": "Raciones más pequeñas, menos desperdicio",
       "body": "Ofrecer raciones más pequeñas puede reducir el desperdicio de comida en comedores y restaurantes."
     },
     "FF5.1.5": {
+      "title": "Raciones estándar, más sobras",
       "body": "Las raciones estándar suelen generar sobras innecesarias."
     },
     "FF5.1.6": {
+      "title": "Excesos en el bufé",
       "body": "En los restaurantes tipo bufé, mucha gente se sirve más comida de la que puede comer."
     },
     "FF5.1.7": {
+      "title": "Desperdicio y clima",
       "body": "El desperdicio de alimentos es responsable de una parte significativa de las emisiones de gases de efecto invernadero del sistema alimentario."
     },
     "FF5.1.8": {
+      "title": "Carne desperdiciada",
       "body": "La carne desperdiciada contribuye de manera desproporcionada al impacto climático del desperdicio alimentario."
     },
     "FF5.1.9": {
+      "title": "Si el desperdicio fuera un país",
       "body": "Si el desperdicio de alimentos fuera un país, sería uno de los mayores emisores de gases de efecto invernadero del mundo."
     },
     "FF5.1.10": {
+      "title": "Nutrientes desperdiciados",
       "body": "El desperdicio de alimentos también supone un desperdicio de nutrientes, como las proteínas y la fibra."
     },
     "FF5.2.1": {
+      "title": "El desperdicio empieza en casa",
       "body": "Los hogares son responsables de más de la mitad de los residuos alimentarios que se generan en la UE."
     },
     "FF5.2.2": {
+      "title": "Conserva bien los alimentos",
       "body": "Un almacenamiento adecuado ayuda a reducir los residuos y garantiza que los alimentos sean aptos para el consumo."
     },
     "FF5.2.3": {
+      "title": "La regla de las dos horas",
       "body": "Por lo general, los alimentos perecederos no deben dejarse a temperatura ambiente durante más de dos horas."
     },
     "FF5.2.4": {
+      "title": "Planifica y aprovecha las sobras",
       "body": "Una mejor planificación y la reutilización de las sobras pueden suponer un ahorro de dinero y reducir el impacto medioambiental."
     },
     "FF5.2.5": {
+      "title": "Consumo preferente frente a caducidad",
       "body": "Las fechas de consumo preferente se refieren a la calidad, mientras que las fechas de caducidad se refieren a la seguridad alimentaria."
     },
     "FF5.2.6": {
+      "title": "Los alimentos más desperdiciados",
       "body": "Las frutas y verduras son los alimentos que más se desperdician en Europa."
     },
     "FF5.2.7": {
+      "title": "Enfría rápido las sobras",
       "body": "Enfriar rápidamente las sobras ayuda a evitar la proliferación de bacterias."
     },
     "FF5.2.8": {
+      "title": "Carne y lácteos desperdiciados",
       "body": "Es posible que la carne y los productos lácteos se desperdicien con menos frecuencia, pero su huella medioambiental es mayor cuando se desperdician."
     },
     "FF5.2.9": {
+      "title": "Reparte para enfriar",
       "body": "Las raciones grandes de comida se enfrían más rápido cuando se reparten en recipientes más pequeños."
     },
     "FF5.2.10": {
+      "title": "Recipientes herméticos",
       "body": "Los recipientes herméticos ayudan a mantener frescas las sobras durante más tiempo."
     },
     "FF5.3.1": {
+      "title": "Los hogares encabezan el desperdicio",
       "body": "Más de la mitad de los residuos alimentarios de Europa los generan los hogares."
     },
     "FF5.3.2": {
+      "title": "Comprar en exceso",
       "body": "Comprar más comida de la necesaria es una de las principales causas del desperdicio evitable de alimentos en el hogar."
     },
     "FF5.3.3": {
+      "title": "Revisa antes de comprar",
       "body": "Planificar las comidas y revisar la despensa antes de ir a comprar puede ayudar a evitar comprar en exceso y el desperdicio de alimentos."
     },
     "FF5.3.4": {
+      "title": "Congela lo que sobra",
       "body": "Congelar los alimentos sobrantes antes de que se estropeen puede alargar su vida útil y reducir el desperdicio."
     },
     "FF5.3.5": {
+      "title": "69 millones de toneladas",
       "body": "Se calcula que los residuos alimentarios domésticos en Europa ascienden a unos 69 millones de toneladas al año."
     },
     "FF5.3.6": {
+      "title": "Confusión con las fechas",
       "body": "La confusión en torno a las etiquetas «consumir preferentemente antes de» y «consumir antes de» contribuye de manera significativa al desperdicio innecesario de alimentos."
     },
     "FF5.3.7": {
+      "title": "Apto tras el consumo preferente",
       "body": "Muchos alimentos siguen siendo aptos para el consumo después de su fecha de «consumo preferente» si se han conservado correctamente."
     },
     "FF5.3.8": {
+      "title": "La trampa de las ofertas múltiples",
       "body": "Las ofertas por compra múltiple y los descuentos por volumen pueden animar a los consumidores a comprar más alimentos de los que pueden consumir."
     },
     "FF5.3.9": {
+      "title": "Alimentos que solemos comprar de más",
       "body": "La fruta fresca, las verduras, los productos lácteos y los productos de panadería se encuentran entre los alimentos que más se desperdician debido a que se compran en exceso."
     },
     "FF5.3.10": {
+      "title": "Controla lo que tiras",
       "body": "Llevar un control de los alimentos que tiras puede ayudarte a identificar los hábitos que provocan un consumo excesivo y el desperdicio."
     },
     "FF5.4.1": {
+      "title": "Raciones cada vez mayores",
       "body": "El tamaño de las raciones ha aumentado considerablemente en muchos países durante las últimas décadas."
     },
     "FF5.4.2": {
+      "title": "Raciones mayores, no más saciedad",
       "body": "Las raciones más abundantes suelen llevar a las personas a comer más sin sentirse proporcionalmente más saciadas."
     },
     "FF5.4.3": {
+      "title": "Sano para ti y para el planeta",
       "body": "Reducir el consumo excesivo de alimentos puede ser beneficioso tanto para la salud personal como para la sostenibilidad medioambiental."
     },
     "FF5.4.4": {
+      "title": "Importa cuánto comes",
       "body": "El impacto medioambiental de una dieta no solo depende de lo que comen las personas, sino también de la cantidad que ingieren."
     },
     "FF5.4.5": {
+      "title": "Exceso de calorías, más emisiones",
       "body": "El consumo excesivo de calorías contribuye a un aumento de las emisiones de gases de efecto invernadero del sistema alimentario, ya que obliga a producir más alimentos."
     },
     "FF5.4.6": {
+      "title": "Alimentos de alto impacto en exceso",
       "body": "Los alimentos con una huella medioambiental elevada tienen un impacto aún mayor cuando se consumen en exceso."
     },
     "FF5.4.7": {
+      "title": "Raciones adecuadas",
       "body": "Elegir raciones adecuadas puede ayudar a reducir tanto el consumo excesivo de calorías como el uso de recursos."
     },
     "FF5.4.8": {
+      "title": "Comer de más consume recursos",
       "body": "Consumir más alimentos de los que el cuerpo necesita aumenta la demanda de recursos agrícolas como la tierra, el agua y la energía."
     },
     "FF5.4.9": {
+      "title": "El efecto dominó del consumo excesivo",
       "body": "El consumo excesivo contribuye a generar una demanda innecesaria en los ámbitos de la producción, el transporte, el almacenamiento y el envasado de alimentos."
     },
     "FF5.4.10": {
+      "title": "Suficiente, sin excesos",
       "body": "Las dietas sostenibles fomentan una alimentación que cubra las necesidades nutricionales sin caer en el consumo excesivo."
     },
     "FF6.1.1": {
+      "title": "Para qué sirven las proteínas",
       "body": "Las proteínas ayudan a formar y reparar los músculos, los tejidos, las enzimas y las hormonas."
     },
     "FF6.1.2": {
+      "title": "Proteína vegetal y animal",
       "body": "Tanto los alimentos de origen vegetal como los de origen animal pueden aportar proteínas."
     },
     "FF6.1.3": {
+      "title": "Legumbres para la salud y el planeta",
       "body": "Sustituir parte de la carne roja por legumbres es beneficioso para la salud y la sostenibilidad."
     },
     "FF6.1.4": {
+      "title": "Cuánta proteína necesitas",
       "body": "La mayoría de los adultos necesitan aproximadamente 0,83 g de proteína por kilogramo de peso corporal al día."
     },
     "FF6.1.5": {
+      "title": "Fuentes de proteína vegetal",
       "body": "Las lentejas, las alubias, los guisantes, los frutos secos y las semillas son excelentes fuentes de proteína vegetal."
     },
     "FF6.1.6": {
+      "title": "El perfil nutricional completo",
       "body": "Lo que importa es el perfil nutricional global de una fuente de proteínas, no solo su contenido en proteínas."
     },
     "FF6.1.7": {
+      "title": "Combina tus proteínas vegetales",
       "body": "El consumo de una variedad de proteínas vegetales puede aportar todos los aminoácidos esenciales."
     },
     "FF6.1.8": {
+      "title": "Los aminoácidos de la quinoa",
       "body": "La quinoa es una proteína vegetal completa que contiene todos los aminoácidos esenciales."
     },
     "FF6.1.9": {
+      "title": "Calidad de las proteínas",
       "body": "La calidad de las proteínas depende de su digestibilidad y de su composición en aminoácidos."
     },
     "FF6.1.10": {
+      "title": "Demasiada proteína",
       "body": "Muchos países de altos ingresos consumen más proteínas de las recomendadas."
     },
     "FF6.2.1": {
+      "title": "Grasas insaturadas frente a saturadas",
       "body": "Las grasas insaturadas suelen ser más saludables que las grasas saturadas."
     },
     "FF6.2.2": {
+      "title": "Limita las grasas saturadas",
       "body": "La OMS recomienda limitar el consumo de grasas saturadas a menos del 10 % de la ingesta energética diaria."
     },
     "FF6.2.3": {
+      "title": "Fuentes de grasas saludables",
       "body": "Los frutos secos, las semillas, el pescado y el aceite de oliva son buenas fuentes de grasas saludables."
     },
     "FF6.2.4": {
+      "title": "Importa el tipo de grasa",
       "body": "El tipo de grasa que consumes es tan importante como la cantidad."
     },
     "FF6.2.5": {
+      "title": "Evita las grasas trans",
       "body": "Las grasas trans aumentan el riesgo de padecer enfermedades cardíacas y no aportan ningún beneficio conocido para la salud."
     },
     "FF6.2.6": {
+      "title": "Cambia de grasas por tu corazón",
       "body": "Sustituir las grasas saturadas por grasas insaturadas puede mejorar la salud cardíaca."
     },
     "FF6.2.7": {
+      "title": "Cuánta grasa",
       "body": "Las grasas no deberían aportar más del 30 % aproximadamente de la ingesta energética diaria total."
     },
     "FF6.2.8": {
+      "title": "Bajo en grasa, alto en azúcar",
       "body": "Los alimentos procesados bajos en grasa pueden seguir conteniendo altos niveles de azúcar."
     },
     "FF6.2.9": {
+      "title": "Eliminar las grasas trans",
       "body": "Las grasas trans producidas industrialmente pueden eliminarse sin que ello afecte a la disponibilidad de alimentos."
     },
     "FF6.2.10": {
+      "title": "Grasas y vitaminas",
       "body": "La grasa ayuda al organismo a absorber las vitaminas A, D, E y K."
     },
     "FF6.3.1": {
+      "title": "Bebidas azucaradas",
       "body": "Las bebidas azucaradas son una de las principales fuentes de azúcar añadido en muchas dietas."
     },
     "FF6.3.2": {
+      "title": "Azúcar y dientes",
       "body": "Un consumo elevado de azúcar favorece la aparición de caries."
     },
     "FF6.3.3": {
+      "title": "Azúcar y peso",
       "body": "El consumo excesivo de azúcar está relacionado con el aumento de peso y la obesidad."
     },
     "FF6.3.4": {
+      "title": "Limita los azúcares libres",
       "body": "La OMS recomienda limitar el consumo de azúcares libres a menos del 10 % de la ingesta energética diaria."
     },
     "FF6.3.5": {
+      "title": "El azúcar de la fruta",
       "body": "La fruta contiene azúcares naturales, además de fibra y vitaminas."
     },
     "FF6.3.6": {
+      "title": "Reduce las bebidas azucaradas",
       "body": "Reducir el consumo de bebidas azucaradas es una forma eficaz de disminuir la ingesta de azúcar."
     },
     "FF6.3.7": {
+      "title": "Cocina para controlar el azúcar",
       "body": "Cocinar en casa permite controlar mejor el azúcar añadido."
     },
     "FF6.3.8": {
+      "title": "Calorías vacías",
       "body": "El azúcar aporta energía, pero pocos nutrientes esenciales."
     },
     "FF6.3.9": {
+      "title": "Azúcar por debajo del 5 %",
       "body": "Reducir el contenido de azúcares libres por debajo del 5 % podría aportar beneficios adicionales para la salud."
     },
     "FF6.3.10": {
+      "title": "Detecta el azúcar añadido",
       "body": "Leer las etiquetas puede ayudar a identificar los alimentos con alto contenido en azúcares añadidos."
     },
     "FF6.4.1": {
+      "title": "Demasiada sal",
       "body": "La mayoría de las personas consumen más del doble de la cantidad de sal recomendada."
     },
     "FF6.4.2": {
+      "title": "Sal y salud cardíaca",
       "body": "Reducir el consumo de sal disminuye el riesgo de padecer enfermedades cardíacas y accidentes cerebrovasculares."
     },
     "FF6.4.3": {
+      "title": "El coste mundial del sodio",
       "body": "El consumo excesivo de sodio contribuye a millones de muertes en todo el mundo."
     },
     "FF6.4.4": {
+      "title": "Menos de 5 gramos de sal",
       "body": "La OMS recomienda consumir menos de 5 gramos de sal al día."
     },
     "FF6.4.5": {
+      "title": "Sal oculta",
       "body": "La mayor parte de la sal que se consume procede de los alimentos procesados y de la comida de restaurante."
     },
     "FF6.4.6": {
+      "title": "Sodio y presión arterial",
       "body": "Un consumo elevado de sodio aumenta la presión arterial."
     },
     "FF6.4.7": {
+      "title": "Hierbas en lugar de sal",
       "body": "Las hierbas y las especias pueden ayudar a sustituir la sal en la cocina."
     },
     "FF6.4.8": {
+      "title": "Fuentes de sodio en Europa",
       "body": "El pan, los embutidos y el queso son las principales fuentes de sodio en Europa."
     },
     "FF6.4.9": {
+      "title": "Sustitutos de la sal",
       "body": "Los sustitutos de la sal con bajo contenido en sodio pueden ayudar a los adultos que reúnan los requisitos a reducir su ingesta de sodio."
     },
     "FF6.4.10": {
+      "title": "Toda la sal contiene sodio",
       "body": "Tanto la sal marina como la sal del Himalaya y la sal de mesa contienen una cantidad considerable de sodio."
     },
     "FF6.5.1": {
+      "title": "El déficit de fibra",
       "body": "La mayoría de los europeos consumen menos fibra de la recomendada."
     },
     "FF6.5.2": {
+      "title": "Fuentes de fibra",
       "body": "Los cereales integrales, las frutas, las verduras y las legumbres son excelentes fuentes de fibra."
     },
     "FF6.5.3": {
+      "title": "Agua y fibra",
       "body": "Beber suficiente agua ayuda a que la fibra actúe de forma eficaz."
     },
     "FF6.5.4": {
+      "title": "25 gramos al día",
       "body": "Los adultos deberían intentar consumir al menos 25 gramos de fibra al día."
     },
     "FF6.5.5": {
+      "title": "Aumenta la fibra poco a poco",
       "body": "Aumentar el consumo de fibra de forma gradual puede reducir las molestias digestivas."
     },
     "FF6.5.6": {
+      "title": "Las ventajas de los cereales integrales",
       "body": "Los cereales integrales aportan fibra, además de nutrientes importantes."
     },
     "FF6.5.7": {
+      "title": "Fibra para la digestión",
       "body": "La fibra favorece una digestión y un funcionamiento intestinal saludables."
     },
     "FF6.5.8": {
+      "title": "Fibra y riesgo de enfermedades",
       "body": "Un mayor consumo de fibra se asocia a un menor riesgo de padecer enfermedades cardíacas y diabetes tipo 2."
     },
     "FF6.5.9": {
+      "title": "Fibra soluble e insoluble",
       "body": "Tanto la fibra soluble como la insoluble contribuyen a la salud."
     },
     "FF6.5.10": {
+      "title": "La fibra sacia",
       "body": "Los alimentos ricos en fibra pueden ayudar a las personas a sentirse saciadas durante más tiempo."
     },
     "FF6.6.1": {
+      "title": "Deficiencia de vitamina D",
       "body": "La deficiencia de vitamina D es frecuente en toda Europa."
     },
     "FF6.6.2": {
+      "title": "Vitamina C",
       "body": "La vitamina C refuerza el sistema inmunitario y favorece la cicatrización de las heridas."
     },
     "FF6.6.3": {
+      "title": "Vitaminas de frutas y verduras",
       "body": "Las frutas y verduras aportan importantes vitaminas y antioxidantes."
     },
     "FF6.6.4": {
+      "title": "La variedad previene carencias",
       "body": "Llevar una dieta variada ayuda a reducir el riesgo de sufrir carencias vitamínicas."
     },
     "FF6.6.5": {
+      "title": "Fuentes de vitamina A",
       "body": "Las verduras de color naranja y verde oscuro son buenas fuentes de precursores de la vitamina A."
     },
     "FF6.6.6": {
+      "title": "Fuentes de vitamina E",
       "body": "Los frutos secos, las semillas y los aceites vegetales son buenas fuentes de vitamina E."
     },
     "FF6.6.7": {
+      "title": "Luz solar y vitamina D",
       "body": "La luz solar es la principal fuente de vitamina D para el organismo."
     },
     "FF6.6.8": {
+      "title": "Fuentes de vitamina B12",
       "body": "La vitamina B12 se encuentra principalmente en los alimentos de origen animal."
     },
     "FF6.6.9": {
+      "title": "B12 para personas veganas",
       "body": "Es posible que las personas veganas necesiten alimentos enriquecidos o suplementos para obtener la cantidad suficiente de vitamina B12."
     },
     "FF6.6.10": {
+      "title": "Hambre oculta",
       "body": "Las carencias vitamínicas pueden producirse incluso cuando hay comida en abundancia."
     },
     "FF6.7.1": {
+      "title": "Calorías suficientes para todos",
       "body": "El mundo ya produce suficientes calorías para alimentar a toda la población."
     },
     "FF6.7.2": {
+      "title": "Nutrientes frente a calorías",
       "body": "Los alimentos ricos en nutrientes no siempre son lo mismo que los alimentos ricos en calorías."
     },
     "FF6.7.3": {
+      "title": "Ultraprocesados y comer de más",
       "body": "Los alimentos ultraprocesados pueden incitar a las personas a consumir más calorías."
     },
     "FF6.7.4": {
+      "title": "Mismas calorías, distinto impacto",
       "body": "Los alimentos que aportan el mismo número de calorías pueden tener un impacto medioambiental muy diferente."
     },
     "FF6.7.5": {
+      "title": "Más allá de contar calorías",
       "body": "Las dietas sostenibles se centran en la elección de los alimentos, no solo en la reducción de calorías."
     },
     "FF6.7.6": {
+      "title": "Calorías perdidas de la granja al plato",
       "body": "Más de la mitad de las calorías de los alimentos se pierden entre la granja y el plato."
     },
     "FF6.7.7": {
+      "title": "Los tres alimentos básicos",
       "body": "El arroz, el trigo y el maíz aportan casi la mitad de las calorías a nivel mundial."
     },
     "FF6.7.8": {
+      "title": "Pérdidas por cultivos para piensos",
       "body": "La alimentación del ganado con cultivos conlleva importantes pérdidas calóricas."
     },
     "FF6.7.9": {
+      "title": "Emisiones del vacuno por caloría",
       "body": "La carne de vacuno genera muchas más emisiones por caloría que la mayoría de los alimentos de origen vegetal."
     },
     "FF6.7.10": {
+      "title": "Sistemas alimentarios eficientes",
       "body": "Mejorar la eficiencia del sistema alimentario puede aumentar la nutrición disponible sin necesidad de producir más alimentos."
     }
   },
   "quizzes": {
     "Q1.1.1": {
+      "title": "Cenas más sostenibles",
       "question": "Quieres reducir el impacto medioambiental de tus cenas. ¿Qué cambio es el que probablemente tenga mayor efecto?",
       "explanation": "Reducir el consumo de carne de vacuno suele tener un impacto mucho mayor que sustituir un alimento por otro similar, ya que la ganadería contribuye en gran medida al uso del suelo, al consumo de agua y a las emisiones de gases de efecto invernadero.",
       "options": {
@@ -799,6 +1050,7 @@
       }
     },
     "Q1.1.2": {
+      "title": "Menú semanal de bajo impacto",
       "question": "¿Qué plan semanal de comidas es probable que tenga el menor impacto medioambiental?",
       "explanation": "Sustituir la carne por legumbres suele aportar mayores beneficios medioambientales que limitarse a alternar entre diferentes proteínas de origen animal.",
       "options": {
@@ -809,6 +1061,7 @@
       }
     },
     "Q1.1.3": {
+      "title": "Dietas y uso del suelo",
       "question": "Tienes que elegir entre dos dietas semanales: la dieta A incluye carne roja casi todos los días; la dieta B sigue un patrón de estilo mediterráneo, con más legumbres, verduras y cantidades moderadas de carne. ¿Cuál de las dos dietas se espera, en general, que requiera menos superficie agrícola?",
       "explanation": "La producción de alimentos de origen animal suele requerir más tierra que la de alimentos de origen vegetal. Las dietas de estilo mediterráneo suelen asociarse con un menor consumo de tierra, sin dejar de garantizar una alimentación nutricionalmente adecuada.",
       "options": {
@@ -819,6 +1072,7 @@
       }
     },
     "Q1.1.4": {
+      "title": "Una comida sostenible",
       "question": "¿Cuál de estas opciones para comer sería, en general, la más sostenible?",
       "explanation": "Las comidas basadas en legumbres y verduras suelen tener un menor impacto medioambiental que las comidas basadas en carne roja.",
       "options": {
@@ -829,6 +1083,7 @@
       }
     },
     "Q1.1.5": {
+      "title": "Carne y salud pública",
       "question": "¿Por qué se considera a veces que reducir el consumo de carne es una cuestión de salud pública, además de una cuestión medioambiental?",
       "explanation": "El uso generalizado de antibióticos en la ganadería contribuye a la resistencia a los antimicrobianos, lo que supone un grave problema de salud pública.",
       "options": {
@@ -838,6 +1093,7 @@
       }
     },
     "Q1.2.1": {
+      "title": "Sustituir la carne de vacuno",
       "question": "Vas a sustituir la carne de vacuno en una receta. ¿Qué sustituto aporta beneficios medioambientales y, al mismo tiempo, ayuda a mantener un valor nutricional adecuado?",
       "explanation": "Sustituir parte del consumo de carne roja por legumbres permite mantener una ingesta adecuada de nutrientes y, al mismo tiempo, reducir el impacto medioambiental.",
       "options": {
@@ -848,6 +1104,7 @@
       }
     },
     "Q1.2.2": {
+      "title": "Proteínas a lo largo de la semana",
       "question": "¿Qué estrategia semanal de ingesta de proteínas se ajusta mejor a las recomendaciones de la OMS?",
       "explanation": "La OMS hace hincapié en la diversidad alimentaria y en una mayor variedad de proteínas",
       "options": {
@@ -858,6 +1115,7 @@
       }
     },
     "Q1.2.3": {
+      "title": "Alternativas vegetales a la carne",
       "question": "¿Cuál de las siguientes afirmaciones sobre las alternativas vegetales a la carne es la más acertada?",
       "explanation": "Muchos sustitutos de la carne de origen vegetal están muy procesados y suelen contener una cantidad considerable de sodio. Su impacto en la salud y el medio ambiente puede variar considerablemente.",
       "options": {
@@ -868,6 +1126,7 @@
       }
     },
     "Q1.2.4": {
+      "title": "Proteínas y suelos sanos",
       "question": "¿Qué fuente de proteínas aporta beneficios tanto nutricionales como para la salud del suelo?",
       "options": {
         "A": "Garbanzos",
@@ -878,6 +1137,7 @@
       "explanation": "Las legumbres mejoran la fertilidad del suelo mediante la fijación de nitrógeno y, al mismo tiempo, aportan proteínas, fibra, vitaminas y minerales."
     },
     "Q1.2.5": {
+      "title": "Menos carne roja en familia",
       "question": "Una familia quiere reducir el consumo de carne roja sin dejar de consumir productos de origen animal. ¿Qué cambio refleja mejor los datos científicos?",
       "explanation": "La diversidad alimentaria, que incluye legumbres, pescado, huevos y cantidades más reducidas de carne roja, se asocia con una alimentación más saludable y sostenible.",
       "options": {
@@ -888,6 +1148,7 @@
       }
     },
     "Q1.3.1": {
+      "title": "Diversifica tus cereales",
       "question": "Quieres diversificar tus cereales y, al mismo tiempo, mejorar la calidad proteica. ¿Qué opción te parece especialmente interesante?",
       "explanation": "La quinoa contiene los nueve aminoácidos esenciales y se considera una proteína completa.",
       "options": {
@@ -898,6 +1159,7 @@
       }
     },
     "Q1.3.2": {
+      "title": "Hábitos alimentarios resilientes",
       "question": "¿Qué hábito alimentario contribuiría mejor a la resiliencia del sistema alimentario?",
       "explanation": "La diversidad de cultivos aumenta la resiliencia ante las perturbaciones relacionadas con el clima, el mercado y la cadena de suministro.",
       "options": {
@@ -908,6 +1170,7 @@
       }
     },
     "Q1.3.3": {
+      "title": "Cereales sin gluten",
       "question": "Una persona con enfermedad celíaca busca una alternativa a los cereales que sea rica en nutrientes. ¿Cuál es la opción más adecuada?",
       "explanation": "El trigo sarraceno no contiene gluten de forma natural y aporta fibra, proteínas, minerales y compuestos bioactivos beneficiosos.",
       "options": {
@@ -918,6 +1181,7 @@
       }
     },
     "Q1.3.4": {
+      "title": "Cultivos resistentes al clima",
       "question": "Un agricultor busca un cultivo resistente al cambio climático que tolere el calor y la escasez de agua. ¿Qué opción está mejor respaldada por los datos?",
       "explanation": "Los mijo pueden crecer a altas temperaturas, en suelos pobres y con recursos hídricos limitados, lo que los hace especialmente resistentes al cambio climático.",
       "options": {
@@ -928,6 +1192,7 @@
       }
     },
     "Q1.3.5": {
+      "title": "La importancia de las legumbres",
       "question": "¿Por qué se suele hacer hincapié en las legumbres en las dietas sostenibles?",
       "explanation": "Las legumbres combinan beneficios nutricionales con la fijación de nitrógeno, una menor necesidad de fertilizantes y una menor huella medioambiental.",
       "options": {
@@ -938,6 +1203,7 @@
       }
     },
     "Q2.1.1": {
+      "title": "Alimentación y biodiversidad",
       "question": "Quieres que tus elecciones alimentarias contribuyan más a la biodiversidad. ¿Qué factor es el más relevante?",
       "explanation": "La expansión agrícola es uno de los principales factores que provocan la pérdida de hábitats y la disminución de la biodiversidad. Los alimentos que requieren menos tierra suelen ejercer menos presión sobre los bosques, los pastizales y otros ecosistemas naturales, lo que contribuye a proteger la biodiversidad.",
       "options": {
@@ -948,6 +1214,7 @@
       }
     },
     "Q2.1.2": {
+      "title": "Carne de vacuno local",
       "question": "Un supermercado promociona la «carne de vacuno de producción local» como una opción sostenible. ¿Qué afirmación se ajusta más a los datos?",
       "explanation": "El tipo de alimento suele ser más importante que su procedencia. Las proteínas vegetales suelen requerir mucha menos tierra que la carne de vacuno, independientemente de su origen.",
       "options": {
@@ -958,6 +1225,7 @@
       }
     },
     "Q2.1.3": {
+      "title": "Cena proteica con poco uso del suelo",
       "question": "Estás planeando una cena rica en proteínas con la menor huella de tierra posible. ¿Qué opción es la que más probabilidades tiene de dar mejores resultados?",
       "explanation": "Los productos de origen animal suelen requerir más tierra que los alimentos de origen vegetal. De entre estas opciones, la comida a base de lentejas es la que requiere menos tierra.",
       "options": {
@@ -968,6 +1236,7 @@
       }
     },
     "Q2.1.4": {
+      "title": "Proteger la biodiversidad",
       "question": "Un amigo quiere reducir la presión sobre la biodiversidad a través de sus elecciones alimentarias. ¿Qué consejo se basaría más en la evidencia?",
       "explanation": "La expansión agrícola es una de las principales causas de la pérdida de hábitats. Reducir la demanda de productos que requieren grandes extensiones de tierra contribuye a disminuir la presión sobre los bosques y los ecosistemas naturales.",
       "options": {
@@ -978,6 +1247,7 @@
       }
     },
     "Q2.1.5": {
+      "title": "Huella de uso del suelo",
       "question": "¿Qué tipo de comprador es probable que tenga la menor huella de uso del suelo?",
       "explanation": "Las investigaciones señalan sistemáticamente que la cantidad de carne roja en la dieta es uno de los factores determinantes más importantes del uso del suelo relacionado con la alimentación.",
       "options": {
@@ -988,6 +1258,7 @@
       }
     },
     "Q2.2.1": {
+      "title": "Menor huella hídrica",
       "question": "Quieres reducir la huella hídrica de tus comidas. ¿Qué hábito crees que sería el más eficaz?",
       "explanation": "Una parte importante del agua utilizada en la producción alimentaria se desperdicia de hecho cuando se tiran los alimentos. Reducir el desperdicio de alimentos disminuye directamente la demanda de agua.",
       "options": {
@@ -998,6 +1269,7 @@
       }
     },
     "Q2.2.2": {
+      "title": "Dietas y consumo de agua",
       "question": "Dos personas ingieren el mismo número de calorías cada día. ¿Qué dieta es probable que requiera menos agua en total?",
       "options": {
         "A": "Una dieta rica en legumbres y con menos productos de origen animal",
@@ -1008,6 +1280,7 @@
       "explanation": "El uso de agua suele disminuir cuando la dieta se aleja de los alimentos de origen animal y se orienta hacia los de origen vegetal."
     },
     "Q2.2.3": {
+      "title": "Verduras a punto de estropearse",
       "question": "Encuentras verduras en la nevera que están a punto de estropearse. ¿Cuál es la medida más sostenible?",
       "explanation": "Consumir los alimentos antes de que se echen a perder evita el desperdicio del agua, la tierra y la energía que ya se han invertido en su producción.",
       "options": {
@@ -1018,6 +1291,7 @@
       }
     },
     "Q2.2.4": {
+      "title": "El agua y las dietas sostenibles",
       "question": "¿Qué afirmación refleja mejor los datos sobre el consumo de agua y las dietas sostenibles?",
       "options": {
         "A": "Cualquier dieta vegetariana consume automáticamente menos agua",
@@ -1028,6 +1302,7 @@
       "explanation": "Los estudios muestran que reducir los alimentos de origen animal suele disminuir la huella hídrica, aunque el uso total de agua sigue dependiendo de la composición de la dieta."
     },
     "Q2.2.5": {
+      "title": "Comidas que ahorran agua",
       "question": "¿Qué comida se consideraría, en general, la que tiene la huella hídrica más baja?",
       "explanation": "Las comidas de origen vegetal suelen requerir menos agua para su",
       "options": {
@@ -1038,6 +1313,7 @@
       }
     },
     "Q2.3.1": {
+      "title": "Huella energética de los alimentos",
       "question": "Un consumidor quiere reducir la huella energética de los alimentos que compra. ¿Qué cambio es el que más probabilidades tiene de tener un mayor impacto?",
       "explanation": "El desperdicio de alimentos supone no solo la pérdida de alimentos, sino también la pérdida de toda la energía utilizada para producirlos, procesarlos, transportarlos, almacenarlos y prepararlos. Reducir el desperdicio contribuye a disminuir el consumo innecesario de energía en todo el sistema alimentario.",
       "options": {
@@ -1048,6 +1324,7 @@
       }
     },
     "Q2.3.2": {
+      "title": "Dietas con alto consumo energético",
       "question": "Estás comparando cuatro dietas con el mismo aporte calórico. ¿Qué dieta se espera, en general, que requiera más energía en todo el sistema alimentario?",
       "explanation": "Los alimentos de origen animal suelen requerir más energía, ya que dependen de la producción de piensos, de sistemas de ganadería intensiva, del procesamiento, de la refrigeración y del transporte.",
       "options": {
@@ -1058,6 +1335,7 @@
       }
     },
     "Q2.3.3": {
+      "title": "Energía en la cadena alimentaria",
       "question": "¿Qué etapa de la cadena alimentaria suele representar una gran parte del consumo total de energía en muchas regiones?",
       "explanation": "Aunque la energía se utiliza a lo largo de toda la cadena alimentaria, a menudo se consume una proporción significativa durante la transformación de los alimentos, el transporte, la refrigeración, la venta al por menor, la cocción y el consumo.",
       "options": {
@@ -1068,6 +1346,7 @@
       }
     },
     "Q2.3.4": {
+      "title": "Reducir las pérdidas de alimentos",
       "question": "Una agencia de desarrollo está decidiendo dónde invertir para reducir las pérdidas de alimentos en una región agrícola rural. ¿Qué medida tiene más probabilidades de aportar beneficios sustanciales?",
       "explanation": "Alrededor del 13 % de la producción mundial de alimentos se pierde debido a una refrigeración inadecuada. Los sistemas fiables de cadena de frío ayudan a preservar la calidad de los alimentos, a reducir las pérdidas y a mejorar la eficiencia del sistema alimentario.",
       "options": {
@@ -1078,6 +1357,7 @@
       }
     },
     "Q2.3.5": {
+      "title": "Sistemas alimentarios y ecosistemas",
       "question": "Un responsable político quiere reducir la presión que ejerce la producción alimentaria sobre los ecosistemas. ¿Qué afirmación refleja mejor los datos disponibles actualmente?",
       "options": {
         "A": "Los sistemas alimentarios humanos solo utilizan una pequeña parte de la productividad biológica de la Tierra",
@@ -1088,6 +1368,7 @@
       "explanation": "La actividad humana, en particular la agricultura, la silvicultura y los sistemas alimentarios, se apropia de cerca del 30 % de la producción primaria neta mundial, muy por encima del límite seguro propuesto del 10 %, lo que indica una presión considerable sobre los ecosistemas y la biodiversidad."
     },
     "Q2.4.1": {
+      "title": "Cuidar el clima sin ser vegetariano",
       "question": "Quieres reducir tu impacto climático, pero no quieres hacerte vegetariano. ¿Qué estrategia crees que sería la más eficaz?",
       "explanation": "Reducir el consumo de carne roja es una de las medidas alimentarias más eficaces para reducir las emisiones de gases de efecto invernadero relacionadas con la alimentación.",
       "options": {
@@ -1098,6 +1379,7 @@
       }
     },
     "Q2.4.2": {
+      "title": "Reducir las emisiones de tu dieta",
       "question": "Quieres reducir la huella de carbono de tu alimentación. ¿Qué medida es la que probablemente tenga mayor impacto?",
       "explanation": "Alrededor del 30 % de los alimentos que se producen en todo el mundo se desperdician, lo que genera aproximadamente 3,3 gigatoneladas de emisiones de CO₂ equivalente al año. Evitar el desperdicio de alimentos reduce las emisiones en toda la cadena alimentaria, incluyendo la producción, la transformación, el transporte y la eliminación.",
       "options": {
@@ -1108,6 +1390,7 @@
       }
     },
     "Q2.4.3": {
+      "title": "Menos emisiones, mismos alimentos",
       "question": "¿Qué medida permite reducir las emisiones sin cambiar los alimentos que compras?",
       "explanation": "El desperdicio de alimentos genera importantes emisiones de gases de efecto invernadero, ya que todo el re",
       "options": {
@@ -1118,6 +1401,7 @@
       }
     },
     "Q2.4.4": {
+      "title": "Lo local frente a la carne de vacuno",
       "question": "Una persona se centra únicamente en comprar alimentos locales, pero sigue consumiendo grandes cantidades de carne de vacuno. ¿Qué afirmación refleja mejor los datos?",
       "explanation": "Los estudios demuestran sistemáticamente que el tipo de alimento —en particular, el consumo de carne de vacuno— suele tener más peso que la distancia de transporte a la hora de determinar el impacto climático.",
       "options": {
@@ -1128,6 +1412,7 @@
       }
     },
     "Q2.4.5": {
+      "title": "Dietas bajas en carbono",
       "question": "¿Qué patrón alimentario se suele considerar la alternativa con menor huella de carbono a la dieta occidental típica?",
       "explanation": "Las dietas flexitarianas reducen la dependencia de los productos de origen animal de alto impacto, al tiempo que permiten su consumo ocasional.",
       "options": {
@@ -1138,6 +1423,7 @@
       }
     },
     "Q3.1.1": {
+      "title": "Procesamiento y sostenibilidad",
       "question": "Estás comparando dos comidas ricas en proteínas: un guiso de alubias elaborado con ingredientes sencillos y nuggets de carne vegetal. ¿Qué conclusión se sustenta mejor con las pruebas?",
       "explanation": "La transformación de los alimentos puede aumentar el consumo de energía, pero también puede prolongar su vida útil y reducir el desperdicio alimentario. La sostenibilidad depende del ciclo de vida completo, y no solo de la fase de transformación.",
       "options": {
@@ -1148,6 +1434,7 @@
       }
     },
     "Q3.1.2": {
+      "title": "La huella del procesamiento",
       "question": "Al comparar dos alimentos con un valor nutricional similar, ¿qué factor podría aumentar la huella medioambiental de uno de ellos?",
       "explanation": "El calentamiento, la congelación, el secado, la molienda y otros procesos industriales pueden contribuir de manera significativa al impacto medioambiental de un producto alimenticio.",
       "options": {
@@ -1158,6 +1445,7 @@
       }
     },
     "Q3.1.3": {
+      "title": "Menos ultraprocesados",
       "question": "Un consumidor quiere reducir el consumo de alimentos ultraprocesados. ¿Qué opción le ayuda más a alcanzar ese objetivo?",
       "explanation": "Los alimentos mínimamente procesados suelen contener menos aditivos y tienden a contribuir a una mejor calidad general de la dieta.",
       "options": {
@@ -1168,6 +1456,7 @@
       }
     },
     "Q3.1.4": {
+      "title": "El papel de la transformación de alimentos",
       "question": "¿Por qué la transformación de alimentos desempeña un papel importante en los sistemas alimentarios?",
       "explanation": "El procesamiento puede mejorar la seguridad alimentaria, mantener la calidad y permitir que los alimentos se almacenen y transporten de forma más eficiente.",
       "options": {
@@ -1178,6 +1467,7 @@
       }
     },
     "Q3.1.5": {
+      "title": "Alimentos ultraprocesados",
       "question": "¿Cuál de las siguientes afirmaciones sobre los alimentos ultraprocesados es la más acertada?",
       "explanation": "El nivel de transformación puede aportar información útil, pero los productos alimenticios deben evaluarse de forma individual.",
       "options": {
@@ -1188,6 +1478,7 @@
       }
     },
     "Q3.2.1": {
+      "title": "Qué significa «local»",
       "question": "Un producto lleva la etiqueta «local». ¿Qué conclusión puedes sacar solo a partir de esta información?",
       "explanation": "El país de origen aporta información útil, pero la sostenibilidad depende de múltiples factores, entre ellos el método de producción, el medio de transporte y la estacionalidad.",
       "options": {
@@ -1198,6 +1489,7 @@
       }
     },
     "Q3.2.2": {
+      "title": "Comparar productos locales",
       "question": "Estás comparando dos productos locales. ¿Qué información adicional te resultaría más útil?",
       "explanation": "Los métodos de producción suelen tener un mayor impacto medioambiental que el origen por sí solo.",
       "options": {
@@ -1208,6 +1500,7 @@
       }
     },
     "Q3.2.3": {
+      "title": "Transporte y clima",
       "question": "¿Qué medio de transporte suele merecer mayor atención a la hora de evaluar los impactos climáticos?",
       "explanation": "El transporte aéreo puede aumentar considerablemente las emisiones de gases de efecto invernadero relacionadas con el transporte en comparación con otros métodos de transporte de mercancías.",
       "options": {
@@ -1218,6 +1511,7 @@
       }
     },
     "Q3.2.4": {
+      "title": "Comparar tomates",
       "question": "Dos tomates tienen el mismo valor nutricional. ¿Qué información resultaría más útil para comparar su sostenibilidad?",
       "explanation": "Los sistemas de producción suelen tener un impacto medioambiental mayor que el que supone únicamente el país de origen.",
       "options": {
@@ -1228,6 +1522,7 @@
       }
     },
     "Q3.2.5": {
+      "title": "El origen de los alimentos",
       "question": "¿Cuál de las siguientes afirmaciones sobre el origen de los alimentos es la que mejor se ajusta a los datos?",
       "explanation": "El origen de los alimentos puede ser una información útil, pero debe tenerse en cuenta junto con los métodos de producción, la estacionalidad y el transporte.",
       "options": {
@@ -1238,6 +1533,7 @@
       }
     },
     "Q3.3.1": {
+      "title": "Gestión integrada de plagas",
       "question": "Estás eligiendo entre dos productos de manzana: Producto A: «Producido mediante la gestión integrada de plagas (GIP)». Producto B: No se facilita información sobre el cultivo. ¿Qué es lo más probable que sugiera la indicación «GIP»?",
       "explanation": "La gestión integrada de plagas combina métodos biológicos, físicos, específicos para cada cultivo y, cuando es necesario, químicos, con el fin de reducir los daños causados por las plagas y minimizar al mismo tiempo los impactos sobre el medio ambiente y la salud.",
       "options": {
@@ -1248,6 +1544,7 @@
       }
     },
     "Q3.3.2": {
+      "title": "Rotación de cultivos",
       "question": "Estás comprando verduras y en uno de los envases se destaca que la explotación agrícola practica la rotación de cultivos y cultiva varios tipos de productos. ¿Por qué podría ser relevante esta información?",
       "explanation": "La diversificación de cultivos y las rotaciones mejoran la fertilidad del suelo, el ciclo de los nutrientes y la resistencia a las plagas y enfermedades, lo que reduce la necesidad de un uso excesivo de productos químicos.",
       "options": {
@@ -1258,6 +1555,7 @@
       }
     },
     "Q3.3.3": {
+      "title": "Café cultivado a la sombra",
       "question": "Tienes que elegir entre dos productos de café: Café A: cultivado a la sombra en un sistema agroforestal; Café B: producido en una plantación de monocultivo. ¿Por qué podrían algunos consumidores preferir el Café A?",
       "explanation": "La agrosilvicultura combina los árboles con la producción agrícola. Estos sistemas pueden mejorar la salud del suelo, la biodiversidad y el secuestro de carbono.",
       "options": {
@@ -1268,6 +1566,7 @@
       }
     },
     "Q3.3.4": {
+      "title": "Agricultura ecológica",
       "question": "Hay dos productos vegetales con precios similares. Uno de ellos lleva la etiqueta «Ecológico». ¿Qué característica de su cultivo es más probable que se asocie al producto ecológico?",
       "explanation": "La agricultura ecológica se basa en prácticas como la rotación de cultivos, la aplicación de abono orgánico, los cultivos de cobertura y el control biológico de plagas, en lugar de utilizar pesticidas y fertilizantes sintéticos.",
       "options": {
@@ -1278,6 +1577,7 @@
       }
     },
     "Q3.3.5": {
+      "title": "Agricultura climáticamente inteligente",
       "question": "Tienes que elegir entre dos productos de arroz: Producto A: Elaborado mediante agricultura climáticamente inteligente. Producto B: No se facilita información sobre su cultivo. ¿Cuál es el objetivo principal de la agricultura climáticamente inteligente?",
       "explanation": "La agricultura climáticamente inteligente tiene como objetivo aumentar la productividad, reforzar la resiliencia ante el cambio climático y reducir las emisiones de gases de efecto invernadero.",
       "options": {
@@ -1288,6 +1588,7 @@
       }
     },
     "Q3.4.1": {
+      "title": "Cultivos tolerantes a la sequía",
       "question": "Estás comparando dos productos derivados del tomate. Uno procede de una variedad cultivada para tolerar condiciones de sequía, mientras que el otro procede de una variedad convencional. ¿Por qué algunos consumidores podrían considerar que la variedad tolerante a la sequía es más sostenible?",
       "explanation": "El desarrollo de cultivos resistentes a la sequía puede ayudar a mantener la producción en condiciones de estrés hídrico y mejorar la resiliencia ante el cambio climático, aunque dichos cultivos siguen necesitando agua y una buena gestión agrícola.",
       "options": {
@@ -1298,6 +1599,7 @@
       }
     },
     "Q3.4.2": {
+      "title": "Mejora genética moderna",
       "question": "Te encuentras con un producto alimenticio que se comercializa como procedente de una variedad de cultivo resistente al cambio climático, desarrollada mediante técnicas modernas de mejora genética. ¿Cuál es la principal ventaja en materia de sostenibilidad que se atribuye a estas tecnologías?",
       "explanation": "Las tecnologías modernas de mejora genética tienen como objetivo desarrollar variedades de cultivos que puedan rendir mejor en condiciones ambientales cambiantes y que contribuyan a mantener la producción alimentaria en el futuro.",
       "options": {
@@ -1308,6 +1610,7 @@
       }
     },
     "Q3.4.3": {
+      "title": "Piensos sostenibles para peces",
       "question": "Tienes que elegir entre dos productos pesqueros. Uno procede de una empresa de acuicultura que sustituye parcialmente el pienso elaborado a partir de pescado salvaje por harina de insectos y aceites de algas. ¿Cuál es la principal razón de sostenibilidad que justifica esta elección?",
       "explanation": "La acuicultura está recurriendo cada vez más a ingredientes alternativos para la alimentación de los peces, como la harina de insectos, los aceites de algas y las proteínas unicelulares, con el fin de reducir la dependencia del pescado capturado en estado silvestre.",
       "options": {
@@ -1318,6 +1621,7 @@
       }
     },
     "Q3.4.4": {
+      "title": "Proteínas alternativas",
       "question": "Un supermercado promociona productos que contienen proteínas procedentes de insectos, microalgas o micoproteínas. ¿Por qué se suele hablar de estas fuentes de proteínas en los estudios sobre sostenibilidad?",
       "options": {
         "A": "Son más saludables que los alimentos convencionales",
@@ -1328,6 +1632,7 @@
       "explanation": "Se están explorando fuentes alternativas de proteínas porque pueden ayudar a reducir las presiones ambientales asociadas a la ganadería convencional y, a la vez, contribuir a la seguridad alimentaria futura."
     },
     "Q3.4.5": {
+      "title": "Eficiencia alimentaria del ganado",
       "question": "Un productor cárnico afirma que su programa de cría de ganado se centra en la eficiencia alimentaria. ¿Por qué podría ser esto relevante para la sostenibilidad?",
       "options": {
         "A": "Los animales mejoran su salud de forma automática",
@@ -1338,6 +1643,7 @@
       "explanation": "El ganado con mejor eficiencia de conversión alimenticia produce la misma cantidad de carne con menos recursos de alimentación, lo que reduce la presión ambiental por unidad producida."
     },
     "Q3.5.1": {
+      "title": "La etiqueta Fairtrade",
       "question": "Tienes que elegir entre dos tabletas de chocolate con un valor nutricional y una información medioambiental similares. Una de ellas lleva la etiqueta «Fairtrade». ¿Qué aspecto adicional de la sostenibilidad pretende abordar principalmente la etiqueta «Fairtrade»?",
       "explanation": "Fairtrade tiene como objetivo mejorar las condiciones de vida mediante precios justos, la protección laboral, el desarrollo comunitario y unas mejores condiciones comerciales para los productores y los trabajadores.",
       "options": {
@@ -1348,6 +1654,7 @@
       }
     },
     "Q3.5.2": {
+      "title": "Sostenibilidad social",
       "question": "Un consumidor quiere tener en cuenta tanto la sostenibilidad medioambiental como la social a la hora de comprar fruta. ¿Qué afirmación se ajusta más a los datos disponibles actualmente?",
       "explanation": "Las investigaciones muestran que los impactos sociales y medioambientales se distribuyen de forma diferente. Pueden darse riesgos laborales en los países productores incluso cuando el desempeño medioambiental parece favorable.",
       "options": {
@@ -1358,6 +1665,7 @@
       }
     },
     "Q3.5.3": {
+      "title": "Productos del mar certificados",
       "question": "Estás comprando productos del mar y te das cuenta de que uno de ellos procede de una pesquería certificada que supervisa las prácticas laborales, mientras que otro no ofrece ninguna información al respecto. ¿Por qué podrían algunos consumidores preferir el producto certificado?",
       "explanation": "El sector pesquero se considera un sector de alto riesgo en lo que respecta a la explotación laboral. Los programas de certificación incluyen cada vez más el seguimiento de las condiciones laborales y de los derechos humanos.",
       "options": {
@@ -1368,6 +1676,7 @@
       }
     },
     "Q3.5.4": {
+      "title": "Apoyo a los pequeños agricultores",
       "question": "En el envase de un café se destaca el apoyo a los pequeños agricultores. ¿Por qué es relevante esta información para la sostenibilidad?",
       "explanation": "La sostenibilidad social incluye el acceso justo a los mercados, re",
       "options": {
@@ -1378,6 +1687,7 @@
       }
     },
     "Q3.5.5": {
+      "title": "Elecciones alimentarias éticas",
       "question": "¿Qué opción de producto se ajusta mejor a la idea de que la sostenibilidad incluye tanto consideraciones éticas como medioambientales?",
       "explanation": "El Centro Común de Investigación de la Comisión Europea destaca que los sistemas alimentarios sostenibles deben ser sostenibles desde el punto de vista medioambiental, viables desde el punto de vista económico, y justos, inclusivos y éticos.",
       "options": {
@@ -1388,6 +1698,7 @@
       }
     },
     "Q4.1.1": {
+      "title": "El impacto de los envases",
       "question": "Un consumidor quiere reducir el impacto medioambiental de los envases alimentarios. ¿Qué afirmación se ajusta más a los datos disponibles actualmente?",
       "explanation": "El impacto medioambiental de la producción de alimentos suele ser mucho mayor que el del propio envase. Los envases que evitan eficazmente el deterioro y el desperdicio de alimentos pueden aportar beneficios medioambientales generales, aunque utilicen materiales adicionales.",
       "options": {
@@ -1398,6 +1709,7 @@
       }
     },
     "Q4.1.2": {
+      "title": "Envases comestibles",
       "question": "Una empresa está barajando la posibilidad de optar por un envase de plástico convencional o por un recubrimiento comestible para la fruta fresca. ¿Qué beneficio medioambiental potencial del envase comestible está mejor respaldado por las investigaciones?",
       "explanation": "Los envases comestibles pueden contribuir a la mitigación del cambio climático al sustituir algunos materiales derivados de combustibles fósiles y al prolongar la vida útil de los alimentos, lo que ayuda a evitar el desperdicio alimentario.",
       "options": {
@@ -1408,6 +1720,7 @@
       }
     },
     "Q4.1.3": {
+      "title": "Innovaciones en envases",
       "question": "¿Qué innovación en materia de envases está diseñada específicamente para proporcionar información sobre el estado de un producto alimenticio, en lugar de conservarlo directamente?",
       "explanation": "Los envases inteligentes supervisan o transmiten información sobre el estado de los alimentos, como su frescura, el historial de temperatura o el riesgo de deterioro. A diferencia de los envases activos, no conservan directamente el producto.",
       "options": {
@@ -1418,6 +1731,7 @@
       }
     },
     "Q4.1.4": {
+      "title": "Materiales de envasado",
       "question": "¿Cuál de las siguientes afirmaciones sobre los materiales de embalaje es la más correcta?",
       "explanation": "Ningún material de embalaje es, por sí mismo, el más sostenible. El impacto medioambiental depende de la extracción, la producción, el transporte, las posibilidades de reutilización y reciclaje, y del producto alimenticio que se protege.",
       "options": {
@@ -1428,6 +1742,7 @@
       }
     },
     "Q4.1.5": {
+      "title": "Jerarquía de envases de la UE",
       "question": "Una cadena de supermercados quiere mejorar la sostenibilidad de sus envases sin comprometer la calidad de los alimentos. ¿Qué estrategia se ajusta mejor a la jerarquía de envases de la UE?",
       "explanation": "La jerarquía de envases de la UE da prioridad, en primer lugar, a la reducción de los envases innecesarios; a continuación, a la reutilización de los envases siempre que sea posible; y, por último, al reciclaje de los materiales. El objetivo es proteger los productos y, al mismo tiempo, reducir al mínimo los residuos.",
       "options": {
@@ -1438,6 +1753,7 @@
       }
     },
     "Q4.2.1": {
+      "title": "Envases reutilizables para llevar",
       "question": "Tienes dos opciones para llevar la comida: Opción A: un envase desechable que se puede reciclar. Opción B: un envase reutilizable que hay que devolver al restaurante. ¿Qué factor es el más importante a la hora de determinar si la opción B es realmente más sostenible?",
       "explanation": "Los envases reutilizables solo resultan más respetuosos con el medio ambiente una vez alcanzado su punto de equilibrio medioambiental (e-BEP), lo que significa que deben reutilizarse el número de veces suficiente para compensar el impacto de su producción inicial.",
       "options": {
@@ -1448,6 +1764,7 @@
       }
     },
     "Q4.2.2": {
+      "title": "Vasos reutilizables",
       "question": "Una cafetería ofrece un programa de vasos reutilizables. ¿Qué comportamiento de los clientes contribuye más al éxito medioambiental del programa?",
       "explanation": "Los beneficios medioambientales de los sistemas reutilizables dependen principalmente de que se alcance un elevado número de ciclos de reutilización.",
       "options": {
@@ -1458,6 +1775,7 @@
       }
     },
     "Q4.2.3": {
+      "title": "Envases de comida a domicilio",
       "question": "Estás comparando dos servicios de reparto de comida a domicilio: el Servicio A utiliza envases de un solo uso que se reciclan; el Servicio B utiliza envases reutilizables que se recogen, se limpian y se vuelven a utilizar. ¿Cuál de las siguientes afirmaciones es la más correcta?",
       "explanation": "Los sistemas reutilizables pueden ofrecer un rendimiento superior al de los sistemas de un solo uso, pero su rendimiento depende de factores como las tasas de devolución, el transporte, la limpieza y el número de ciclos de reutilización.",
       "options": {
@@ -1468,6 +1786,7 @@
       }
     },
     "Q4.2.4": {
+      "title": "Puntos de recarga",
       "question": "Un supermercado instala puntos de recarga para productos como cereales, pasta y detergentes. ¿Qué beneficio en materia de sostenibilidad pretenden conseguir principalmente estos sistemas?",
       "explanation": "Los sistemas de reutilización y recarga mantienen los envases en circulación durante más tiempo y reducen la necesidad de nuevos materiales y los residuos de envases.",
       "options": {
@@ -1478,6 +1797,7 @@
       }
     },
     "Q4.2.5": {
+      "title": "Lo que prometen los envases reutilizables",
       "question": "La etiqueta de un producto indica que utiliza envases reutilizables. ¿Qué información adicional resultaría más útil para evaluar su rendimiento medioambiental?",
       "explanation": "El número de ciclos de reutilización que se consigue es uno de los factores más importantes a la hora de determinar si los envases reutilizables resultan beneficiosos para el medio ambiente.",
       "options": {
@@ -1488,6 +1808,7 @@
       }
     },
     "Q5.1.1": {
+      "title": "Pedir sin desperdiciar",
       "question": "Estás pidiendo la comida en un restaurante y no sabes muy bien cuánta hambre tienes. ¿Qué opción es la que más probablemente reduzca el desperdicio de comida en el plato?",
       "explanation": "Las investigaciones demuestran que ofrecer y seleccionar raciones más pequeñas puede reducir considerablemente el desperdicio de comida en el plato, incluso cuando solo una pequeña parte de los clientes las elige.",
       "options": {
@@ -1498,6 +1819,7 @@
       }
     },
     "Q5.1.2": {
+      "title": "Desperdicio en el bufé",
       "question": "En un bufé, ¿qué comportamiento es el que más contribuye a reducir el desperdicio de comida?",
       "explanation": "Las investigaciones realizadas en restaurantes de tipo «comé todo lo que quieras» han revelado que muchos consumidores se sirven más comida de la que realmente comen. Empezar con raciones más pequeñas ayuda a reducir el exceso de comida servida.",
       "options": {
@@ -1508,6 +1830,7 @@
       }
     },
     "Q5.1.3": {
+      "title": "Raciones más pequeñas",
       "question": "Un restaurante introduce una opción de menú de menor tamaño. ¿Qué resultado sería el más coherente con los datos?",
       "explanation": "Los estudios demuestran que ofrecer raciones más pequeñas puede reducir considerablemente el desperdicio, incluso cuando son relativamente pocos los clientes que las eligen.",
       "options": {
@@ -1518,6 +1841,7 @@
       }
     },
     "Q5.1.4": {
+      "title": "Desperdicio en el comedor",
       "question": "Ves un cartel en un comedor en el que se anima a los clientes a reducir el desperdicio de comida. ¿Qué reacción es la que más probablemente contribuya a reducir las sobras?",
       "explanation": "Los consumidores que se esfuerzan conscientemente por acabarse la comida que ya tienen en el plato suelen dejar menos comida sin comer. Cambiar de plato a mitad de la comida puede, de hecho, aumentar el desperdicio.",
       "options": {
@@ -1528,6 +1852,7 @@
       }
     },
     "Q5.1.5": {
+      "title": "¿Por qué sobra comida en el plato?",
       "question": "¿Qué factor es el que más probablemente contribuye al desperdicio de comida en los restaurantes y comedores?",
       "options": {
         "A": "Menús de temporada",
@@ -1538,6 +1863,7 @@
       "explanation": "Las raciones estandarizadas a menudo no tienen en cuenta las diferencias de apetito y se reconocen como una causa sistémica del desperdicio en el plato."
     },
     "Q5.2.1": {
+      "title": "Guardar las sobras",
       "question": "Te han sobrado restos de la cena y tienes pensado comértelos mañana. ¿Cuál es la mejor medida que puedes tomar en primer lugar para evitar tanto el desperdicio de alimentos como los riesgos para la seguridad alimentaria?",
       "explanation": "Las bacterias se multiplican rápidamente a temperatura ambiente. Refrigerarlas enseguida ayuda a que las sobras se mantengan en buen estado para su consumo y reduce la probabilidad de que acaben en la basura.",
       "options": {
@@ -1548,6 +1874,7 @@
       }
     },
     "Q5.2.2": {
+      "title": "Yogur con la fecha pasada",
       "question": "Encuentras un yogur cuya fecha de «consumo preferente» ha caducado hace dos días. ¿Cuál es la medida más adecuada?",
       "explanation": "La fecha de consumo preferente se refiere a la calidad de los alimentos, mientras que la fecha límite de consumo se refiere a la seguridad alimentaria. Muchos alimentos siguen siendo aptos para el consumo después de su fecha de consumo preferente si se han conservado correctamente.",
       "options": {
@@ -1558,6 +1885,7 @@
       }
     },
     "Q5.2.3": {
+      "title": "Conservar la sopa",
       "question": "Has preparado una olla grande de sopa que quieres guardar para más adelante esta semana. ¿Cuál es la mejor forma de conservarla?",
       "explanation": "Los recipientes más pequeños se enfrían más rápido que una olla grande, lo que reduce el tiempo que los alimentos permanecen a temperaturas que favorecen la proliferación bacteriana.",
       "options": {
@@ -1568,6 +1896,7 @@
       }
     },
     "Q5.2.4": {
+      "title": "Sobras de arroz sin riesgos",
       "question": "Te ha sobrado arroz y quieres aprovecharlo para la comida del día siguiente. ¿Cuál es la forma más segura de hacerlo?",
       "explanation": "El arroz cocido puede contener Bacillus cereus, una bacteria que puede multiplicarse rápidamente cuando el arroz se deja a temperatura ambiente. Una conservación adecuada ayuda a prevenir las intoxicaciones alimentarias y el desperdicio innecesario.",
       "options": {
@@ -1578,6 +1907,7 @@
       }
     },
     "Q5.2.5": {
+      "title": "Aprovechar las sobras",
       "question": "¿Qué hábito doméstico es el que más contribuye a reducir que las sobras de comida se conviertan en residuos?",
       "explanation": "Muchas sobras acaban convirtiéndose en residuos porque se olvidan o se sustituyen por alimentos recién comprados. Planificar activamente las comidas en función de las sobras disponibles ayuda a reducir el desperdicio de alimentos.",
       "options": {
@@ -1588,6 +1918,7 @@
       }
     },
     "Q5.3.1": {
+      "title": "Fecha de consumo preferente",
       "question": "Encuentras un yogur cuya fecha de «consumo preferente» ha caducado hace dos días. El envase no está abierto y se ha conservado correctamente en la nevera. ¿Cuál es la medida más adecuada?",
       "explanation": "Muchos consumidores confunden las fechas de «consumir preferentemente antes de» y «consumir antes de». La primera se refiere a la calidad, mientras que la segunda se refiere a la seguridad. La interpretación errónea de estas etiquetas contribuye de manera significativa al desperdicio evitable de alimentos en los hogares.",
       "options": {
@@ -1598,6 +1929,7 @@
       }
     },
     "Q5.3.2": {
+      "title": "Ofertas por cantidad",
       "question": "Un supermercado ofrece una promoción de «Compra 3 y llévate 2 gratis» en fresas frescas. ¿Qué pregunta deberías hacerte antes de aceptar la oferta?",
       "explanation": "Las promociones de compra múltiple suelen animar a los consumidores a comprar más de lo que pueden consumir. Los productos frescos son especialmente propensos al desperdicio debido a su corta vida útil.",
       "options": {
@@ -1608,6 +1940,7 @@
       }
     },
     "Q5.3.3": {
+      "title": "Alimentos a punto de caducar",
       "question": "Estás decidiendo qué hacer con los alimentos que están a punto de caducar. ¿Qué estrategia es la que probablemente evite un mayor desperdicio de alimentos?",
       "explanation": "Planificar las comidas y dar prioridad a los alimentos con menos tiempo de conservación son algunas de las estrategias domésticas más eficaces para reducir el desperdicio de alimentos.",
       "options": {
@@ -1618,6 +1951,7 @@
       }
     },
     "Q5.3.4": {
+      "title": "Evitar alimentos caducados",
       "question": "¿Qué hogar es probable que genere menos residuos procedentes de alimentos caducados?",
       "explanation": "Muchos alimentos caducan porque los consumidores se olvidan de lo que ya tienen en casa y compran productos que ya tienen. Conocer el estado de las existencias es una estrategia clave para prevenir el desperdicio de alimentos.",
       "options": {
@@ -1628,6 +1962,7 @@
       }
     },
     "Q5.3.5": {
+      "title": "Tirar la comida antes de tiempo",
       "question": "Una familia tira la comida poco después de que caduque porque le preocupa la seguridad alimentaria. Según los datos, ¿qué suele motivar este comportamiento?",
       "explanation": "Las investigaciones revelan que la interpretación errónea de las etiquetas con las fechas de caducidad de los alimentos y la preocupación por los posibles riesgos para la salud se encuentran entre las principales causas del desperdicio evitable de alimentos en los hogares europeos.",
       "options": {
@@ -1638,6 +1973,7 @@
       }
     },
     "Q5.4.1": {
+      "title": "Planificar cenas familiares",
       "question": "Estás organizando una cena familiar y quieres evitar el desperdicio innecesario de comida. ¿Qué enfoque te resultará más útil?",
       "explanation": "Preparar más comida de la necesaria es una de las causas más habituales del desperdicio alimentario en los hogares. Planificar las raciones en función de las necesidades reales ayuda a reducir el exceso de comida que quizá nunca se llegue a consumir.",
       "options": {
@@ -1648,6 +1984,7 @@
       }
     },
     "Q5.4.2": {
+      "title": "Descuentos en paquetes familiares",
       "question": "Un supermercado ofrece un gran descuento en un paquete familiar de alimentos frescos. ¿Cuál es la respuesta más sostenible?",
       "explanation": "Comprar más comida de la que se puede consumir es una causa habitual del desperdicio alimentario. Unos precios unitarios más bajos no implican necesariamente menos desperdicio si luego se tira la comida.",
       "options": {
@@ -1658,6 +1995,7 @@
       }
     },
     "Q5.4.3": {
+      "title": "Hábitos de compra",
       "question": "¿Qué hábito de compra es el que más probablemente contribuye al consumo excesivo y al desperdicio de alimentos?",
       "explanation": "Las compras impulsivas suelen dar lugar a un exceso de compras y aumentan la probabilidad de que los alimentos caduquen antes de que se consuman.",
       "options": {
@@ -1668,6 +2006,7 @@
       }
     },
     "Q5.4.4": {
+      "title": "Alimentos frescos desperdiciados",
       "question": "En un hogar se suele tirar pan, fruta y verdura. ¿Qué comportamiento subyacente es el que más probablemente contribuye a este problema?",
       "explanation": "Los productos frescos y los productos de panadería se encuentran entre los alimentos que más se desperdician, ya que tienen una vida útil relativamente corta y, a menudo, se compran en exceso.",
       "options": {
@@ -1678,6 +2017,7 @@
       }
     },
     "Q5.4.5": {
+      "title": "Consumo excesivo y desperdicio",
       "question": "¿Qué afirmación refleja mejor la relación entre el consumo excesivo y el desperdicio de alimentos?",
       "explanation": "El consumo excesivo y las compras excesivas suelen dar lugar a que los alimentos no se consuman, lo que aumenta tanto los residuos domésticos como el impacto medioambiental asociado a la producción de esos alimentos.",
       "options": {
@@ -1688,6 +2028,7 @@
       }
     },
     "Q6.1.1": {
+      "title": "Proteínas de forma sostenible",
       "question": "Quieres aumentar tu ingesta de proteínas y, al mismo tiempo, reducir el impacto medioambiental de tu dieta. ¿Qué cambio semanal se ajusta más a las pruebas científicas actuales?",
       "options": {
         "A": "Come raciones más abundantes de carne roja",
@@ -1698,6 +2039,7 @@
       "explanation": "Las legumbres, los frutos secos y los cereales integrales aportan proteínas y suelen tener un impacto ambiental menor que muchas fuentes de proteína de origen animal. Diversificar las fuentes de proteína es beneficioso tanto para la salud como para la sostenibilidad."
     },
     "Q6.1.2": {
+      "title": "Comparar almuerzos proteicos",
       "question": "Dos almuerzos contienen una cantidad similar de proteínas: Ensalada de lentejas y quinoa. Sándwich de embutidos. ¿Cuál de estas afirmaciones es la más correcta?",
       "explanation": "Los alimentos ricos en proteínas difieren en los nutrientes que contienen, como la fibra, el sodio, las grasas saturadas, las vitaminas y los minerales. Lo importante es el conjunto de proteínas que aportan.",
       "options": {
@@ -1708,6 +2050,7 @@
       }
     },
     "Q6.1.3": {
+      "title": "Aminoácidos esenciales",
       "question": "Una persona quiere reducir su consumo de carne, pero le preocupa no obtener todos los aminoácidos esenciales. ¿Qué estrategia es la más adecuada?",
       "options": {
         "A": "Sigue comiendo carne en todas las comidas",
@@ -1718,6 +2061,7 @@
       "explanation": "Las distintas proteínas vegetales se complementan entre sí. En dietas variadas, combinar diferentes fuentes de proteína vegetal suele aportar todos los aminoácidos esenciales."
     },
     "Q6.1.4": {
+      "title": "Declaraciones sobre proteínas",
       "question": "Estás comparando dos productos alimenticios: Producto A: «Fuente de proteínas». Producto B: «Alto contenido en proteínas». ¿Qué conclusión puedes sacar?",
       "options": {
         "A": "El producto B contiene necesariamente el doble de proteínas",
@@ -1728,6 +2072,7 @@
       "explanation": "Según la legislación de la UE sobre declaraciones nutricionales, un producto solo puede etiquetarse como «alto contenido en proteínas» cuando al menos el 20 % de su valor energético procede de las proteínas. «Fuente de proteínas» exige al menos un 12 %."
     },
     "Q6.1.5": {
+      "title": "Fuentes de proteínas equilibradas",
       "question": "¿Qué patrón alimentario es el que mejor se ajusta tanto a los objetivos de sostenibilidad como a las recomendaciones nutricionales actuales?",
       "options": {
         "A": "La mayor parte de las proteínas se obtienen de las carnes rojas y procesadas",
@@ -1738,6 +2083,7 @@
       "explanation": "Las dietas saludables y sostenibles se basan por lo general en fuentes de proteína diversas y no en una sola. Las legumbres, el pescado, los frutos secos, los lácteos y cantidades moderadas de carne pueden contribuir a una ingesta proteica adecuada y favorecer la calidad de la dieta."
     },
     "Q6.2.1": {
+      "title": "Grasas más saludables",
       "question": "Quieres mejorar la calidad de las grasas de tu dieta sin que las comidas dejen de ser satisfactorias. ¿Qué cambio se ajusta más a las recomendaciones actuales?",
       "explanation": "La OMS recomienda sustituir las grasas saturadas por grasas insaturadas siempre que sea posible. El aceite de oliva es rico en grasas insaturadas, mientras que la mantequilla es rica en grasas saturadas.",
       "options": {
@@ -1748,6 +2094,7 @@
       }
     },
     "Q6.2.2": {
+      "title": "Las grasas de dos almuerzos",
       "question": "Estás comparando dos almuerzos que contienen cantidades similares de proteínas: Ensalada de lentejas y nueces. Sándwich de embutidos. ¿Cuál de las siguientes afirmaciones es la más acertada?",
       "explanation": "Proteína de origen vegetal",
       "options": {
@@ -1758,6 +2105,7 @@
       }
     },
     "Q6.2.3": {
+      "title": "La etiqueta «Bajo en grasa»",
       "question": "En un envase pone «Bajo en grasa». ¿Cuál es la mejor interpretación?",
       "explanation": "Algunos productos bajos en grasa compensan esta característica añadiendo azúcares u otros ingredientes. Resulta más útil evaluar el perfil nutricional en su conjunto que centrarse únicamente en la grasa.",
       "options": {
@@ -1768,6 +2116,7 @@
       }
     },
     "Q6.2.4": {
+      "title": "Una cena cardiosaludable",
       "question": "¿Qué opción para la cena se ajusta mejor tanto a las recomendaciones para la salud cardíaca como a los hábitos alimenticios sostenibles?",
       "explanation": "El pescado aporta proteínas y grasas insaturadas, entre las que se incluyen los ácidos grasos omega-3. Sustituir parte de la carne roja y los productos cárnicos procesados por pescado tiene beneficios para la salud y puede contribuir a unos hábitos alimenticios más sostenibles.",
       "options": {
@@ -1778,6 +2127,7 @@
       }
     },
     "Q6.2.5": {
+      "title": "Grasas trans",
       "question": "Quieres reducir el riesgo asociado al consumo de grasas trans. ¿Qué alimento es el que más atención merece?",
       "explanation": "Las grasas trans producidas industrialmente suelen encontrarse en los alimentos fritos, los productos de panadería y algunos aperitivos envasados. La OMS recomienda mantener el consumo de grasas trans lo más bajo posible, ya que aumentan el riesgo cardiovascular y no aportan ningún beneficio conocido para la salud.",
       "options": {
@@ -1788,6 +2138,7 @@
       }
     },
     "Q6.3.1": {
+      "title": "Menos azúcares libres",
       "question": "Quieres reducir tu consumo de azúcares libres. ¿Qué cambio en el desayuno es el que probablemente tenga mayor impacto?",
       "explanation": "Las bebidas azucaradas se encuentran entre los principales factores que contribuyen a la ingesta de azúcares libres en muchos grupos de edad en Europa. Sustituirlas por agua es una de las formas más eficaces de reducir el consumo de azúcares libres.",
       "options": {
@@ -1798,6 +2149,7 @@
       }
     },
     "Q6.3.2": {
+      "title": "Azúcares ocultos",
       "question": "¿Qué producto puede seguir conteniendo cantidades considerables de azúcar, aunque muchos consumidores lo consideren saludable?",
       "explanation": "La OMS clasifica los azúcares presentes de forma natural en los zumos de fruta como azúcares libres. Por lo tanto, los zumos de fruta pueden contribuir de manera significativa a la ingesta diaria de azúcares.",
       "options": {
@@ -1808,6 +2160,7 @@
       }
     },
     "Q6.3.3": {
+      "title": "La indicación «Sin azúcares añadidos»",
       "question": "Estás comparando dos productos: Producto A: «Sin azúcares añadidos». Producto B: Versión normal. ¿Qué conclusión puedes sacar de la indicación del Producto A?",
       "explanation": "Los productos etiquetados como «sin azúcares añadidos» pueden contener azúcares de origen natural. La legislación de la UE exige que, cuando proceda, se indique en los productos la mención «contiene azúcares de origen natural».",
       "options": {
@@ -1818,6 +2171,7 @@
       }
     },
     "Q6.3.4": {
+      "title": "Tentempiés con poco azúcar",
       "question": "Quieres un tentempié que te aporte nutrientes sin depender en exceso de los azúcares libres. ¿Qué opción se ajusta mejor a ese objetivo?",
       "explanation": "La fruta, los productos lácteos naturales y los frutos secos aportan nutrientes como fibra, proteínas, vitaminas y minerales, mientras que muchos aperitivos dulces aportan principalmente azúcares libres y calorías.",
       "options": {
@@ -1828,6 +2182,7 @@
       }
     },
     "Q6.3.5": {
+      "title": "Recomendaciones sobre el azúcar",
       "question": "¿Cuál de las siguientes afirmaciones refleja mejor las recomendaciones actuales sobre el consumo de azúcar?",
       "explanation": "La EFSA concluyó que no era posible establecer un umbral seguro para los azúcares añadidos y libres, y recomienda mantener su consumo lo más bajo posible en el marco de una dieta saludable y nutricionalmente adecuada.",
       "options": {
@@ -1838,6 +2193,7 @@
       }
     },
     "Q6.4.1": {
+      "title": "Reducir el sodio",
       "question": "Quieres reducir tu consumo de sodio. ¿Qué cambio es el que probablemente tenga mayor impacto?",
       "explanation": "En la mayoría de los países desarrollados, entre el 70 % y el 80 % de la sal de la dieta procede de los alimentos procesados y de los que se consumen fuera de casa, y no de la sal que se añade durante la cocción o en la mesa.",
       "options": {
@@ -1848,6 +2204,7 @@
       }
     },
     "Q6.4.2": {
+      "title": "Comidas bajas en sodio",
       "question": "¿Qué comida es más probable que tenga un menor contenido en sodio?",
       "explanation": "Los alimentos frescos y mínimamente procesados suelen contener mucho menos sodio que las carnes procesadas, los productos instantáneos y las comidas preparadas.",
       "options": {
@@ -1858,6 +2215,7 @@
       }
     },
     "Q6.4.3": {
+      "title": "La etiqueta «bajo en sodio»",
       "question": "Un producto lleva la etiqueta «bajo en sodio». ¿Cuál es la mejor interpretación?",
       "explanation": "Reducir el consumo de sodio es beneficioso, pero una elección saludable también debe tener en cuenta otros factores, como la grasa, el azúcar, la fibra y la calidad general de los alimentos.",
       "options": {
@@ -1868,6 +2226,7 @@
       }
     },
     "Q6.4.4": {
+      "title": "Sabor sin sal",
       "question": "Quieres dar más sabor a tus comidas y, al mismo tiempo, reducir el consumo de sal. ¿Qué estrategia se ajusta más a las recomendaciones de la OMS?",
       "explanation": "La OMS recomienda utilizar hierbas y especias para dar sabor a los alimentos, en lugar de recurrir en exceso a la sal.",
       "options": {
@@ -1878,6 +2237,7 @@
       }
     },
     "Q6.4.5": {
+      "title": "Fuentes de sodio",
       "question": "¿Qué categoría de alimentos suele ser una de las que más contribuye a la ingesta de sodio en la dieta de los europeos?",
       "explanation": "En la población europea, entre los principales alimentos que contribuyen a la ingesta de sodio se encuentran el pan, la carne y los productos cárnicos, el queso y los productos lácteos.",
       "options": {
@@ -1888,6 +2248,7 @@
       }
     },
     "Q6.5.1": {
+      "title": "Un desayuno rico en fibra",
       "question": "Quieres aumentar tu consumo de fibra. ¿Qué desayuno te ayudará más a conseguirlo?",
       "explanation": "La avena, la fruta y los frutos secos son todos importantes",
       "options": {
@@ -1898,6 +2259,7 @@
       }
     },
     "Q6.5.2": {
+      "title": "La fibra de la pasta",
       "question": "Tienes que elegir entre dos productos de pasta. ¿Cuál de las dos opciones es más probable que contenga más fibra?",
       "explanation": "Los productos integrales conservan una mayor cantidad de la fibra natural del cereal que los productos de cereales refinados. La pasta de trigo integral suele ser una mejor",
       "options": {
@@ -1908,6 +2270,7 @@
       }
     },
     "Q6.5.3": {
+      "title": "Etiquetas de cereales integrales",
       "question": "Un envase afirma que contiene cereales integrales. ¿Qué información de la etiqueta sería la que mejor indicaría que esa afirmación es cierta?",
       "explanation": "Una forma práctica de identificar los alimentos integrales es comprobar si términos como «trigo integral», «avena integral» o «grano integral» aparecen al principio de la lista de ingredientes.",
       "options": {
@@ -1918,6 +2281,7 @@
       }
     },
     "Q6.5.4": {
+      "title": "Fibra y digestión",
       "question": "Una persona quiere mejorar su salud digestiva y prevenir el estreñimiento. ¿Qué hábito se ajusta más a las pruebas científicas actuales?",
       "explanation": "La fibra dietética favorece el funcionamiento intestinal, sobre todo cuando se combina con una ingesta adecuada de líquidos. Aumentar la ingesta de fibra de forma gradual también puede ayudar a reducir la hinchazón y las molestias temporales.",
       "options": {
@@ -1928,6 +2292,7 @@
       }
     },
     "Q6.5.5": {
+      "title": "Tipos de fibra dietética",
       "question": "¿Qué combinación de alimentos es la que más probabilidades tiene de aportar una variedad de diferentes tipos de fibra dietética?",
       "explanation": "Los distintos alimentos ricos en fibra aportan diferentes tipos de fibra soluble e insoluble. Consumir una variedad de legumbres, verduras, frutas y cereales integrales favorece la salud digestiva y la calidad general de la alimentación.",
       "options": {
@@ -1938,6 +2303,7 @@
       }
     },
     "Q6.6.1": {
+      "title": "Vitaminas sin suplementos",
       "question": "Quieres mejorar el aporte de vitaminas de tu dieta sin tomar suplementos. ¿Qué hábito se ajusta más a las recomendaciones actuales?",
       "explanation": "Las frutas y verduras aportan diferentes vitaminas, minerales, fibra y antioxidantes. Consumir una variedad de alimentos de origen vegetal ayuda a mejorar la ingesta general de micronutrientes y reduce el riesgo de sufrir carencias.",
       "options": {
@@ -1948,6 +2314,7 @@
       }
     },
     "Q6.6.2": {
+      "title": "Vitamina D a través de la alimentación",
       "question": "Una persona quiere mantener unos niveles adecuados de vitamina D a través de la alimentación. ¿Qué comida es la que más puede contribuir a ello?",
       "explanation": "Alimentación natural",
       "options": {
@@ -1958,6 +2325,7 @@
       }
     },
     "Q6.6.3": {
+      "title": "Vitaminas en la dieta vegana",
       "question": "Un consumidor sigue una dieta vegana estricta. ¿Qué vitamina merece una atención especial?",
       "explanation": "La vitamina B12 se encuentra de forma natural casi exclusivamente en alimentos de origen animal. Las personas que siguen dietas vegetarianas y, sobre todo, veganas, pueden necesitar alimentos enriquecidos o suplementos para mantener una ingesta adecuada.",
       "options": {
@@ -1968,6 +2336,7 @@
       }
     },
     "Q6.6.4": {
+      "title": "Tentempiés con vitamina C",
       "question": "¿Qué tentempié es el que más probabilidades tiene de ser una buena fuente de vitamina C?",
       "options": {
         "A": "Queso y galletas saladas",
@@ -1978,6 +2347,7 @@
       "explanation": "Frutas como las naranjas, los kiwis y las bayas, además de muchas verduras, son ricas en vitamina C, que contribuye al funcionamiento del sistema inmunitario y a la formación normal de colágeno."
     },
     "Q6.6.5": {
+      "title": "La cocción y las vitaminas",
       "question": "Puedes elegir entre dos guarniciones: verduras al vapor o verduras cocinadas durante mucho tiempo a alta temperatura. ¿Qué opción es más probable que conserve las vitaminas?",
       "explanation": "Una cocción excesiva puede reducir el contenido de algunas vitaminas. La OMS recomienda evitar cocinar demasiado las frutas y verduras para ayudar a conservar nutrientes importantes.",
       "options": {
@@ -1988,6 +2358,7 @@
       }
     },
     "Q6.7.1": {
+      "title": "Almuerzos ricos en nutrientes",
       "question": "Dos almuerzos contienen un número similar de calorías. ¿Cuál de los dos almuerzos es probable que sea más rico en nutrientes?",
       "explanation": "Las calorías miden la energía, pero la densidad nutricional refleja la cantidad de nutrientes beneficiosos que aporta un alimento. Una comida a base de legumbres, verduras y cereales integrales suele aportar más fibra, vitaminas, minerales y fitoquímicos que muchas alternativas altamente procesadas con un contenido calórico similar.",
       "options": {
@@ -1998,6 +2369,7 @@
       }
     },
     "Q6.7.2": {
+      "title": "Bebidas bajas en calorías",
       "question": "¿Qué bebida es la que más probabilidades tiene de reducir la ingesta de calorías innecesarias?",
       "explanation": "El agua proporciona hidratación sin aportar calorías, mientras que las bebidas azucaradas pueden aportar cantidades considerables de energía con un valor nutricional limitado.",
       "options": {
@@ -2008,6 +2380,7 @@
       }
     },
     "Q6.7.3": {
+      "title": "Aperitivos procesados y calorías",
       "question": "¿Por qué el consumo habitual de aperitivos muy procesados puede dificultar el control de las calorías?",
       "explanation": "Muchos alimentos ultraprocesados tienen un alto contenido calórico y es fácil consumirlos en exceso, lo que puede contribuir a una ingesta excesiva de calorías y a un aumento de peso poco saludable.",
       "options": {
@@ -2018,6 +2391,7 @@
       }
     },
     "Q6.7.4": {
+      "title": "Un consumo de calorías sostenible",
       "question": "¿Qué afirmación refleja mejor un enfoque sostenible del consumo de calorías?",
       "options": {
         "A": "Consumir el menor número posible de calorías",
@@ -2028,6 +2402,7 @@
       "explanation": "Una dieta saludable y sostenible no depende solo de las calorías. Implica cubrir las necesidades energéticas eligiendo alimentos que aporten nutrientes esenciales y evitando el consumo excesivo y el desperdicio innecesarios."
     },
     "Q6.7.5": {
+      "title": "Tentempiés que sacian",
       "question": "Cuatro tentempiés aportan aproximadamente el mismo número de calorías. ¿Cuál te mantendrá saciado durante más tiempo?",
       "explanation": "Los alimentos que contienen fibra, proteínas y grasas saludables suelen favorecer la saciedad más que los que se componen principalmente de azúcares añadidos.",
       "options": {
