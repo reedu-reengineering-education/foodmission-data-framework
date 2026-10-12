@@ -19,11 +19,12 @@ import {
 import { UserEventService } from '../../events/services/user-event.service';
 import { userRegisteredIdempotencyKey } from '../../auth/auth.constants';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
+import { DimensionLevelService } from '../../gamification/services/dimension-level.service';
 import {
   buildUserPreferences,
   extractOnboardingSurvey,
 } from '../../gamification/onboarding.utils';
-import type { Prisma, User } from '@prisma/client';
+import type { ContentLevel, Prisma, User } from '@prisma/client';
 import { ProgressStatus } from '../../common/progress-status';
 
 export interface UserProfile {
@@ -63,6 +64,7 @@ export class UserProfilesService {
     private readonly keycloakAdminService: KeycloakAdminService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
     private readonly userEventService: UserEventService,
+    private readonly dimensionLevelService: DimensionLevelService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -215,6 +217,7 @@ export class UserProfilesService {
     }
 
     if (Object.keys(updateData).length === 0) {
+      await this.applyDimensionLevels(user.id, payload);
       return this.formatUserProfile(user);
     }
 
@@ -235,8 +238,21 @@ export class UserProfilesService {
       updatedUser,
       payload,
     );
+    // After onboarding, so a survey in the same PATCH can't override the
+    // user's chosen levels.
+    await this.applyDimensionLevels(updatedUser.id, payload);
 
     return this.formatUserProfile(updatedUser);
+  }
+
+  private async applyDimensionLevels(
+    userId: string,
+    payload: Record<string, unknown>,
+  ): Promise<void> {
+    const levels = payload.dimensionLevels as
+      Array<{ dimensionCode: string; level: ContentLevel }> | undefined;
+    if (!levels?.length) return;
+    await this.dimensionLevelService.setLevels(userId, levels);
   }
 
   private async updateProfileWithQuestTransition(

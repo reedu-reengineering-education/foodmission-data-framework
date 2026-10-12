@@ -24,6 +24,7 @@ function build() {
       findUnique: jest.fn(),
       createMany: jest.fn(),
       updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      upsert: jest.fn(),
     },
     quest: {
       findMany: jest.fn().mockResolvedValue([{ id: 'q1' }, { id: 'q2' }]),
@@ -228,6 +229,65 @@ describe('DimensionLevelService', () => {
 
       expect(await service.levelUpIfComplete('u1', 'd-diet')).toBeNull();
       expect(userEventService.record).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setLevels', () => {
+    it('sets any level, up or down, only for the listed dimensions', async () => {
+      const { service, prisma, userEventService } = build();
+      prisma.user.findUnique.mockResolvedValue({ segment: null });
+
+      await service.setLevels('u1', [
+        { dimensionCode: 'DIET_CHANGES', level: ContentLevel.ADVANCED },
+        { dimensionCode: 'PRODUCTION_METHODS', level: ContentLevel.BEGINNER },
+      ]);
+
+      // Missing rows are created first, so every dimension has a level.
+      expect(prisma.userDimensionLevel.createMany).toHaveBeenCalled();
+      expect(prisma.userDimensionLevel.upsert).toHaveBeenCalledTimes(2);
+      expect(prisma.userDimensionLevel.upsert).toHaveBeenCalledWith({
+        where: { userId_dimensionId: { userId: 'u1', dimensionId: 'd-diet' } },
+        update: { level: ContentLevel.ADVANCED },
+        create: {
+          userId: 'u1',
+          dimensionId: 'd-diet',
+          level: ContentLevel.ADVANCED,
+        },
+      });
+      expect(prisma.userDimensionLevel.upsert).toHaveBeenCalledWith({
+        where: { userId_dimensionId: { userId: 'u1', dimensionId: 'd-prod' } },
+        update: { level: ContentLevel.BEGINNER },
+        create: {
+          userId: 'u1',
+          dimensionId: 'd-prod',
+          level: ContentLevel.BEGINNER,
+        },
+      });
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('rejects an unknown dimension', async () => {
+      const { service, prisma } = build();
+
+      await expect(
+        service.setLevels('u1', [
+          { dimensionCode: 'DIET_CHANGES', level: ContentLevel.ADVANCED },
+          { dimensionCode: 'NOPE', level: ContentLevel.ADVANCED },
+        ]),
+      ).rejects.toThrow('Unknown dimension: NOPE');
+      expect(prisma.userDimensionLevel.upsert).not.toHaveBeenCalled();
+    });
+
+    it('rejects a dimension listed twice', async () => {
+      const { service, prisma } = build();
+
+      await expect(
+        service.setLevels('u1', [
+          { dimensionCode: 'DIET_CHANGES', level: ContentLevel.ADVANCED },
+          { dimensionCode: 'DIET_CHANGES', level: ContentLevel.BEGINNER },
+        ]),
+      ).rejects.toThrow('Dimension listed more than once: DIET_CHANGES');
+      expect(prisma.userDimensionLevel.upsert).not.toHaveBeenCalled();
     });
   });
 });
