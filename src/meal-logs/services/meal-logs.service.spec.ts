@@ -7,7 +7,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { TypeOfMeal } from '@prisma/client';
+import { MealLogStatus, TypeOfMeal } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import {
   ResourceAlreadyExistsException,
@@ -36,6 +36,7 @@ describe('MealLogsService', () => {
     findById: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    confirmDraft: jest.fn(),
   };
 
   const mockMealRepository = {
@@ -244,6 +245,7 @@ describe('MealLogsService', () => {
       take: 5,
       where: {
         userId,
+        status: MealLogStatus.CONFIRMED,
         typeOfMeal: TypeOfMeal.LUNCH,
         mealFromPantry: true,
         eatenOut: false,
@@ -652,6 +654,383 @@ describe('MealLogsService', () => {
       expect(
         flagEvents().every((input) => input.metadata?.flagSource === 'user'),
       ).toBe(true);
+    });
+  });
+
+  describe('staged meal logs', () => {
+    const lentils = {
+      genericFood: {
+        nevoCode: 120,
+        vegan: true,
+        vegetarian: true,
+        meatOrFish: false,
+        legume: true,
+      },
+      foodProduct: null,
+    };
+    const chicken = {
+      genericFood: {
+        nevoCode: 300,
+        vegan: false,
+        vegetarian: false,
+        meatOrFish: true,
+        legume: false,
+      },
+      foodProduct: null,
+    };
+
+    const draftLog = (overrides: Record<string, unknown> = {}) => ({
+      id: 'log-1',
+      mealId: 'meal-1',
+      userId,
+      typeOfMeal: TypeOfMeal.DINNER,
+      timestamp: new Date('2026-09-17T19:00:00.000Z'),
+      mealFromPantry: false,
+      eatenOut: false,
+      flags: [
+        EventType.MEAL_VEGAN,
+        EventType.MEAL_MEAT_FREE,
+        EventType.MEAL_LEGUME_CONSUMED,
+      ],
+      swaps: [],
+      status: MealLogStatus.DRAFT,
+      derivedFlags: [
+        EventType.MEAL_MEAT_FREE,
+        EventType.MEAL_VEGAN,
+        EventType.MEAL_LEGUME_CONSUMED,
+      ],
+      confirmedAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...overrides,
+    });
+
+    const recorded = () =>
+      userEventService.record.mock.calls.map(([input]) => input);
+
+    beforeEach(() => {
+      mockMealRepository.findById.mockResolvedValue({ id: 'meal-1', userId });
+    });
+
+    it('stores a draft with its derived flags and records nothing', async () => {
+      mockMealItemRepository.findByMealId.mockResolvedValue([lentils]);
+      mockMealLogRepository.create.mockImplementation((data) =>
+        Promise.resolve({ ...draftLog(), ...data }),
+      );
+
+      const result = await service.create(
+        { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER, draft: true },
+        userId,
+      );
+
+      const data = mockMealLogRepository.create.mock.calls[0][0];
+      expect(data).toMatchObject({
+        status: MealLogStatus.DRAFT,
+        flags: expect.arrayContaining([
+          EventType.MEAL_VEGAN,
+          EventType.MEAL_LEGUME_CONSUMED,
+        ]),
+        derivedFlags: expect.arrayContaining([
+          EventType.MEAL_VEGAN,
+          EventType.MEAL_LEGUME_CONSUMED,
+        ]),
+      });
+      expect(data).not.toHaveProperty('draft');
+      expect(result.status).toBe(MealLogStatus.DRAFT);
+      expect(userEventService.record).not.toHaveBeenCalled();
+      expect(progressWheelService.recordImpact).not.toHaveBeenCalled();
+    });
+
+    it('creates CONFIRMED and records events without draft', async () => {
+      mockMealLogRepository.create.mockImplementation((data) =>
+        Promise.resolve({ ...draftLog(), ...data }),
+      );
+
+      await service.create(
+        { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+        userId,
+      );
+
+      expect(mockMealLogRepository.create.mock.calls[0][0].status).toBe(
+        MealLogStatus.CONFIRMED,
+      );
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({ eventType: EventType.MEAL_LOGGED }),
+      );
+    });
+
+    describe('confirm', () => {
+      it('records the reviewed flags with both/user sources, dated at the meal', async () => {
+        const draft = draftLog();
+        mockMealLogRepository.findById
+          .mockResolvedValueOnce(draft)
+          .mockResolvedValueOnce({
+            ...draft,
+            flags: [
+              EventType.MEAL_LEGUME_CONSUMED,
+              EventType.MEAL_LOCAL_PRODUCE,
+            ],
+            status: MealLogStatus.CONFIRMED,
+          });
+        mockMealLogRepository.confirmDraft.mockResolvedValue(true);
+
+        // The user drops the vegan proposal and adds local produce.
+        const result = await service.confirm(
+          'log-1',
+          {
+            flags: [
+              EventType.MEAL_LEGUME_CONSUMED,
+              EventType.MEAL_LOCAL_PRODUCE,
+            ],
+          },
+          userId,
+        );
+
+        expect(mockMealLogRepository.confirmDraft).toHaveBeenCalledWith(
+          'log-1',
+          expect.any(Date),
+          {
+            flags: [
+              EventType.MEAL_LEGUME_CONSUMED,
+              EventType.MEAL_LOCAL_PRODUCE,
+            ],
+            swaps: [],
+          },
+        );
+        expect(result.status).toBe(MealLogStatus.CONFIRMED);
+
+        const events = recorded();
+        expect(events.map((e) => e.eventType).sort()).toEqual(
+          [
+            EventType.MEAL_LOGGED,
+            EventType.MEAL_LEGUME_CONSUMED,
+            EventType.MEAL_LOCAL_PRODUCE,
+          ].sort(),
+        );
+        const source = (type: string) =>
+          (
+            events.find((e) => e.eventType === type)?.metadata as {
+              flagSource?: string;
+            }
+          )?.flagSource;
+        expect(source(EventType.MEAL_LEGUME_CONSUMED)).toBe('both');
+        expect(source(EventType.MEAL_LOCAL_PRODUCE)).toBe('user');
+        for (const event of events) {
+          expect(event.createdAt).toEqual(draft.timestamp);
+        }
+        expect(
+          events.find((e) => e.eventType === EventType.MEAL_LOGGED)?.metadata,
+        ).toMatchObject({ body: { reviewed: true } });
+      });
+
+      it('keeps the draft flags when none are given', async () => {
+        const draft = draftLog();
+        mockMealLogRepository.findById.mockResolvedValue(draft);
+        mockMealLogRepository.confirmDraft.mockResolvedValue(true);
+
+        await service.confirm('log-1', {}, userId);
+
+        expect(mockMealLogRepository.confirmDraft).toHaveBeenCalledWith(
+          'log-1',
+          expect.any(Date),
+          { flags: draft.flags, swaps: [] },
+        );
+      });
+
+      it('records nothing when a concurrent confirm won', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(draftLog());
+        mockMealLogRepository.confirmDraft.mockResolvedValue(false);
+
+        await service.confirm('log-1', {}, userId);
+
+        expect(userEventService.record).not.toHaveBeenCalled();
+        expect(progressWheelService.recordImpact).not.toHaveBeenCalled();
+      });
+
+      it('returns a confirmed log unchanged', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(
+          draftLog({ status: MealLogStatus.CONFIRMED }),
+        );
+
+        const result = await service.confirm('log-1', {}, userId);
+
+        expect(result.status).toBe(MealLogStatus.CONFIRMED);
+        expect(mockMealLogRepository.confirmDraft).not.toHaveBeenCalled();
+        expect(userEventService.record).not.toHaveBeenCalled();
+      });
+
+      it('rejects conflicting or empty final facts', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(
+          draftLog({ mealId: null }),
+        );
+
+        await expect(
+          service.confirm(
+            'log-1',
+            { flags: [EventType.MEAL_MEAT_CONSUMED, EventType.MEAL_VEGAN] },
+            userId,
+          ),
+        ).rejects.toThrow(BadRequestException);
+        await expect(
+          service.confirm('log-1', { flags: [], swaps: [] }, userId),
+        ).rejects.toThrow(BadRequestException);
+        expect(mockMealLogRepository.confirmDraft).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('update', () => {
+      it('changes the flags of a draft', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(draftLog());
+        mockMealLogRepository.update.mockImplementation((_id, data) =>
+          Promise.resolve({ ...draftLog(), ...data }),
+        );
+
+        await service.update(
+          'log-1',
+          { flags: [EventType.MEAL_LEGUME_CONSUMED] },
+          userId,
+        );
+
+        expect(mockMealLogRepository.update).toHaveBeenCalledWith(
+          'log-1',
+          expect.objectContaining({
+            flags: [EventType.MEAL_LEGUME_CONSUMED],
+          }),
+        );
+        expect(userEventService.record).not.toHaveBeenCalled();
+      });
+
+      it('rejects flag changes on a confirmed log', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(
+          draftLog({ status: MealLogStatus.CONFIRMED }),
+        );
+
+        await expect(
+          service.update(
+            'log-1',
+            { flags: [EventType.MEAL_LEGUME_CONSUMED] },
+            userId,
+          ),
+        ).rejects.toThrow(BadRequestException);
+        expect(mockMealLogRepository.update).not.toHaveBeenCalled();
+      });
+
+      it('derives again when a draft gets another meal, keeping user additions', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(
+          draftLog({
+            flags: [
+              EventType.MEAL_VEGAN,
+              EventType.MEAL_MEAT_FREE,
+              EventType.MEAL_LEGUME_CONSUMED,
+              EventType.MEAL_LOCAL_PRODUCE,
+            ],
+          }),
+        );
+        mockMealItemRepository.findByMealId.mockResolvedValue([chicken]);
+        mockMealLogRepository.update.mockImplementation((_id, data) =>
+          Promise.resolve({ ...draftLog(), ...data }),
+        );
+
+        await service.update('log-1', { mealId: 'meal-2' }, userId);
+
+        const data = mockMealLogRepository.update.mock.calls[0][1];
+        expect(data.derivedFlags).toEqual([EventType.MEAL_MEAT_CONSUMED]);
+        expect([...data.flags].sort()).toEqual(
+          [EventType.MEAL_LOCAL_PRODUCE, EventType.MEAL_MEAT_CONSUMED].sort(),
+        );
+      });
+    });
+
+    describe("findOne refreshes a draft's proposals", () => {
+      it('updates flags when the meal items changed', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(
+          draftLog({
+            flags: [
+              EventType.MEAL_VEGAN,
+              EventType.MEAL_LEGUME_CONSUMED,
+              EventType.MEAL_LOCAL_PRODUCE,
+            ],
+            derivedFlags: [
+              EventType.MEAL_VEGAN,
+              EventType.MEAL_LEGUME_CONSUMED,
+            ],
+          }),
+        );
+        mockMealItemRepository.findByMealId.mockResolvedValue([
+          lentils,
+          chicken,
+        ]);
+        mockMealLogRepository.update.mockImplementation((_id, data) =>
+          Promise.resolve({ ...draftLog(), ...data }),
+        );
+
+        const result = await service.findOne('log-1', userId);
+
+        const data = mockMealLogRepository.update.mock.calls[0][1];
+        expect([...data.derivedFlags].sort()).toEqual(
+          [EventType.MEAL_MEAT_CONSUMED, EventType.MEAL_LEGUME_CONSUMED].sort(),
+        );
+        expect([...data.flags].sort()).toEqual(
+          [
+            EventType.MEAL_LEGUME_CONSUMED,
+            EventType.MEAL_LOCAL_PRODUCE,
+            EventType.MEAL_MEAT_CONSUMED,
+          ].sort(),
+        );
+        expect(result.flags).toEqual(data.flags);
+        expect(userEventService.record).not.toHaveBeenCalled();
+      });
+
+      it('does not write when nothing changed', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(draftLog());
+        mockMealItemRepository.findByMealId.mockResolvedValue([lentils]);
+
+        await service.findOne('log-1', userId);
+
+        expect(mockMealLogRepository.update).not.toHaveBeenCalled();
+      });
+
+      it('keeps the stored draft when deriving fails', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(draftLog());
+        mockMealItemRepository.findByMealId.mockRejectedValue(
+          new Error('db down'),
+        );
+
+        const result = await service.findOne('log-1', userId);
+
+        expect(mockMealLogRepository.update).not.toHaveBeenCalled();
+        expect(result.flags).toEqual(draftLog().flags);
+      });
+
+      it('leaves confirmed logs alone', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(
+          draftLog({ status: MealLogStatus.CONFIRMED }),
+        );
+
+        await service.findOne('log-1', userId);
+
+        expect(mockMealItemRepository.findByMealId).not.toHaveBeenCalled();
+      });
+    });
+
+    it('lists drafts only when asked for', async () => {
+      mockMealLogRepository.findWithPagination.mockResolvedValue({
+        data: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      });
+
+      await service.findAll(userId, {
+        status: MealLogStatus.DRAFT,
+        page: 1,
+        limit: 10,
+      });
+
+      expect(
+        mockMealLogRepository.findWithPagination.mock.calls[0][0].where,
+      ).toMatchObject({ status: MealLogStatus.DRAFT });
     });
   });
 });
