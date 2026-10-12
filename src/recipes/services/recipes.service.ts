@@ -205,7 +205,7 @@ export class RecipesService {
    * NEVO name. Ingredients without a link, or without a translation row for
    * the locale, keep their stored (English) name.
    */
-  private async localizeIngredients<T extends object>(
+  async localizeIngredients<T extends object>(
     recipes: T[],
     lang?: string,
   ): Promise<T[]> {
