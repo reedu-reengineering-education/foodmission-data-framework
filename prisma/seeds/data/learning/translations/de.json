@@ -3317,11 +3317,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER.1": {
-      "name": "Lerne, deine Mahlzeiten zu protokollieren",
-      "title": "Ernährungsumstellung – Anfänger",
-      "description": "Trage mindestens eine Mahlzeit pro Tag ein."
-    },
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Eine Fleischmahlzeit einsparen",
       "title": "Ernährungsumstellung – Anfänger",

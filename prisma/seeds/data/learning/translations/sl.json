@@ -3317,11 +3317,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER.1": {
-      "name": "Naučite se beležiti svojo hrano",
-      "title": "Spremembe prehrane – začetnik",
-      "description": "Zabeležite vsaj en obrok na dan."
-    },
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Opustite en mesni obrok",
       "title": "Spremembe prehrane – začetnik",

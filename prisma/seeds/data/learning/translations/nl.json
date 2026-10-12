@@ -3317,11 +3317,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER.1": {
-      "name": "Leer je eetpatroon bij te houden",
-      "title": "Veranderingen in het eetpatroon - Beginners",
-      "description": "Noteer minstens één maaltijd per dag."
-    },
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Eén vleesmaaltijd minder",
       "title": "Veranderingen in het eetpatroon - Beginner",

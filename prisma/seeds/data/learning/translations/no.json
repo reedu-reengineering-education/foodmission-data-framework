@@ -3317,11 +3317,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER.1": {
-      "name": "Lær å føre matdagbok",
-      "title": "Endringer i kostholdet – Nybegynner",
-      "description": "Registrer minst ett måltid per dag."
-    },
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Kutt ut ett måltid med kjøtt",
       "title": "Endringer i kostholdet – Nybegynner",

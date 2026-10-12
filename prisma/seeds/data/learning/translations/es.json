@@ -3317,11 +3317,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER.1": {
-      "name": "Aprende a llevar un registro de lo que comes",
-      "title": "Cambios en la dieta - Nivel principiante",
-      "description": "Anota al menos una comida al día."
-    },
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Reducir una comida a base de carne",
       "title": "Cambios en la dieta - Nivel principiante",

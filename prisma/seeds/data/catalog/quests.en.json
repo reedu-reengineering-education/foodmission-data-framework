@@ -1,7 +1,7 @@
 [
   {
     "id": "1.1",
-    "name": "Reduce One Meat Meal",
+    "name": "Know Your Meat Habits",
     "code": "QUEST.DIET_CHANGES.BEGINNER.2",
     "dimensionCode": "DIET_CHANGES",
     "level": "BEGINNER",
@@ -58,11 +58,11 @@
         "sortOrder": 8
       }
     ],
-    "description": "Eat one fewer meat meal than during your previous week, while keeping in mind that eating less red meat is one of the most effective ways to reduce the environmental impact of your diet."
+    "description": "Discover how often meat appears in your meals and explore its impact on the food system. Understanding current habits is the first step toward improving both personal health and environmental sustainability, since reducing meat consumption can lower greenhouse-gas emissions, land use and pressure on natural resources while supporting a healthier dietary pattern."
   },
   {
     "id": "1.2",
-    "name": "First Sustainable Swap",
+    "name": "Your First Protein Swap",
     "code": "QUEST.DIET_CHANGES.BEGINNER.3",
     "dimensionCode": "DIET_CHANGES",
     "level": "BEGINNER",
@@ -109,11 +109,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Log 2 protein swap actions, while keeping in mind that replacing part of your meat intake with legumes can reduce the climate impact of your diet."
+    "description": "Explore simple alternatives to meat such as legumes, fish, eggs, dairy products, nuts and seeds. Diversifying protein sources helps improve nutrition while reducing pressure on land, water and climate resources."
   },
   {
     "id": "1.3",
-    "name": "Discover Lentils",
+    "name": "Discover New Staples",
     "code": "QUEST.DIET_CHANGES.BEGINNER.4",
     "dimensionCode": "DIET_CHANGES",
     "level": "BEGINNER",
@@ -150,11 +150,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Explore content and identify two nutritional or environmental benefits of lentils, while keeping in mind that quinoa contains all nine essential amino acids, making it a complete plant protein."
+    "description": "Take your first step beyond common staples such as wheat and rice. Exploring alternative staples can improve dietary diversity and introduce foods that contribute to more resilient agricultural systems."
   },
   {
     "id": "1.4",
-    "name": "Two meat free days",
+    "name": "Build a Meat-Lighter Routine",
     "code": "QUEST.DIET_CHANGES.INTERMEDIATE.1",
     "dimensionCode": "DIET_CHANGES",
     "level": "INTERMEDIATE",
@@ -196,11 +196,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Complete two meat-free days, while keeping in mind that producing beef requires much more land than producing plant proteins such as peas or tofu."
+    "description": "Start replacing some meat-based meals with alternatives and experiment with flexible dietary changes. Gradually reducing meat can improve diet quality, diversify nutrient intake and lower the environmental footprint associated with livestock production."
   },
   {
     "id": "1.5",
-    "name": "Sustainable Swap Builder",
+    "name": "Expand Your Protein Choices",
     "code": "QUEST.DIET_CHANGES.INTERMEDIATE.2",
     "dimensionCode": "DIET_CHANGES",
     "level": "INTERMEDIATE",
@@ -252,11 +252,11 @@
         "sortOrder": 8
       }
     ],
-    "description": "Log 4 protein swap actions, while keeping in mind that beans, lentils, peas and chickpeas are among the most sustainable protein sources available."
+    "description": "Build confidence using a wider variety of protein-rich foods and learn how different protein sources affect health and sustainability. A more varied protein intake supports nutritional adequacy while reducing dependence on high-impact foods."
   },
   {
     "id": "1.6",
-    "name": "Legume Routine",
+    "name": "Diversify Your Plate",
     "code": "QUEST.DIET_CHANGES.INTERMEDIATE.3",
     "dimensionCode": "DIET_CHANGES",
     "level": "INTERMEDIATE",
@@ -313,11 +313,11 @@
         "sortOrder": 9
       }
     ],
-    "description": "Include legumes in four meals, while keeping in mind that millets are highly resilient crops that can grow in hot, dry conditions with little water."
+    "description": "Experiment with alternative grains and staple foods in everyday meals. Greater dietary diversity can improve nutrient intake while helping reduce dependence on a small number of globally dominant crops."
   },
   {
     "id": "1.7",
-    "name": "Stay in the Green Zone",
+    "name": "Master Sustainable Protein Choices",
     "code": "QUEST.DIET_CHANGES.ADVANCED.1",
     "dimensionCode": "DIET_CHANGES",
     "level": "ADVANCED",
@@ -359,11 +359,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Remain below four meat meals per week, while keeping in mind that livestock production uses most agricultural land globally while supplying a much smaller share of calories and protein."
+    "description": "Develop a lasting dietary pattern with a lower reliance on meat. By understanding the wider impacts of protein choices, you can support biodiversity, climate goals and resource conservation while maintaining a balanced and healthy diet."
   },
   {
     "id": "1.8",
-    "name": "Plant Protein Majority",
+    "name": "Protein Diversity Champion",
     "code": "QUEST.DIET_CHANGES.ADVANCED.2",
     "dimensionCode": "DIET_CHANGES",
     "level": "ADVANCED",
@@ -410,11 +410,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Obtain most protein-containing meals from non-meat protein sources, while keeping in mind that pulses naturally improve soil fertility by fixing nitrogen from the air, reducing the need for fertilizer."
+    "description": "Create meals that combine nutrition, variety and sustainability. By understanding the strengths of different protein sources, you can support both long-term health and resilient food systems."
   },
   {
     "id": "1.9",
-    "name": "Alternative Staples Habit",
+    "name": "Future-Proof Your Plate",
     "code": "QUEST.DIET_CHANGES.ADVANCED.3",
     "dimensionCode": "DIET_CHANGES",
     "level": "ADVANCED",
@@ -471,11 +471,11 @@
         "sortOrder": 9
       }
     ],
-    "description": "Include alternative staple foods in at least five meals, while keeping in mind that quinoa is now cultivated in more than 70 countries, helping diversify global food production."
+    "description": "Learn how alternative staple foods contribute to food security, climate resilience and agricultural diversity. By broadening your dietary choices, you support both personal health and more sustainable food systems."
   },
   {
     "id": "2.1",
-    "name": "Origin Tracker",
+    "name": "See the Land Behind Your Food",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.1",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -522,11 +522,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Look for the country of origin for at least 5 food products consumed during the week, while keeping in mind that about half of the world's habitable land is used for agriculture."
+    "description": "Discover how different foods require different amounts of land to produce. Understanding land use helps explain how food choices influence forests, ecosystems and biodiversity."
   },
   {
     "id": "2.2",
-    "name": "Water Behind Your Food",
+    "name": "Every Drop Counts",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.2",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -568,11 +568,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Around 70% of global freshwater withdrawals are used for agriculture."
+    "description": "Explore how much water is hidden behind the foods you eat. Understanding water footprints helps connect everyday meals with one of the planet's most important resources."
   },
   {
     "id": "2.3",
-    "name": "Climate Cost of Meals",
+    "name": "The Energy Behind Your Food",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.3",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -614,11 +614,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Food systems generate about one-third of global greenhouse gas emissions."
+    "description": "Learn how energy is used to produce, process and transport food. Understanding these hidden energy costs helps explain why food choices matter for sustainability."
   },
   {
     "id": "2.4",
-    "name": "Food Miles Explained",
+    "name": "Climate-Friendly Eating",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.4",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -660,11 +660,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Global food transport generates about 3 billion tonnes of CO₂-equivalent emissions each year."
+    "description": "Discover how food choices contribute to greenhouse-gas emissions. Understanding carbon footprints helps identify simple actions that support both planetary and human health."
   },
   {
     "id": "2.5",
-    "name": "Product choices - Beginner",
+    "name": "Follow the Food Journey",
     "code": "QUEST.PRODUCT_CHOICES.BEGINNER.5",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "BEGINNER",
@@ -686,11 +686,11 @@
         "sortOrder": 2
       }
     ],
-    "description": "Make practical sustainable food choices in daily life."
+    "description": "Discover how food travels from farm to fork and why transportation matters for sustainability. Understanding food miles helps reveal part of the environmental story behind food."
   },
   {
     "id": "2.6",
-    "name": "Diverse Origins",
+    "name": "Choose Land-Efficient Foods",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -732,11 +732,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Track the origins of foods consumed and log at least 3 meals with locally produced products, while keeping in mind that beef is one of the most land-intensive foods people consume."
+    "description": "Learn to compare foods according to their impact on agricultural land. Choosing land-efficient foods can reduce pressure on natural habitats while supporting a healthy and varied diet."
   },
   {
     "id": "2.7",
-    "name": "Wasted Food, Wasted Water",
+    "name": "Eat with Water in Mind",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -778,11 +778,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Food waste also wastes enormous amounts of water used to grow food."
+    "description": "Learn how food choices and food waste influence freshwater use. Conserving water supports long-term food security while reducing environmental pressures."
   },
   {
     "id": "2.8",
-    "name": "Carbon Footprint of Meat",
+    "name": "Reduce Energy from Farm to Fork",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -824,11 +824,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Meat, especially beef and lamb, has a much higher carbon footprint than most plant foods."
+    "description": "Explore ways to lower the energy footprint of your meals through food choices and waste reduction. Lower energy demand often means lower environmental impacts."
   },
   {
     "id": "2.9",
-    "name": "Transport Emissions Explorer",
+    "name": "Cut Your Food Carbon Footprint",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -875,11 +875,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Nearly one-fifth of the greenhouse gas emissions from the global food system come from transporting food."
+    "description": "Learn practical strategies to reduce emissions through everyday dietary decisions. Many climate-friendly choices also promote healthier eating patterns."
   },
   {
     "id": "2.10",
-    "name": "Product choices - Intermediate",
+    "name": "Look Beyond Food Miles",
     "code": "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "INTERMEDIATE",
@@ -906,11 +906,11 @@
         "sortOrder": 3
       }
     ],
-    "description": "Make practical sustainable food choices in daily life."
+    "description": "Explore how transport, refrigeration, seasonality and production methods interact. Distance alone does not determine sustainability, and informed consumers understand the wider picture."
   },
   {
     "id": "2.11",
-    "name": "Beyond Country of Origin",
+    "name": "Protect Nature Through Food Choices",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.1",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -947,11 +947,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "When selecting products for at least 3 meals, consider both country of origin and one additional sustainability indicator (e.g., certification, production method, seasonality), while keeping in mind that most agricultural land is used for livestock grazing or growing animal feed."
+    "description": "Understand how food systems compete for land and how dietary decisions affect biodiversity conservation. Your choices can help protect ecosystems while supporting sustainable food production."
   },
   {
     "id": "2.12",
-    "name": "Water Footprint Deep Dive",
+    "name": "Guard Our Water Resources",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.2",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -993,11 +993,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "The water footprint of your diet depends heavily on what you eat."
+    "description": "Develop a deeper understanding of water scarcity and sustainable consumption. Smart food choices can protect freshwater ecosystems while supporting healthy diets."
   },
   {
     "id": "2.13",
-    "name": "Emissions Beyond the Plate",
+    "name": "Power a Sustainable Food System",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.3",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -1039,11 +1039,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Food waste generates billions of tonnes of CO2-equivalent emissions annually."
+    "description": "Understand how food systems use energy and how consumption patterns influence resource demand. Smarter consumption benefits both the environment and future food security."
   },
   {
     "id": "2.14",
-    "name": "Cold Chain and Freight",
+    "name": "Become a Low-Carbon Food Champion",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.4",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -1080,11 +1080,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Although food accounts for only about 18% of global freight transport distances, it produces around 27% of freight-related emissions."
+    "description": "Develop a deeper understanding of climate impacts across food systems. Your choices can contribute to a healthier lifestyle while supporting climate mitigation goals."
   },
   {
     "id": "2.15",
-    "name": "Product choices - Advanced",
+    "name": "Think Beyond Distance",
     "code": "QUEST.PRODUCT_CHOICES.ADVANCED.5",
     "dimensionCode": "PRODUCT_CHOICES",
     "level": "ADVANCED",
@@ -1111,11 +1111,11 @@
         "sortOrder": 3
       }
     ],
-    "description": "Make practical sustainable food choices in daily life."
+    "description": "Learn how global supply chains influence environmental impacts. Understanding transport systems can help you make smarter choices that support sustainability and food quality."
   },
   {
     "id": "3.1",
-    "name": "NOVA Explorer",
+    "name": "Decode Food Processing",
     "code": "QUEST.PRODUCTION_METHODS.BEGINNER.1",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "BEGINNER",
@@ -1187,11 +1187,11 @@
         "sortOrder": 12
       }
     ],
-    "description": "Look for the NOVA classification of at least 3 food products, while keeping in mind that food processing can improve food safety and extend shelf life."
+    "description": "Learn how foods are transformed before they reach your plate. Food processing affects nutrition, convenience, shelf life and sustainability."
   },
   {
     "id": "3.2",
-    "name": "Local Food, Closer Look",
+    "name": "Know Where It Comes From",
     "code": "QUEST.PRODUCTION_METHODS.BEGINNER.2",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "BEGINNER",
@@ -1223,11 +1223,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Short supply chains can support local economies and resilience."
+    "description": "Start paying attention to where food is produced. Country-of-origin information can help consumers better understand food systems and supply chains."
   },
   {
     "id": "3.3",
-    "name": "Production Method Observer",
+    "name": "Farming Behind the Label",
     "code": "QUEST.PRODUCTION_METHODS.BEGINNER.3",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "BEGINNER",
@@ -1264,11 +1264,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Look for information about how at least five food products were produced whenever this information is available, while keeping in mind that organic farms support higher biodiversity than conventional farms."
+    "description": "Discover how food is grown and produced. Agricultural practices influence biodiversity, soil health, water resources and food quality"
   },
   {
     "id": "3.4",
-    "name": "One Food, Many Steps",
+    "name": "Food Innovation for the Future",
     "code": "QUEST.PRODUCTION_METHODS.BEGINNER.4",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "BEGINNER",
@@ -1305,11 +1305,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Pick one food product and explore of what may have happened between the raw ingredients and the final product you purchased, while keeping in mind that diversifying crops and breeds can increase food-system resilience."
+    "description": "Discover how breeding and innovation help food systems adapt to future challenges. New technologies can contribute to sustainability and food security."
   },
   {
     "id": "3.5",
-    "name": "Fair Trade Basics",
+    "name": "The People Behind Your Food",
     "code": "QUEST.PRODUCTION_METHODS.BEGINNER.5",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "BEGINNER",
@@ -1346,11 +1346,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Agriculture accounts for most child labour cases worldwide."
+    "description": "Discover the human side of food production. Sustainable food systems depend not only on environmental protection but also on fair treatment of workers and producers."
   },
   {
     "id": "3.6",
-    "name": "Compare Processing Levels",
+    "name": "Understand Processing Trade-Offs",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -1397,11 +1397,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Compare foods with different NOVA classifications on at least three products belonging to the same food category (e.g. three types of cheese), while keeping in mind that different processing methods use very different amounts of energy."
+    "description": "Explore the benefits and drawbacks of different processing levels. Recognizing these trade-offs helps support healthier and more sustainable choices."
   },
   {
     "id": "3.7",
-    "name": "What Origin Labels Tell You",
+    "name": "Beyond Food Miles",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -1438,11 +1438,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Food origin can provide useful information about traceability and sustainability."
+    "description": "Learn why food origin is only one part of sustainability. Production methods, seasonality and transport all influence environmental performance."
   },
   {
     "id": "3.8",
-    "name": "Production-Informed Choice",
+    "name": "Choose Better Farming",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -1484,11 +1484,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Use NOVA classification, Green-Score or ingredient-list information to guide at least five purchasing decisions. Use packaging, Open Food Facts or food-scanning applications, while keeping in mind that flower strips and pollinator habitats can support biodiversity on farms."
+    "description": "Learn how production methods influence sustainability and health outcomes. Understanding farming systems helps support more informed purchasing decisions."
   },
   {
     "id": "3.9",
-    "name": "Breeding for Lower Impact",
+    "name": "Innovation on Your Plate",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -1525,11 +1525,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Breeding animals for lower methane emissions can reduce livestock impacts."
+    "description": "Learn how breeding, improved genetics and alternative proteins affect food production. These innovations aim to produce food more efficiently and sustainably."
   },
   {
     "id": "3.10",
-    "name": "The Social Side of Food",
+    "name": "Shop with Social Impact in Mind",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -1561,11 +1561,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Food-system sustainability includes social and labour conditions."
+    "description": "Learn how labels, certifications and sourcing practices relate to labour conditions and livelihoods. Consumer choices can influence social sustainability."
   },
   {
     "id": "3.11",
-    "name": "Multiple Indicators Tracker",
+    "name": "Reading Between the Labels",
     "code": "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "INTERMEDIATE",
@@ -1592,11 +1592,11 @@
         "sortOrder": 3
       }
     ],
-    "description": "For four purchased foods, compare NOVA classification with either Green-Score or Nutri-Score."
+    "description": "Food labels can provide valuable information about nutrition, processing, and sustainability, but no single label tells the whole story. In this quest, you will learn how to compare different indicators such as NOVA classifications, Nutri-Score, Green-Score, and ingredient lists to make more informed food choices. Understanding how foods are produced and evaluated can help you choose products that support both your health and a more sustainable food system."
   },
   {
     "id": "3.12",
-    "name": "Multi-Criteria Decisions",
+    "name": "Think Beyond Processing Labels",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.1",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -1658,11 +1658,11 @@
         "sortOrder": 10
       }
     ],
-    "description": "For at least three purchases, consider both NOVA classification and Green-Score before making a decision, while keeping in mind that not all processed foods have high environmental impacts."
+    "description": "Develop a nuanced understanding of food processing. Sustainability depends on the whole food system, not simply on whether a food is processed or not."
   },
   {
     "id": "3.13",
-    "name": "Distance Is Not Everything",
+    "name": "Think Globally, Choose Wisely",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.2",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -1689,11 +1689,11 @@
         "sortOrder": 3
       }
     ],
-    "description": "Local food is not always the most sustainable option."
+    "description": "Understand how global trade and food systems are connected. Informed choices consider origin together with other sustainability indicators."
   },
   {
     "id": "3.14",
-    "name": "Farming Methods That Help",
+    "name": "Support Sustainable Agriculture",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.3",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -1750,11 +1750,11 @@
         "sortOrder": 9
       }
     ],
-    "description": "Agroforestry combines trees with crops or livestock on the same land."
+    "description": "Explore how innovative farming practices contribute to resilient and environmentally responsible food systems while maintaining food production."
   },
   {
     "id": "3.15",
-    "name": "Innovation on the Farm",
+    "name": "Future Foods Explorer",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.4",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -1781,11 +1781,11 @@
         "sortOrder": 3
       }
     ],
-    "description": "Genome editing may help develop crops that are more resilient to climate stress."
+    "description": "Understand how innovation can support climate resilience, reduce resource use and improve food-system sustainability while maintaining nutritional quality."
   },
   {
     "id": "3.16",
-    "name": "Who Grows Our Food",
+    "name": "Support Fair Food Systems",
     "code": "QUEST.PRODUCTION_METHODS.ADVANCED.5",
     "dimensionCode": "PRODUCTION_METHODS",
     "level": "ADVANCED",
@@ -1812,11 +1812,11 @@
         "sortOrder": 3
       }
     ],
-    "description": "Women play a critical role in food production but often have less access to resources."
+    "description": "Understand how global food supply chains affect people and communities. Ethical food choices can contribute to fairer and more inclusive food systems."
   },
   {
     "id": "4.1",
-    "name": "Packaging Material Observer",
+    "name": "Why Packaging Matters",
     "code": "QUEST.PACKAGING.BEGINNER.1",
     "dimensionCode": "PACKAGING",
     "level": "BEGINNER",
@@ -1883,11 +1883,11 @@
         "sortOrder": 11
       }
     ],
-    "description": "Identify the packaging material of at least five food products consumed during the week, while keeping in mind that food packaging protects products from contamination, moisture, oxygen and physical damage, helping maintain food safety and quality."
+    "description": "Discover how packaging protects food and prevents spoilage. Good packaging can support both food safety and sustainability."
   },
   {
     "id": "4.2",
-    "name": "Reusable Packaging Spotter",
+    "name": "Use It Again",
     "code": "QUEST.PACKAGING.BEGINNER.2",
     "dimensionCode": "PACKAGING",
     "level": "BEGINNER",
@@ -1929,11 +1929,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Identify reusable or refillable food packaging options on at least five occasions, while keeping in mind that reusable packaging only becomes environmentally beneficial after it has been reused enough times."
+    "description": "Discover how reusable packaging systems reduce waste. Small reuse actions can help conserve resources and reduce environmental impacts."
   },
   {
     "id": "4.3",
-    "name": "Packaging-Informed Choices",
+    "name": "Packaging with Purpose",
     "code": "QUEST.PACKAGING.INTERMEDIATE.1",
     "dimensionCode": "PACKAGING",
     "level": "INTERMEDIATE",
@@ -2000,11 +2000,11 @@
         "sortOrder": 11
       }
     ],
-    "description": "Consider packaging characteristics when making at least three purchasing decisions, while keeping in mind that the environmental impact of producing food is often much greater than the impact of the packaging used to protect it."
+    "description": "Learn how different packaging materials affect food waste, resource use and recyclability. Sustainable packaging involves trade-offs that are not always obvious."
   },
   {
     "id": "4.4",
-    "name": "Reuse Opportunity Finder",
+    "name": "Reuse to Reduce",
     "code": "QUEST.PACKAGING.INTERMEDIATE.2",
     "dimensionCode": "PACKAGING",
     "level": "INTERMEDIATE",
@@ -2051,11 +2051,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Choose reusable or refillable packaging options on at least two occasions this week, while keeping in mind that reusable packaging can reduce demand for virgin raw materials."
+    "description": "Learn how return, refill and reusable systems work in practice. Consumer participation plays a key role in making these systems effective."
   },
   {
     "id": "4.5",
-    "name": "Multi-Criteria Packaging Decisions",
+    "name": "Think in Life Cycles",
     "code": "QUEST.PACKAGING.ADVANCED.1",
     "dimensionCode": "PACKAGING",
     "level": "ADVANCED",
@@ -2122,11 +2122,11 @@
         "sortOrder": 11
       }
     ],
-    "description": "For at least three purchases, consider both packaging material and end-of-life options before making a choice, while keeping in mind that edible packaging can help reduce reliance on fossil-based plastics by replacing conventional packaging materials with biodegradable alternatives."
+    "description": "Understand packaging through a life-cycle perspective. The most sustainable option often depends on the product, its shelf life and how the packaging is used."
   },
   {
     "id": "4.6",
-    "name": "Reuse Habit Builder",
+    "name": "Master Circular Packaging",
     "code": "QUEST.PACKAGING.ADVANCED.2",
     "dimensionCode": "PACKAGING",
     "level": "ADVANCED",
@@ -2178,11 +2178,11 @@
         "sortOrder": 8
       }
     ],
-    "description": "Use reusable or refillable packaging systems on at least five occasions. Look for products sold through deposit-return or refill systems, while keeping in mind that every reusable package has a break-even point where it becomes better than single-use alternatives."
+    "description": "Explore how reusable packaging contributes to circular economy goals. Understanding reuse systems helps support more sustainable consumption habit"
   },
   {
     "id": "5.1",
-    "name": "Smart Serving Starter",
+    "name": "Every Plate Counts",
     "code": "QUEST.FOOD_WASTE.BEGINNER.1",
     "dimensionCode": "FOOD_WASTE",
     "level": "BEGINNER",
@@ -2229,11 +2229,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Log 5 Half Plate Saved actions, while keeping in mind that households generate more food waste than any other sector in the European Union."
+    "description": "Learn how portion sizes and serving habits affect food waste. Reducing plate waste saves food, money and environmental resources."
   },
   {
     "id": "5.2",
-    "name": "Storage Smarter",
+    "name": "Save It for Tomorrow",
     "code": "QUEST.FOOD_WASTE.BEGINNER.2",
     "dimensionCode": "FOOD_WASTE",
     "level": "BEGINNER",
@@ -2275,11 +2275,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Make sure you read carefully packaging instructions on how to storage food after opening package for at least five products purchased, while keeping in mind that households account for more than half of food waste generated in the EU."
+    "description": "Learn the basics of storing and using leftovers safely. Good food management helps prevent waste and protects food quality."
   },
   {
     "id": "5.3",
-    "name": "Date Label Explorer",
+    "name": "Beat the Expiry Trap",
     "code": "QUEST.FOOD_WASTE.BEGINNER.3",
     "dimensionCode": "FOOD_WASTE",
     "level": "BEGINNER",
@@ -2341,11 +2341,11 @@
         "sortOrder": 10
       }
     ],
-    "description": "Log 1 Expired Product Consumed action, while keeping in mind that more than half of all food waste in Europe is generated by households."
+    "description": "Learn the difference between food quality and food safety. Understanding labels can prevent unnecessary waste without compromising health."
   },
   {
     "id": "5.4",
-    "name": "Portion Prediction Test",
+    "name": "Buy What You Need",
     "code": "QUEST.FOOD_WASTE.BEGINNER.4",
     "dimensionCode": "FOOD_WASTE",
     "level": "BEGINNER",
@@ -2382,11 +2382,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Before a meal, estimate how much food you think you will eat. After the meal, compare your estimate with what you actually consumed, while keeping in mind that portion sizes in many countries have increased substantially over recent decades."
+    "description": "Learn how buying habits affect food waste and household spending. Avoiding unnecessary purchases helps reduce waste and resource use."
   },
   {
     "id": "5.5",
-    "name": "Mission 3: Fridge Check Routine",
+    "name": "Serve Smarter",
     "code": "QUEST.FOOD_WASTE.INTERMEDIATE.1",
     "dimensionCode": "FOOD_WASTE",
     "level": "INTERMEDIATE",
@@ -2428,11 +2428,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Perform a fridge or pantry check before a main shopping trip. Log at least 3 Expired Product Consumed actions or 3 Full Plate Saved actions, while keeping in mind that offering smaller portion sizes can reduce plate waste in canteens and restaurants."
+    "description": "Build habits that better match food portions to appetite. Preventing unnecessary leftovers benefits both personal wellbeing and sustainability."
   },
   {
     "id": "5.6",
-    "name": "Meal Planning Habit",
+    "name": "Make Leftovers Work",
     "code": "QUEST.FOOD_WASTE.INTERMEDIATE.2",
     "dimensionCode": "FOOD_WASTE",
     "level": "INTERMEDIATE",
@@ -2484,11 +2484,11 @@
         "sortOrder": 8
       }
     ],
-    "description": "Create a meal plan before one main shopping trip, while keeping in mind that best-before dates refer to quality."
+    "description": "Develop practical habits to reuse leftovers as future meals. Reducing leftovers waste saves money and preserves resources used in food production."
   },
   {
     "id": "5.7",
-    "name": "Mission 3: Fridge Check Routine",
+    "name": "Plan Before It Expires",
     "code": "QUEST.FOOD_WASTE.INTERMEDIATE.3",
     "dimensionCode": "FOOD_WASTE",
     "level": "INTERMEDIATE",
@@ -2540,11 +2540,11 @@
         "sortOrder": 8
       }
     ],
-    "description": "Perform a fridge or pantry check before a main shopping trip. Log at least 3 Expired Product Consumed actions or 3 Full Plate Saved actions, while keeping in mind that household food waste in Europe is estimated at around 69 million tonnes per year."
+    "description": "Develop storage and planning habits that help use food before it becomes waste. Better planning benefits both budgets and the environment."
   },
   {
     "id": "5.8",
-    "name": "Portion Control Pro",
+    "name": "Plan Before You Buy",
     "code": "QUEST.FOOD_WASTE.INTERMEDIATE.4",
     "dimensionCode": "FOOD_WASTE",
     "level": "INTERMEDIATE",
@@ -2586,11 +2586,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Log at least Half Plate Saved actions, while keeping in mind that the environmental impact of a diet depends not only on what people eat but also on how much they eat."
+    "description": "Explore how promotions, portion sizes and shopping decisions influence food waste. Better planning benefits both personal health and sustainability."
   },
   {
     "id": "5.9",
-    "name": "Zero Plate Waste Focus",
+    "name": "Waste Less, Impact More",
     "code": "QUEST.FOOD_WASTE.ADVANCED.1",
     "dimensionCode": "FOOD_WASTE",
     "level": "ADVANCED",
@@ -2637,11 +2637,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Log at least 7 Half Plate Saved actions, while keeping in mind that wasted meat contributes disproportionately to the climate impact of food waste."
+    "description": "Understand the wider environmental consequences of plate waste and learn advanced strategies to minimise waste in everyday situations."
   },
   {
     "id": "5.10",
-    "name": "Expiry Prevention Expert",
+    "name": "Master the Zero-Waste Kitchen",
     "code": "QUEST.FOOD_WASTE.ADVANCED.2",
     "dimensionCode": "FOOD_WASTE",
     "level": "ADVANCED",
@@ -2683,11 +2683,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Log 4 Expired Product Consumed actions, while keeping in mind that meat and dairy may be wasted less often but have a larger environmental footprint when wasted."
+    "description": "Build advanced routines for storage, planning and reuse. Efficient food management benefits household budgets, nutrition and sustainability."
   },
   {
     "id": "5.11",
-    "name": "First-In, First-Out Expert",
+    "name": "Stay Ahead of Food Waste",
     "code": "QUEST.FOOD_WASTE.ADVANCED.3",
     "dimensionCode": "FOOD_WASTE",
     "level": "ADVANCED",
@@ -2724,11 +2724,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Throughout the week, organize your fridge, freezer or pantry so that foods with the shortest remaining shelf life are always placed at the front and used first, while keeping in mind that multi-buy offers and bulk discounts can encourage consumers to purchase more food than they can use."
+    "description": "Master techniques that prevent foods from reaching expiry unnecessarily. Smart planning contributes to more sustainable consumption patterns."
   },
   {
     "id": "5.12",
-    "name": "Zero-Waste Planning Week",
+    "name": "Consume with Intention",
     "code": "QUEST.FOOD_WASTE.ADVANCED.4",
     "dimensionCode": "FOOD_WASTE",
     "level": "ADVANCED",
@@ -2765,11 +2765,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Plan all main meals for the week before your first shopping trip and only purchase foods that have a planned use, while keeping in mind that eating more food than the body needs increases demand for agricultural resources such as land, water and energy."
+    "description": "Understand the connection between overconsumption, waste and environmental impacts. Thoughtful consumption helps support healthier and more sustainable lifestyles."
   },
   {
     "id": "6.1",
-    "name": "Protein Every Day",
+    "name": "Protein Smarter",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.1",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -2816,11 +2816,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Include a protein-rich food in at least one meal every day, while keeping in mind that protein helps build and repair muscles, tissues, enzymes and hormones."
+    "description": "Learn why protein is important and discover different protein-rich foods. Diverse protein choices can support both health and sustainability."
   },
   {
     "id": "6.2",
-    "name": "Smart Snack Swap",
+    "name": "Better Fats, Better Choices",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.2",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -2857,11 +2857,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Log 5 Snack → Fruit or Nuts swaps, while keeping in mind that unsaturated fats are generally healthier than saturated fats."
+    "description": "Learn the difference between healthier and less healthy fats. Fat quality can influence long-term health outcomes."
   },
   {
     "id": "6.3",
-    "name": "Drink Upgrade",
+    "name": "Spot the Hidden Sugars",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.3",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -2903,11 +2903,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Log 3 Sugary Drink → Water swaps, while keeping in mind that sugary drinks are a major source of added sugar in many diets."
+    "description": "Discover where sugars are commonly found in foods and beverages. Reducing free sugars can improve overall diet quality."
   },
   {
     "id": "6.4",
-    "name": "Salt Spotter",
+    "name": "Shake the Salt Habit",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.4",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -2939,11 +2939,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Choose one packaged food and determine how much salt it contains per 100 grams, while keeping in mind that most people consume more than twice the recommended salt intake."
+    "description": "Learn where salt comes from and why excess intake matters. Small changes can support long-term cardiovascular health."
   },
   {
     "id": "6.5",
-    "name": "Whole Grain Week",
+    "name": "Feed Your Gut",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.5",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -2985,11 +2985,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Choose a whole-grain product every day. Select foods such as whole-grain bread, whole-wheat pasta, oats, brown rice, rye bread, quinoa or other whole grains, while keeping in mind that most Europeans consume less fibre than recommended."
+    "description": "Discover the role of dietary fibre and the foods that contain it. Fibre supports digestive health and overall wellbeing."
   },
   {
     "id": "6.6",
-    "name": "Add One More Fruit or Vegetable",
+    "name": "Nutrients That Matter",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.6",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -3026,11 +3026,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Add one extra serving of fruit or vegetables to your diet each day, while keeping in mind that vitamin D deficiency is common across Europe."
+    "description": "Learn why vitamins are essential for health and where to find them in everyday foods. Dietary variety helps support better nutrition."
   },
   {
     "id": "6.7",
-    "name": "Calories Are Not Everything",
+    "name": "Energy with Purpose",
     "code": "QUEST.NUTRITION_VALUES.BEGINNER.7",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "BEGINNER",
@@ -3062,11 +3062,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "The world already produces enough calories to feed everyone."
+    "description": "Learn what calories are and why they matter. Understanding energy intake helps support healthier food choices."
   },
   {
     "id": "6.8",
-    "name": "Processed Meat Replacement",
+    "name": "Build Better Protein Habits",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.1",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -3113,11 +3113,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Log 2 Processed Meat → Legumes swaps, while keeping in mind that most adults need about 0.83 g of protein per kilogram of body weight each day."
+    "description": "Explore a wider range of protein sources and learn how they contribute to balanced diets. Protein choices also influence environmental impacts."
   },
   {
     "id": "6.9",
-    "name": "Healthy Fat Upgrade",
+    "name": "Choose Healthy Fats",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.2",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -3159,11 +3159,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Choose a source of unsaturated fat instead of a source of saturated fat on at least five occasions, while keeping in mind that the type of fat you eat matters as much as the amount."
+    "description": "Explore practical ways to improve fat quality through food choices. Many healthier fat sources are also associated with more sustainable dietary patterns."
   },
   {
     "id": "6.10",
-    "name": "Drink Comparison",
+    "name": "Rethink Sweet Choices",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.3",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -3200,11 +3200,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Compare two sweet beverages that you enjoy drinking and identify which contains less sugar per 100 ml, while keeping in mind that WHO recommends limiting free sugars to less than 10% of daily energy intake."
+    "description": "Learn how to identify and reduce unnecessary sugar intake. Healthier choices help support long-term wellbeing and better food habits."
   },
   {
     "id": "6.11",
-    "name": "Salt-Free Table",
+    "name": "Find the Hidden Sodium",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.4",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -3246,11 +3246,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Do not add salt to food at the table throughout the week, while keeping in mind that WHO recommends consuming less than 5 grams of salt per day."
+    "description": "Explore common sources of sodium and discover practical substitution strategies. Reducing sodium supports healthier eating patterns."
   },
   {
     "id": "6.12",
-    "name": "Fibre With Every Meal",
+    "name": "Build a Fibre-Rich Plate",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.5",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -3297,11 +3297,11 @@
         "sortOrder": 7
       }
     ],
-    "description": "Include at least one fibre-rich food in every main meal, while keeping in mind that adults should aim for at least 25 grams of fibre per day."
+    "description": "Learn practical ways to increase fibre intake through everyday foods. More fibre often means more plant-rich and sustainable eating patterns."
   },
   {
     "id": "6.13",
-    "name": "Vitamins From Your Plate",
+    "name": "Eat for Nutrient Diversity",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.6",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -3333,11 +3333,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Eating a diverse diet helps reduce the risk of vitamin deficiencies."
+    "description": "Discover how different foods contribute different vitamins and minerals. Greater dietary diversity supports both health and sustainable food choices."
   },
   {
     "id": "6.14",
-    "name": "Same Calories, Different Impact",
+    "name": "Calories in Context",
     "code": "QUEST.NUTRITION_VALUES.INTERMEDIATE.7",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "INTERMEDIATE",
@@ -3374,11 +3374,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Foods providing the same number of calories can have very different environmental impacts."
+    "description": "Discover why calories are only part of the nutrition story. Food quality and nutrient density are equally important."
   },
   {
     "id": "6.15",
-    "name": "Complete Plant Proteins",
+    "name": "Protein Diversity Champion",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.1",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -3410,11 +3410,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Eating a variety of plant proteins can provide all essential amino acids."
+    "description": "Develop a protein strategy that balances nutritional quality and sustainability. Understanding protein systems helps support both planetary and personal health."
   },
   {
     "id": "6.16",
-    "name": "Understanding Dietary Fats",
+    "name": "Master Fat Quality",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.2",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -3446,11 +3446,11 @@
         "sortOrder": 4
       }
     ],
-    "description": "Fat should contribute no more than about 30% of total daily energy intake."
+    "description": "Understand the role of different fats in health and food systems. Informed choices support cardiovascular health and sustainable diets."
   },
   {
     "id": "6.17",
-    "name": "Added Sugar Awareness Week",
+    "name": "Take Control of Sugar",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.3",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -3492,11 +3492,11 @@
         "sortOrder": 6
       }
     ],
-    "description": "Avoid foods or drinks with added sugars as one of the first three ingredients throughout the week, while keeping in mind that cooking at home makes it easier to control added sugar."
+    "description": "Develop skills to navigate food labels and hidden sources of sugar. Understanding sugar supports healthier and more informed consumption."
   },
   {
     "id": "6.18",
-    "name": "Sodium Hotspot",
+    "name": "Master Sodium Awareness",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.4",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -3533,11 +3533,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Identify the food in your kitchen with the highest salt content per 100 grams, while keeping in mind that bread, processed meat and cheese are major sodium sources in Europe."
+    "description": "Develop the ability to evaluate sodium content and make informed food choices. Better awareness supports both health and smart consumption."
   },
   {
     "id": "6.19",
-    "name": "High-Fibre Breakfast Week",
+    "name": "Optimise Gut Health",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.5",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -3574,11 +3574,11 @@
         "sortOrder": 5
       }
     ],
-    "description": "Start every day with a breakfast containing a meaningful source of fibre. Build breakfast around oats, whole grains, fruit, seeds, nuts or other fibre-rich foods, while keeping in mind that higher fibre intake is linked to lower risk of heart disease and type 2 diabetes."
+    "description": "Understand how different fibre sources contribute to long-term health. Consistently choosing fibre-rich foods benefits both personal health and sustainable diets."
   },
   {
     "id": "6.20",
-    "name": "Rainbow Week",
+    "name": "Build Nutrient Resilience",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.6",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -3630,11 +3630,11 @@
         "sortOrder": 8
       }
     ],
-    "description": "Consume foods from at least five different fruit and vegetable colours every day, while keeping in mind that vitamin B12 is found mainly in animal-based foods."
+    "description": "Develop a diet rich in varied nutrient sources. Understanding micronutrients helps prevent deficiencies while encouraging a balanced and sustainable eating pattern."
   },
   {
     "id": "6.21",
-    "name": "Nutrient-Dense Plate Week",
+    "name": "Beyond Calories",
     "code": "QUEST.NUTRITION_VALUES.ADVANCED.7",
     "dimensionCode": "NUTRITION_VALUES",
     "level": "ADVANCED",
@@ -3671,6 +3671,6 @@
         "sortOrder": 5
       }
     ],
-    "description": "Ensure that every main meal includes at least three of the following: a protein source, a fibre-rich food, a fruit or vegetable, or a source of healthy fats, while keeping in mind that feeding crops to livestock results in major calorie losses."
+    "description": "Understand how calories, nutrient density, food quality and sustainability interact. Healthy diets focus on balance, not just energy intake."
   }
 ]

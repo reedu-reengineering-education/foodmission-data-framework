@@ -3317,11 +3317,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER.1": {
-      "name": "Naucz się prowadzić dziennik posiłków",
-      "title": "Zmiany w diecie – poziom początkujący",
-      "description": "Zapisuj co najmniej jeden posiłek dziennie."
-    },
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Ogranicz spożycie jednego posiłku mięsnego",
       "title": "Zmiany w diecie – poziom początkujący",

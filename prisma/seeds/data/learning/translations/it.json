@@ -3317,11 +3317,6 @@
     }
   },
   "quests": {
-    "QUEST.DIET_CHANGES.BEGINNER.1": {
-      "name": "Impara a tenere un diario alimentare",
-      "title": "Cambiamenti nell'alimentazione - Principianti",
-      "description": "Registra almeno un pasto al giorno."
-    },
     "QUEST.DIET_CHANGES.BEGINNER.2": {
       "name": "Ridurre di un pasto a base di carne",
       "title": "Cambiamenti nell'alimentazione - Principianti",
