@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ContentLevel, Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { inferDimensionLevel, nextLevel } from '../dimension-levels.config';
@@ -100,6 +100,45 @@ export class DimensionLevelService {
       await db.userDimensionLevel.updateMany({
         where: { userId, dimensionId: row.dimensionId, level: row.level },
         data: { level: scored },
+      });
+    }
+  }
+
+  /**
+   * Sets levels the user picked (e.g. after reviewing the survey's proposal).
+   * Any level, up or down; dimensions not listed are left alone. Not a
+   * level-up, so no DIMENSION_LEVEL_UP event.
+   */
+  async setLevels(
+    userId: string,
+    levels: Array<{ dimensionCode: string; level: ContentLevel }>,
+    db: Db = this.prisma,
+  ): Promise<void> {
+    const codes = levels.map((l) => l.dimensionCode);
+    const duplicates = codes.filter((code, i) => codes.indexOf(code) !== i);
+    if (duplicates.length > 0) {
+      throw new BadRequestException(
+        `Dimension listed more than once: ${[...new Set(duplicates)].join(', ')}`,
+      );
+    }
+
+    const dimensions = await db.dimension.findMany({
+      where: { code: { in: codes } },
+      select: { id: true, code: true },
+    });
+    const idByCode = new Map(dimensions.map((d) => [d.code, d.id]));
+    const unknown = codes.filter((code) => !idByCode.has(code));
+    if (unknown.length > 0) {
+      throw new BadRequestException(`Unknown dimension: ${unknown.join(', ')}`);
+    }
+
+    await this.ensureForUser(userId, db);
+    for (const { dimensionCode, level } of levels) {
+      const dimensionId = idByCode.get(dimensionCode)!;
+      await db.userDimensionLevel.upsert({
+        where: { userId_dimensionId: { userId, dimensionId } },
+        update: { level },
+        create: { userId, dimensionId, level },
       });
     }
   }

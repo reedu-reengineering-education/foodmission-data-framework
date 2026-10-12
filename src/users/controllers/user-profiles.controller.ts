@@ -344,7 +344,9 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Update current user profile',
     description:
-      'Onboarding baselines under preferences.onboardingSurvey. Segment is chosen by the client at onboarding.',
+      'Onboarding baselines under preferences.onboardingSurvey. Segment is chosen by the client at onboarding. ' +
+      'dimensionLevels sets the learning level per dimension (any level, ' +
+      'e.g. after the user reviews the levels proposed by the survey).',
   })
   @UsePipes(
     new ValidationPipe({
