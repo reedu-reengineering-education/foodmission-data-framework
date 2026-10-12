@@ -106,8 +106,8 @@ export const CONTENT_TAG_ENTRIES = [
     fallback: 'Food choice',
   },
   {
-    code: 'FOOD_AND_WASTE',
-    key: 'contentTags.FOOD_AND_WASTE',
-    fallback: 'Food and waste',
+    code: 'FOOD_WASTE',
+    key: 'contentTags.FOOD_WASTE',
+    fallback: 'Food waste',
   },
 ] as const;

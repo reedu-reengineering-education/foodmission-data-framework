@@ -1,11 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Prisma, QuestContentType, RewardSourceType } from '@prisma/client';
+import { Prisma, RewardSourceType } from '@prisma/client';
 import { AfterCommitQueue } from '../common/after-commit/after-commit.queue';
 import { ProgressStatus } from '../common/progress-status';
 import { PrismaService } from '../database/prisma.service';
 import { EventSource, EventType } from '../events/event-types';
 import { UserEventService } from '../events/services/user-event.service';
+import {
+  ContentItemRef,
+  findFinishedItemKeys,
+  UNOBSERVABLE_CONTENT_TYPES,
+} from '../gamification/content-completion';
 import { CompletionRewardService } from '../gamification/services/completion-reward.service';
+import { DimensionLevelService } from '../gamification/services/dimension-level.service';
 import {
   QuestProgressRecomputer,
   QuestTriggerEvent,
@@ -22,29 +28,23 @@ const TRIGGER_EVENT_TYPES: ReadonlySet<string> = new Set<string>([
   EventType.LEARNING_FACT_READ,
 ]);
 
-/**
- * Item types with no way to observe completion. Excluded from the denominator
- * rather than counted as unfinished: a single such item would otherwise cap the
- * quest below 100% forever, silently withholding a reward, with nothing in the
- * schema (QuestItem has no FK) to catch it.
- */
-const UNOBSERVABLE_CONTENT_TYPES: ReadonlySet<QuestContentType> =
-  new Set<QuestContentType>([QuestContentType.MICRO_LEARNING]);
-
-type QuestItemRef = {
-  contentType: QuestContentType;
-  contentCode: string;
-};
+// Unobservable item types (UNOBSERVABLE_CONTENT_TYPES) are excluded from the
+// denominator rather than counted as unfinished: a single such item would
+// otherwise cap the quest below 100% forever, silently withholding a reward,
+// with nothing in the schema (QuestItem has no FK) to catch it.
+type QuestItemRef = ContentItemRef;
 
 type LoadedQuest = {
   id: string;
   code: string;
+  dimensionId: string;
   items: QuestItemRef[];
 };
 
 export type QuestRecomputeOutcome = {
   questId: string;
   code: string;
+  dimensionId: string;
   progress: number;
   completed: boolean;
   /** True when this recompute is the one that flipped the quest to completed. */
@@ -60,6 +60,7 @@ export class QuestProgressService implements QuestProgressRecomputer {
     private readonly userEventService: UserEventService,
     private readonly completionRewardService: CompletionRewardService,
     private readonly afterCommit: AfterCommitQueue,
+    private readonly dimensionLevelService: DimensionLevelService,
   ) {}
 
   onCompletionEvent(trigger: QuestTriggerEvent): void {
@@ -106,16 +107,23 @@ export class QuestProgressService implements QuestProgressRecomputer {
       }
     }
 
-    for (const outcome of outcomes.filter((o) => o.firstCompletion)) {
+    const completedNow = outcomes.filter((o) => o.firstCompletion);
+    for (const outcome of completedNow) {
       await this.awardQuestReward(userId, outcome);
+    }
+
+    // Finishing the last quest of a level unlocks the next level's quests.
+    for (const dimensionId of new Set(completedNow.map((o) => o.dimensionId))) {
+      await this.dimensionLevelService.levelUpIfComplete(userId, dimensionId);
     }
 
     return outcomes;
   }
 
   /**
-   * Candidates are the user's current quest plus any quest they already have an
-   * unfinished progress row for.
+   * The only candidate is the user's current quest: progress made while a
+   * quest isn't selected is never credited to it, as with its missions and
+   * challenges, whose rows are dropped when the user switches quests.
    *
    * Completed quests are deliberately excluded. A `QuizProgress.isCorrect` can
    * flip back to false on re-answer, which would drag an already-rewarded quest
@@ -125,40 +133,46 @@ export class QuestProgressService implements QuestProgressRecomputer {
     userId: string,
     questIds?: string[],
   ): Promise<LoadedQuest[]> {
-    let candidateIds = questIds;
+    const select = {
+      id: true,
+      code: true,
+      dimensionId: true,
+      items: { select: { contentType: true, contentCode: true } },
+    } as const;
 
-    if (!candidateIds) {
-      const [user, rows] = await Promise.all([
-        this.prisma.user.findUnique({
-          where: { id: userId },
-          select: { currentQuestId: true },
-        }),
-        this.prisma.questProgress.findMany({
-          where: { userId, completed: false },
-          select: { questId: true },
-        }),
-      ]);
-
-      candidateIds = [
-        ...new Set(
-          [user?.currentQuestId, ...rows.map((row) => row.questId)].filter(
-            (id): id is string => id != null,
-          ),
-        ),
-      ];
+    if (questIds) {
+      return questIds.length === 0
+        ? []
+        : this.prisma.quest.findMany({
+            where: { id: { in: questIds }, available: true },
+            select,
+          });
     }
 
-    if (candidateIds.length === 0) {
+    // Level rows exist from the start (BEGINNER before the onboarding
+    // survey); create them lazily for users who predate that, since a
+    // completion here may level the user up.
+    await this.dimensionLevelService.ensureForUser(userId);
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { currentQuestId: true },
+    });
+    const questId = user?.currentQuestId;
+    if (!questId) {
+      return [];
+    }
+
+    const row = await this.prisma.questProgress.findUnique({
+      where: { userId_questId: { userId, questId } },
+      select: { completed: true },
+    });
+    if (row?.completed) {
       return [];
     }
 
     return this.prisma.quest.findMany({
-      where: { id: { in: candidateIds }, available: true },
-      select: {
-        id: true,
-        code: true,
-        items: { select: { contentType: true, contentCode: true } },
-      },
+      where: { id: questId, available: true },
+      select,
     });
   }
 
@@ -190,7 +204,7 @@ export class QuestProgressService implements QuestProgressRecomputer {
       return null;
     }
 
-    const finished = await this.resolveFinishedItems(userId, scored);
+    const finished = await findFinishedItemKeys(this.prisma, userId, scored);
     const completed = finished.size === scored.length;
     // Rounded before it is stored and before it goes into a QUEST_UPDATED
     // idempotency key: 4/9*100 is 44.44444444444444, and float jitter between
@@ -206,7 +220,6 @@ export class QuestProgressService implements QuestProgressRecomputer {
       where: { userId_questId: { userId, questId: quest.id } },
       select: { progress: true, completed: true, unlockedAt: true },
     });
-
     const state = {
       source: 'DERIVED',
       total: scored.length,
@@ -250,89 +263,11 @@ export class QuestProgressService implements QuestProgressRecomputer {
     return {
       questId: quest.id,
       code: quest.code,
+      dimensionId: quest.dimensionId,
       progress,
       completed,
       firstCompletion,
     };
-  }
-
-  /**
-   * One query per content type present, filtering through the relation so no
-   * separate code-to-id lookup is needed. Returns `contentType:contentCode`
-   * keys for the items the user has finished.
-   */
-  private async resolveFinishedItems(
-    userId: string,
-    items: QuestItemRef[],
-  ): Promise<Set<string>> {
-    const codesByType = new Map<QuestContentType, string[]>();
-    for (const item of items) {
-      const codes = codesByType.get(item.contentType) ?? [];
-      codes.push(item.contentCode);
-      codesByType.set(item.contentType, codes);
-    }
-
-    const finished = new Set<string>();
-
-    await Promise.all(
-      [...codesByType].map(async ([contentType, codes]) => {
-        for (const code of await this.findFinishedCodes(
-          userId,
-          contentType,
-          codes,
-        )) {
-          finished.add(`${contentType}:${code}`);
-        }
-      }),
-    );
-
-    return finished;
-  }
-
-  private async findFinishedCodes(
-    userId: string,
-    contentType: QuestContentType,
-    codes: string[],
-  ): Promise<string[]> {
-    switch (contentType) {
-      case QuestContentType.MISSION: {
-        const rows = await this.prisma.missionProgress.findMany({
-          where: { userId, completed: true, mission: { code: { in: codes } } },
-          select: { mission: { select: { code: true } } },
-        });
-        return rows.map((row) => row.mission.code);
-      }
-      case QuestContentType.CHALLENGE: {
-        const rows = await this.prisma.challengeProgress.findMany({
-          where: {
-            userId,
-            completed: true,
-            challenge: { code: { in: codes } },
-          },
-          select: { challenge: { select: { code: true } } },
-        });
-        return rows.map((row) => row.challenge.code);
-      }
-      case QuestContentType.QUIZ: {
-        // `completed` is set true for wrong answers too, so it cannot be the
-        // predicate — a quiz item counts only once actually passed.
-        const rows = await this.prisma.quizProgress.findMany({
-          where: { userId, isCorrect: true, quiz: { code: { in: codes } } },
-          select: { quiz: { select: { code: true } } },
-        });
-        return rows.map((row) => row.quiz.code);
-      }
-      case QuestContentType.FOOD_FACT: {
-        // FoodFactProgress has no `completed` column — the row is the read.
-        const rows = await this.prisma.foodFactProgress.findMany({
-          where: { userId, foodFact: { code: { in: codes } } },
-          select: { foodFact: { select: { code: true } } },
-        });
-        return rows.map((row) => row.foodFact.code);
-      }
-      default:
-        return [];
-    }
   }
 
   private async emitTransitionEvents(

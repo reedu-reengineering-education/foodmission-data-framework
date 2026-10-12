@@ -130,7 +130,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Scelte alimentari",
-    "FOOD_AND_WASTE": "Cibo e sprechi",
+    "FOOD_WASTE": "Spreco alimentare",
     "HEALTH": "Salute",
     "CO2_REDUCTION": "Riduzione di CO₂",
     "ENERGY_REDUCTION": "Riduzione energetica",
@@ -167,6 +167,6 @@
   "contentTags": {
     "HEALTH": "Salute",
     "FOOD_CHOICE": "Scelte alimentari",
-    "FOOD_AND_WASTE": "Cibo e sprechi"
+    "FOOD_WASTE": "Spreco alimentare"
   }
 }
