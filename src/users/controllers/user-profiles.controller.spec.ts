@@ -21,6 +21,9 @@ describe('UserProfilesController', () => {
   let onboardingSurveyService: jest.Mocked<
     Pick<OnboardingSurveyService, 'getSurveyQuestions' | 'submitSurvey'>
   >;
+  let learningProgressService: jest.Mocked<
+    Pick<LearningProgressService, 'getCurrentQuest'>
+  >;
 
   const mockUserProfile = {
     id: 'user-1',
@@ -50,6 +53,9 @@ describe('UserProfilesController', () => {
       getSurveyQuestions: jest.fn().mockReturnValue([]),
       submitSurvey: jest.fn(),
     };
+    learningProgressService = {
+      getCurrentQuest: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserProfilesController],
@@ -75,7 +81,10 @@ describe('UserProfilesController', () => {
           provide: OnboardingSurveyService,
           useValue: onboardingSurveyService,
         },
-        { provide: LearningProgressService, useValue: {} },
+        {
+          provide: LearningProgressService,
+          useValue: learningProgressService,
+        },
       ],
     })
       .overrideGuard(DataBaseAuthGuard)
@@ -115,6 +124,18 @@ describe('UserProfilesController', () => {
       service.getProfileByUserId.mockResolvedValue(null);
       await expect(controller.getMyFullProfile('user-1')).rejects.toThrow(
         NotFoundException,
+      );
+    });
+  });
+
+  describe('getMyCurrentQuest', () => {
+    it('delegates to LearningProgressService', async () => {
+      const quest = { questId: 'q1' } as any;
+      learningProgressService.getCurrentQuest.mockResolvedValue(quest);
+
+      await expect(controller.getMyCurrentQuest('user-1')).resolves.toBe(quest);
+      expect(learningProgressService.getCurrentQuest).toHaveBeenCalledWith(
+        'user-1',
       );
     });
   });

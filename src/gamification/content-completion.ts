@@ -1,4 +1,4 @@
-import { Prisma, QuestContentType } from '@prisma/client';
+import { Prisma, ProgressStatus, QuestContentType } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 
 type Db = PrismaService | Prisma.TransactionClient;
@@ -105,6 +105,112 @@ async function findFinishedCodes(
     default:
       return [];
   }
+}
+
+export type ContentItemStatus = {
+  status: ProgressStatus;
+  /** 0–100 */
+  progress: number;
+};
+
+const NOT_STARTED: ContentItemStatus = {
+  status: ProgressStatus.NOT_STARTED,
+  progress: 0,
+};
+
+const COMPLETED: ContentItemStatus = {
+  status: ProgressStatus.COMPLETED,
+  progress: 100,
+};
+
+/**
+ * Status and progress of each item, keyed like findFinishedItemKeys. COMPLETED
+ * matches "finished" there; missions and challenges also report partial
+ * progress and a wrongly answered quiz is FAILED. Items without a progress
+ * row are NOT_STARTED.
+ */
+export async function findItemStatuses(
+  db: Db,
+  userId: string,
+  items: ContentItemRef[],
+): Promise<Map<string, ContentItemStatus>> {
+  const statuses = new Map<string, ContentItemStatus>();
+
+  await Promise.all(
+    [...groupCodesByType(items)].map(async ([contentType, codes]) => {
+      let rows: Array<{ code: string } & ContentItemStatus> = [];
+      switch (contentType) {
+        case QuestContentType.MISSION:
+          rows = (
+            await db.missionProgress.findMany({
+              where: { userId, mission: { code: { in: codes } } },
+              select: {
+                completed: true,
+                status: true,
+                progress: true,
+                mission: { select: { code: true } },
+              },
+            })
+          ).map((row) => ({
+            code: row.mission.code,
+            ...(row.completed
+              ? COMPLETED
+              : { status: row.status, progress: row.progress }),
+          }));
+          break;
+        case QuestContentType.CHALLENGE:
+          rows = (
+            await db.challengeProgress.findMany({
+              where: { userId, challenge: { code: { in: codes } } },
+              select: {
+                completed: true,
+                status: true,
+                progress: true,
+                challenge: { select: { code: true } },
+              },
+            })
+          ).map((row) => ({
+            code: row.challenge.code,
+            ...(row.completed
+              ? COMPLETED
+              : { status: row.status, progress: row.progress }),
+          }));
+          break;
+        case QuestContentType.QUIZ:
+          rows = (
+            await db.quizProgress.findMany({
+              where: { userId, quiz: { code: { in: codes } } },
+              select: { isCorrect: true, quiz: { select: { code: true } } },
+            })
+          ).map((row) => ({
+            code: row.quiz.code,
+            ...(row.isCorrect === true
+              ? COMPLETED
+              : row.isCorrect === false
+                ? { status: ProgressStatus.FAILED, progress: 0 }
+                : NOT_STARTED),
+          }));
+          break;
+        case QuestContentType.FOOD_FACT:
+          rows = (
+            await db.foodFactProgress.findMany({
+              where: { userId, foodFact: { code: { in: codes } } },
+              select: { foodFact: { select: { code: true } } },
+            })
+          ).map((row) => ({ code: row.foodFact.code, ...COMPLETED }));
+          break;
+      }
+      for (const { code, ...rest } of rows) {
+        statuses.set(contentItemKey({ contentType, contentCode: code }), rest);
+      }
+    }),
+  );
+
+  for (const item of items) {
+    const key = contentItemKey(item);
+    if (!statuses.has(key)) statuses.set(key, NOT_STARTED);
+  }
+  return statuses;
 }
 
 export type KnowledgeFlags = {

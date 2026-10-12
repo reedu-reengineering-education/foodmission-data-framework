@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ProgressStatus } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import {
   ContentItemDetails,
@@ -6,12 +7,15 @@ import {
   contentItemKey,
   findFinishedItemKeys,
   findItemDetails,
+  findItemStatuses,
   UNOBSERVABLE_CONTENT_TYPES,
 } from '../content-completion';
 import {
   ContentItemProgressDto,
+  CurrentQuestDto,
   DimensionProgressDto,
   KnowledgeProgressDto,
+  QuestItemStatusDto,
   QuestLevelProgressDto,
 } from '../dto/learning-progress.dto';
 import {
@@ -98,6 +102,77 @@ export class LearningProgressService {
   ): Promise<KnowledgeProgressDto> {
     const snapshot = await this.loadSnapshot(userId, { allQuests: true });
     return this.toKnowledgeDto(kind, snapshot, true);
+  }
+
+  /**
+   * The user's current quest with each item's status, or null when none is
+   * selected.
+   */
+  async getCurrentQuest(userId: string): Promise<CurrentQuestDto | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        currentQuest: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            description: true,
+            level: true,
+            dimension: { select: { code: true } },
+            items: {
+              select: { contentType: true, contentCode: true, sortOrder: true },
+              orderBy: { sortOrder: 'asc' },
+            },
+          },
+        },
+      },
+    });
+    const quest = user?.currentQuest;
+    if (!quest) return null;
+
+    const refs = quest.items.filter(isTrackable);
+    const [statuses, details, questProgress] = await Promise.all([
+      findItemStatuses(this.prisma, userId, refs),
+      findItemDetails(this.prisma, refs),
+      this.prisma.questProgress.findUnique({
+        where: { userId_questId: { userId, questId: quest.id } },
+        select: { completed: true },
+      }),
+    ]);
+
+    const items: QuestItemStatusDto[] = refs.map((item) => {
+      const key = contentItemKey(item);
+      const { status, progress } = statuses.get(key)!;
+      return {
+        contentType: item.contentType,
+        contentCode: item.contentCode,
+        title: details.get(key)?.title ?? '',
+        finished: status === ProgressStatus.COMPLETED,
+        status,
+        progress,
+        sortOrder: item.sortOrder,
+      };
+    });
+    const finishedItems = items.filter((i) => i.finished).length;
+    // Same rule as toQuestDto: once rewarded, a quest stays complete.
+    const completed =
+      questProgress?.completed === true ||
+      (items.length > 0 && finishedItems === items.length);
+
+    return {
+      questId: quest.id,
+      questCode: quest.code,
+      name: quest.name,
+      description: quest.description,
+      dimensionCode: quest.dimension.code,
+      level: quest.level,
+      progress: completed ? 100 : percent(finishedItems, items.length),
+      completed,
+      finishedItems,
+      totalItems: items.length,
+      items,
+    };
   }
 
   /**

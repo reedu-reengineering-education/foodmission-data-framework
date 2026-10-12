@@ -1,4 +1,4 @@
-import { ContentLevel, QuestContentType } from '@prisma/client';
+import { ContentLevel, ProgressStatus, QuestContentType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { DimensionLevelService } from './dimension-level.service';
 import { LearningProgressService } from './learning-progress.service';
@@ -209,5 +209,175 @@ describe('LearningProgressService', () => {
     await expect(service.getDimension('u1', 'NOPE')).rejects.toThrow(
       'No level for dimension NOPE',
     );
+  });
+});
+
+describe('LearningProgressService.getCurrentQuest', () => {
+  function buildCurrent(currentQuest: unknown) {
+    const prisma = {
+      user: { findUnique: jest.fn().mockResolvedValue({ currentQuest }) },
+      questProgress: { findUnique: jest.fn().mockResolvedValue(null) },
+      missionProgress: {
+        findMany: jest.fn().mockResolvedValue([
+          {
+            completed: false,
+            status: ProgressStatus.IN_PROGRESS,
+            progress: 40,
+            mission: { code: 'M.1' },
+          },
+        ]),
+      },
+      challengeProgress: { findMany: jest.fn().mockResolvedValue([]) },
+      quizProgress: {
+        findMany: jest
+          .fn()
+          .mockResolvedValue([{ isCorrect: false, quiz: { code: 'Q.1' } }]),
+      },
+      foodFactProgress: {
+        findMany: jest.fn().mockResolvedValue([{ foodFact: { code: 'FF.1' } }]),
+      },
+      mission: {
+        findMany: jest
+          .fn()
+          .mockResolvedValue([
+            { code: 'M.1', title: 'Log a meal', ...flags(true, true, false) },
+          ]),
+      },
+      challenge: {
+        findMany: jest
+          .fn()
+          .mockResolvedValue([
+            { code: 'CH.1', title: 'Try it', ...flags(false, true, false) },
+          ]),
+      },
+      quiz: {
+        findMany: jest
+          .fn()
+          .mockResolvedValue([
+            { code: 'Q.1', question: 'Why?', ...flags(true, false, false) },
+          ]),
+      },
+      foodFact: {
+        findMany: jest
+          .fn()
+          .mockResolvedValue([
+            { code: 'FF.1', body: 'Fact', ...flags(false, false, true) },
+          ]),
+      },
+      microLearning: { findMany: jest.fn().mockResolvedValue([]) },
+    };
+    const service = new LearningProgressService(
+      prisma as unknown as PrismaService,
+      {} as DimensionLevelService,
+    );
+    return { service, prisma };
+  }
+
+  const quest = {
+    id: 'q1',
+    code: 'QUEST.DIET_CHANGES.BEGINNER.1',
+    name: 'Log food',
+    description: null,
+    level: ContentLevel.BEGINNER,
+    dimension: { code: 'DIET_CHANGES' },
+    items: [
+      {
+        contentType: QuestContentType.MISSION,
+        contentCode: 'M.1',
+        sortOrder: 0,
+      },
+      {
+        contentType: QuestContentType.CHALLENGE,
+        contentCode: 'CH.1',
+        sortOrder: 1,
+      },
+      {
+        contentType: QuestContentType.FOOD_FACT,
+        contentCode: 'FF.1',
+        sortOrder: 2,
+      },
+      { contentType: QuestContentType.QUIZ, contentCode: 'Q.1', sortOrder: 3 },
+      {
+        contentType: QuestContentType.MICRO_LEARNING,
+        contentCode: 'ML.1',
+        sortOrder: 4,
+      },
+    ],
+  };
+
+  it('returns null when no quest is selected', async () => {
+    const { service } = buildCurrent(null);
+
+    await expect(service.getCurrentQuest('u1')).resolves.toBeNull();
+  });
+
+  it('reports each trackable item with its status', async () => {
+    const { service } = buildCurrent(quest);
+
+    const current = await service.getCurrentQuest('u1');
+
+    expect(current).toEqual({
+      questId: 'q1',
+      questCode: 'QUEST.DIET_CHANGES.BEGINNER.1',
+      name: 'Log food',
+      description: null,
+      dimensionCode: 'DIET_CHANGES',
+      level: ContentLevel.BEGINNER,
+      progress: 25,
+      completed: false,
+      finishedItems: 1,
+      totalItems: 4,
+      items: [
+        {
+          contentType: QuestContentType.MISSION,
+          contentCode: 'M.1',
+          title: 'Log a meal',
+          finished: false,
+          status: ProgressStatus.IN_PROGRESS,
+          progress: 40,
+          sortOrder: 0,
+        },
+        {
+          contentType: QuestContentType.CHALLENGE,
+          contentCode: 'CH.1',
+          title: 'Try it',
+          finished: false,
+          status: ProgressStatus.NOT_STARTED,
+          progress: 0,
+          sortOrder: 1,
+        },
+        {
+          contentType: QuestContentType.FOOD_FACT,
+          contentCode: 'FF.1',
+          title: 'Fact',
+          finished: true,
+          status: ProgressStatus.COMPLETED,
+          progress: 100,
+          sortOrder: 2,
+        },
+        {
+          contentType: QuestContentType.QUIZ,
+          contentCode: 'Q.1',
+          title: 'Why?',
+          finished: false,
+          status: ProgressStatus.FAILED,
+          progress: 0,
+          sortOrder: 3,
+        },
+      ],
+    });
+  });
+
+  it('keeps a rewarded quest complete', async () => {
+    const { service, prisma } = buildCurrent(quest);
+    prisma.questProgress.findUnique.mockResolvedValue({ completed: true });
+
+    const current = await service.getCurrentQuest('u1');
+
+    expect(current).toMatchObject({
+      completed: true,
+      progress: 100,
+      finishedItems: 1,
+    });
   });
 });

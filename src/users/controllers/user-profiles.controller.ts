@@ -30,6 +30,7 @@ import { ProgressWheelService } from '../../gamification/services/progress-wheel
 import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
 import { LearningProgressService } from '../../gamification/services/learning-progress.service';
 import {
+  CurrentQuestDto,
   DimensionProgressDto,
   KnowledgeProgressDto,
 } from '../../gamification/dto/learning-progress.dto';
@@ -202,6 +203,23 @@ export class UserProfilesController {
     @Param('code') code: string,
   ): Promise<DimensionProgressDto> {
     return this.learningProgressService.getDimension(userId, code);
+  }
+
+  @Get('me/gamification/current-quest')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the current quest with the status of each item',
+    description:
+      'The quest set as currentQuestId, with every trackable item ' +
+      '(micro-learnings excluded) in quest order. The body is null when ' +
+      'no quest is selected.',
+  })
+  @ApiOkResponse({ type: CurrentQuestDto })
+  async getMyCurrentQuest(
+    @CurrentUser('id') userId: string,
+  ): Promise<CurrentQuestDto | null> {
+    return this.learningProgressService.getCurrentQuest(userId);
   }
 
   @Get('me/gamification/knowledge-progress')

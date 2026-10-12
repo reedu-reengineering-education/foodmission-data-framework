@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ContentLevel, QuestContentType } from '@prisma/client';
+import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
+import { ContentLevel, ProgressStatus, QuestContentType } from '@prisma/client';
 import { KNOWLEDGE_KINDS } from '../knowledge-progress.config';
 
 export class ContentItemProgressDto {
@@ -91,4 +91,41 @@ export class KnowledgeProgressDto {
     description: 'Only on the single-bar endpoint',
   })
   items?: ContentItemProgressDto[];
+}
+
+export class QuestItemStatusDto extends ContentItemProgressDto {
+  @ApiProperty({
+    enum: ProgressStatus,
+    description:
+      'Missions/challenges: their progress status. Quizzes: COMPLETED when ' +
+      'answered correctly, FAILED when answered wrong. Food facts: COMPLETED ' +
+      'once read. NOT_STARTED otherwise.',
+  })
+  status!: ProgressStatus;
+
+  @ApiProperty({
+    minimum: 0,
+    maximum: 100,
+    description: 'Partial progress for missions/challenges, else 0 or 100',
+  })
+  progress!: number;
+
+  @ApiProperty()
+  sortOrder!: number;
+}
+
+export class CurrentQuestDto extends OmitType(QuestLevelProgressDto, [
+  'items',
+] as const) {
+  @ApiProperty({ example: 'DIET_CHANGES' })
+  dimensionCode!: string;
+
+  @ApiProperty({ enum: ContentLevel })
+  level!: ContentLevel;
+
+  @ApiProperty({
+    type: [QuestItemStatusDto],
+    description: 'Trackable items in quest order (micro-learnings excluded)',
+  })
+  items!: QuestItemStatusDto[];
 }
