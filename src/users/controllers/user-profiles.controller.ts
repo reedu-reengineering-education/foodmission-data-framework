@@ -114,6 +114,7 @@ export class UserProfilesController {
     return this.gamificationProfileService.getProfileForUserId(userId, {
       eventsLimit: query.eventsLimit,
       walletEntriesLimit: query.walletEntriesLimit,
+      eventTypes: query.eventTypes,
     });
   }
 

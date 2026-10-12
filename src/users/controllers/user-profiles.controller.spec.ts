@@ -149,8 +149,16 @@ describe('UserProfilesController', () => {
         controller.getMyGamificationProfile('user-1', {
           eventsLimit: 5,
           walletEntriesLimit: 10,
+          eventTypes: ['MISSION_COMPLETED'],
         }),
       ).resolves.toEqual(profile);
+      expect(
+        gamificationProfileService.getProfileForUserId,
+      ).toHaveBeenCalledWith('user-1', {
+        eventsLimit: 5,
+        walletEntriesLimit: 10,
+        eventTypes: ['MISSION_COMPLETED'],
+      });
     });
   });
 

@@ -95,6 +95,10 @@ describe('GamificationProfileService', () => {
       walletEntriesLimit: 5,
     });
 
+    // No eventTypes: every event type.
+    expect(
+      prisma.user.findUnique.mock.calls[0][0].include.userEvents,
+    ).not.toHaveProperty('where');
     expect(prisma.user.findUnique).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: 'u1' },
@@ -120,5 +124,22 @@ describe('GamificationProfileService', () => {
     expect(result.recentEvents[0].source).toBe('wallet');
     expect(result.recentEvents[0].timestamp).toBeDefined();
     expect(result.recentWalletEntries[0].amount).toBe(40);
+  });
+
+  it('filters recent events by the given event types', async () => {
+    prisma.user.findUnique.mockResolvedValue(null);
+
+    await service
+      .getProfileForUserId('u1', {
+        eventTypes: ['MISSION_COMPLETED', 'BADGE_EARNED'],
+      })
+      .catch(() => undefined);
+
+    expect(prisma.user.findUnique.mock.calls[0][0].include.userEvents).toEqual(
+      expect.objectContaining({
+        where: { eventType: { in: ['MISSION_COMPLETED', 'BADGE_EARNED'] } },
+        take: 20,
+      }),
+    );
   });
 });
