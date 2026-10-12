@@ -215,7 +215,12 @@ describe('UserProfilesController', () => {
       ] as any;
       onboardingSurveyService.getSurveyQuestions.mockReturnValue(questions);
 
-      expect(controller.getOnboardingSurvey()).toEqual({ questions });
+      expect(controller.getOnboardingSurvey({ lang: 'de' })).toEqual({
+        questions,
+      });
+      expect(onboardingSurveyService.getSurveyQuestions).toHaveBeenCalledWith(
+        'de',
+      );
     });
   });
 

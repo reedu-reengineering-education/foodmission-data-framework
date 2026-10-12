@@ -20,6 +20,7 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { UserProfilesService } from '../services/user-profiles.service';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
@@ -50,6 +51,8 @@ import {
   OnboardingSurveyDto,
   OnboardingSurveyResultDto,
 } from '../../gamification/dto/onboarding-survey.dto';
+import { SurveyQueryDto } from '../../surveys/dto/survey-query.dto';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   RecordWheelImpactDto,
   RecordWheelImpactResultDto,
@@ -273,10 +276,18 @@ export class UserProfilesController {
       'each). Answers map 1:1 to preferences.onboardingSurvey / the fields ' +
       'submitted via POST of this same route.',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated question texts and option labels. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiOkResponse({ type: OnboardingSurveyDto })
-  getOnboardingSurvey(): OnboardingSurveyDto {
+  getOnboardingSurvey(@Query() query: SurveyQueryDto): OnboardingSurveyDto {
     return {
-      questions: [...this.onboardingSurveyService.getSurveyQuestions()],
+      questions: [
+        ...this.onboardingSurveyService.getSurveyQuestions(query.lang),
+      ],
     };
   }
 

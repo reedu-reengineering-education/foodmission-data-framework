@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "questions": {
+    "weeklyMeatConsumption": {
+      "text": "How many meals containing meat do you typically eat each week?",
+      "options": {
+        "ZERO_TO_FOUR": "0-4 meals per week",
+        "FIVE_TO_NINE": "5-9 meals per week",
+        "TEN_TO_FOURTEEN": "10-14 meals per week",
+        "FIFTEEN_PLUS": "15+ meals per week"
+      }
+    },
+    "weeklyBeefConsumption": {
+      "text": "How often do you consume beef?",
+      "options": {
+        "NEVER": "Never",
+        "LESS_THAN_ONCE_PER_WEEK": "Less than once per week",
+        "ONE_TO_TWO_TIMES_PER_WEEK": "1-2 times per week",
+        "THREE_PLUS_TIMES_PER_WEEK": "3+ times per week"
+      }
+    },
+    "weeklyLegumeConsumption": {
+      "text": "How often do you eat legumes (beans, lentils, chickpeas, peas)?",
+      "options": {
+        "NEVER": "Never",
+        "LESS_THAN_ONCE_PER_WEEK": "Less than once per week",
+        "ONCE_PER_WEEK": "Once per week",
+        "SEVERAL_TIMES_PER_WEEK": "Several times per week",
+        "DAILY": "Daily"
+      }
+    },
+    "checksCountryOfOrigin": {
+      "text": "How often do you check the country of origin of food products?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Almost always"
+      }
+    },
+    "choosesSeasonalProduce": {
+      "text": "How often do you intentionally choose seasonal fruit and vegetables?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Occasionally",
+        "SOMETIMES": "About half the time",
+        "OFTEN": "Often",
+        "ALWAYS": "Nearly always"
+      }
+    },
+    "considersSustainabilityInfo": {
+      "text": "How often do you consider environmental or sustainability information before purchasing food?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Nearly always"
+      }
+    },
+    "readsIngredientLists": {
+      "text": "How often do you read ingredient lists before purchasing packaged foods?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Nearly always"
+      }
+    },
+    "sustainabilityLabelFamiliarity": {
+      "text": "How familiar are you with sustainability-related labels and claims?",
+      "options": {
+        "NOT_FAMILIAR": "Not familiar",
+        "SLIGHTLY_FAMILIAR": "Slightly familiar",
+        "MODERATELY_FAMILIAR": "Moderately familiar",
+        "FAMILIAR": "Familiar",
+        "VERY_FAMILIAR": "Very familiar"
+      }
+    },
+    "productionMethodsInfluence": {
+      "text": "How often do production methods influence your purchasing decisions?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Nearly always"
+      }
+    },
+    "weeklyReusableOrRefill": {
+      "text": "How often do you use reusable containers or purchase refill products?",
+      "options": {
+        "ZERO_TO_TWO": "0-2 actions per week",
+        "THREE_TO_SIX": "3-6 actions per week",
+        "SEVEN_TO_NINE": "7-9 actions per week",
+        "TEN_PLUS": "10+ actions per week"
+      }
+    },
+    "checksPackagingDisposal": {
+      "text": "How often do you check recycling/reuse/disposal instructions on packaging?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Nearly always"
+      }
+    },
+    "weeklyFoodWaste": {
+      "text": "How often do you throw away edible food?",
+      "options": {
+        "ZERO": "Never",
+        "ONE_TO_TWO": "1-2 times per week",
+        "THREE_TO_FOUR": "3-4 times per week",
+        "FIVE_PLUS": "5+ times per week"
+      }
+    },
+    "plansMealsBeforeShopping": {
+      "text": "How often do you plan meals before shopping?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Always"
+      }
+    },
+    "usesLeftovers": {
+      "text": "How often do you deliberately use leftovers for another meal?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Always"
+      }
+    },
+    "weeklyUpfConsumption": {
+      "text": "How often do you consume ultra-processed foods such as packaged snacks, sugary drinks, ready meals, or processed meat products?",
+      "options": {
+        "ZERO_TO_THREE": "0-3 times per week",
+        "FOUR_TO_NINE": "4-9 times per week",
+        "TEN_TO_FOURTEEN": "10-14 times per week",
+        "FIFTEEN_PLUS": "15+ times per week"
+      }
+    },
+    "wholeGrainFrequency": {
+      "text": "How often do you choose whole-grain foods?",
+      "options": {
+        "NEVER": "Never",
+        "RARELY": "Rarely",
+        "SOMETIMES": "Sometimes",
+        "OFTEN": "Often",
+        "ALWAYS": "Daily"
+      }
+    },
+    "dailyFruitVegServings": {
+      "text": "How many servings of fruit and vegetables do you usually consume each day?",
+      "options": {
+        "LESS_THAN_ONE": "Less than 1 serving per day",
+        "ONE_TO_TWO": "1-2 servings per day",
+        "THREE_TO_FOUR": "3-4 servings per day",
+        "FIVE_PLUS": "5+ servings per day"
+      }
+    }
+  }
+}

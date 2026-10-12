@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "locale": "nl"
+  },
+  "questions": {
+    "weeklyMeatConsumption": {
+      "text": "Hoeveel maaltijden met vlees eet je doorgaans per week?",
+      "options": {
+        "ZERO_TO_FOUR": "0–4 maaltijden per week",
+        "FIVE_TO_NINE": "5–9 maaltijden per week",
+        "TEN_TO_FOURTEEN": "10–14 maaltijden per week",
+        "FIFTEEN_PLUS": "15+ maaltijden per week"
+      }
+    },
+    "weeklyBeefConsumption": {
+      "text": "Hoe vaak eet je rundvlees?",
+      "options": {
+        "NEVER": "Nooit",
+        "LESS_THAN_ONCE_PER_WEEK": "Minder dan één keer per week",
+        "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 keer per week",
+        "THREE_PLUS_TIMES_PER_WEEK": "3+ keer per week"
+      }
+    },
+    "weeklyLegumeConsumption": {
+      "text": "Hoe vaak eet je peulvruchten (bonen, linzen, kikkererwten, erwten)?",
+      "options": {
+        "NEVER": "Nooit",
+        "LESS_THAN_ONCE_PER_WEEK": "Minder dan één keer per week",
+        "ONCE_PER_WEEK": "Eén keer per week",
+        "SEVERAL_TIMES_PER_WEEK": "Meerdere keren per week",
+        "DAILY": "Dagelijks"
+      }
+    },
+    "checksCountryOfOrigin": {
+      "text": "Hoe vaak kijk je naar het land van herkomst van voedingsproducten?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Bijna altijd"
+      }
+    },
+    "choosesSeasonalProduce": {
+      "text": "Hoe vaak kies je bewust voor groente en fruit van het seizoen?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Af en toe",
+        "SOMETIMES": "Ongeveer de helft van de keren",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Bijna altijd"
+      }
+    },
+    "considersSustainabilityInfo": {
+      "text": "Hoe vaak houd je rekening met milieu- of duurzaamheidsinformatie voordat je voedsel koopt?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Bijna altijd"
+      }
+    },
+    "readsIngredientLists": {
+      "text": "Hoe vaak lees je de ingrediëntenlijst voordat je verpakte voedingsmiddelen koopt?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Bijna altijd"
+      }
+    },
+    "sustainabilityLabelFamiliarity": {
+      "text": "Hoe bekend ben je met duurzaamheidslabels en -claims?",
+      "options": {
+        "NOT_FAMILIAR": "Niet bekend",
+        "SLIGHTLY_FAMILIAR": "Een beetje bekend",
+        "MODERATELY_FAMILIAR": "Redelijk bekend",
+        "FAMILIAR": "Bekend",
+        "VERY_FAMILIAR": "Zeer bekend"
+      }
+    },
+    "productionMethodsInfluence": {
+      "text": "Hoe vaak beïnvloeden productiemethoden je aankoopbeslissingen?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Bijna altijd"
+      }
+    },
+    "weeklyReusableOrRefill": {
+      "text": "Hoe vaak gebruik je herbruikbare verpakkingen of koop je navulproducten?",
+      "options": {
+        "ZERO_TO_TWO": "0–2 keer per week",
+        "THREE_TO_SIX": "3–6 keer per week",
+        "SEVEN_TO_NINE": "7–9 keer per week",
+        "TEN_PLUS": "10+ keer per week"
+      }
+    },
+    "checksPackagingDisposal": {
+      "text": "Hoe vaak lees je de aanwijzingen op verpakkingen over recyclen, hergebruiken of weggooien?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Bijna altijd"
+      }
+    },
+    "weeklyFoodWaste": {
+      "text": "Hoe vaak gooi je eetbaar voedsel weg?",
+      "options": {
+        "ZERO": "Nooit",
+        "ONE_TO_TWO": "1–2 keer per week",
+        "THREE_TO_FOUR": "3–4 keer per week",
+        "FIVE_PLUS": "5+ keer per week"
+      }
+    },
+    "plansMealsBeforeShopping": {
+      "text": "Hoe vaak plan je je maaltijden voordat je boodschappen doet?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Altijd"
+      }
+    },
+    "usesLeftovers": {
+      "text": "Hoe vaak gebruik je bewust restjes voor een volgende maaltijd?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Altijd"
+      }
+    },
+    "weeklyUpfConsumption": {
+      "text": "Hoe vaak eet of drink je ultrabewerkte producten, zoals verpakte snacks, suikerhoudende dranken, kant-en-klaarmaaltijden of bewerkte vleeswaren?",
+      "options": {
+        "ZERO_TO_THREE": "0–3 keer per week",
+        "FOUR_TO_NINE": "4–9 keer per week",
+        "TEN_TO_FOURTEEN": "10–14 keer per week",
+        "FIFTEEN_PLUS": "15+ keer per week"
+      }
+    },
+    "wholeGrainFrequency": {
+      "text": "Hoe vaak kies je voor volkorenproducten?",
+      "options": {
+        "NEVER": "Nooit",
+        "RARELY": "Zelden",
+        "SOMETIMES": "Soms",
+        "OFTEN": "Vaak",
+        "ALWAYS": "Dagelijks"
+      }
+    },
+    "dailyFruitVegServings": {
+      "text": "Hoeveel porties groente en fruit eet je meestal per dag?",
+      "options": {
+        "LESS_THAN_ONE": "Minder dan 1 portie per dag",
+        "ONE_TO_TWO": "1–2 porties per dag",
+        "THREE_TO_FOUR": "3–4 porties per dag",
+        "FIVE_PLUS": "5+ porties per dag"
+      }
+    }
+  }
+}
