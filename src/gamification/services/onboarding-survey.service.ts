@@ -1,6 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { OnboardingBaselines } from '../onboarding.utils';
 import { deriveUserSegment } from '../onboarding-scoring';
 import {
   ONBOARDING_SURVEY_QUESTIONS,
@@ -8,7 +7,10 @@ import {
 } from '../onboarding-survey.config';
 import { GamificationOnboardingService } from './gamification-onboarding.service';
 import { ProgressWheelService } from './progress-wheel.service';
-import { OnboardingSurveyResultDto } from '../dto/onboarding-survey.dto';
+import {
+  OnboardingSurveyAnswersDto,
+  OnboardingSurveyResultDto,
+} from '../dto/onboarding-survey.dto';
 
 @Injectable()
 export class OnboardingSurveyService {
@@ -23,13 +25,14 @@ export class OnboardingSurveyService {
   }
 
   /**
-   * Scores the answers into a sustainability profile, persists the answers +
-   * segment, applies first-time onboarding side effects (wallet + progress
-   * wheels, idempotent), and returns the computed segment with the wheels.
+   * Scores the answers (all optional) into a sustainability profile,
+   * persists them + segment, applies first-time onboarding side effects
+   * (wallet, progress wheels, per-dimension levels; idempotent), and returns
+   * the computed segment with the wheels.
    */
   async submitSurvey(
     userId: string,
-    answers: OnboardingBaselines,
+    answers: OnboardingSurveyAnswersDto,
   ): Promise<OnboardingSurveyResultDto> {
     const segment = deriveUserSegment(answers);
 

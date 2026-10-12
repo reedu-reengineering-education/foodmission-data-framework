@@ -7,6 +7,7 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
 import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
+import { LearningProgressService } from '../../gamification/services/learning-progress.service';
 
 describe('UserProfilesController', () => {
   let controller: UserProfilesController;
@@ -19,6 +20,9 @@ describe('UserProfilesController', () => {
   >;
   let onboardingSurveyService: jest.Mocked<
     Pick<OnboardingSurveyService, 'getSurveyQuestions' | 'submitSurvey'>
+  >;
+  let learningProgressService: jest.Mocked<
+    Pick<LearningProgressService, 'getCurrentQuest'>
   >;
 
   const mockUserProfile = {
@@ -49,6 +53,9 @@ describe('UserProfilesController', () => {
       getSurveyQuestions: jest.fn().mockReturnValue([]),
       submitSurvey: jest.fn(),
     };
+    learningProgressService = {
+      getCurrentQuest: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserProfilesController],
@@ -73,6 +80,10 @@ describe('UserProfilesController', () => {
         {
           provide: OnboardingSurveyService,
           useValue: onboardingSurveyService,
+        },
+        {
+          provide: LearningProgressService,
+          useValue: learningProgressService,
         },
       ],
     })
@@ -113,6 +124,18 @@ describe('UserProfilesController', () => {
       service.getProfileByUserId.mockResolvedValue(null);
       await expect(controller.getMyFullProfile('user-1')).rejects.toThrow(
         NotFoundException,
+      );
+    });
+  });
+
+  describe('getMyCurrentQuest', () => {
+    it('delegates to LearningProgressService', async () => {
+      const quest = { questId: 'q1' } as any;
+      learningProgressService.getCurrentQuest.mockResolvedValue(quest);
+
+      await expect(controller.getMyCurrentQuest('user-1')).resolves.toBe(quest);
+      expect(learningProgressService.getCurrentQuest).toHaveBeenCalledWith(
+        'user-1',
       );
     });
   });
@@ -167,7 +190,7 @@ describe('UserProfilesController', () => {
   describe('recordProgressWheelImpact', () => {
     it('delegates to ProgressWheelService', async () => {
       const result = {
-        actionCode: 'VEGETARIAN_SERVING_100G',
+        actionCode: 'VEGETARIAN_MEAL',
         wheels: [],
         achievements: [],
       } as any;
@@ -175,12 +198,12 @@ describe('UserProfilesController', () => {
 
       await expect(
         controller.recordProgressWheelImpact('user-1', {
-          actionCode: 'VEGETARIAN_SERVING_100G',
+          actionCode: 'VEGETARIAN_MEAL',
         }),
       ).resolves.toEqual(result);
       expect(progressWheelService.recordImpact).toHaveBeenCalledWith(
         'user-1',
-        'VEGETARIAN_SERVING_100G',
+        'VEGETARIAN_MEAL',
       );
     });
   });

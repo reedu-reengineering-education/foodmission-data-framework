@@ -10,6 +10,8 @@ import { BadgeService } from './services/badge.service';
 import { ProgressWheelService } from './services/progress-wheel.service';
 import { OnboardingSurveyService } from './services/onboarding-survey.service';
 import { RewardService } from './services/reward.service';
+import { DimensionLevelService } from './services/dimension-level.service';
+import { LearningProgressService } from './services/learning-progress.service';
 
 @Module({
   imports: [DatabaseModule, EventsModule],
@@ -28,6 +30,8 @@ import { RewardService } from './services/reward.service';
     ProgressWheelService,
     OnboardingSurveyService,
     RewardService,
+    DimensionLevelService,
+    LearningProgressService,
   ],
   exports: [
     GamificationWalletService,
@@ -39,6 +43,8 @@ import { RewardService } from './services/reward.service';
     ProgressWheelService,
     OnboardingSurveyService,
     RewardService,
+    DimensionLevelService,
+    LearningProgressService,
   ],
 })
 export class GamificationModule {}

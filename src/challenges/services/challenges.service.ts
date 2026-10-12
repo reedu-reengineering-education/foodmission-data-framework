@@ -24,7 +24,7 @@ function tagsFromFlags(challenge: {
   const tags: string[] = [];
   if (challenge.health) tags.push('HEALTH');
   if (challenge.foodChoice) tags.push('FOOD_CHOICE');
-  if (challenge.foodWaste) tags.push('FOOD_AND_WASTE');
+  if (challenge.foodWaste) tags.push('FOOD_WASTE');
   return tags;
 }
 
