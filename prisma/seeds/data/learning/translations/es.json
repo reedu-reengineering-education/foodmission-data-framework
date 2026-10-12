@@ -1422,6 +1422,61 @@
         "D": "Carne en todas las comidas"
       }
     },
+    "Q2.5.1": {
+      "title": "Tomates en invierno: ¿locales o importados?",
+      "question": "Estás haciendo la compra en invierno y necesitas tomates. ¿Qué afirmación se ajusta mejor a los datos?",
+      "explanation": "Los kilómetros alimentarios contribuyen de forma significativa a las emisiones del sistema alimentario, pero la sostenibilidad depende de múltiples factores, entre ellos el método de producción, la estacionalidad y el medio de transporte. La distancia por sí sola no lo explica todo.",
+      "options": {
+        "A": "Los tomates producidos localmente son siempre la opción más respetuosa con el clima",
+        "B": "Los tomates importados son siempre menos sostenibles que los tomates locales",
+        "C": "La sostenibilidad de los tomates depende tanto de las condiciones de producción como de las de transporte",
+        "D": "La distancia de transporte influye poco en las emisiones de gases de efecto invernadero"
+      }
+    },
+    "Q2.5.2": {
+      "title": "Kilómetros alimentarios de los productos frescos",
+      "question": "¿Qué categoría de alimentos contribuye de forma desproporcionada a las emisiones de los kilómetros alimentarios en comparación con las emisiones de su producción?",
+      "explanation": "Aunque las frutas y verduras son, en general, alimentos saludables, su transporte genera alrededor del 36 % de las emisiones de los kilómetros alimentarios a nivel mundial. En algunos productos, las emisiones del transporte pueden superar a las generadas durante el cultivo.",
+      "options": {
+        "A": "Alubias secas",
+        "B": "Frutas y verduras frescas",
+        "C": "Cereales integrales",
+        "D": "Legumbres"
+      }
+    },
+    "Q2.5.3": {
+      "title": "Transporte refrigerado",
+      "question": "Dos productos recorren la misma distancia hasta llegar al supermercado. ¿Qué factor podría hacer que uno de ellos tenga un mayor impacto climático durante el transporte?",
+      "explanation": "Las emisiones del transporte de alimentos no dependen solo de la distancia recorrida, sino también de una logística especializada, como la refrigeración y el almacenamiento en frío, que requieren energía adicional.",
+      "options": {
+        "A": "La necesidad de transporte y almacenamiento refrigerados",
+        "B": "Si se transporta en envíos más pequeños y frecuentes",
+        "C": "Si se transporta por carretera o por ferrocarril",
+        "D": "Si es importado o de producción nacional"
+      }
+    },
+    "Q2.5.4": {
+      "title": "La cadena de frío contra las pérdidas de alimentos",
+      "question": "Una agencia de desarrollo quiere reducir las pérdidas de alimentos en una región rural. ¿Qué inversión es probable que tenga mayor impacto?",
+      "explanation": "Una parte importante de la producción mundial de alimentos se pierde debido a una refrigeración inadecuada. Mantener una cadena de frío ininterrumpida ayuda a preservar la calidad de los alimentos y a reducir su deterioro durante el transporte y el almacenamiento.",
+      "options": {
+        "A": "Almacenes de supermercado más grandes",
+        "B": "Más envases para alimentos",
+        "C": "Infraestructura fiable de refrigeración y de cadena de frío",
+        "D": "Rutas de transporte más largas"
+      }
+    },
+    "Q2.5.5": {
+      "title": "Alimentos y emisiones del transporte de mercancías",
+      "question": "¿Qué afirmación refleja mejor la importancia medioambiental del transporte de alimentos?",
+      "explanation": "Aunque el transporte de alimentos solo representa alrededor del 18 % de las distancias recorridas en el transporte mundial de mercancías, genera aproximadamente el 27 % de las emisiones relacionadas con dicho transporte, lo que refleja la intensidad energética de la logística alimentaria mundial y las necesidades de refrigeración.",
+      "options": {
+        "A": "El transporte de alimentos genera la mayor parte de las emisiones de gases de efecto invernadero del sistema alimentario",
+        "B": "El transporte de alimentos solo genera una pequeña fracción de las emisiones del transporte de mercancías",
+        "C": "El transporte de alimentos genera una parte desproporcionadamente grande de las emisiones del transporte de mercancías en relación con la distancia recorrida",
+        "D": "Las emisiones del transporte de alimentos se producen principalmente porque los alimentos están envasados"
+      }
+    },
     "Q3.1.1": {
       "title": "Procesamiento y sostenibilidad",
       "question": "Estás comparando dos comidas ricas en proteínas: un guiso de alubias elaborado con ingredientes sencillos y nuggets de carne vegetal. ¿Qué conclusión se sustenta mejor con las pruebas?",

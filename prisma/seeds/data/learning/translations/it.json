@@ -1422,6 +1422,61 @@
         "D": "Carne a ogni pasto"
       }
     },
+    "Q2.5.1": {
+      "title": "Pomodori d'inverno: locali o importati?",
+      "question": "Stai facendo la spesa in inverno e ti servono dei pomodori. Quale affermazione è più coerente con i dati disponibili?",
+      "explanation": "I chilometri del cibo contribuiscono in modo significativo alle emissioni del sistema alimentare, ma la sostenibilità dipende da molteplici fattori, tra cui i metodi di produzione, la stagionalità e la modalità di trasporto. La distanza da sola non racconta tutta la storia.",
+      "options": {
+        "A": "I pomodori di produzione locale sono sempre l'opzione più rispettosa del clima",
+        "B": "I pomodori importati sono sempre meno sostenibili di quelli locali",
+        "C": "La sostenibilità dei pomodori dipende sia dalle condizioni di produzione sia da quelle di trasporto",
+        "D": "La distanza di trasporto ha poca influenza sulle emissioni di gas serra"
+      }
+    },
+    "Q2.5.2": {
+      "title": "I chilometri di frutta e verdura fresca",
+      "question": "Quale categoria di alimenti contribuisce in modo sproporzionato alle emissioni legate ai chilometri del cibo rispetto alle emissioni della sua produzione?",
+      "explanation": "Sebbene frutta e verdura siano in genere alimenti sani, il loro trasporto rappresenta circa il 36% delle emissioni legate ai chilometri del cibo a livello mondiale. Per alcuni prodotti, le emissioni del trasporto possono superare quelle generate durante la coltivazione.",
+      "options": {
+        "A": "Fagioli secchi",
+        "B": "Frutta e verdura fresca",
+        "C": "Cereali integrali",
+        "D": "Legumi"
+      }
+    },
+    "Q2.5.3": {
+      "title": "Trasporto refrigerato",
+      "question": "Due prodotti percorrono la stessa distanza per arrivare al supermercato. Quale fattore potrebbe far sì che uno dei due abbia un impatto sul clima maggiore durante il trasporto?",
+      "explanation": "Le emissioni del trasporto alimentare dipendono non solo dalla distanza percorsa, ma anche da una logistica specializzata come la refrigerazione e la conservazione a freddo, che richiedono energia aggiuntiva.",
+      "options": {
+        "A": "La necessità di trasporto e conservazione refrigerati",
+        "B": "Se viene trasportato in spedizioni più piccole e più frequenti",
+        "C": "Se viene trasportato su strada o su rotaia",
+        "D": "Se è importato o di produzione nazionale"
+      }
+    },
+    "Q2.5.4": {
+      "title": "Catene del freddo contro le perdite alimentari",
+      "question": "Un'agenzia di sviluppo vuole ridurre le perdite alimentari in una regione rurale. Quale investimento avrà probabilmente l'impatto maggiore?",
+      "explanation": "Una quota significativa della produzione alimentare mondiale va persa a causa di sistemi di refrigerazione inadeguati. Mantenere una catena del freddo ininterrotta aiuta a preservare la qualità degli alimenti e a ridurre il deterioramento durante il trasporto e la conservazione.",
+      "options": {
+        "A": "Magazzini più grandi per i supermercati",
+        "B": "Più imballaggi per gli alimenti",
+        "C": "Infrastrutture affidabili per la refrigerazione e la catena del freddo",
+        "D": "Percorsi di trasporto più lunghi"
+      }
+    },
+    "Q2.5.5": {
+      "title": "Trasporto alimentare ed emissioni del trasporto merci",
+      "question": "Quale affermazione riflette meglio l'importanza ambientale del trasporto alimentare?",
+      "explanation": "Sebbene il trasporto alimentare rappresenti solo circa il 18% delle distanze percorse dal trasporto merci a livello globale, è responsabile di circa il 27% delle emissioni legate al trasporto merci, a riprova dell'elevata intensità energetica della logistica alimentare globale e delle esigenze di refrigerazione.",
+      "options": {
+        "A": "Il trasporto alimentare è responsabile della maggior parte delle emissioni di gas serra del sistema alimentare",
+        "B": "Il trasporto alimentare è responsabile solo di una piccola frazione delle emissioni del trasporto merci",
+        "C": "Il trasporto alimentare genera una quota sproporzionatamente elevata delle emissioni del trasporto merci rispetto alla distanza percorsa",
+        "D": "Le emissioni del trasporto alimentare si verificano principalmente perché gli alimenti sono imballati"
+      }
+    },
     "Q3.1.1": {
       "title": "Trasformazione e sostenibilità",
       "question": "Stai mettendo a confronto due pasti ricchi di proteine: uno stufato di fagioli preparato con ingredienti semplici e dei bocconcini di carne vegetale. Quale conclusione risulta meglio supportata dai dati?",

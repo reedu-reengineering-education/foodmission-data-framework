@@ -1422,6 +1422,61 @@
         "D": "Mięso przy każdym posiłku"
       }
     },
+    "Q2.5.1": {
+      "title": "Zimowe pomidory: lokalne czy importowane?",
+      "question": "Robisz zakupy zimą i potrzebujesz pomidorów. Które stwierdzenie jest najbardziej zgodne z dowodami?",
+      "explanation": "Kilometry żywności w istotny sposób przyczyniają się do emisji z systemu żywnościowego, ale zrównoważony charakter zależy od wielu czynników, w tym od metody produkcji, sezonowości i środka transportu. Sama odległość nie mówi wszystkiego.",
+      "options": {
+        "A": "Pomidory z lokalnej produkcji są zawsze najbardziej przyjazne dla klimatu",
+        "B": "Pomidory importowane są zawsze mniej zrównoważone niż pomidory lokalne",
+        "C": "Zrównoważony charakter pomidorów zależy zarówno od warunków produkcji, jak i od warunków transportu",
+        "D": "Odległość transportu ma niewielki wpływ na emisje gazów cieplarnianych"
+      }
+    },
+    "Q2.5.2": {
+      "title": "Świeże produkty a kilometry żywności",
+      "question": "Która kategoria żywności odpowiada za nieproporcjonalnie duży udział w emisjach związanych z kilometrami żywności w porównaniu z emisjami z jej produkcji?",
+      "explanation": "Chociaż owoce i warzywa są na ogół zdrową żywnością, ich transport odpowiada za około 36% emisji związanych z kilometrami żywności na świecie. W przypadku niektórych produktów emisje z transportu mogą przewyższać emisje powstające podczas uprawy.",
+      "options": {
+        "A": "Suszona fasola",
+        "B": "Świeże owoce i warzywa",
+        "C": "Produkty pełnoziarniste",
+        "D": "Rośliny strączkowe"
+      }
+    },
+    "Q2.5.3": {
+      "title": "Transport chłodniczy",
+      "question": "Dwa produkty pokonują tę samą odległość, zanim trafią do supermarketu. Który czynnik może sprawić, że jeden z nich będzie miał większy wpływ na klimat podczas transportu?",
+      "explanation": "Na emisje z transportu żywności wpływa nie tylko pokonana odległość, ale także specjalistyczna logistyka, taka jak chłodzenie i przechowywanie w chłodniach, która wymaga dodatkowej energii.",
+      "options": {
+        "A": "Konieczność transportu i przechowywania w warunkach chłodniczych",
+        "B": "To, czy jest przewożony w mniejszych, częstszych dostawach",
+        "C": "To, czy jest przewożony transportem drogowym czy kolejowym",
+        "D": "To, czy jest importowany, czy wyprodukowany w kraju"
+      }
+    },
+    "Q2.5.4": {
+      "title": "Łańcuchy chłodnicze przeciw stratom żywności",
+      "question": "Agencja rozwoju chce ograniczyć straty żywności w regionie wiejskim. Która inwestycja przyniesie prawdopodobnie największy efekt?",
+      "explanation": "Znaczna część światowej produkcji żywności ulega utracie z powodu niewystarczającego chłodzenia. Utrzymanie nieprzerwanego łańcucha chłodniczego pomaga zachować jakość żywności i ograniczyć jej psucie się podczas transportu i przechowywania.",
+      "options": {
+        "A": "Większe magazyny supermarketów",
+        "B": "Więcej opakowań do żywności",
+        "C": "Niezawodne chłodzenie i infrastruktura łańcucha chłodniczego",
+        "D": "Dłuższe trasy transportowe"
+      }
+    },
+    "Q2.5.5": {
+      "title": "Transport żywności a emisje z transportu towarowego",
+      "question": "Które stwierdzenie najlepiej oddaje znaczenie transportu żywności dla środowiska?",
+      "explanation": "Chociaż transport żywności stanowi jedynie około 18% całkowitej długości tras transportu towarowego na świecie, odpowiada on za około 27% emisji związanych z transportem towarowym, co odzwierciedla energochłonność globalnej logistyki żywności i wymagania dotyczące chłodzenia.",
+      "options": {
+        "A": "Transport żywności odpowiada za większość emisji gazów cieplarnianych z systemu żywnościowego",
+        "B": "Transport żywności odpowiada tylko za niewielką część emisji z transportu towarowego",
+        "C": "Transport żywności odpowiada za nieproporcjonalnie dużą część emisji z transportu towarowego w stosunku do pokonanej odległości",
+        "D": "Emisje z transportu żywności powstają głównie dlatego, że żywność jest pakowana"
+      }
+    },
     "Q3.1.1": {
       "title": "Przetwarzanie a zrównoważony rozwój",
       "question": "Porównujesz dwa posiłki bogate w białko: gulasz fasolowy przygotowany z prostych składników oraz roślinne nuggetsy mięsne. Który wniosek najlepiej potwierdzają przedstawione dowody?",

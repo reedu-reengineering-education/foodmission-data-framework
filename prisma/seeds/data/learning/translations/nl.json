@@ -1422,6 +1422,61 @@
         "D": "Vlees bij elke maaltijd"
       }
     },
+    "Q2.5.1": {
+      "title": "Wintertomaten: lokaal of geïmporteerd?",
+      "question": "Je doet in de winter boodschappen en hebt tomaten nodig. Welke bewering komt het meest overeen met de feiten?",
+      "explanation": "Voedselkilometers dragen aanzienlijk bij aan de uitstoot van het voedselsysteem, maar duurzaamheid hangt af van meerdere factoren, waaronder de productiemethode, het seizoen en de vervoerswijze. De afstand alleen vertelt niet het hele verhaal.",
+      "options": {
+        "A": "Lokaal geproduceerde tomaten zijn altijd de meest klimaatvriendelijke keuze",
+        "B": "Geïmporteerde tomaten zijn altijd minder duurzaam dan lokale tomaten",
+        "C": "De duurzaamheid van tomaten hangt af van zowel de productie- als de transportomstandigheden",
+        "D": "De transportafstand heeft weinig invloed op de uitstoot van broeikasgassen"
+      }
+    },
+    "Q2.5.2": {
+      "title": "Voedselkilometers van verse producten",
+      "question": "Welke voedselcategorie draagt onevenredig veel bij aan de uitstoot door voedselkilometers, vergeleken met de uitstoot van de productie ervan?",
+      "explanation": "Hoewel groenten en fruit over het algemeen gezonde voedingsmiddelen zijn, is het transport ervan wereldwijd verantwoordelijk voor ongeveer 36% van de uitstoot door voedselkilometers. Bij sommige producten kan de uitstoot door transport hoger zijn dan die van de teelt.",
+      "options": {
+        "A": "Gedroogde bonen",
+        "B": "Verse groenten en fruit",
+        "C": "Volkoren granen",
+        "D": "Peulvruchten"
+      }
+    },
+    "Q2.5.3": {
+      "title": "Gekoeld transport",
+      "question": "Twee producten leggen dezelfde afstand af naar de supermarkt. Welke factor kan ervoor zorgen dat één product tijdens het transport een grotere klimaatimpact heeft?",
+      "explanation": "De uitstoot van voedseltransport wordt niet alleen bepaald door de afgelegde afstand, maar ook door gespecialiseerde logistiek zoals koeling en koelopslag, die extra energie vergen.",
+      "options": {
+        "A": "De noodzaak van gekoeld transport en gekoelde opslag",
+        "B": "Of het in kleinere, frequentere zendingen wordt vervoerd",
+        "C": "Of het over de weg of per spoor wordt vervoerd",
+        "D": "Of het geïmporteerd of in eigen land geproduceerd is"
+      }
+    },
+    "Q2.5.4": {
+      "title": "Koelketens tegen voedselverlies",
+      "question": "Een ontwikkelingsorganisatie wil voedselverliezen in een landelijke regio terugdringen. Welke investering heeft waarschijnlijk de grootste impact?",
+      "explanation": "Een aanzienlijk deel van de wereldwijde voedselproductie gaat verloren door ontoereikende koeling. Een ononderbroken koelketen helpt de kwaliteit van voedsel te behouden en bederf tijdens transport en opslag te beperken.",
+      "options": {
+        "A": "Grotere magazijnen voor supermarkten",
+        "B": "Meer voedselverpakkingen",
+        "C": "Betrouwbare koeling en koelketeninfrastructuur",
+        "D": "Langere transportroutes"
+      }
+    },
+    "Q2.5.5": {
+      "title": "Voedseltransport en uitstoot van vrachtvervoer",
+      "question": "Welke bewering geeft het belang van voedseltransport voor het milieu het beste weer?",
+      "explanation": "Hoewel voedseltransport slechts ongeveer 18% van de wereldwijde vrachtvervoersafstanden uitmaakt, is het verantwoordelijk voor ongeveer 27% van de vrachtgerelateerde uitstoot. Dat weerspiegelt de energie-intensiteit van de wereldwijde voedsellogistiek en de benodigde koeling.",
+      "options": {
+        "A": "Voedseltransport is verantwoordelijk voor het grootste deel van de broeikasgasemissies van het voedselsysteem",
+        "B": "Voedseltransport is verantwoordelijk voor slechts een klein deel van de uitstoot van vrachtvervoer",
+        "C": "Voedseltransport veroorzaakt een onevenredig groot deel van de uitstoot van vrachtvervoer in verhouding tot de afgelegde afstand",
+        "D": "De uitstoot van voedseltransport ontstaat vooral doordat voedsel verpakt is"
+      }
+    },
     "Q3.1.1": {
       "title": "Verwerking en duurzaamheid",
       "question": "Je vergelijkt twee eiwitrijke maaltijden: een bonenstoofpotje gemaakt van eenvoudige ingrediënten en plantaardige vleesnuggets. Welke conclusie wordt het best door de feiten ondersteund?",

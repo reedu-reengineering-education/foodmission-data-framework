@@ -1422,6 +1422,61 @@
         "D": "Fleisch zu jeder Mahlzeit"
       }
     },
+    "Q2.5.1": {
+      "title": "Tomaten im Winter: regional oder importiert?",
+      "question": "Du kaufst im Winter ein und brauchst Tomaten. Welche Aussage stimmt am ehesten mit den Belegen überein?",
+      "explanation": "Die Transportwege von Lebensmitteln tragen erheblich zu den Emissionen des Lebensmittelsystems bei, doch die Nachhaltigkeit hängt von mehreren Faktoren ab, darunter Produktionsmethoden, Saisonalität und Transportart. Die Entfernung allein sagt nicht alles aus.",
+      "options": {
+        "A": "Regional erzeugte Tomaten sind immer die klimafreundlichste Wahl",
+        "B": "Importierte Tomaten sind immer weniger nachhaltig als regionale Tomaten",
+        "C": "Die Nachhaltigkeit von Tomaten hängt sowohl von den Produktions- als auch von den Transportbedingungen ab",
+        "D": "Die Transportentfernung hat wenig Einfluss auf die Treibhausgasemissionen"
+      }
+    },
+    "Q2.5.2": {
+      "title": "Transportwege von frischem Obst und Gemüse",
+      "question": "Welche Lebensmittelgruppe trägt im Verhältnis zu den Emissionen ihrer Erzeugung überproportional zu den transportbedingten Emissionen von Lebensmitteln bei?",
+      "explanation": "Obst und Gemüse sind zwar grundsätzlich gesunde Lebensmittel, doch ihr Transport verursacht weltweit rund 36 % der Emissionen aus Lebensmitteltransporten. Bei manchen Produkten können die Transportemissionen sogar höher sein als die beim Anbau entstehenden Emissionen.",
+      "options": {
+        "A": "Getrocknete Bohnen",
+        "B": "Frisches Obst und Gemüse",
+        "C": "Vollkorngetreide",
+        "D": "Hülsenfrüchte"
+      }
+    },
+    "Q2.5.3": {
+      "title": "Kühltransporte",
+      "question": "Zwei Produkte legen dieselbe Strecke bis zum Supermarkt zurück. Welcher Faktor könnte dazu führen, dass eines der Produkte beim Transport eine höhere Klimawirkung hat?",
+      "explanation": "Die Emissionen beim Lebensmitteltransport hängen nicht nur von der zurückgelegten Entfernung ab, sondern auch von spezieller Logistik wie Kühlung und Kühllagerung, die zusätzliche Energie benötigt.",
+      "options": {
+        "A": "Der Bedarf an gekühltem Transport und gekühlter Lagerung",
+        "B": "Ob es in kleineren, häufigeren Lieferungen transportiert wird",
+        "C": "Ob es per Lkw oder per Bahn transportiert wird",
+        "D": "Ob es importiert oder im Inland erzeugt wird"
+      }
+    },
+    "Q2.5.4": {
+      "title": "Kühlketten gegen Lebensmittelverluste",
+      "question": "Eine Entwicklungsagentur möchte Lebensmittelverluste in einer ländlichen Region verringern. Welche Investition dürfte die größte Wirkung haben?",
+      "explanation": "Ein erheblicher Teil der weltweiten Lebensmittelproduktion geht aufgrund unzureichender Kühlung verloren. Eine lückenlose Kühlkette trägt dazu bei, die Qualität von Lebensmitteln zu erhalten und den Verderb während Transport und Lagerung zu verringern.",
+      "options": {
+        "A": "Größere Lagerhallen für Supermärkte",
+        "B": "Mehr Lebensmittelverpackungen",
+        "C": "Zuverlässige Kühlung und Kühlketteninfrastruktur",
+        "D": "Längere Transportwege"
+      }
+    },
+    "Q2.5.5": {
+      "title": "Lebensmitteltransport und Frachtemissionen",
+      "question": "Welche Aussage spiegelt die Bedeutung des Lebensmitteltransports für die Umwelt am besten wider?",
+      "explanation": "Obwohl auf Lebensmittel nur etwa 18 % der weltweiten Frachttransportstrecken entfallen, verursachen sie rund 27 % der frachtbedingten Emissionen. Das zeigt, wie energieintensiv die globale Lebensmittellogistik und die erforderliche Kühlung sind.",
+      "options": {
+        "A": "Der Lebensmitteltransport verursacht den Großteil der Treibhausgasemissionen des Lebensmittelsystems",
+        "B": "Der Lebensmitteltransport verursacht nur einen kleinen Bruchteil der frachtbedingten Emissionen",
+        "C": "Der Lebensmitteltransport verursacht im Verhältnis zur zurückgelegten Strecke einen überproportional großen Anteil der frachtbedingten Emissionen",
+        "D": "Emissionen beim Lebensmitteltransport entstehen hauptsächlich durch die Verpackung der Lebensmittel"
+      }
+    },
     "Q3.1.1": {
       "title": "Verarbeitung und Nachhaltigkeit",
       "question": "Du vergleichst zwei proteinreiche Mahlzeiten: einen Bohneneintopf aus einfachen Zutaten und pflanzliche Fleischnuggets. Welche Schlussfolgerung lässt sich anhand der vorliegenden Beweise am besten begründen?",

@@ -1422,6 +1422,61 @@
         "D": "Meso pri vsakem obroku"
       }
     },
+    "Q2.5.1": {
+      "title": "Zimski paradižnik: lokalni ali uvoženi?",
+      "question": "Pozimi nakupujete in potrebujete paradižnik. Katera trditev je najbolj skladna z dokazi?",
+      "explanation": "Prehranski kilometri pomembno prispevajo k emisijam prehranskega sistema, vendar je trajnostnost odvisna od več dejavnikov, vključno z načinom pridelave, sezonskostjo in načinom prevoza. Sama razdalja ne pove vsega.",
+      "options": {
+        "A": "Lokalno pridelan paradižnik je vedno podnebju najprijaznejša izbira",
+        "B": "Uvožen paradižnik je vedno manj trajnosten od lokalnega",
+        "C": "Trajnostnost paradižnika je odvisna tako od pogojev pridelave kot od pogojev prevoza",
+        "D": "Transportna razdalja le malo vpliva na emisije toplogrednih plinov"
+      }
+    },
+    "Q2.5.2": {
+      "title": "Prehranski kilometri svežih pridelkov",
+      "question": "Katera skupina živil v primerjavi z emisijami pri svoji pridelavi prispeva nesorazmerno velik delež emisij zaradi prehranskih kilometrov?",
+      "explanation": "Čeprav sta sadje in zelenjava na splošno zdravi živili, njun prevoz prispeva približno 36 % svetovnih emisij zaradi prehranskih kilometrov. Pri nekaterih izdelkih so lahko emisije zaradi prevoza celo večje od emisij, ki nastanejo pri gojenju.",
+      "options": {
+        "A": "Suh fižol",
+        "B": "Sveže sadje in zelenjava",
+        "C": "Polnozrnata žita",
+        "D": "Stročnice"
+      }
+    },
+    "Q2.5.3": {
+      "title": "Hlajen prevoz",
+      "question": "Dva izdelka do supermarketa prepotujeta enako razdaljo. Kateri dejavnik bi lahko povzročil, da ima eden od njiju med prevozom večji podnebni vpliv?",
+      "explanation": "Na emisije pri prevozu hrane ne vpliva le prepotovana razdalja, temveč tudi specializirana logistika, kot sta hlajenje in hladno skladiščenje, ki zahtevata dodatno energijo.",
+      "options": {
+        "A": "Potreba po hlajenem prevozu in skladiščenju",
+        "B": "Ali se prevaža v manjših, pogostejših pošiljkah",
+        "C": "Ali se prevaža po cesti ali po železnici",
+        "D": "Ali je uvožen ali domače pridelan"
+      }
+    },
+    "Q2.5.4": {
+      "title": "Hladne verige proti izgubam hrane",
+      "question": "Razvojna agencija želi zmanjšati izgube hrane na podeželskem območju. Katera naložba bo verjetno imela največji učinek?",
+      "explanation": "Znaten delež svetovne pridelave hrane se izgubi zaradi neustreznega hlajenja. Neprekinjena hladna veriga pomaga ohranjati kakovost hrane in zmanjšati kvarjenje med prevozom in skladiščenjem.",
+      "options": {
+        "A": "Večja skladišča supermarketov",
+        "B": "Več embalaže za živila",
+        "C": "Zanesljivo hlajenje in infrastruktura hladne verige",
+        "D": "Daljše prevozne poti"
+      }
+    },
+    "Q2.5.5": {
+      "title": "Prevoz hrane in emisije tovornega prometa",
+      "question": "Katera trditev najbolje odraža okoljski pomen prevoza hrane?",
+      "explanation": "Čeprav prevoz hrane predstavlja le okoli 18 % razdalj svetovnega tovornega prometa, povzroči približno 27 % emisij, povezanih s tovornim prometom, kar odraža energijsko intenzivnost svetovne logistike hrane in potrebe po hlajenju.",
+      "options": {
+        "A": "Prevoz hrane povzroča večino emisij toplogrednih plinov v prehranskem sistemu",
+        "B": "Prevoz hrane povzroča le majhen delež emisij tovornega prometa",
+        "C": "Prevoz hrane glede na prepotovano razdaljo povzroča nesorazmerno velik delež emisij tovornega prometa",
+        "D": "Emisije pri prevozu hrane nastajajo predvsem zato, ker je hrana pakirana"
+      }
+    },
     "Q3.1.1": {
       "title": "Predelava in trajnostnost",
       "question": "Primerjate dva obroka, bogata z beljakovinami: enolončnico iz fižola iz preprostih sestavin in rastlinske mesne nagete. Kateri sklep je najbolje podprt z dokazi?",

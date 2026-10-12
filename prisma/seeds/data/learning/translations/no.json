@@ -1422,6 +1422,61 @@
         "D": "Kjøtt til hvert måltid"
       }
     },
+    "Q2.5.1": {
+      "title": "Vintertomater: lokale eller importerte?",
+      "question": "Du handler om vinteren og trenger tomater. Hvilket utsagn stemmer best overens med bevisene?",
+      "explanation": "Transportavstanden bidrar betydelig til utslippene fra matsystemet, men bærekraften avhenger av flere faktorer, blant annet produksjonsmetoder, sesong og transportform. Avstanden alene forteller ikke hele historien.",
+      "options": {
+        "A": "Lokalt produserte tomater er alltid det mest klimavennlige alternativet",
+        "B": "Importerte tomater er alltid mindre bærekraftige enn lokale tomater",
+        "C": "Hvor bærekraftige tomatene er, avhenger av både produksjons- og transportforholdene",
+        "D": "Transportavstanden har liten innvirkning på klimagassutslippene"
+      }
+    },
+    "Q2.5.2": {
+      "title": "Transportavstanden til ferske råvarer",
+      "question": "Hvilken matvarekategori står for en uforholdsmessig stor andel av de transportrelaterte utslippene fra mat, sammenlignet med utslippene fra produksjonen?",
+      "explanation": "Selv om frukt og grønnsaker generelt er sunne matvarer, står transporten av dem for rundt 36 % av de globale transportrelaterte utslippene fra mat. For enkelte produkter kan utslippene fra transporten være større enn utslippene fra dyrkingen.",
+      "options": {
+        "A": "Tørkede bønner",
+        "B": "Fersk frukt og grønnsaker",
+        "C": "Fullkorn",
+        "D": "Belgfrukter"
+      }
+    },
+    "Q2.5.3": {
+      "title": "Kjøletransport",
+      "question": "To produkter fraktes like langt for å komme frem til supermarkedet. Hvilken faktor kan føre til at det ene produktet får større klimapåvirkning under transporten?",
+      "explanation": "Utslippene fra mattransport påvirkes ikke bare av hvor langt maten fraktes, men også av spesialisert logistikk som kjøling og kjølelagring, som krever ekstra energi.",
+      "options": {
+        "A": "Behovet for kjøletransport og kjølelagring",
+        "B": "Om det fraktes i mindre og hyppigere forsendelser",
+        "C": "Om det fraktes på vei eller med jernbane",
+        "D": "Om det er importert eller produsert innenlands"
+      }
+    },
+    "Q2.5.4": {
+      "title": "Kjølekjeder mot mattap",
+      "question": "Et utviklingsbyrå ønsker å redusere mattapet i en region på landsbygda. Hvilken investering vil trolig ha størst effekt?",
+      "explanation": "En betydelig andel av den globale matproduksjonen går tapt på grunn av utilstrekkelig kjøling. En ubrutt kjølekjede bidrar til å bevare matkvaliteten og redusere forringelse under transport og lagring.",
+      "options": {
+        "A": "Større lagerbygg for supermarkeder",
+        "B": "Mer matemballasje",
+        "C": "Pålitelig kjøling og kjølekjedeinfrastruktur",
+        "D": "Lengre transportruter"
+      }
+    },
+    "Q2.5.5": {
+      "title": "Mattransport og utslipp fra godstransport",
+      "question": "Hvilket utsagn gjenspeiler best hvor viktig mattransport er for miljøet?",
+      "explanation": "Selv om mattransport bare utgjør rundt 18 % av de globale godstransportavstandene, står den for omtrent 27 % av de godstransportrelaterte utslippene. Det gjenspeiler hvor energikrevende global matlogistikk og nødvendig kjøling er.",
+      "options": {
+        "A": "Mattransport står for størstedelen av klimagassutslippene i matsystemet",
+        "B": "Mattransport står bare for en liten andel av utslippene fra godstransport",
+        "C": "Mattransport står for en uforholdsmessig stor andel av utslippene fra godstransport i forhold til avstanden som tilbakelegges",
+        "D": "Utslippene fra mattransport skyldes hovedsakelig at maten er emballert"
+      }
+    },
     "Q3.1.1": {
       "title": "Foredling og bærekraft",
       "question": "Du sammenligner to proteinrike måltider: Bønnestuing laget av enkle ingredienser og plantebaserte kjøttbiter. Hvilken konklusjon støttes best av bevisene?",
