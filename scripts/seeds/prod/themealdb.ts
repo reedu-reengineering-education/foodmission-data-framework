@@ -6,7 +6,6 @@ const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
 
 const SOURCE_NEVO = 'nevo';
-const SOURCE_OFF = 'openfoodfacts';
 
 interface ThemealdbData {
   ingredientMappings: {
@@ -79,9 +78,7 @@ interface RecipeIngredientData {
   name: string;
   measure: string;
   order: number;
-  foodProductId?: string;
   genericFoodId?: string;
-  itemType: 'food_product' | 'generic_food';
 }
 
 interface SeedOptions {
@@ -100,61 +97,70 @@ function loadThemealdbData(): ThemealdbData {
   return JSON.parse(content) as ThemealdbData;
 }
 
-interface IngredientLookupMaps {
-  foodProductIdByBarcode: Map<string, string>;
-  foodProductIdByName: Map<string, string>;
-  genericFoodByNevoCode: Map<number, string>;
+function normalizeIngredientName(name: string): string {
+  return name.toLowerCase().trim();
 }
 
-function buildIngredientMapping(
+/**
+ * Maps normalized ingredient name -> GenericFood id. Every mapping row points at
+ * a NEVO code; rows whose code is not seeded are dropped (ingredient stays unlinked).
+ */
+function buildGenericFoodIdByIngredient(
   mappings: ThemealdbData['ingredientMappings'],
-): Map<string, (typeof mappings)[0]> {
-  const map = new Map<string, (typeof mappings)[0]>();
+  genericFoodByNevoCode: Map<number, string>,
+): Map<string, string> {
+  const map = new Map<string, string>();
   for (const row of mappings) {
-    map.set(row.ingredientName.toLowerCase().trim(), row);
+    if (row.source !== SOURCE_NEVO) continue;
+    const gfId = genericFoodByNevoCode.get(parseInt(row.sourceId, 10));
+    if (gfId) map.set(normalizeIngredientName(row.ingredientName), gfId);
   }
   return map;
 }
 
-function resolveIngredient(
-  ing: { name: string; measure: string; order: number },
-  mapping: ThemealdbData['ingredientMappings'][0] | undefined,
-  maps: IngredientLookupMaps,
-): RecipeIngredientData {
-  const ingredient: RecipeIngredientData = {
-    name: ing.name,
-    measure: ing.measure,
-    order: ing.order,
-    itemType: 'generic_food',
-  };
+/**
+ * Re-points ingredients of already seeded TheMealDB recipes at the current
+ * mapping. Seeding skips existing recipes, so without this, mapping fixes would
+ * never reach a database that was seeded before. Idempotent.
+ */
+async function relinkExistingIngredients(
+  prisma: PrismaClient,
+  genericFoodIdByIngredient: Map<string, string>,
+): Promise<number> {
+  const rows = await prisma.recipeIngredient.findMany({
+    where: { recipe: { origin: RecipeOrigin.THEMEALDB } },
+    select: {
+      id: true,
+      name: true,
+      itemType: true,
+      genericFoodId: true,
+      foodProductId: true,
+    },
+  });
 
-  if (!mapping) return ingredient;
-
-  if (mapping.source === SOURCE_NEVO) {
-    const nevoCode = mapping.sourceId ? parseInt(mapping.sourceId, 10) : NaN;
-    if (!isNaN(nevoCode)) {
-      const gfId = maps.genericFoodByNevoCode.get(nevoCode);
-      if (gfId) {
-        ingredient.genericFoodId = gfId;
-        ingredient.itemType = 'generic_food';
-      }
-    }
-  } else if (
-    (mapping.source === SOURCE_OFF || mapping.source === 'off') &&
-    mapping.sourceId
-  ) {
-    const foodProductId =
-      maps.foodProductIdByBarcode.get(mapping.sourceId.trim()) ??
-      (mapping.foodName
-        ? maps.foodProductIdByName.get(mapping.foodName.toLowerCase())
-        : undefined);
-    if (foodProductId) {
-      ingredient.foodProductId = foodProductId;
-      ingredient.itemType = 'food_product';
-    }
+  const idsByTarget = new Map<string | null, string[]>();
+  for (const row of rows) {
+    const target =
+      genericFoodIdByIngredient.get(normalizeIngredientName(row.name)) ?? null;
+    const upToDate =
+      row.genericFoodId === target &&
+      row.foodProductId === null &&
+      row.itemType === 'generic_food';
+    if (upToDate) continue;
+    const ids = idsByTarget.get(target) ?? [];
+    ids.push(row.id);
+    idsByTarget.set(target, ids);
   }
 
-  return ingredient;
+  let updated = 0;
+  for (const [genericFoodId, ids] of idsByTarget) {
+    const result = await prisma.recipeIngredient.updateMany({
+      where: { id: { in: ids } },
+      data: { genericFoodId, foodProductId: null, itemType: 'generic_food' },
+    });
+    updated += result.count;
+  }
+  return updated;
 }
 
 function toRecipeCreateData(
@@ -193,7 +199,6 @@ export async function seedRecipes(
 
   const data = loadThemealdbData();
   const recipes = data.recipes;
-  const ingredientMapping = buildIngredientMapping(data.ingredientMappings);
 
   const ingredientCount = recipes.reduce(
     (sum, r) => sum + r.ingredients.length,
@@ -211,28 +216,9 @@ export async function seedRecipes(
     );
   }
 
-  const foodProductIdByBarcode = new Map<string, string>();
-  const foodProductIdByName = new Map<string, string>();
   const genericFoodByNevoCode = new Map<number, string>();
-  const lookupMaps: IngredientLookupMaps = {
-    foodProductIdByBarcode,
-    foodProductIdByName,
-    genericFoodByNevoCode,
-  };
 
   if (!dryRun) {
-    const foodProducts = await prisma.foodProduct.findMany({
-      select: { id: true, name: true, barcode: true },
-    });
-    for (const foodProduct of foodProducts) {
-      if (foodProduct.barcode)
-        foodProductIdByBarcode.set(foodProduct.barcode.trim(), foodProduct.id);
-      foodProductIdByName.set(foodProduct.name.toLowerCase(), foodProduct.id);
-    }
-    console.log(
-      `   🍎 ${foodProducts.length} FoodProduct records available for linking`,
-    );
-
     const genericFoods = await prisma.genericFood.findMany({
       select: { id: true, nevoCode: true },
     });
@@ -243,6 +229,11 @@ export async function seedRecipes(
       `   🥗 ${genericFoods.length} GenericFood (NEVO) records available for linking`,
     );
   }
+
+  const genericFoodIdByIngredient = buildGenericFoodIdByIngredient(
+    data.ingredientMappings,
+    genericFoodByNevoCode,
+  );
 
   let created = 0;
   let skipped = 0;
@@ -267,10 +258,14 @@ export async function seedRecipes(
       }
 
       const ingredientsData: RecipeIngredientData[] = recipe.ingredients.map(
-        (ing) => {
-          const mapping = ingredientMapping.get(ing.name.toLowerCase().trim());
-          return resolveIngredient(ing, mapping, lookupMaps);
-        },
+        (ing) => ({
+          name: ing.name,
+          measure: ing.measure,
+          order: ing.order,
+          genericFoodId: genericFoodIdByIngredient.get(
+            normalizeIngredientName(ing.name),
+          ),
+        }),
       );
 
       if (dryRun) {
@@ -292,8 +287,7 @@ export async function seedRecipes(
               name: ing.name,
               measure: ing.measure?.trim() ?? null,
               order: ing.order,
-              itemType: ing.itemType,
-              foodProductId: ing.foodProductId ?? null,
+              itemType: 'generic_food',
               genericFoodId: ing.genericFoodId ?? null,
             })),
           });
@@ -314,9 +308,15 @@ export async function seedRecipes(
     }
   }
 
+  const relinked =
+    dryRun || skipped === 0
+      ? 0
+      : await relinkExistingIngredients(prisma, genericFoodIdByIngredient);
+
   console.log(`\n✅ TheMealDB seeding complete:`);
   console.log(`   📥 Created: ${created}`);
   console.log(`   ⏭️  Skipped: ${skipped}`);
+  console.log(`   🔗 Relinked ingredients: ${relinked}`);
   console.log(`   ❌ Errors: ${errors}`);
 
   return { created, skipped, errors };
