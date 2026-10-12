@@ -1,8 +1,8 @@
 [
   {
     "id": "1.1",
-    "name": "Learn to Log Your Food",
-    "code": "QUEST.DIET_CHANGES.BEGINNER.1",
+    "name": "Reduce One Meat Meal",
+    "code": "QUEST.DIET_CHANGES.BEGINNER.2",
     "dimensionCode": "DIET_CHANGES",
     "level": "BEGINNER",
     "title": "Diet changes - Beginner",
@@ -16,37 +16,26 @@
         "contentType": "MISSION",
         "contentCode": "M.B1.2",
         "sortOrder": 1
-      }
-    ],
-    "description": "Log at least one meal per day."
-  },
-  {
-    "id": "1.2",
-    "name": "Reduce One Meat Meal",
-    "code": "QUEST.DIET_CHANGES.BEGINNER.2",
-    "dimensionCode": "DIET_CHANGES",
-    "level": "BEGINNER",
-    "title": "Diet changes - Beginner",
-    "items": [
+      },
       {
         "contentType": "MISSION",
         "contentCode": "M.B1.3",
-        "sortOrder": 0
+        "sortOrder": 2
       },
       {
         "contentType": "MISSION",
         "contentCode": "M.B1.5",
-        "sortOrder": 1
+        "sortOrder": 3
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.B1.1",
-        "sortOrder": 2
+        "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF1.1.1",
-        "sortOrder": 3
+        "sortOrder": 5
       },
       {
         "contentType": "FOOD_FACT",
@@ -56,23 +45,23 @@
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF1.1.3",
-        "sortOrder": 5
+        "sortOrder": 6
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF1.1.4",
-        "sortOrder": 6
+        "sortOrder": 7
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q1.1.4",
-        "sortOrder": 7
+        "sortOrder": 8
       }
     ],
     "description": "Eat one fewer meat meal than during your previous week, while keeping in mind that eating less red meat is one of the most effective ways to reduce the environmental impact of your diet."
   },
   {
-    "id": "1.3",
+    "id": "1.2",
     "name": "First Sustainable Swap",
     "code": "QUEST.DIET_CHANGES.BEGINNER.3",
     "dimensionCode": "DIET_CHANGES",
@@ -123,7 +112,7 @@
     "description": "Log 2 protein swap actions, while keeping in mind that replacing part of your meat intake with legumes can reduce the climate impact of your diet."
   },
   {
-    "id": "1.4",
+    "id": "1.3",
     "name": "Discover Lentils",
     "code": "QUEST.DIET_CHANGES.BEGINNER.4",
     "dimensionCode": "DIET_CHANGES",
@@ -164,7 +153,7 @@
     "description": "Explore content and identify two nutritional or environmental benefits of lentils, while keeping in mind that quinoa contains all nine essential amino acids, making it a complete plant protein."
   },
   {
-    "id": "1.5",
+    "id": "1.4",
     "name": "Two meat free days",
     "code": "QUEST.DIET_CHANGES.INTERMEDIATE.1",
     "dimensionCode": "DIET_CHANGES",
@@ -210,7 +199,7 @@
     "description": "Complete two meat-free days, while keeping in mind that producing beef requires much more land than producing plant proteins such as peas or tofu."
   },
   {
-    "id": "1.6",
+    "id": "1.5",
     "name": "Sustainable Swap Builder",
     "code": "QUEST.DIET_CHANGES.INTERMEDIATE.2",
     "dimensionCode": "DIET_CHANGES",
@@ -266,7 +255,7 @@
     "description": "Log 4 protein swap actions, while keeping in mind that beans, lentils, peas and chickpeas are among the most sustainable protein sources available."
   },
   {
-    "id": "1.7",
+    "id": "1.6",
     "name": "Legume Routine",
     "code": "QUEST.DIET_CHANGES.INTERMEDIATE.3",
     "dimensionCode": "DIET_CHANGES",
@@ -327,7 +316,7 @@
     "description": "Include legumes in four meals, while keeping in mind that millets are highly resilient crops that can grow in hot, dry conditions with little water."
   },
   {
-    "id": "1.8",
+    "id": "1.7",
     "name": "Stay in the Green Zone",
     "code": "QUEST.DIET_CHANGES.ADVANCED.1",
     "dimensionCode": "DIET_CHANGES",
@@ -373,7 +362,7 @@
     "description": "Remain below four meat meals per week, while keeping in mind that livestock production uses most agricultural land globally while supplying a much smaller share of calories and protein."
   },
   {
-    "id": "1.9",
+    "id": "1.8",
     "name": "Plant Protein Majority",
     "code": "QUEST.DIET_CHANGES.ADVANCED.2",
     "dimensionCode": "DIET_CHANGES",
@@ -396,30 +385,35 @@
         "sortOrder": 2
       },
       {
-        "contentType": "FOOD_FACT",
-        "contentCode": "FF1.2.8",
+        "contentType": "CHALLENGE",
+        "contentCode": "CH.A1.3",
         "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
-        "contentCode": "FF1.2.9",
+        "contentCode": "FF1.2.8",
         "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
-        "contentCode": "FF1.2.10",
+        "contentCode": "FF1.2.9",
         "sortOrder": 5
+      },
+      {
+        "contentType": "FOOD_FACT",
+        "contentCode": "FF1.2.10",
+        "sortOrder": 6
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q1.2.4",
-        "sortOrder": 6
+        "sortOrder": 7
       }
     ],
     "description": "Obtain most protein-containing meals from non-meat protein sources, while keeping in mind that pulses naturally improve soil fertility by fixing nitrogen from the air, reducing the need for fertilizer."
   },
   {
-    "id": "1.10",
+    "id": "1.9",
     "name": "Alternative Staples Habit",
     "code": "QUEST.DIET_CHANGES.ADVANCED.3",
     "dimensionCode": "DIET_CHANGES",
@@ -489,83 +483,43 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.B2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.B2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.4",
-        "sortOrder": 8
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.B2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.1",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.2",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.3",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.4",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.1.1",
-        "sortOrder": 14
+        "sortOrder": 6
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.1.5",
-        "sortOrder": 15
+        "sortOrder": 7
       }
     ],
     "description": "Look for the country of origin for at least 5 food products consumed during the week, while keeping in mind that about half of the world's habitable land is used for agriculture."
@@ -580,78 +534,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.B2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.B2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.2",
-        "sortOrder": 6
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.B2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.1",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.2",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.3",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.2.2",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.2.3",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "Around 70% of global freshwater withdrawals are used for agriculture."
@@ -666,78 +580,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.B2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.B2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.1",
-        "sortOrder": 5
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.B2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.1",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.2",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.3",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.4",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.3.2",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "Food systems generate about one-third of global greenhouse gas emissions."
@@ -752,78 +626,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.B2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.B2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.3",
-        "sortOrder": 7
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.B2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.1",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.2",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.3",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.4.1",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.4.2",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "Global food transport generates about 3 billion tonnes of CO₂-equivalent emissions each year."
@@ -842,54 +676,14 @@
         "sortOrder": 0
       },
       {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.B2.5",
-        "sortOrder": 4
-      },
-      {
         "contentType": "CHALLENGE",
         "contentCode": "CH.B2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.B2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.5.5",
-        "sortOrder": 10
+        "sortOrder": 2
       }
     ],
     "description": "Make practical sustainable food choices in daily life."
@@ -904,78 +698,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.I2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.I2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.4",
-        "sortOrder": 8
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.I2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.5",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.6",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.7",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.1.2",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.1.3",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "Track the origins of foods consumed and log at least 3 meals with locally produced products, while keeping in mind that beef is one of the most land-intensive foods people consume."
@@ -990,78 +744,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.I2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.I2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.1",
-        "sortOrder": 5
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.I2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.4",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.5",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.6",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.2.4",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.2.5",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "Food waste also wastes enormous amounts of water used to grow food."
@@ -1076,78 +790,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.I2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.I2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.5",
-        "sortOrder": 4
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.I2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.5",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.6",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.7",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.3.1",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.3.3",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "Meat, especially beef and lamb, has a much higher carbon footprint than most plant foods."
@@ -1162,83 +836,43 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.I2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.I2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.3",
-        "sortOrder": 7
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.I2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.4",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.5",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.6",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.7",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.4.3",
-        "sortOrder": 14
+        "sortOrder": 6
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.4.5",
-        "sortOrder": 15
+        "sortOrder": 7
       }
     ],
     "description": "Nearly one-fifth of the greenhouse gas emissions from the global food system come from transporting food."
@@ -1257,59 +891,19 @@
         "sortOrder": 0
       },
       {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.I2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.2",
-        "sortOrder": 6
-      },
-      {
         "contentType": "CHALLENGE",
         "contentCode": "CH.I2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.5.1",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.5.3",
-        "sortOrder": 11
+        "sortOrder": 3
       }
     ],
     "description": "Make practical sustainable food choices in daily life."
@@ -1324,73 +918,33 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.A2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.A2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.1",
-        "sortOrder": 5
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.8",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.9",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.1.10",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.1.4",
-        "sortOrder": 13
+        "sortOrder": 5
       }
     ],
     "description": "When selecting products for at least 3 meals, consider both country of origin and one additional sustainability indicator (e.g., certification, production method, seasonality), while keeping in mind that most agricultural land is used for livestock grazing or growing animal feed."
@@ -1405,78 +959,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.A2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.A2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.2",
-        "sortOrder": 6
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.7",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.8",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.9",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.2.10",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.2.1",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "The water footprint of your diet depends heavily on what you eat."
@@ -1491,78 +1005,38 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.A2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.A2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.4",
-        "sortOrder": 8
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.8",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.9",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.3.10",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.3.4",
-        "sortOrder": 13
+        "sortOrder": 5
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.3.5",
-        "sortOrder": 14
+        "sortOrder": 6
       }
     ],
     "description": "Food waste generates billions of tonnes of CO2-equivalent emissions annually."
@@ -1577,73 +1051,33 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.A2.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.A2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.3",
-        "sortOrder": 7
+        "sortOrder": 0
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.8",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.9",
-        "sortOrder": 11
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF2.4.10",
-        "sortOrder": 12
+        "sortOrder": 4
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.4.4",
-        "sortOrder": 13
+        "sortOrder": 5
       }
     ],
     "description": "Although food accounts for only about 18% of global freight transport distances, it produces around 27% of freight-related emissions."
@@ -1662,59 +1096,19 @@
         "sortOrder": 0
       },
       {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A2.5",
-        "sortOrder": 4
-      },
-      {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A2.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A2.5",
-        "sortOrder": 9
+        "sortOrder": 1
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.5.2",
-        "sortOrder": 10
+        "sortOrder": 2
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q2.5.4",
-        "sortOrder": 11
+        "sortOrder": 3
       }
     ],
     "description": "Make practical sustainable food choices in daily life."
@@ -1754,38 +1148,43 @@
       },
       {
         "contentType": "CHALLENGE",
-        "contentCode": "CH.B3.5",
+        "contentCode": "CH.B3.3",
         "sortOrder": 5
       },
       {
-        "contentType": "FOOD_FACT",
-        "contentCode": "FF3.1.1",
+        "contentType": "CHALLENGE",
+        "contentCode": "CH.B3.5",
         "sortOrder": 6
       },
       {
         "contentType": "FOOD_FACT",
-        "contentCode": "FF3.1.2",
+        "contentCode": "FF3.1.1",
         "sortOrder": 7
       },
       {
         "contentType": "FOOD_FACT",
-        "contentCode": "FF3.1.3",
+        "contentCode": "FF3.1.2",
         "sortOrder": 8
       },
       {
-        "contentType": "QUIZ",
-        "contentCode": "Q3.1.3",
+        "contentType": "FOOD_FACT",
+        "contentCode": "FF3.1.3",
         "sortOrder": 9
       },
       {
         "contentType": "QUIZ",
-        "contentCode": "Q3.1.4",
+        "contentCode": "Q3.1.3",
         "sortOrder": 10
       },
       {
         "contentType": "QUIZ",
-        "contentCode": "Q3.1.5",
+        "contentCode": "Q3.1.4",
         "sortOrder": 11
+      },
+      {
+        "contentType": "QUIZ",
+        "contentCode": "Q3.1.5",
+        "sortOrder": 12
       }
     ],
     "description": "Look for the NOVA classification of at least 3 food products, while keeping in mind that food processing can improve food safety and extend shelf life."
@@ -2219,64 +1618,44 @@
         "sortOrder": 2
       },
       {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.5",
-        "sortOrder": 4
-      },
-      {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A3.1",
-        "sortOrder": 5
+        "sortOrder": 3
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A3.2",
-        "sortOrder": 6
+        "sortOrder": 4
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A3.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.5",
-        "sortOrder": 9
+        "sortOrder": 5
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.1.7",
-        "sortOrder": 10
+        "sortOrder": 6
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.1.8",
-        "sortOrder": 11
+        "sortOrder": 7
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.1.9",
-        "sortOrder": 12
+        "sortOrder": 8
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.1.10",
-        "sortOrder": 13
+        "sortOrder": 9
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q3.1.1",
-        "sortOrder": 14
+        "sortOrder": 10
       }
     ],
     "description": "For at least three purchases, consider both NOVA classification and Green-Score before making a decision, while keeping in mind that not all processed foods have high environmental impacts."
@@ -2290,74 +1669,24 @@
     "title": "Production methods - Advanced",
     "items": [
       {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.5",
-        "sortOrder": 9
-      },
-      {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.2.8",
-        "sortOrder": 10
+        "sortOrder": 0
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.2.9",
-        "sortOrder": 11
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.2.10",
-        "sortOrder": 12
+        "sortOrder": 2
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q3.2.3",
-        "sortOrder": 13
+        "sortOrder": 3
       }
     ],
     "description": "Local food is not always the most sustainable option."
@@ -2372,83 +1701,53 @@
     "items": [
       {
         "contentType": "MISSION",
-        "contentCode": "M.A3.1",
+        "contentCode": "M.A3.4",
         "sortOrder": 0
       },
       {
         "contentType": "MISSION",
-        "contentCode": "M.A3.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
         "contentCode": "M.A3.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.3",
-        "sortOrder": 7
+        "sortOrder": 1
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A3.4",
-        "sortOrder": 8
+        "sortOrder": 2
       },
       {
         "contentType": "CHALLENGE",
         "contentCode": "CH.A3.5",
-        "sortOrder": 9
+        "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.3.7",
-        "sortOrder": 10
+        "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.3.8",
-        "sortOrder": 11
+        "sortOrder": 5
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.3.9",
-        "sortOrder": 12
+        "sortOrder": 6
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.3.10",
-        "sortOrder": 13
+        "sortOrder": 7
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q3.3.1",
-        "sortOrder": 14
+        "sortOrder": 8
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q3.3.3",
-        "sortOrder": 15
+        "sortOrder": 9
       }
     ],
     "description": "Agroforestry combines trees with crops or livestock on the same land."
@@ -2462,74 +1761,24 @@
     "title": "Production methods - Advanced",
     "items": [
       {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.5",
-        "sortOrder": 9
-      },
-      {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.4.8",
-        "sortOrder": 10
+        "sortOrder": 0
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.4.9",
-        "sortOrder": 11
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.4.10",
-        "sortOrder": 12
+        "sortOrder": 2
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q3.4.2",
-        "sortOrder": 13
+        "sortOrder": 3
       }
     ],
     "description": "Genome editing may help develop crops that are more resilient to climate stress."
@@ -2543,74 +1792,24 @@
     "title": "Production methods - Advanced",
     "items": [
       {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.1",
-        "sortOrder": 0
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.2",
-        "sortOrder": 1
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.3",
-        "sortOrder": 2
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.4",
-        "sortOrder": 3
-      },
-      {
-        "contentType": "MISSION",
-        "contentCode": "M.A3.5",
-        "sortOrder": 4
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.1",
-        "sortOrder": 5
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.2",
-        "sortOrder": 6
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.3",
-        "sortOrder": 7
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.4",
-        "sortOrder": 8
-      },
-      {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.A3.5",
-        "sortOrder": 9
-      },
-      {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.5.8",
-        "sortOrder": 10
+        "sortOrder": 0
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.5.9",
-        "sortOrder": 11
+        "sortOrder": 1
       },
       {
         "contentType": "FOOD_FACT",
         "contentCode": "FF3.5.10",
-        "sortOrder": 12
+        "sortOrder": 2
       },
       {
         "contentType": "QUIZ",
         "contentCode": "Q3.5.4",
-        "sortOrder": 13
+        "sortOrder": 3
       }
     ],
     "description": "Women play a critical role in food production but often have less access to resources."
@@ -3301,39 +2500,44 @@
         "sortOrder": 0
       },
       {
-        "contentType": "CHALLENGE",
-        "contentCode": "CH.I5.1",
+        "contentType": "MISSION",
+        "contentCode": "M.I5.5",
         "sortOrder": 1
       },
       {
         "contentType": "CHALLENGE",
-        "contentCode": "CH.I5.2",
+        "contentCode": "CH.I5.1",
         "sortOrder": 2
       },
       {
-        "contentType": "FOOD_FACT",
-        "contentCode": "FF5.3.5",
+        "contentType": "CHALLENGE",
+        "contentCode": "CH.I5.2",
         "sortOrder": 3
       },
       {
         "contentType": "FOOD_FACT",
-        "contentCode": "FF5.3.6",
+        "contentCode": "FF5.3.5",
         "sortOrder": 4
       },
       {
         "contentType": "FOOD_FACT",
-        "contentCode": "FF5.3.7",
+        "contentCode": "FF5.3.6",
         "sortOrder": 5
       },
       {
-        "contentType": "QUIZ",
-        "contentCode": "Q5.3.1",
+        "contentType": "FOOD_FACT",
+        "contentCode": "FF5.3.7",
         "sortOrder": 6
       },
       {
         "contentType": "QUIZ",
-        "contentCode": "Q5.3.5",
+        "contentCode": "Q5.3.1",
         "sortOrder": 7
+      },
+      {
+        "contentType": "QUIZ",
+        "contentCode": "Q5.3.5",
+        "sortOrder": 8
       }
     ],
     "description": "Perform a fridge or pantry check before a main shopping trip. Log at least 3 Expired Product Consumed actions or 3 Full Plate Saved actions, while keeping in mind that household food waste in Europe is estimated at around 69 million tonnes per year."

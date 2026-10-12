@@ -1185,6 +1185,176 @@
     "correctLabel": "A"
   },
   {
+    "code": "Q2.5.1",
+    "topicCode": "TRAVEL_DISTANCES",
+    "level": "INTERMEDIATE",
+    "question": "You are shopping in winter and need tomatoes. Which statement is most consistent with the evidence?",
+    "explanation": "Food miles contribute significantly to food-system emissions, but sustainability depends on multiple factors including production methods, seasonality, and transport mode. Distance alone does not tell the whole story.",
+    "source": "European Commission. (2023). Field to fork: global food miles generate nearly 20% of all CO2 emissions from food https://environment.ec.europa.eu/news/field-fork-global-food-miles-generate-nearly-20-all-co2-emissions-food-2023-01-25_en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Locally produced tomatoes are always the most climate-friendly option",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Imported tomatoes are always less sustainable than local tomatoes",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "The sustainability of tomatoes depends on both production and transport conditions",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Transport distance has little influence on greenhouse-gas emissions",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q2.5.2",
+    "topicCode": "TRAVEL_DISTANCES",
+    "level": "ADVANCED",
+    "question": "Which food category contributes disproportionately to food-mile emissions compared with the emissions from its production?",
+    "explanation": "Although fruit and vegetables are generally healthy foods, their transport contributes around 36% of food-mile emissions globally. For some products, transport emissions can exceed those generated during cultivation.",
+    "source": "European Commission. (2023). Field to fork: global food miles generate nearly 20% of all CO2 emissions from food https://environment.ec.europa.eu/news/field-fork-global-food-miles-generate-nearly-20-all-co2-emissions-food-2023-01-25_en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Dried beans",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Fresh fruit and vegetables",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Whole grains",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Pulses",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "B"
+  },
+  {
+    "code": "Q2.5.3",
+    "topicCode": "TRAVEL_DISTANCES",
+    "level": "INTERMEDIATE",
+    "question": "Two products travel the same distance to reach the supermarket. Which factor could cause one product to have a higher climate impact during transport?",
+    "explanation": "Food transport emissions are influenced not only by distance travelled but also by specialized logistics such as refrigeration and cold storage, which require additional energy.",
+    "source": "European Commission. (2023). Field to fork: global food miles generate nearly 20% of all CO2 emissions from food https://environment.ec.europa.eu/news/field-fork-global-food-miles-generate-nearly-20-all-co2-emissions-food-2023-01-25_en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "The need for refrigerated transport and storage",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Whether it is transported in smaller, more frequent shipments",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Whether it is transported by road or rail",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Whether it is imported or domestically produced",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "A"
+  },
+  {
+    "code": "Q2.5.4",
+    "topicCode": "TRAVEL_DISTANCES",
+    "level": "ADVANCED",
+    "question": "A development agency wants to reduce food losses in a rural region. Which investment is likely to have the greatest impact?",
+    "explanation": "A significant share of global food production is lost because of inadequate refrigeration. Maintaining an uninterrupted cold chain helps preserve food quality and reduce spoilage throughout transport and storage.",
+    "source": "Food and Agriculture Organization of the United Nations. (2026). Cooling the chain: Cutting the waste. https://www.fao.org/energy/news-and-events/news/news-details/cooling-the-chain--cutting-the-waste/en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": true,
+    "options": [
+      {
+        "label": "A",
+        "text": "Larger supermarket warehouses",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "More food packaging",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Reliable refrigeration and cold-chain infrastructure",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Longer transport routes",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
+    "code": "Q2.5.5",
+    "topicCode": "TRAVEL_DISTANCES",
+    "level": "BEGINNER",
+    "question": "Which statement best reflects the environmental importance of food transport?",
+    "explanation": "While food transport accounts for only about 18% of global freight distance, it is responsible for roughly 27% of freight-related emissions, reflecting the energy intensity of global food logistics and refrigeration requirements.",
+    "source": "European Commission. (2023). Field to fork: global food miles generate nearly 20% of all CO2 emissions from food https://environment.ec.europa.eu/news/field-fork-global-food-miles-generate-nearly-20-all-co2-emissions-food-2023-01-25_en",
+    "health": false,
+    "foodChoice": true,
+    "foodWaste": false,
+    "options": [
+      {
+        "label": "A",
+        "text": "Food transport accounts for most food-system greenhouse-gas emissions",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Food transport is responsible for only a small fraction of freight emissions",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Food transport generates a disproportionately large share of freight emissions relative to the distance travelled",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Food transport emissions occur mainly because food is packaged",
+        "isCorrect": false
+      }
+    ],
+    "correctLabel": "C"
+  },
+  {
     "code": "Q3.1.1",
     "topicCode": "LEVEL_OF_PROCESSING",
     "level": "ADVANCED",
