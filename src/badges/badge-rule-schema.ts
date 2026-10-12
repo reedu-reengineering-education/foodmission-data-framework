@@ -1,9 +1,12 @@
 import Joi from 'joi';
 import { EventType } from '../events/event-types';
 import {
+  groupBySchema,
   rejectUnknownIdentifiers,
+  rejectUnmatchedRequire,
   RULE_SHAPES,
   RuleShape,
+  whereSchema,
 } from '../rules/rule-schema';
 import { RuleDefinition } from '../rules/rule-evaluator';
 
@@ -58,19 +61,13 @@ const counterSchema = Joi.object({
     .items(Joi.string().valid(...EVENT_TYPE_VALUES))
     .min(1),
   distinctBy: Joi.string().min(1).max(128),
-  where: Joi.object()
-    .pattern(
-      Joi.string().min(1).max(128),
-      Joi.alternatives().try(
-        Joi.string().min(1).max(256),
-        Joi.number(),
-        Joi.boolean(),
-      ),
-    )
-    .min(1),
+  groupBy: groupBySchema,
+  where: whereSchema,
   window: windowSchema.optional(),
 })
   .xor('event', 'anyOf')
+  .oxor('distinctBy', 'groupBy')
+  .custom(rejectUnmatchedRequire)
   .required();
 
 const ruleSchema = Joi.object({

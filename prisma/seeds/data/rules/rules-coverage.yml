@@ -100,7 +100,29 @@ missions:
       notes:
         - 'Depends on consistent emission of MEAL_SUSTAINABLE_PLATE'
   - code: M.A2.1
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        originPlusOneProducts:
+          anyOf:
+            - SHOPPING_ORIGIN_CHECKED
+            - SHOPPING_CERTIFICATION_CHOSEN
+            - PROCESSING_PRODUCTION_METHOD_CHECKED
+            - SHOPPING_SEASONAL_CHOSEN
+          groupBy:
+            key: metadata.productId
+            minDistinct: 2
+            require:
+              - SHOPPING_ORIGIN_CHECKED
+      target: 'originPlusOneProducts >= 3'
+      progress: 'min(originPlusOneProducts / 3, 1)'
+      notes:
+        - 'Counts products whose country of origin was checked together with at least one more indicator (certification, production method, seasonality)'
+        - 'The goal says "products for at least 3 meals"; counted per product, the closest item the events identify'
+        - 'Client must send metadata.productId on every event; events without it are ignored'
   - code: M.A2.2
     shape: undecided
   - code: M.A2.3
@@ -136,7 +158,28 @@ missions:
         - 'Same event as M.B2.2 / M.I2.2 at a different level; they never share a quest'
         - 'Seasonality is self-attested; not checked against a seasonal calendar'
   - code: M.A2.5
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        informedPurchases:
+          anyOf:
+            - SHOPPING_ORIGIN_CHECKED
+            - PROCESSING_PRODUCTION_METHOD_CHECKED
+            - SHOPPING_CERTIFICATION_CHOSEN
+            - SHOPPING_SEASONAL_CHOSEN
+          groupBy:
+            key: metadata.productId
+            minDistinct: 3
+      target: 'informedPurchases >= 4'
+      progress: 'min(informedPurchases / 4, 1)'
+      notes:
+        - 'Counts food choices where at least three aspects were considered: origin, production method, certification, seasonality'
+        - 'No event for travel distance yet, so three of these four are needed (stricter than the goal''s three of five)'
+        - 'Client must send metadata.productId on every event; events without it are ignored'
+        - 'Cannot verify a purchase was made; self-attested'
   - code: M.A3.1
     shape: count_at_least
     rule:
@@ -227,7 +270,28 @@ missions:
       notes:
         - 'Counts purchases where at least one production-related indicator was checked'
   - code: M.A4.1
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        packagingDecisions:
+          anyOf:
+            - PACKAGING_MATERIAL_OBSERVED
+            - PACKAGING_RECYCLING_LABEL_READ
+            - PACKAGING_RECYCLABILITY_EVALUATED
+          groupBy:
+            key: metadata.productId
+            minDistinct: 2
+            require:
+              - PACKAGING_MATERIAL_OBSERVED
+      target: 'packagingDecisions >= 3'
+      progress: 'min(packagingDecisions / 3, 1)'
+      notes:
+        - 'Counts purchases where the packaging material was observed and an end-of-life option was considered (recycling label read or recyclability evaluated)'
+        - 'Client must send metadata.productId on every event; events without it are ignored'
+        - 'Reuse information has no event of its own; recycling label and recyclability cover end of life'
   - code: M.A4.2
     shape: count_at_least
     rule:
@@ -349,7 +413,28 @@ missions:
         - 'Requires a weekly meal plan plus a fridge/freezer/pantry review'
         - 'Cannot verify that all main meals were planned, that both happened before the first shopping trip, or that only planned foods were bought; self-attested'
   - code: M.A6.1
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        rainbowDays:
+          event: NUTRITION_RAINBOW_COLOURS_LOGGED
+          groupBy:
+            key: metadata.dayBucket
+            of: metadata.colours
+            values: [GREEN, RED, ORANGE, YELLOW, PURPLE, WHITE]
+            minDistinct: 5
+      target: 'rainbowDays >= 7'
+      progress: 'min(rainbowDays / 7, 1)'
+      notes:
+        - 'Every day of the week: counts days with fruit and vegetables of at least five different colours'
+        - 'Client contract: send NUTRITION_RAINBOW_COLOURS_LOGGED via POST /events with metadata.colours, an array of GREEN, RED, ORANGE, YELLOW, PURPLE, WHITE (case-insensitive); several events per day are merged and repeated colours count once'
+        - 'Other values are ignored; the meal-log flag of the same name carries no colours and adds nothing here'
+        - 'metadata.dayBucket is server-set from the event time (UTC day); clients can backdate with createdAt'
+        - 'A missed day is not failed at once; the mission fails when the week ends'
+        - 'Self-attested; the server cannot check what was eaten'
   - code: M.A6.2
     shape: count_at_least
     rule:
@@ -394,7 +479,42 @@ missions:
         - 'Cannot verify that every meal of the day was logged; self-attested'
         - 'Completes or fails at the end of the week (resolveAt window_end), once every meal of the last day is in; no early fail, because MEAL_LOGGED is recorded before the meal''s flag events'
   - code: M.A6.4
-    shape: undecided
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        mainMealDays:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealDayBucket
+          where:
+            metadata.body.typeOfMeal: [BREAKFAST, LUNCH, DINNER]
+        mainMeals:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealLogId
+          where:
+            metadata.body.typeOfMeal: [BREAKFAST, LUNCH, DINNER]
+        nutrientDenseMeals:
+          anyOf:
+            - NUTRITION_PROTEIN_INCLUDED
+            - NUTRITION_HIGH_FIBRE_MEAL
+            - NUTRITION_FRUIT_VEG_SERVING_ADDED
+            - NUTRITION_HEALTHY_FAT_CHOSEN
+          where:
+            metadata.mealType: [BREAKFAST, LUNCH, DINNER]
+          groupBy:
+            key: metadata.mealLogId
+            minDistinct: 3
+      target: 'mainMealDays >= 7 && nutrientDenseMeals >= mainMeals'
+      resolveAt: window_end
+      progress: 'min(mainMealDays / 7, 1) * min(nutrientDenseMeals / max(mainMeals, 1), 1)'
+      notes:
+        - 'Throughout the week: a main meal (breakfast, lunch, dinner) logged on each of the 7 days, and every logged main meal flagged with at least three of protein, fibre-rich food, fruit/vegetable, healthy fat'
+        - 'Per meal log: flags are grouped by metadata.mealLogId, so the three components must be on the same meal'
+        - 'Main meals need typeOfMeal on the meal log; logs without it, snacks and drinks are not counted'
+        - 'Cannot verify that every main meal was logged; self-attested'
+        - 'Completes or fails at the end of the week (resolveAt window_end), like M.A6.3, because MEAL_LOGGED is recorded before the meal''s flag events'
   - code: M.A6.5
     shape: count_at_least
     rule:
@@ -1042,7 +1162,27 @@ missions:
         - 'Deliberately excludes SHOPPING_CERTIFICATION_CHOSEN: the goal is about meals eaten, not purchases, and M.I2.4 (same quest) may count certification lookups'
         - 'Certification is self-attested; not checked against product label data'
   - code: M.I2.4
-    shape: undecided
+    shape: count_at_least
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        informedProducts:
+          anyOf:
+            - SHOPPING_ORIGIN_CHECKED
+            - SHOPPING_CERTIFICATION_CHOSEN
+            - SHOPPING_SEASONAL_CHOSEN
+            - SHOPPING_LOCAL_CHOSEN
+          groupBy:
+            key: metadata.productId
+            minDistinct: 2
+      target: 'informedProducts >= 5'
+      progress: 'min(informedProducts / 5, 1)'
+      notes:
+        - 'Counts products with at least two different pieces of sustainability information (origin, certification, seasonality, local production)'
+        - 'Client must send metadata.productId on every event; events without it are ignored, so facts about one product are matched up'
+        - 'Cannot verify the product was actually consumed; self-attested'
   - code: M.I2.5
     shape: count_at_least
     rule:
@@ -1307,7 +1447,36 @@ missions:
       notes:
         - 'Direct mapping: counts Processed Meat → Legumes swaps'
   - code: M.I6.2
-    shape: undecided
+    shape: composite_threshold
+    rule:
+      window:
+        type: since_start
+        days: 7
+      counters:
+        mainMealDays:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealDayBucket
+          where:
+            metadata.body.typeOfMeal: [BREAKFAST, LUNCH, DINNER]
+        mainMeals:
+          event: MEAL_LOGGED
+          distinctBy: metadata.mealLogId
+          where:
+            metadata.body.typeOfMeal: [BREAKFAST, LUNCH, DINNER]
+        fibreMainMeals:
+          event: NUTRITION_HIGH_FIBRE_MEAL
+          distinctBy: metadata.mealLogId
+          where:
+            metadata.mealType: [BREAKFAST, LUNCH, DINNER]
+      target: 'mainMealDays >= 7 && fibreMainMeals >= mainMeals'
+      resolveAt: window_end
+      progress: 'min(mainMealDays / 7, 1) * min(fibreMainMeals / max(mainMeals, 1), 1)'
+      notes:
+        - 'Throughout the week: a main meal (breakfast, lunch, dinner) logged on each of the 7 days, and every logged main meal flagged NUTRITION_HIGH_FIBRE_MEAL'
+        - 'Main meals need typeOfMeal on the meal log; logs without it, snacks and drinks are not counted'
+        - 'Both meal counters use metadata.mealLogId, so a retried log counts once'
+        - 'Cannot verify that every main meal was logged; self-attested'
+        - 'Completes or fails at the end of the week (resolveAt window_end), like M.A6.3'
   - code: M.I6.3
     shape: composite_threshold
     rule:

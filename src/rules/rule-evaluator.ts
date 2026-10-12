@@ -30,11 +30,36 @@ export interface RuleWindow {
   offsetDays?: number;
 }
 
+export type WhereValue = string | number | boolean;
+
+/**
+ * Counts items instead of events: events are bucketed by `key` and a bucket
+ * counts once it holds `minDistinct` distinct values, e.g. "products with at
+ * least two pieces of information", "days with five colours".
+ */
+export interface RuleGroupBy {
+  /** Metadata path naming the item. Events without one are dropped. */
+  key: string;
+  /** Distinct values a bucket needs to count. */
+  minDistinct: number;
+  /**
+   * Metadata path whose values are counted per bucket; each element of an
+   * array value counts. Defaults to the event type.
+   */
+  of?: string;
+  /** Only these values of `of` count (compared upper-cased). */
+  values?: string[];
+  /** Event types every counted bucket must include (only without `of`). */
+  require?: string[];
+}
+
 export interface RuleCounter {
   event?: string;
   anyOf?: string[];
   distinctBy?: string;
-  where?: Record<string, string | number | boolean>;
+  groupBy?: RuleGroupBy;
+  /** An array value means "any of these". */
+  where?: Record<string, WhereValue | WhereValue[]>;
   window?: RuleWindow;
 }
 
@@ -190,15 +215,63 @@ export function evaluateCounters(
 ): Record<string, number> {
   const values: Record<string, number> = {};
   for (const [name, counter] of Object.entries(counters)) {
-    values[name] = filterEvents(
+    const matched = filterEvents(
       counter,
       events,
       ruleWindow,
       evaluationAt,
       anchor,
-    ).length;
+    );
+    values[name] = counter.groupBy
+      ? countGroups(matched, counter.groupBy)
+      : matched.length;
   }
   return values;
+}
+
+/** Buckets meeting `groupBy.minDistinct` (and `require`); see RuleGroupBy. */
+export function countGroups(
+  events: UserEventRow[],
+  groupBy: RuleGroupBy,
+): number {
+  const allowed = groupBy.values
+    ? new Set(groupBy.values.map((v) => v.toUpperCase()))
+    : null;
+  const buckets = new Map<string, Set<string>>();
+
+  for (const event of events) {
+    const key = scalarKey(getPathValue(event.metadata, groupBy.key));
+    if (key == null) continue;
+
+    const raw = groupBy.of
+      ? getPathValue(event.metadata, groupBy.of)
+      : event.eventType;
+    const found = (Array.isArray(raw) ? raw : [raw])
+      .map((value) => scalarKey(value))
+      .filter((value): value is string => value != null)
+      .map((value) => (groupBy.of ? value.toUpperCase() : value))
+      .filter((value) => !allowed || allowed.has(value));
+
+    const bucket = buckets.get(key) ?? new Set<string>();
+    for (const value of found) bucket.add(value);
+    buckets.set(key, bucket);
+  }
+
+  let count = 0;
+  for (const bucket of buckets.values()) {
+    if (bucket.size < groupBy.minDistinct) continue;
+    if (groupBy.require?.some((type) => !bucket.has(type))) continue;
+    count += 1;
+  }
+  return count;
+}
+
+function scalarKey(value: unknown): string | null {
+  return typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+    ? String(value)
+    : null;
 }
 
 export function filterEvents(
@@ -223,7 +296,9 @@ export function filterEvents(
 
     return Object.entries(counter.where).every(([path, expected]) => {
       const value = getPathValue(event.metadata, path);
-      return value === expected;
+      return Array.isArray(expected)
+        ? expected.some((option) => value === option)
+        : value === expected;
     });
   });
 
