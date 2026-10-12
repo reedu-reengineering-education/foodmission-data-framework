@@ -1,7 +1,5 @@
-import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { I18nJsonLoader, I18nModule } from 'nestjs-i18n';
 import { OffMongoPrismaService } from '../database/off-mongo-prisma.service';
 import { PrismaService } from '../database/prisma.service';
 import { EventsModule } from '../events/events.module';
@@ -35,15 +33,6 @@ function callPrivateMethod<R>(instance: object, method: string): R {
   return (instance as unknown as Record<string, () => R>)[method]();
 }
 
-/** Global in the app (app.module.ts); OnboardingSurveyService needs it. */
-function i18nModule() {
-  return I18nModule.forRoot({
-    fallbackLanguage: 'en',
-    loader: I18nJsonLoader,
-    loaderOptions: { path: join(__dirname, '../i18n/'), watch: false },
-  });
-}
-
 describe('cross-module lazy wiring', () => {
   let moduleRef: TestingModule;
 
@@ -51,7 +40,6 @@ describe('cross-module lazy wiring', () => {
     moduleRef = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({ isGlobal: true }),
-        i18nModule(),
         RulesModule,
         GamificationModule,
         EventsModule,
@@ -99,7 +87,6 @@ describe('cross-module lazy wiring', () => {
     const lean = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({ isGlobal: true }),
-        i18nModule(),
         RulesModule,
         GamificationModule,
         EventsModule,

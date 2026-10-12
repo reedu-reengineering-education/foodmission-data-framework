@@ -1,7 +1,5 @@
-import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { I18nJsonLoader, I18nModule } from 'nestjs-i18n';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaService } from '../database/prisma.service';
 import { BadgesModule } from './badges.module';
@@ -21,12 +19,6 @@ describe('BadgesModule wiring', () => {
     const moduleRef = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({ isGlobal: true }),
-        // Global in the app (app.module.ts); OnboardingSurveyService needs it.
-        I18nModule.forRoot({
-          fallbackLanguage: 'en',
-          loader: I18nJsonLoader,
-          loaderOptions: { path: join(__dirname, '../i18n/'), watch: false },
-        }),
         // The controller guards on ThrottlerGuard, like every other one here.
         ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
         BadgesModule,

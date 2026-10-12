@@ -125,6 +125,18 @@ describe('OnboardingSurveyService', () => {
     );
   });
 
+  it('serves English when no I18nModule is registered', () => {
+    const withoutI18n = new OnboardingSurveyService(
+      prisma as unknown as PrismaService,
+      gamificationOnboardingService as unknown as GamificationOnboardingService,
+      progressWheelService as unknown as ProgressWheelService,
+    );
+
+    expect(withoutI18n.getSurveyQuestions('de')).toBe(
+      ONBOARDING_SURVEY_QUESTIONS,
+    );
+  });
+
   it('keeps src/i18n/en/onboarding-survey.json in sync with the survey config', () => {
     const fromConfig = Object.fromEntries(
       ONBOARDING_SURVEY_QUESTIONS.map((question) => [

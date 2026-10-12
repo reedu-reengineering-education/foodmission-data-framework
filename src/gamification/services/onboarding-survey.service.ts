@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Optional } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
 import { PrismaService } from '../../database/prisma.service';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
@@ -20,17 +20,21 @@ export class OnboardingSurveyService {
     private readonly prisma: PrismaService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
     private readonly progressWheelService: ProgressWheelService,
-    private readonly i18n: I18nService,
+    // Global I18nModule from app.module.ts; optional so module graphs built
+    // without the app root (wiring specs, e2e fixtures) still resolve.
+    @Optional() private readonly i18n?: I18nService,
   ) {}
 
   /**
    * Survey questions with texts and option labels from
    * `onboarding-survey.questions.<field>` in the requested locale; falls back to the
-   * English config for unsupported locales and missing keys.
+   * English config for unsupported locales, missing keys, or no I18nModule.
    */
   getSurveyQuestions(lang?: string): readonly OnboardingSurveyQuestion[] {
+    const i18n = this.i18n;
     const locale = (lang ?? DEFAULT_LOCALE).trim().toLowerCase();
     if (
+      !i18n ||
       locale === DEFAULT_LOCALE ||
       !(SUPPORTED_LOCALES as readonly string[]).includes(locale)
     ) {
@@ -38,7 +42,7 @@ export class OnboardingSurveyService {
     }
 
     const translate = (key: string, fallback: string): string => {
-      const value = this.i18n.translate(`onboarding-survey.questions.${key}`, {
+      const value = i18n.translate(`onboarding-survey.questions.${key}`, {
         lang: locale,
         defaultValue: fallback,
       });
