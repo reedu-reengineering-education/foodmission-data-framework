@@ -1,6 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsIn,
+  IsInt,
+  IsOptional,
+  Max,
+  Min,
+} from 'class-validator';
+import { TransformCSVToStringArray } from '../../common/decorators/transformers';
+import { EventType } from '../../events/event-types';
 import { UserPreferencesDto } from '../../users/dto/user-preferences.dto';
 import { UserEventDto } from '../../events/dto/user-event.dto';
 
@@ -30,6 +40,22 @@ export class GamificationProfileQueryDto {
   @Min(1)
   @Max(100)
   walletEntriesLimit?: number = 20;
+
+  @ApiPropertyOptional({
+    description:
+      'Only return recent events of these types. Repeat the parameter ' +
+      '(?eventTypes=A&eventTypes=B) or comma-separate (?eventTypes=A,B). ' +
+      'eventsLimit applies after filtering.',
+    enum: Object.values(EventType),
+    isArray: true,
+    example: [EventType.MISSION_COMPLETED, EventType.BADGE_EARNED],
+  })
+  @IsOptional()
+  @TransformCSVToStringArray()
+  @IsArray()
+  @ArrayMaxSize(Object.values(EventType).length)
+  @IsIn(Object.values(EventType), { each: true })
+  eventTypes?: string[];
 }
 
 export class GamificationWalletDto {
