@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { TypeOfMeal } from '@prisma/client';
+import { MealLogStatus, TypeOfMeal } from '@prisma/client';
 import {
   MEAL_FLAG_EVENT_TYPES,
   MEAL_SWAP_EVENT_TYPES,
@@ -43,7 +43,8 @@ export class MealLogResponseDto {
   eatenOut: boolean;
 
   @ApiProperty({
-    description: 'Diet facts reported for this meal, as event types',
+    description:
+      'Diet, nutrition and food waste facts reported for this meal, as event types',
     enum: [...MEAL_FLAG_EVENT_TYPES],
     isArray: true,
   })
@@ -57,6 +58,32 @@ export class MealLogResponseDto {
   })
   @Expose()
   swaps: MealSwapEventType[];
+
+  @ApiProperty({
+    enum: MealLogStatus,
+    description:
+      'DRAFT: staged for review, counts toward nothing yet. CONFIRMED: submitted.',
+  })
+  @Expose()
+  status: MealLogStatus;
+
+  @ApiProperty({
+    description:
+      'Flags the backend derived from the meal items. On a draft these are ' +
+      'proposals the user can keep or remove before confirming.',
+    enum: [...MEAL_FLAG_EVENT_TYPES],
+    isArray: true,
+  })
+  @Expose()
+  derivedFlags: MealFlagEventType[];
+
+  @ApiPropertyOptional({
+    description:
+      'When a staged log was confirmed; null for drafts and direct submits',
+    nullable: true,
+  })
+  @Expose()
+  confirmedAt: Date | null;
 
   @ApiProperty({ description: 'Created at' })
   @Expose()

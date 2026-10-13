@@ -75,8 +75,8 @@ export class CreateChallengeDto {
   whyItMatters: string;
 
   @ApiPropertyOptional({
-    description: 'Content tag codes (HEALTH, FOOD_CHOICE, FOOD_AND_WASTE)',
-    example: ['FOOD_CHOICE', 'FOOD_AND_WASTE'],
+    description: 'Content tag codes (HEALTH, FOOD_CHOICE, FOOD_WASTE)',
+    example: ['FOOD_CHOICE', 'FOOD_WASTE'],
     type: [String],
   })
   @IsOptional()

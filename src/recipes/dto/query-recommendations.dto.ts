@@ -1,6 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
+import { TransformTrimLowercaseToUndefined } from '../../common/decorators/transformers';
 
 export class QueryRecommendationsDto {
   @ApiPropertyOptional({
@@ -37,4 +39,15 @@ export class QueryRecommendationsDto {
   @Min(0)
   @Type(() => Number)
   offset?: number;
+
+  @ApiPropertyOptional({
+    description: `Optional locale for ingredient names linked to NEVO generic foods. Defaults to ${DEFAULT_LOCALE}.`,
+    enum: SUPPORTED_LOCALES,
+    example: 'de',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn([...SUPPORTED_LOCALES])
+  @TransformTrimLowercaseToUndefined()
+  lang?: string;
 }

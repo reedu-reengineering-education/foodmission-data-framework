@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MealItem } from '@prisma/client';
+import { FoodProduct, GenericFood, MealItem } from '@prisma/client';
 import {
   MealItemWithRelations,
   MEAL_ITEM_WITH_RELATIONS_INCLUDE,
@@ -43,6 +43,34 @@ export class MealItemRepository implements BaseRepository<
       include: MEAL_ITEM_WITH_RELATIONS_INCLUDE,
       orderBy: { createdAt: 'asc' },
     });
+  }
+
+  /**
+   * The linked foods of the ingredients of the recipe a meal is based on, or
+   * `[]` when the meal has no recipe. A meal made from a recipe doesn't copy
+   * its ingredients into meal items, so this is how the food behind it is
+   * found.
+   */
+  async findRecipeIngredientFoodsByMealId(mealId: string): Promise<
+    Array<{
+      genericFood: GenericFood | null;
+      foodProduct: FoodProduct | null;
+    }>
+  > {
+    const meal = await this.prisma.meal.findUnique({
+      where: { id: mealId },
+      select: {
+        recipe: {
+          select: {
+            ingredients: {
+              select: { genericFood: true, foodProduct: true },
+              orderBy: { order: 'asc' },
+            },
+          },
+        },
+      },
+    });
+    return meal?.recipe?.ingredients ?? [];
   }
 
   findById(id: string): Promise<MealItemWithRelations | null> {

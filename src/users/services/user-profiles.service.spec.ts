@@ -4,7 +4,9 @@ import { UsersRepository } from '../repositories/users.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { KeycloakAdminService } from '../../keycloak-admin/keycloak-admin.service';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
+import { DimensionLevelService } from '../../gamification/services/dimension-level.service';
 import {
+  ContentLevel,
   UserSegment,
   WeeklyBeefFrequency,
   WeeklyFoodWasteRange,
@@ -19,6 +21,7 @@ describe('UserProfilesService updateProfile gamification', () => {
   let userRepository: jest.Mocked<UsersRepository>;
   let prisma: jest.Mocked<PrismaService>;
   let gamificationOnboarding: jest.Mocked<GamificationOnboardingService>;
+  let dimensionLevelService: { setLevels: jest.Mock };
 
   const mockUser = {
     id: 'user-1',
@@ -98,10 +101,15 @@ describe('UserProfilesService updateProfile gamification', () => {
             }),
           },
         },
+        {
+          provide: DimensionLevelService,
+          useValue: { setLevels: jest.fn() },
+        },
       ],
     }).compile();
 
     service = module.get(UserProfilesService);
+    dimensionLevelService = module.get(DimensionLevelService);
     userRepository = module.get(UsersRepository);
     prisma = module.get(PrismaService);
     gamificationOnboarding = module.get(GamificationOnboardingService);
@@ -213,6 +221,35 @@ describe('UserProfilesService updateProfile gamification', () => {
       gamificationOnboarding.applyOnboardingSideEffects,
     ).toHaveBeenCalledWith(afterUpdate, UserSegment.BEGINNER);
     expect(result.segment).toBe(UserSegment.BEGINNER);
+  });
+
+  it('applies side effects with skipped survey answers when a segment is set', async () => {
+    (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      weeklyMeatConsumption: null,
+      segment: null,
+    });
+
+    const afterUpdate = {
+      ...mockUser,
+      weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+      segment: UserSegment.INTERMEDIATE,
+    };
+
+    (prisma.user.update as jest.Mock).mockResolvedValueOnce(afterUpdate);
+
+    await service.updateProfile('kc-1', {
+      segment: UserSegment.INTERMEDIATE,
+      preferences: {
+        onboardingSurvey: {
+          weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+        },
+      },
+    });
+
+    expect(
+      gamificationOnboarding.applyOnboardingSideEffects,
+    ).toHaveBeenCalledWith(afterUpdate, UserSegment.INTERMEDIATE);
   });
 
   it('does not apply side effects when baselines are set without a segment', async () => {
@@ -364,6 +401,7 @@ describe('UserProfilesService updateProfile gamification', () => {
           completed: false,
           status: 'NOT_STARTED',
           state: {},
+          startedAt: expect.any(Date),
         },
       ],
       skipDuplicates: true,
@@ -377,9 +415,80 @@ describe('UserProfilesService updateProfile gamification', () => {
           completed: false,
           status: 'NOT_STARTED',
           state: {},
+          startedAt: expect.any(Date),
         },
       ],
       skipDuplicates: true,
+    });
+  });
+
+  describe('dimensionLevels', () => {
+    const levels = [
+      { dimensionCode: 'PACKAGING', level: ContentLevel.ADVANCED },
+      { dimensionCode: 'DIET_CHANGES', level: ContentLevel.BEGINNER },
+    ];
+
+    it('sets the levels without writing them to the user row', async () => {
+      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(
+        mockUser,
+      );
+      (prisma.user.update as jest.Mock).mockResolvedValueOnce(mockUser);
+
+      await service.updateProfile('kc-1', {
+        language: 'de',
+        dimensionLevels: levels,
+      });
+
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: 'user-1' },
+        data: { language: 'de' },
+      });
+      expect(dimensionLevelService.setLevels).toHaveBeenCalledWith(
+        'user-1',
+        levels,
+      );
+    });
+
+    it('sets the levels when they are the only field', async () => {
+      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue(
+        mockUser,
+      );
+
+      await service.updateProfile('kc-1', { dimensionLevels: levels });
+
+      expect(prisma.user.update).not.toHaveBeenCalled();
+      expect(dimensionLevelService.setLevels).toHaveBeenCalledWith(
+        'user-1',
+        levels,
+      );
+    });
+
+    it('sets the levels after the survey onboarding in the same request', async () => {
+      (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        segment: null,
+      });
+      (prisma.user.update as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        segment: UserSegment.BEGINNER,
+      });
+
+      await service.updateProfile('kc-1', {
+        segment: UserSegment.BEGINNER,
+        preferences: {
+          onboardingSurvey: {
+            weeklyMeatConsumption: WeeklyMeatRange.FIVE_TO_NINE,
+          },
+        },
+        dimensionLevels: levels,
+      });
+
+      const onboardingOrder = (
+        gamificationOnboarding.applyOnboardingSideEffects as jest.Mock
+      ).mock.invocationCallOrder[0];
+      const setLevelsOrder =
+        dimensionLevelService.setLevels.mock.invocationCallOrder[0];
+      expect(setLevelsOrder).toBeGreaterThan(onboardingOrder);
     });
   });
 });

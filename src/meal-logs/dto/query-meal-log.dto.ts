@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { TypeOfMeal } from '@prisma/client';
+import { MealLogStatus, TypeOfMeal } from '@prisma/client';
 import { IsBoolean, IsDateString, IsEnum, IsOptional } from 'class-validator';
 import { TransformBooleanString } from '../../common/decorators/transformers';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
@@ -31,4 +31,13 @@ export class QueryMealLogDto extends PaginationQueryDto {
   @IsBoolean()
   @TransformBooleanString()
   eatenOut?: boolean;
+
+  @ApiPropertyOptional({
+    enum: MealLogStatus,
+    default: MealLogStatus.CONFIRMED,
+    description: 'CONFIRMED (default) lists submitted logs, DRAFT staged ones',
+  })
+  @IsOptional()
+  @IsEnum(MealLogStatus)
+  status?: MealLogStatus;
 }

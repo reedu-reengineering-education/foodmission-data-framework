@@ -19,4 +19,14 @@ export class UpdateChallengeProgressDto {
   @IsOptional()
   @IsBoolean()
   completed?: boolean;
+
+  @ApiPropertyOptional({
+    description:
+      'Give up the challenge: marks it FAILED. Final — a failed challenge cannot be ' +
+      'updated again. Cannot be combined with completed: true.',
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  failed?: boolean;
 }

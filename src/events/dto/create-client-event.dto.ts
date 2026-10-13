@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   isUUID,
+  IsDate,
   IsIn,
   IsOptional,
   IsString,
@@ -83,4 +85,17 @@ export class CreateClientEventDto {
   @IsString()
   @MaxLength(255)
   idempotencyKey?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Optional time the event happened (ISO 8601). May be in the past or ' +
+      'the future; defaults to now. Also determines metadata.dayBucket.',
+    type: String,
+    format: 'date-time',
+    example: '2026-08-20T12:30:00.000Z',
+  })
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  createdAt?: Date;
 }

@@ -108,6 +108,11 @@ export type LocaleUpdate = {
   value: string;
 };
 
+export type EnglishUpdate = {
+  key: string;
+  value: string;
+};
+
 export type Category = {
   /** Sheet name (Excel limit: 31 chars). */
   id: string;
@@ -131,6 +136,13 @@ export type Category = {
     dryRun: boolean,
     context: ApplyContext,
   ): string[];
+  /**
+   * Writes edited `en` cells back into the English source (opt-in via
+   * `--accept-english`). Absent when the English text is not owned by a file
+   * the importer can safely rewrite — e.g. TS seed data, or sheets whose row
+   * key is the English text itself. Returns the touched file paths.
+   */
+  applyEnglish?(updates: EnglishUpdate[], dryRun: boolean): string[];
 };
 
 export type ApplyContext = {
@@ -232,6 +244,23 @@ function namespaceCategory(namespaceFile: string): Category {
       }
 
       return touched;
+    },
+
+    applyEnglish(updates, dryRun) {
+      if (updates.length === 0) {
+        return [];
+      }
+
+      const filePath = localeNamespaceFilePath(DEFAULT_LOCALE, namespaceFile);
+      const json = readNamespaceJson(DEFAULT_LOCALE, namespaceFile);
+      for (const update of updates) {
+        setValueByPath(json, update.key, update.value);
+      }
+
+      if (!dryRun) {
+        writeJsonFile(filePath, json);
+      }
+      return [relativePath(filePath)];
     },
   };
 }
@@ -747,9 +776,57 @@ type CatalogCategoryConfig = {
   /** Dimensions/topics store a bare string per code instead of a field object. */
   plain?: boolean;
   englishRows(): CatalogEnglishRow[];
+  /**
+   * Catalog JSON holding the English text, when `--accept-english` may write
+   * to it. Dimensions/topics live in TS seed data and leave this unset.
+   */
+  englishFile?: string;
 };
 
+function writeCatalogRows(fileName: string, rows: CatalogRow[]): string {
+  const filePath = path.join(CATALOG_DATA_DIR, fileName);
+  fs.writeFileSync(filePath, `${JSON.stringify(rows, null, 2)}\n`, 'utf8');
+  return relativePath(filePath);
+}
+
+/** Sets the English value for `code::field` or `code::options::<label>`. */
+function setCatalogEnglish(
+  rows: CatalogRow[],
+  key: string,
+  value: string,
+): void {
+  const { code, fields } = splitCatalogKey(key);
+  const row = rows.find(
+    (candidate) => catalogString(candidate, 'code') === code,
+  );
+  if (!row) {
+    throw new Error(`No catalog row with code "${code}" for key "${key}"`);
+  }
+
+  if (fields.length === 1) {
+    row[fields[0]] = value;
+    return;
+  }
+
+  if (fields.length === 2 && fields[0] === 'options') {
+    const options = Array.isArray(row.options)
+      ? (row.options as CatalogRow[])
+      : [];
+    const option = options.find(
+      (candidate) => catalogString(candidate, 'label') === fields[1],
+    );
+    if (option) {
+      option.text = value;
+      return;
+    }
+  }
+
+  throw new Error(`Cannot write English for catalog key "${key}"`);
+}
+
 function catalogCategory(config: CatalogCategoryConfig): Category {
+  const { englishFile } = config;
+
   const readValue = (file: JsonObject, key: string): string => {
     const { code, fields } = splitCatalogKey(key);
     const section = readObject(file, config.section);
@@ -857,6 +934,25 @@ function catalogCategory(config: CatalogCategoryConfig): Category {
 
       return touched;
     },
+
+    ...(englishFile && {
+      applyEnglish(updates: EnglishUpdate[], dryRun: boolean): string[] {
+        if (updates.length === 0) {
+          return [];
+        }
+
+        const rows = readCatalogRows(englishFile);
+        for (const update of updates) {
+          setCatalogEnglish(rows, update.key, update.value);
+        }
+
+        return [
+          dryRun
+            ? relativePath(path.join(CATALOG_DATA_DIR, englishFile))
+            : writeCatalogRows(englishFile, rows),
+        ];
+      },
+    }),
   };
 }
 
@@ -903,15 +999,17 @@ const topicCategory = catalogCategory({
 
 const foodFactCategory = catalogCategory({
   id: 'catalog-food-facts',
-  title: 'Food facts',
+  title: 'Food facts (title, body)',
   section: 'foodFacts',
-  englishRows: catalogFieldRows('food-facts.en.json', ['body']),
+  englishRows: catalogFieldRows('food-facts.en.json', ['title', 'body']),
+  englishFile: 'food-facts.en.json',
 });
 
 const quizCategory = catalogCategory({
   id: 'catalog-quizzes',
-  title: 'Quiz questions, explanations and answer options',
+  title: 'Quizzes (title, question, explanation, answer options)',
   section: 'quizzes',
+  englishFile: 'quizzes.en.json',
   englishRows: () =>
     readCatalogRows('quizzes.en.json').flatMap((row) => {
       const code = catalogString(row, 'code');
@@ -920,7 +1018,7 @@ const quizCategory = catalogCategory({
       }
 
       const rows: CatalogEnglishRow[] = [];
-      for (const field of ['question', 'explanation']) {
+      for (const field of ['title', 'question', 'explanation']) {
         const en = catalogString(row, field);
         if (en) {
           rows.push({ key: catalogKey(code, field), en });
@@ -951,6 +1049,7 @@ const missionCategory = catalogCategory({
     'goal',
     'whyItMatters',
   ]),
+  englishFile: 'missions.en.json',
 });
 
 const challengeCategory = catalogCategory({
@@ -962,6 +1061,7 @@ const challengeCategory = catalogCategory({
     'task',
     'whyItMatters',
   ]),
+  englishFile: 'challenges.en.json',
 });
 
 const questCategory = catalogCategory({
@@ -973,6 +1073,7 @@ const questCategory = catalogCategory({
     'title',
     'description',
   ]),
+  englishFile: 'quests.en.json',
 });
 
 const microLearningCategory = catalogCategory({
@@ -984,6 +1085,7 @@ const microLearningCategory = catalogCategory({
     'body',
     'tips',
   ]),
+  englishFile: 'micro-learnings.en.json',
 });
 
 const badgeCategory = catalogCategory({
@@ -991,6 +1093,7 @@ const badgeCategory = catalogCategory({
   title: 'Badges (name, description)',
   section: 'badges',
   englishRows: catalogFieldRows('badges.en.json', ['name', 'description']),
+  englishFile: 'badges.en.json',
 });
 
 // ---------------------------------------------------------------------------

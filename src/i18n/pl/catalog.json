@@ -130,7 +130,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Wybory żywieniowe",
-    "FOOD_AND_WASTE": "Żywność i odpady",
+    "FOOD_WASTE": "Marnowanie żywności",
     "HEALTH": "Zdrowie",
     "CO2_REDUCTION": "Redukcja CO₂",
     "ENERGY_REDUCTION": "Redukcja energii",
@@ -167,6 +167,6 @@
   "contentTags": {
     "HEALTH": "Zdrowie",
     "FOOD_CHOICE": "Wybór żywności",
-    "FOOD_AND_WASTE": "Żywność i odpady"
+    "FOOD_WASTE": "Marnowanie żywności"
   }
 }

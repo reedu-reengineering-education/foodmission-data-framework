@@ -117,11 +117,12 @@ export class UserEventService implements UserEventRecorder {
       }
     }
 
-    // `dayBucket` is server-owned (overwrites any client value) so rules can
-    // count distinct days without trusting client clocks.
+    // `dayBucket` is server-owned (overwrites any metadata value) and follows
+    // the event's own time, so backdated events land on the day they happened.
+    const createdAt = input.createdAt ?? new Date();
     const metadata = {
       ...buildEventMetadata(input.metadata ?? {}, input.subject),
-      dayBucket: toDayBucket(new Date()),
+      dayBucket: toDayBucket(createdAt),
     };
 
     try {
@@ -133,6 +134,7 @@ export class UserEventService implements UserEventRecorder {
           source: input.source,
           metadata,
           idempotencyKey: input.idempotencyKey ?? null,
+          createdAt,
         },
       });
 

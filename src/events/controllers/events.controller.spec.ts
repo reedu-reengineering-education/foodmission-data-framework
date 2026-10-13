@@ -55,6 +55,8 @@ describe('EventsController', () => {
       userId: 'u1',
       eventType: dto.eventType,
       metadata: dto.metadata,
+      idempotencyKey: undefined,
+      createdAt: undefined,
     });
     expect(result).toBe(eventDto);
   });

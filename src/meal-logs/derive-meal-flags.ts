@@ -306,3 +306,39 @@ export function mergeDerivedFlags(
 
   return { flags, sources };
 }
+
+/**
+ * Sources for a staged log the user reviewed. Every final flag was confirmed
+ * by the user, so a derived proposal they kept is `both` and one they added
+ * is `user`; proposals they removed are simply not among `finalFlags`.
+ */
+export function sourcesForReviewedFlags(
+  finalFlags: readonly MealFlagEventType[],
+  derivedFlags: readonly MealFlagEventType[],
+): Map<EventTypeValue, FlagSource> {
+  const fromData = new Set(
+    eventsForFlags(derivedFlags.filter((flag) => finalFlags.includes(flag))),
+  );
+  const sources = new Map<EventTypeValue, FlagSource>();
+  for (const eventType of eventsForFlags(finalFlags)) {
+    sources.set(eventType, fromData.has(eventType) ? 'both' : 'user');
+  }
+  return sources;
+}
+
+/**
+ * Brings a draft's flags up to date after its meal's items changed. Only what
+ * the derivation changed is touched: proposals that no longer apply are
+ * removed, new ones are added (unless they contradict a remaining flag, like
+ * on create), and proposals the user already kept or removed stay that way.
+ */
+export function refreshDraftFlags(
+  flags: readonly MealFlagEventType[],
+  oldDerived: readonly MealFlagEventType[],
+  newDerived: readonly MealFlagEventType[],
+): MealFlagEventType[] {
+  const gone = oldDerived.filter((flag) => !newDerived.includes(flag));
+  const added = newDerived.filter((flag) => !oldDerived.includes(flag));
+  const remaining = flags.filter((flag) => !gone.includes(flag));
+  return mergeDerivedFlags(remaining, added).flags;
+}

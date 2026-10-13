@@ -17,6 +17,8 @@ export const WINDOW_TYPES = [
   'since_start',
   'rolling_lookback',
   'lifetime',
+  // Counter windows only: the `days` days before the item started.
+  'before_start',
 ] as const;
 
 export type WindowType = (typeof WINDOW_TYPES)[number];
@@ -28,11 +30,36 @@ export interface RuleWindow {
   offsetDays?: number;
 }
 
+export type WhereValue = string | number | boolean;
+
+/**
+ * Counts items instead of events: events are bucketed by `key` and a bucket
+ * counts once it holds `minDistinct` distinct values, e.g. "products with at
+ * least two pieces of information", "days with five colours".
+ */
+export interface RuleGroupBy {
+  /** Metadata path naming the item. Events without one are dropped. */
+  key: string;
+  /** Distinct values a bucket needs to count. */
+  minDistinct: number;
+  /**
+   * Metadata path whose values are counted per bucket; each element of an
+   * array value counts. Defaults to the event type.
+   */
+  of?: string;
+  /** Only these values of `of` count (compared upper-cased). */
+  values?: string[];
+  /** Event types every counted bucket must include (only without `of`). */
+  require?: string[];
+}
+
 export interface RuleCounter {
   event?: string;
   anyOf?: string[];
   distinctBy?: string;
-  where?: Record<string, string | number | boolean>;
+  groupBy?: RuleGroupBy;
+  /** An array value means "any of these". */
+  where?: Record<string, WhereValue | WhereValue[]>;
   window?: RuleWindow;
 }
 
@@ -57,6 +84,17 @@ export interface RuleOutcome {
   /** 0–100, and exactly 100 once `target` holds. */
   progress: number;
   completed: boolean;
+  /**
+   * Resolved as not achieved: the `fail` expression held (at once, or at the
+   * window end for `resolveAt: window_end`), or the window ended without
+   * `target`. Never true together with `completed`.
+   */
+  failed: boolean;
+  /**
+   * When an anchored `since_start` window ends (`startedAt + days`), or `null`
+   * when the window has no start to count from.
+   */
+  deadline: Date | null;
   /** Counter values behind the verdict, for the progress row's `state`. */
   counters: Record<string, number>;
 }
@@ -109,23 +147,56 @@ export function maxWindowDays(
   return max;
 }
 
+/**
+ * Scores a rule against ledger rows.
+ *
+ * With `startedAt`, a `since_start` window runs from the start for `days`
+ * days, so it has an end (`deadline`): events before the start don't count,
+ * and once the deadline passes without `target` the rule has failed. Without
+ * `startedAt` (badge rules, rows started before start times were recorded) a
+ * `since_start` window is the last `days` days, as before, and never fails by
+ * time.
+ *
+ * `resolveAt: window_end` holds completion until the deadline: a "stay below
+ * N" target is true from day one, and only the window end makes it a
+ * completion. A `fail` condition never waits: counters in an anchored window
+ * only grow, so a broken cap stays broken and the item fails at once.
+ */
 export function evaluateRule(
   rule: RuleDefinition,
   events: UserEventRow[],
   evaluationAt: Date = new Date(),
+  startedAt?: Date | null,
 ): RuleOutcome {
+  const anchor =
+    rule.window.type === 'since_start' && startedAt ? startedAt : null;
+  const deadline = anchor ? addDays(anchor, rule.window.days ?? 7) : null;
+  const windowClosed = deadline != null && evaluationAt >= deadline;
+  const waitForWindowEnd = rule.resolveAt === 'window_end' && deadline != null;
+
   const counters = evaluateCounters(
     rule.counters,
     events,
     rule.window,
     evaluationAt,
+    anchor,
   );
-  const completed = asBoolean(evaluateExpression(rule.target, counters));
+  const targetMet = asBoolean(evaluateExpression(rule.target, counters));
+  const completed = targetMet && (!waitForWindowEnd || windowClosed);
+  const failHolds =
+    rule.fail != null && asBoolean(evaluateExpression(rule.fail, counters));
+  const failed = !completed && (failHolds || windowClosed);
   const progress = completed
     ? 100
     : normalizeProgress(evaluateExpression(rule.progress, counters));
 
-  return { progress, completed, counters };
+  return { progress, completed, failed, deadline, counters };
+}
+
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }
 
 /** Stable fingerprint of a rule body, so a row records which version scored it. */
@@ -140,17 +211,67 @@ export function evaluateCounters(
   events: UserEventRow[],
   ruleWindow: RuleWindow,
   evaluationAt: Date,
+  anchor?: Date | null,
 ): Record<string, number> {
   const values: Record<string, number> = {};
   for (const [name, counter] of Object.entries(counters)) {
-    values[name] = filterEvents(
+    const matched = filterEvents(
       counter,
       events,
       ruleWindow,
       evaluationAt,
-    ).length;
+      anchor,
+    );
+    values[name] = counter.groupBy
+      ? countGroups(matched, counter.groupBy)
+      : matched.length;
   }
   return values;
+}
+
+/** Buckets meeting `groupBy.minDistinct` (and `require`); see RuleGroupBy. */
+export function countGroups(
+  events: UserEventRow[],
+  groupBy: RuleGroupBy,
+): number {
+  const allowed = groupBy.values
+    ? new Set(groupBy.values.map((v) => v.toUpperCase()))
+    : null;
+  const buckets = new Map<string, Set<string>>();
+
+  for (const event of events) {
+    const key = scalarKey(getPathValue(event.metadata, groupBy.key));
+    if (key == null) continue;
+
+    const raw = groupBy.of
+      ? getPathValue(event.metadata, groupBy.of)
+      : event.eventType;
+    const found = (Array.isArray(raw) ? raw : [raw])
+      .map((value) => scalarKey(value))
+      .filter((value): value is string => value != null)
+      .map((value) => (groupBy.of ? value.toUpperCase() : value))
+      .filter((value) => !allowed || allowed.has(value));
+
+    const bucket = buckets.get(key) ?? new Set<string>();
+    for (const value of found) bucket.add(value);
+    buckets.set(key, bucket);
+  }
+
+  let count = 0;
+  for (const bucket of buckets.values()) {
+    if (bucket.size < groupBy.minDistinct) continue;
+    if (groupBy.require?.some((type) => !bucket.has(type))) continue;
+    count += 1;
+  }
+  return count;
+}
+
+function scalarKey(value: unknown): string | null {
+  return typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+    ? String(value)
+    : null;
 }
 
 export function filterEvents(
@@ -158,6 +279,7 @@ export function filterEvents(
   events: UserEventRow[],
   ruleWindow: RuleWindow = { type: 'since_start', days: 7 },
   evaluationAt: Date = new Date(),
+  anchor?: Date | null,
 ): UserEventRow[] {
   const matched = events.filter((event) => {
     if (counter.event) {
@@ -174,13 +296,15 @@ export function filterEvents(
 
     return Object.entries(counter.where).every(([path, expected]) => {
       const value = getPathValue(event.metadata, path);
-      return value === expected;
+      return Array.isArray(expected)
+        ? expected.some((option) => value === option)
+        : value === expected;
     });
   });
 
   const window = counter.window ?? ruleWindow;
   const windowed = matched.filter((event) =>
-    isWithinWindow(event.createdAt, evaluationAt, window),
+    isWithinWindow(event.createdAt, evaluationAt, window, anchor),
   );
 
   if (!counter.distinctBy) {
@@ -213,13 +337,35 @@ export function filterEvents(
   return deduped;
 }
 
+/**
+ * Whether an event falls in a window. With an `anchor` (the item's start
+ * time), a `since_start` window runs from `anchor + offsetDays` for `days`
+ * days, capped at `evaluationAt`, and a `before_start` window is the `days`
+ * days ending `offsetDays` before the anchor (nothing without an anchor).
+ * Every other window, and `since_start` without an anchor, is the `days` days
+ * before `evaluationAt − offsetDays`.
+ */
 export function isWithinWindow(
   createdAt: Date,
   evaluationAt: Date,
   window?: RuleWindow,
+  anchor?: Date | null,
 ): boolean {
   if (!window || window.type === 'lifetime') {
     return true;
+  }
+  if (window.type === 'since_start' && anchor) {
+    const start = addDays(anchor, window.offsetDays ?? 0);
+    const end = addDays(start, window.days ?? 7);
+    const cappedEnd = end < evaluationAt ? end : evaluationAt;
+    return createdAt >= start && createdAt <= cappedEnd;
+  }
+  if (window.type === 'before_start') {
+    if (!anchor) return false;
+    // The `days` days ending (exclusively) `offsetDays` before the start.
+    const end = addDays(anchor, -(window.offsetDays ?? 0));
+    const start = addDays(end, -(window.days ?? 7));
+    return createdAt >= start && createdAt < end;
   }
   const offsetDays = window.offsetDays ?? 0;
   const windowEnd = new Date(evaluationAt);
@@ -256,10 +402,14 @@ export function evaluateExpression(
     clamp: (value: number, lower: number, upper: number): number =>
       Math.min(Math.max(value, lower), upper),
   } as const;
+  // The timeout is a safety net, not a budget: `assertSafeExpression` allows no
+  // braces, so an expression can't loop. It is wall-clock time, so a tight
+  // value fails trivial formulas whenever the process is busy (seen at 50 ms
+  // under parallel test load) — and evaluation runs while events are recorded.
   return runInNewContext(
     `'use strict'; (${expression});`,
     { ...scope },
-    { timeout: 50 },
+    { timeout: 1000 },
   );
 }
 

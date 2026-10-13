@@ -19,12 +19,12 @@ import {
 import { UserEventService } from '../../events/services/user-event.service';
 import { userRegisteredIdempotencyKey } from '../../auth/auth.constants';
 import { GamificationOnboardingService } from '../../gamification/services/gamification-onboarding.service';
+import { DimensionLevelService } from '../../gamification/services/dimension-level.service';
 import {
   buildUserPreferences,
   extractOnboardingSurvey,
-  hasAllOnboardingBaselines,
 } from '../../gamification/onboarding.utils';
-import type { Prisma, User } from '@prisma/client';
+import type { ContentLevel, Prisma, User } from '@prisma/client';
 import { ProgressStatus } from '../../common/progress-status';
 
 export interface UserProfile {
@@ -64,6 +64,7 @@ export class UserProfilesService {
     private readonly keycloakAdminService: KeycloakAdminService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
     private readonly userEventService: UserEventService,
+    private readonly dimensionLevelService: DimensionLevelService,
   ) {}
 
   async getOrCreateProfile(keycloakUser: {
@@ -216,6 +217,7 @@ export class UserProfilesService {
     }
 
     if (Object.keys(updateData).length === 0) {
+      await this.applyDimensionLevels(user.id, payload);
       return this.formatUserProfile(user);
     }
 
@@ -236,8 +238,21 @@ export class UserProfilesService {
       updatedUser,
       payload,
     );
+    // After onboarding, so a survey in the same PATCH can't override the
+    // user's chosen levels.
+    await this.applyDimensionLevels(updatedUser.id, payload);
 
     return this.formatUserProfile(updatedUser);
+  }
+
+  private async applyDimensionLevels(
+    userId: string,
+    payload: Record<string, unknown>,
+  ): Promise<void> {
+    const levels = payload.dimensionLevels as
+      Array<{ dimensionCode: string; level: ContentLevel }> | undefined;
+    if (!levels?.length) return;
+    await this.dimensionLevelService.setLevels(userId, levels);
   }
 
   private async updateProfileWithQuestTransition(
@@ -323,6 +338,9 @@ export class UserProfilesService {
     const challengeCodes = questItems
       .filter((item) => item.contentType === 'CHALLENGE')
       .map((item) => item.contentCode);
+    // Selecting the quest starts its missions and challenges, even at
+    // progress 0.
+    const startedAt = new Date();
 
     if (missionCodes.length > 0) {
       const missions = await tx.mission.findMany({
@@ -339,6 +357,7 @@ export class UserProfilesService {
             completed: false,
             status: ProgressStatus.NOT_STARTED,
             state: {},
+            startedAt,
           })),
           skipDuplicates: true,
         });
@@ -360,6 +379,7 @@ export class UserProfilesService {
             completed: false,
             status: ProgressStatus.NOT_STARTED,
             state: {},
+            startedAt,
           })),
           skipDuplicates: true,
         });
@@ -416,8 +436,9 @@ export class UserProfilesService {
   }
 
   /**
-   * When all five habit baselines are present, a client-chosen segment is set,
-   * and onboarding was touched (survey and/or segment), apply first-time side effects.
+   * When onboarding was touched (survey and/or segment) and a client-chosen
+   * segment is set, apply first-time side effects. Survey answers are all
+   * optional, so none of them is required here.
    */
   private async applyGamificationOnboardingIfReady(
     user: User,
@@ -427,10 +448,7 @@ export class UserProfilesService {
       (payload.preferences as { onboardingSurvey?: unknown } | undefined)
         ?.onboardingSurvey !== undefined;
     const segmentTouched = payload.segment !== undefined;
-    if (
-      (!surveyTouched && !segmentTouched) ||
-      !hasAllOnboardingBaselines(user)
-    ) {
+    if (!surveyTouched && !segmentTouched) {
       return user;
     }
 

@@ -25,7 +25,8 @@ import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { MealLogsService } from '../services/meal-logs.service';
-import { CreateMealLogDto } from '../dto/create-meal-log.dto';
+import { CreateMealLogDto, MealLogFactsDto } from '../dto/create-meal-log.dto';
+import { MealLogStatus } from '@prisma/client';
 import { UpdateMealLogDto } from '../dto/update-meal-log.dto';
 import {
   MealLogResponseDto,
@@ -46,9 +47,9 @@ export class MealLogsController {
     summary: 'Create a meal log',
     description:
       'Logs a meal either by linking a Meal (mealId) or, for a quick log, by ' +
-      'reporting diet and nutrition facts (flags) and substitutions (swaps) without one. ' +
+      'reporting diet, nutrition and food waste facts (flags) and substitutions (swaps) without one. ' +
       'Flags and swaps are given as the event types they record (e.g. MEAL_VEGAN, ' +
-      'NUTRITION_WHOLEGRAIN_CHOSEN, SWAP_BEEF_TO_LEGUMES). Records MEAL_LOGGED plus one event per reported flag ' +
+      'NUTRITION_WHOLEGRAIN_CHOSEN, FOOD_WASTE_FULL_PLATE_SAVED, SWAP_BEEF_TO_LEGUMES). Records MEAL_LOGGED plus one event per reported flag ' +
       'and swap — MEAL_VEGAN also records MEAL_MEAT_FREE. With a mealId, flags are ' +
       'also derived from the meal items (NEVO foods and OpenFoodFacts products): ' +
       'MEAL_MEAT_CONSUMED, MEAL_MEAT_FREE, MEAL_VEGAN, MEAL_LEGUME_CONSUMED, ' +
@@ -57,7 +58,9 @@ export class MealLogsController {
       'NUTRITION_HEALTHY_FAT_CHOSEN. It also records one ' +
       'NUTRITION_PROTEIN_VARIETY_LOGGED per protein source and one ' +
       'NUTRITION_PLANT_DIVERSITY_COUNT per NEVO plant food. A derived flag ' +
-      'that contradicts a reported one is dropped.',
+      'that contradicts a reported one is dropped. With draft: true the log is ' +
+      'staged instead: it is stored as DRAFT with the derived flags (also in ' +
+      'derivedFlags) and records nothing until POST /meal-logs/:id/confirm.',
   })
   @ApiBody({ type: CreateMealLogDto })
   @ApiResponse({
@@ -82,6 +85,7 @@ export class MealLogsController {
   @ApiQuery({ name: 'typeOfMeal', required: false })
   @ApiQuery({ name: 'mealFromPantry', required: false })
   @ApiQuery({ name: 'eatenOut', required: false })
+  @ApiQuery({ name: 'status', required: false, enum: MealLogStatus })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiResponse({
@@ -100,7 +104,13 @@ export class MealLogsController {
   @Get(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get meal log by id' })
+  @ApiOperation({
+    summary: 'Get meal log by id',
+    description:
+      "For a DRAFT log the flags are derived again from the meal's current " +
+      'items: proposals that no longer apply are removed, new ones added, and ' +
+      "the user's decisions on unchanged proposals kept.",
+  })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiResponse({
     status: 200,
@@ -118,7 +128,12 @@ export class MealLogsController {
   @Patch(':id')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Update meal log' })
+  @ApiOperation({
+    summary: 'Update meal log',
+    description:
+      'flags and swaps can only be changed while the log is a DRAFT. ' +
+      'Changing mealId on a draft derives its flags again.',
+  })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiResponse({
     status: 200,
@@ -132,6 +147,34 @@ export class MealLogsController {
     @CurrentUser('id') userId: string,
   ): Promise<MealLogResponseDto> {
     return this.mealLogService.update(id, updateMealLogDto, userId);
+  }
+
+  @Post(':id/confirm')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Confirm a staged meal log',
+    description:
+      "Submits a DRAFT log: the optional flags/swaps replace the draft's " +
+      '(derived flags not listed are dropped), the log becomes CONFIRMED and ' +
+      'records MEAL_LOGGED plus one event per flag and swap, dated at the ' +
+      'meal. Kept derived flags are recorded with flagSource both, added ' +
+      'ones with user. Confirming a CONFIRMED log returns it unchanged.',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: MealLogFactsDto, required: false })
+  @ApiResponse({
+    status: 201,
+    description: 'Meal log confirmed',
+    type: MealLogResponseDto,
+  })
+  @ApiCrudErrorResponses()
+  confirm(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() facts: MealLogFactsDto,
+    @CurrentUser('id') userId: string,
+  ): Promise<MealLogResponseDto> {
+    return this.mealLogService.confirm(id, facts ?? {}, userId);
   }
 
   @Delete(':id')
