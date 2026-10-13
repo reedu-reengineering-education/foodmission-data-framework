@@ -15,6 +15,7 @@ import { seedVirtualMembers } from '../scripts/seeds/dev/groupMembers';
 import { seedChallenges } from '../scripts/seeds/dev/challenges';
 import { seedMissions } from '../scripts/seeds/dev/missions';
 import { seedGamificationProfiles } from '../scripts/seeds/dev/gamificationProfile';
+import { seedAppUsage } from '../scripts/seeds/dev/appUsage';
 import { seedRecipes } from '../scripts/seeds/prod/themealdb';
 import { seedMeals } from '../scripts/seeds/dev/meals';
 import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
@@ -176,6 +177,7 @@ async function seedDevelopment() {
   const missions = await seedMissions(prisma);
   const quests = await seedQuests(prisma);
   const gamificationProfiles = await seedGamificationProfiles(prisma);
+  const appUsage = await seedAppUsage(prisma);
 
   // --- Recipes then meals (meals attach to seeded recipes) ---
   const recipes = await seedRecipes(prisma, { skipExisting });
@@ -245,6 +247,10 @@ async function seedDevelopment() {
     {
       label: 'gamificationProfiles',
       value: `${gamificationProfiles.wallets} wallets, ${gamificationProfiles.events} events, ${gamificationProfiles.walletEntries} wallet entries`,
+    },
+    {
+      label: 'appUsage',
+      value: `${appUsage.sessions} sessions for ${appUsage.users} users (${appUsage.neverSeen} never seen)`,
     },
     {
       label: 'surveys',

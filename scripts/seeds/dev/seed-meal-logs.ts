@@ -73,7 +73,9 @@ async function seedMealLogs() {
   await loadSampleIds();
 
   console.log('Fetching users...');
-  const users = await prisma.user.findMany({ select: { id: true } });
+  const users = await prisma.user.findMany({
+    select: { id: true, createdAt: true },
+  });
   console.log(`✓ Found ${users.length} users`);
 
   if (users.length === 0) {
@@ -97,6 +99,8 @@ async function seedMealLogs() {
       const date = new Date();
       date.setDate(date.getDate() - dayOffset);
       date.setHours(0, 0, 0, 0);
+      // No meals before the user signed up
+      if (date < user.createdAt) continue;
 
       for (let mealIndex = 0; mealIndex < mealsPerDay; mealIndex++) {
         // Create meal with 1-4 items

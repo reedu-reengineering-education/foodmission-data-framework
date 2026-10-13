@@ -337,24 +337,34 @@ export async function seedUsers(prisma: PrismaClient) {
     'Lee',
     'Walker',
   ];
-  const countries = [
-    'GB',
-    'DE',
-    'FR',
-    'NL',
-    'SE',
-    'NO',
-    'DK',
-    'FI',
-    'ES',
-    'IT',
-    'PL',
-    'BE',
-    'CH',
-    'AT',
-    'IE',
-    'PT',
+  // Weighted like pilot sites of different sizes, so per-country stats differ.
+  const countryWeights: [string, number][] = [
+    ['DE', 60],
+    ['NL', 50],
+    ['ES', 45],
+    ['IT', 40],
+    ['GB', 35],
+    ['FR', 30],
+    ['PL', 25],
+    ['BE', 20],
+    ['SE', 18],
+    ['AT', 15],
+    ['DK', 12],
+    ['PT', 12],
+    ['IE', 10],
+    ['FI', 10],
+    ['NO', 8],
+    ['CH', 8],
   ];
+  const countryWeightTotal = countryWeights.reduce((s, [, w]) => s + w, 0);
+  const pickCountry = (): string => {
+    let roll = cryptoRandomInt(0, countryWeightTotal);
+    for (const [code, weight] of countryWeights) {
+      if (roll < weight) return code;
+      roll -= weight;
+    }
+    return countryWeights[0][0];
+  };
 
   const regions = [
     'England',
@@ -395,7 +405,7 @@ export async function seedUsers(prisma: PrismaClient) {
     const email = `user${pad(i)}@example.com`;
     const firstName = pick(firstNames);
     const lastName = pick(lastNames);
-    const country = pick(countries);
+    const country = pickCountry();
     const region = pick(regions);
     const zip = String(cryptoRandomInt(10000, 100000));
     const yearOfBirth = cryptoRandomInt(1950, 2009);
