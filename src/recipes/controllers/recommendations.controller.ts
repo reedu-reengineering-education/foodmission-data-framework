@@ -43,6 +43,7 @@ export class RecommendationsController {
       expiringWithinDays: query.expiringWithinDays,
       limit: query.limit,
       offset: query.offset,
+      lang: query.lang,
     });
   }
 }
