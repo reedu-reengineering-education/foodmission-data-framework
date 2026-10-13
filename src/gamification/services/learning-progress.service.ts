@@ -72,8 +72,16 @@ export class LearningProgressService {
   ) {}
 
   /** Every dimension with its level and available quests (no item lists). */
-  async listDimensions(userId: string): Promise<DimensionProgressDto[]> {
+  async listDimensions(
+    userId: string,
+    lang?: string,
+  ): Promise<DimensionProgressDto[]> {
     const snapshot = await this.loadSnapshot(userId);
+    const locale = this.translationService.resolveLocale(lang);
+    await Promise.all([
+      this.localizeDimensionNames(snapshot.levels, locale),
+      this.localizeQuests(snapshot.quests, locale),
+    ]);
     return snapshot.levels.map((level) =>
       this.toDimensionDto(level, snapshot, false),
     );
@@ -83,12 +91,19 @@ export class LearningProgressService {
   async getDimension(
     userId: string,
     dimensionCode: string,
+    lang?: string,
   ): Promise<DimensionProgressDto> {
     const snapshot = await this.loadSnapshot(userId, { dimensionCode });
     const level = snapshot.levels[0];
     if (!level) {
       throw new NotFoundException(`No level for dimension ${dimensionCode}`);
     }
+    const locale = this.translationService.resolveLocale(lang);
+    await Promise.all([
+      this.localizeDimensionNames(snapshot.levels, locale),
+      this.localizeQuests(snapshot.quests, locale),
+      this.localizeTitles(snapshot.details, locale),
+    ]);
     return this.toDimensionDto(level, snapshot, true);
   }
 
@@ -106,15 +121,21 @@ export class LearningProgressService {
     lang?: string,
   ): Promise<KnowledgeProgressDto> {
     const snapshot = await this.loadSnapshot(userId, { allQuests: true });
-    await this.localizeTitles(snapshot.details, lang);
+    await this.localizeTitles(
+      snapshot.details,
+      this.translationService.resolveLocale(lang),
+    );
     return this.toKnowledgeDto(kind, snapshot, true);
   }
 
   /**
    * The user's current quest with each item's status, or null when none is
-   * selected.
+   * selected. Quest name, description and item titles are in `lang`.
    */
-  async getCurrentQuest(userId: string): Promise<CurrentQuestDto | null> {
+  async getCurrentQuest(
+    userId: string,
+    lang?: string,
+  ): Promise<CurrentQuestDto | null> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -145,6 +166,11 @@ export class LearningProgressService {
         where: { userId_questId: { userId, questId: quest.id } },
         select: { completed: true },
       }),
+    ]);
+    const locale = this.translationService.resolveLocale(lang);
+    await Promise.all([
+      this.localizeQuests([quest], locale),
+      this.localizeTitles(details, locale),
     ]);
 
     const items: QuestItemStatusDto[] = refs.map((item) => {
@@ -248,12 +274,54 @@ export class LearningProgressService {
     };
   }
 
-  /** Translates item titles in place; untranslated ones stay English. */
+  // The localize* helpers translate in place; anything without a translation
+  // stays English.
+
+  private async localizeDimensionNames(
+    levels: UserDimensionLevelView[],
+    locale: string,
+  ): Promise<void> {
+    if (locale === DEFAULT_LOCALE || levels.length === 0) return;
+    const translated = await this.translationService.resolveMany(
+      'Dimension',
+      levels.map((level) => level.dimensionId),
+      locale,
+      ['name'],
+      {},
+    );
+    for (const level of levels) {
+      level.dimensionName =
+        translated[level.dimensionId]?.name ?? level.dimensionName;
+    }
+  }
+
+  private async localizeQuests(
+    quests: Array<{
+      id: string;
+      name: string | null;
+      description: string | null;
+    }>,
+    locale: string,
+  ): Promise<void> {
+    if (locale === DEFAULT_LOCALE || quests.length === 0) return;
+    const translated = await this.translationService.resolveMany(
+      'Quest',
+      quests.map((quest) => quest.id),
+      locale,
+      ['name', 'description'],
+      {},
+    );
+    for (const quest of quests) {
+      quest.name = translated[quest.id]?.name ?? quest.name;
+      quest.description =
+        translated[quest.id]?.description ?? quest.description;
+    }
+  }
+
   private async localizeTitles(
     details: Map<string, ContentItemDetails>,
-    lang?: string,
+    locale: string,
   ): Promise<void> {
-    const locale = this.translationService.resolveLocale(lang);
     if (locale === DEFAULT_LOCALE) return;
 
     const byType = new Map<QuestContentType, ContentItemDetails[]>();

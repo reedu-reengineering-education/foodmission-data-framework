@@ -133,9 +133,12 @@ describe('UserProfilesController', () => {
       const quest = { questId: 'q1' } as any;
       learningProgressService.getCurrentQuest.mockResolvedValue(quest);
 
-      await expect(controller.getMyCurrentQuest('user-1')).resolves.toBe(quest);
+      await expect(
+        controller.getMyCurrentQuest('user-1', { lang: 'de' }),
+      ).resolves.toBe(quest);
       expect(learningProgressService.getCurrentQuest).toHaveBeenCalledWith(
         'user-1',
+        'de',
       );
     });
   });

@@ -190,8 +190,9 @@ export class UserProfilesController {
   @ApiOkResponse({ type: [DimensionProgressDto] })
   async getMyDimensions(
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<DimensionProgressDto[]> {
-    return this.learningProgressService.listDimensions(userId);
+    return this.learningProgressService.listDimensions(userId, query.lang);
   }
 
   @Get('me/gamification/dimensions/:code')
@@ -205,8 +206,9 @@ export class UserProfilesController {
   async getMyDimension(
     @CurrentUser('id') userId: string,
     @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<DimensionProgressDto> {
-    return this.learningProgressService.getDimension(userId, code);
+    return this.learningProgressService.getDimension(userId, code, query.lang);
   }
 
   @Get('me/gamification/current-quest')
@@ -222,8 +224,9 @@ export class UserProfilesController {
   @ApiOkResponse({ type: CurrentQuestDto })
   async getMyCurrentQuest(
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<CurrentQuestDto | null> {
-    return this.learningProgressService.getCurrentQuest(userId);
+    return this.learningProgressService.getCurrentQuest(userId, query.lang);
   }
 
   @Get('me/gamification/knowledge-progress')
