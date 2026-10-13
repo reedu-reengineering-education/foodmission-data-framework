@@ -655,6 +655,12 @@ describe('MealLogsService', () => {
               categories: ['en:legumes', 'en:chickpeas'],
               labels: ['en:eu-organic'],
               ingredientsAnalysisTags: ['en:vegan', 'en:vegetarian'],
+              nutriments: {
+                proteins: 7,
+                fiber: 6.5,
+                fat: 3,
+                saturatedFat: 0.4,
+              },
             },
           ],
         ]),
@@ -700,6 +706,84 @@ describe('MealLogsService', () => {
 
       expect(result.id).toBe('log-1');
       expect(flagEvents()).toEqual([]);
+    });
+
+    it('records one protein-variety event per source and one plant-diversity event per NEVO plant food', async () => {
+      const nevoFood = (overrides: Record<string, unknown>) => ({
+        genericFood: {
+          id: 'g-x',
+          nevoCode: 1,
+          foodGroup: 'Vegetables',
+          foodName: 'x',
+          vegan: true,
+          vegetarian: true,
+          meatOrFish: false,
+          legume: false,
+          proteins: null,
+          fiber: null,
+          fat: null,
+          saturatedFat: null,
+          monoUnsaturatedFat: null,
+          polyUnsaturatedFat: null,
+          omega3Fat: null,
+          ...overrides,
+        },
+        foodProduct: null,
+      });
+      mockMealItemRepository.findByMealId.mockResolvedValue([
+        nevoFood({
+          id: 'g-lentils',
+          foodGroup: 'Legumes',
+          foodName: 'Lentils red boiled',
+          legume: true,
+          proteins: 9,
+          fiber: 7.9,
+        }),
+        nevoFood({ id: 'g-spinach', foodName: 'Spinach raw', fiber: 2 }),
+        nevoFood({
+          id: 'g-egg',
+          foodGroup: 'Eggs',
+          foodName: 'Egg whole chicken boiled',
+          vegan: false,
+          proteins: 12,
+        }),
+      ]);
+
+      await service.create(
+        { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+        userId,
+      );
+
+      const events = flagEvents();
+      expect(events.map((input) => input.eventType)).toEqual(
+        expect.arrayContaining([
+          EventType.NUTRITION_PROTEIN_INCLUDED,
+          EventType.NUTRITION_HIGH_FIBRE_MEAL,
+        ]),
+      );
+      const keyed = (type: string) =>
+        events
+          .filter((input) => input.eventType === type)
+          .map((input) => input.idempotencyKey);
+      expect(keyed(EventType.NUTRITION_PROTEIN_VARIETY_LOGGED)).toEqual([
+        'NUTRITION_PROTEIN_VARIETY_LOGGED:log-1:LEGUMES',
+        'NUTRITION_PROTEIN_VARIETY_LOGGED:log-1:EGGS',
+      ]);
+      expect(keyed(EventType.NUTRITION_PLANT_DIVERSITY_COUNT)).toEqual([
+        'NUTRITION_PLANT_DIVERSITY_COUNT:log-1:g-lentils',
+        'NUTRITION_PLANT_DIVERSITY_COUNT:log-1:g-spinach',
+      ]);
+      const plant = events.find(
+        (input) =>
+          input.eventType === EventType.NUTRITION_PLANT_DIVERSITY_COUNT,
+      );
+      expect(plant?.metadata).toEqual(
+        expect.objectContaining({
+          genericFoodId: 'g-lentils',
+          mealLogId: 'log-1',
+          flagSource: 'derived',
+        }),
+      );
     });
 
     it('does not look up items for a quick log', async () => {
@@ -820,6 +904,93 @@ describe('MealLogsService', () => {
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({ eventType: EventType.MEAL_LOGGED }),
       );
+    });
+
+    describe('per-food events (protein variety, plant diversity)', () => {
+      const proteinLentils = {
+        genericFood: {
+          id: 'g-lentils',
+          nevoCode: 1,
+          foodGroup: 'Legumes',
+          foodName: 'Lentils red boiled',
+          vegan: true,
+          vegetarian: true,
+          meatOrFish: false,
+          legume: true,
+          proteins: 9,
+          fiber: 7.9,
+          fat: null,
+          saturatedFat: null,
+          monoUnsaturatedFat: null,
+          polyUnsaturatedFat: null,
+          omega3Fat: null,
+        },
+        foodProduct: null,
+      };
+      const types = () => recorded().map((e) => e.eventType);
+
+      beforeEach(() => {
+        mockMealItemRepository.findByMealId.mockResolvedValue([proteinLentils]);
+      });
+
+      it('are not recorded for a draft', async () => {
+        mockMealLogRepository.create.mockImplementation((data) =>
+          Promise.resolve({ ...draftLog(), ...data }),
+        );
+
+        await service.create(
+          { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER, draft: true },
+          userId,
+        );
+
+        expect(userEventService.record).not.toHaveBeenCalled();
+      });
+
+      it('are recorded on confirm, dated at the meal', async () => {
+        const draft = draftLog({
+          flags: [EventType.NUTRITION_PROTEIN_INCLUDED],
+          derivedFlags: [EventType.NUTRITION_PROTEIN_INCLUDED],
+        });
+        mockMealLogRepository.findById.mockResolvedValue(draft);
+        mockMealLogRepository.confirmDraft.mockResolvedValue(true);
+
+        await service.confirm('log-1', {}, userId);
+
+        expect(types()).toEqual(
+          expect.arrayContaining([
+            EventType.NUTRITION_PROTEIN_VARIETY_LOGGED,
+            EventType.NUTRITION_PLANT_DIVERSITY_COUNT,
+          ]),
+        );
+        const variety = recorded().find(
+          (e) => e.eventType === EventType.NUTRITION_PROTEIN_VARIETY_LOGGED,
+        );
+        expect(variety?.idempotencyKey).toBe(
+          'NUTRITION_PROTEIN_VARIETY_LOGGED:log-1:LEGUMES',
+        );
+        expect(variety?.createdAt).toEqual(draft.timestamp);
+      });
+
+      it('skip protein variety when the user removed NUTRITION_PROTEIN_INCLUDED', async () => {
+        mockMealLogRepository.findById.mockResolvedValue(
+          draftLog({
+            flags: [EventType.NUTRITION_PROTEIN_INCLUDED],
+            derivedFlags: [EventType.NUTRITION_PROTEIN_INCLUDED],
+          }),
+        );
+        mockMealLogRepository.confirmDraft.mockResolvedValue(true);
+
+        await service.confirm(
+          'log-1',
+          { flags: [EventType.MEAL_LEGUME_CONSUMED] },
+          userId,
+        );
+
+        expect(types()).not.toContain(
+          EventType.NUTRITION_PROTEIN_VARIETY_LOGGED,
+        );
+        expect(types()).toContain(EventType.NUTRITION_PLANT_DIVERSITY_COUNT);
+      });
     });
 
     describe('confirm', () => {

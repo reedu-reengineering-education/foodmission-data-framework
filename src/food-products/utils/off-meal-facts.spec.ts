@@ -1,4 +1,8 @@
-import { isCertifiedLabel, offCategoryFacts } from './off-meal-facts';
+import {
+  isCertifiedLabel,
+  isWholegrainProduct,
+  offCategoryFacts,
+} from './off-meal-facts';
 
 describe('offCategoryFacts', () => {
   it('recognises meat and fish parents', () => {
@@ -63,5 +67,64 @@ describe('isCertifiedLabel', () => {
     'en:eu-agriculture',
   ])('rejects %s', (label) => {
     expect(isCertifiedLabel(label)).toBe(false);
+  });
+});
+
+describe('isWholegrainProduct', () => {
+  it.each([
+    ['en:whole-grain-pastas'],
+    ['en:wholemeal-breads'],
+    ['en:whole-wheat-flours'],
+    ['en:whole-grain'],
+    ['en:oat-flakes'],
+    ['en:brown-rices'],
+  ])('accepts %s', (tag) => {
+    expect(isWholegrainProduct([tag])).toBe(true);
+  });
+
+  it.each([['en:whole-milks'], ['en:white-breads'], ['en:pastas']])(
+    'rejects %s',
+    (tag) => {
+      expect(isWholegrainProduct([tag])).toBe(false);
+    },
+  );
+});
+
+describe('offCategoryFacts: protein and fat kinds', () => {
+  it('tells fish, dairy, nuts and plant fat sources apart', () => {
+    expect(offCategoryFacts(['en:fishes', 'en:salmons'])).toEqual(
+      expect.objectContaining({ fish: true, oilyFish: true, meat: true }),
+    );
+    expect(offCategoryFacts(['en:yogurts']).proteinDairy).toBe(true);
+    expect(offCategoryFacts(['en:butters']).proteinDairy).toBe(false);
+    expect(offCategoryFacts(['en:peanut-butters'])).toEqual(
+      expect.objectContaining({ nuts: true, fatSource: true }),
+    );
+    expect(offCategoryFacts(['en:olive-oils']).fatSource).toBe(true);
+  });
+});
+
+describe('offCategoryFacts: fruit and vegetables', () => {
+  it('counts fruit and vegetable parents and narrower tags', () => {
+    expect(offCategoryFacts(['en:fruits']).fruitVeg).toBe(true);
+    expect(offCategoryFacts(['en:leaf-vegetables']).fruitVeg).toBe(true);
+    expect(offCategoryFacts(['en:dried-fruits']).fruitVeg).toBe(true);
+  });
+
+  it('excludes potatoes, juices, sodas and preserves', () => {
+    for (const tag of [
+      'en:potatoes',
+      'en:fruit-juices',
+      'en:fruit-sodas',
+      'en:fruit-and-vegetable-preserves',
+    ]) {
+      expect(
+        offCategoryFacts(['en:fruits', 'en:vegetables', tag]).fruitVeg,
+      ).toBe(false);
+    }
+  });
+
+  it('is false without a fruit or vegetable tag', () => {
+    expect(offCategoryFacts(['en:fruits-based-foods']).fruitVeg).toBe(false);
   });
 });

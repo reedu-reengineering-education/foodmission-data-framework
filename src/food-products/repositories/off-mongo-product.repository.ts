@@ -8,6 +8,15 @@ export interface OffMealFacts {
   categories: string[];
   labels: string[];
   ingredientsAnalysisTags: string[];
+  /** Per 100 g; `null` when OFF has no value. */
+  nutriments: OffMealNutriments;
+}
+
+export interface OffMealNutriments {
+  proteins: number | null;
+  fiber: number | null;
+  fat: number | null;
+  saturatedFat: number | null;
 }
 
 const MEAL_FACTS_TIMEOUT_MS = 2000;
@@ -71,6 +80,10 @@ export class OffMongoProductRepository {
               categories_tags: 1,
               labels_tags: 1,
               ingredients_analysis_tags: 1,
+              'nutriments.proteins_100g': 1,
+              'nutriments.fiber_100g': 1,
+              'nutriments.fat_100g': 1,
+              'nutriments.saturated-fat_100g': 1,
             },
           } as Prisma.InputJsonValue,
         }),
@@ -87,6 +100,7 @@ export class OffMongoProductRepository {
           categories: toStringArray(doc.categories_tags),
           labels: toStringArray(doc.labels_tags),
           ingredientsAnalysisTags: toStringArray(doc.ingredients_analysis_tags),
+          nutriments: toMealNutriments(doc.nutriments),
         });
       }
     } catch {
@@ -204,4 +218,23 @@ function toStringArray(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((v): v is string => typeof v === 'string')
     : [];
+}
+
+function toMealNutriments(value: unknown): OffMealNutriments {
+  const nutriments =
+    value && typeof value === 'object'
+      ? (value as Record<string, unknown>)
+      : {};
+  return {
+    proteins: toNumber(nutriments.proteins_100g),
+    fiber: toNumber(nutriments.fiber_100g),
+    fat: toNumber(nutriments.fat_100g),
+    saturatedFat: toNumber(nutriments['saturated-fat_100g']),
+  };
+}
+
+// OFF stores nutriment values as numbers or numeric strings.
+function toNumber(value: unknown): number | null {
+  const number = typeof value === 'string' ? Number(value) : value;
+  return typeof number === 'number' && Number.isFinite(number) ? number : null;
 }

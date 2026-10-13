@@ -30,6 +30,9 @@
  *   them as {@link MEAL_FLAG_EVENT_TYPES} values and, for a log with a `mealId`,
  *   also derives some from the meal's NEVO / OpenFoodFacts items.
  *   `flagSource` says who asserted the fact: `user`, `derived` or `both`.
+ *   Derived per-food facts add their key:
+ *   `NUTRITION_PROTEIN_VARIETY_LOGGED` → `proteinSource`,
+ *   `NUTRITION_PLANT_DIVERSITY_COUNT` → `genericFoodId`.
  * - **Swap** — `{ from, to, productId? }` (type already names the swap)
  * - **Shopping / processing / packaging** — `{ productId?, barcode?, score? }`
  * - **Double label** (`SHOPPING_DOUBLE_LABEL_CHOSEN`) — `{ productId, labels }`:
