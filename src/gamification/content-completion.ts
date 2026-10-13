@@ -1,5 +1,6 @@
 import { Prisma, ProgressStatus, QuestContentType } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import type { TranslatableEntityType } from '../translations/entity-types';
 
 type Db = PrismaService | Prisma.TransactionClient;
 
@@ -219,13 +220,39 @@ export type KnowledgeFlags = {
   foodWaste: boolean;
 };
 
-export type ContentItemDetails = KnowledgeFlags & { title: string };
+/** `id` is null when the item's content row is missing. */
+export type ContentItemDetails = KnowledgeFlags & {
+  contentType: QuestContentType;
+  id: string | null;
+  title: string;
+};
 
-const NO_DETAILS: ContentItemDetails = {
+type ContentRowDetails = Omit<ContentItemDetails, 'contentType'>;
+
+const NO_DETAILS: ContentRowDetails = {
+  id: null,
   title: '',
   health: false,
   foodChoice: false,
   foodWaste: false,
+};
+
+/**
+ * Where findItemDetails takes each type's title from, as the translation
+ * entity and field that localize it.
+ */
+export const CONTENT_TITLE_SOURCE: Record<
+  QuestContentType,
+  { entityType: TranslatableEntityType; field: string }
+> = {
+  [QuestContentType.MISSION]: { entityType: 'Mission', field: 'title' },
+  [QuestContentType.CHALLENGE]: { entityType: 'Challenge', field: 'title' },
+  [QuestContentType.QUIZ]: { entityType: 'Quiz', field: 'question' },
+  [QuestContentType.FOOD_FACT]: { entityType: 'FoodFact', field: 'body' },
+  [QuestContentType.MICRO_LEARNING]: {
+    entityType: 'MicroLearning',
+    field: 'title',
+  },
 };
 
 /**
@@ -237,30 +264,35 @@ export async function findItemDetails(
   items: ContentItemRef[],
 ): Promise<Map<string, ContentItemDetails>> {
   const details = new Map<string, ContentItemDetails>();
-  const flags = { health: true, foodChoice: true, foodWaste: true } as const;
+  const shared = {
+    id: true,
+    health: true,
+    foodChoice: true,
+    foodWaste: true,
+  } as const;
 
   await Promise.all(
     [...groupCodesByType(items)].map(async ([contentType, codes]) => {
       const where = { code: { in: codes } };
-      let rows: Array<{ code: string } & ContentItemDetails> = [];
+      let rows: Array<{ code: string } & ContentRowDetails> = [];
       switch (contentType) {
         case QuestContentType.MISSION:
           rows = await db.mission.findMany({
             where,
-            select: { code: true, title: true, ...flags },
+            select: { code: true, title: true, ...shared },
           });
           break;
         case QuestContentType.CHALLENGE:
           rows = await db.challenge.findMany({
             where,
-            select: { code: true, title: true, ...flags },
+            select: { code: true, title: true, ...shared },
           });
           break;
         case QuestContentType.QUIZ:
           rows = (
             await db.quiz.findMany({
               where,
-              select: { code: true, question: true, ...flags },
+              select: { code: true, question: true, ...shared },
             })
           ).map(({ question, ...rest }) => ({ ...rest, title: question }));
           break;
@@ -268,26 +300,31 @@ export async function findItemDetails(
           rows = (
             await db.foodFact.findMany({
               where,
-              select: { code: true, body: true, ...flags },
+              select: { code: true, body: true, ...shared },
             })
           ).map(({ body, ...rest }) => ({ ...rest, title: body }));
           break;
         case QuestContentType.MICRO_LEARNING:
           rows = await db.microLearning.findMany({
             where,
-            select: { code: true, title: true, ...flags },
+            select: { code: true, title: true, ...shared },
           });
           break;
       }
       for (const { code, ...rest } of rows) {
-        details.set(contentItemKey({ contentType, contentCode: code }), rest);
+        details.set(contentItemKey({ contentType, contentCode: code }), {
+          ...rest,
+          contentType,
+        });
       }
     }),
   );
 
   for (const item of items) {
     const key = contentItemKey(item);
-    if (!details.has(key)) details.set(key, NO_DETAILS);
+    if (!details.has(key)) {
+      details.set(key, { ...NO_DETAILS, contentType: item.contentType });
+    }
   }
   return details;
 }

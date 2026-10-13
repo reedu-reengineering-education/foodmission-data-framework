@@ -1,5 +1,6 @@
 import { ContentLevel, ProgressStatus, QuestContentType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { TranslationService } from '../../translations/services/translation.service';
 import { DimensionLevelService } from './dimension-level.service';
 import { LearningProgressService } from './learning-progress.service';
 
@@ -50,26 +51,35 @@ function build() {
     quizProgress: { findMany: jest.fn().mockResolvedValue([]) },
     foodFactProgress: { findMany: jest.fn().mockResolvedValue([]) },
     mission: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([
-          { code: 'M.1', title: 'Log a meal', ...flags(true, true, false) },
-        ]),
+      findMany: jest.fn().mockResolvedValue([
+        {
+          id: 'm1',
+          code: 'M.1',
+          title: 'Log a meal',
+          ...flags(true, true, false),
+        },
+      ]),
     },
     challenge: { findMany: jest.fn().mockResolvedValue([]) },
     quiz: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([
-          { code: 'Q.1', question: 'Why?', ...flags(true, false, false) },
-        ]),
+      findMany: jest.fn().mockResolvedValue([
+        {
+          id: 'qz1',
+          code: 'Q.1',
+          question: 'Why?',
+          ...flags(true, false, false),
+        },
+      ]),
     },
     foodFact: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([
-          { code: 'FF.1', body: 'Fact', ...flags(false, false, true) },
-        ]),
+      findMany: jest.fn().mockResolvedValue([
+        {
+          id: 'ff1',
+          code: 'FF.1',
+          body: 'Fact',
+          ...flags(false, false, true),
+        },
+      ]),
     },
     microLearning: { findMany: jest.fn().mockResolvedValue([]) },
   };
@@ -89,11 +99,27 @@ function build() {
       },
     ]),
   };
+  const translationService = {
+    resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+    resolveMany: jest.fn(
+      (entityType: string, ids: string[], _locale: string, [field]: string[]) =>
+        Promise.resolve(
+          Object.fromEntries(
+            ids.map((id) => [
+              id,
+              // Only the mission has a German title.
+              { [field]: entityType === 'Mission' ? 'Mahlzeit loggen' : null },
+            ]),
+          ),
+        ),
+    ),
+  };
   const service = new LearningProgressService(
     prisma as unknown as PrismaService,
     dimensionLevelService as unknown as DimensionLevelService,
+    translationService as unknown as TranslationService,
   );
-  return { service, prisma };
+  return { service, prisma, translationService };
 }
 
 describe('LearningProgressService', () => {
@@ -141,6 +167,29 @@ describe('LearningProgressService', () => {
         finished: false,
       },
     ]);
+  });
+
+  it('localizes item titles, keeping English where no translation exists', async () => {
+    const { service, translationService } = build();
+
+    const bar = await service.getKnowledge('u1', 'HEALTH', 'de');
+
+    expect(bar.items?.map((i) => i.title)).toEqual(['Mahlzeit loggen', 'Why?']);
+    expect(translationService.resolveMany).toHaveBeenCalledWith(
+      'Quiz',
+      ['qz1'],
+      'de',
+      ['question'],
+      {},
+    );
+  });
+
+  it('skips translation lookups for English', async () => {
+    const { service, translationService } = build();
+
+    await service.getKnowledge('u1', 'HEALTH');
+
+    expect(translationService.resolveMany).not.toHaveBeenCalled();
   });
 
   it('counts every available quest for the bars, not just current levels', async () => {
@@ -237,11 +286,14 @@ describe('LearningProgressService.getCurrentQuest', () => {
         findMany: jest.fn().mockResolvedValue([{ foodFact: { code: 'FF.1' } }]),
       },
       mission: {
-        findMany: jest
-          .fn()
-          .mockResolvedValue([
-            { code: 'M.1', title: 'Log a meal', ...flags(true, true, false) },
-          ]),
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'm1',
+            code: 'M.1',
+            title: 'Log a meal',
+            ...flags(true, true, false),
+          },
+        ]),
       },
       challenge: {
         findMany: jest
@@ -251,24 +303,31 @@ describe('LearningProgressService.getCurrentQuest', () => {
           ]),
       },
       quiz: {
-        findMany: jest
-          .fn()
-          .mockResolvedValue([
-            { code: 'Q.1', question: 'Why?', ...flags(true, false, false) },
-          ]),
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'qz1',
+            code: 'Q.1',
+            question: 'Why?',
+            ...flags(true, false, false),
+          },
+        ]),
       },
       foodFact: {
-        findMany: jest
-          .fn()
-          .mockResolvedValue([
-            { code: 'FF.1', body: 'Fact', ...flags(false, false, true) },
-          ]),
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'ff1',
+            code: 'FF.1',
+            body: 'Fact',
+            ...flags(false, false, true),
+          },
+        ]),
       },
       microLearning: { findMany: jest.fn().mockResolvedValue([]) },
     };
     const service = new LearningProgressService(
       prisma as unknown as PrismaService,
       {} as DimensionLevelService,
+      {} as TranslationService,
     );
     return { service, prisma };
   }

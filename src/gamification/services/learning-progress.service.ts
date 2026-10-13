@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProgressStatus } from '@prisma/client';
+import { ProgressStatus, QuestContentType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { TranslationService } from '../../translations/services/translation.service';
 import {
+  CONTENT_TITLE_SOURCE,
   ContentItemDetails,
   ContentItemRef,
   contentItemKey,
@@ -65,6 +68,7 @@ export class LearningProgressService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly dimensionLevelService: DimensionLevelService,
+    private readonly translationService: TranslationService,
   ) {}
 
   /** Every dimension with its level and available quests (no item lists). */
@@ -95,12 +99,14 @@ export class LearningProgressService {
     );
   }
 
-  /** One bar, listing its finished and open items. */
+  /** One bar, listing its finished and open items with titles in `lang`. */
   async getKnowledge(
     userId: string,
     kind: KnowledgeKind,
+    lang?: string,
   ): Promise<KnowledgeProgressDto> {
     const snapshot = await this.loadSnapshot(userId, { allQuests: true });
+    await this.localizeTitles(snapshot.details, lang);
     return this.toKnowledgeDto(kind, snapshot, true);
   }
 
@@ -240,6 +246,40 @@ export class LearningProgressService {
       details,
       completedQuestIds: new Set(completedRows.map((row) => row.questId)),
     };
+  }
+
+  /** Translates item titles in place; untranslated ones stay English. */
+  private async localizeTitles(
+    details: Map<string, ContentItemDetails>,
+    lang?: string,
+  ): Promise<void> {
+    const locale = this.translationService.resolveLocale(lang);
+    if (locale === DEFAULT_LOCALE) return;
+
+    const byType = new Map<QuestContentType, ContentItemDetails[]>();
+    for (const item of details.values()) {
+      if (!item.id) continue;
+      byType.set(item.contentType, [
+        ...(byType.get(item.contentType) ?? []),
+        item,
+      ]);
+    }
+
+    await Promise.all(
+      [...byType].map(async ([contentType, items]) => {
+        const { entityType, field } = CONTENT_TITLE_SOURCE[contentType];
+        const translated = await this.translationService.resolveMany(
+          entityType,
+          items.map((item) => item.id!),
+          locale,
+          [field],
+          {},
+        );
+        for (const item of items) {
+          item.title = translated[item.id!]?.[field] ?? item.title;
+        }
+      }),
+    );
   }
 
   private toDimensionDto(

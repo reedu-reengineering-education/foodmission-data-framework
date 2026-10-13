@@ -11,7 +11,8 @@ export class ContentItemProgressDto {
 
   @ApiProperty({
     description:
-      'Mission/challenge title, quiz question or food fact text (English)',
+      'Mission/challenge title, quiz question or food fact text. English, ' +
+      'except on the single knowledge-bar endpoint, which honours `lang`.',
   })
   title!: string;
 

@@ -52,6 +52,7 @@ import {
   OnboardingSurveyResultDto,
 } from '../../gamification/dto/onboarding-survey.dto';
 import { SurveyQueryDto } from '../../surveys/dto/survey-query.dto';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   RecordWheelImpactDto,
@@ -254,6 +255,7 @@ export class UserProfilesController {
   async getMyKnowledgeBar(
     @CurrentUser('id') userId: string,
     @Param('kind') kind: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<KnowledgeProgressDto> {
     if (!(KNOWLEDGE_KINDS as string[]).includes(kind)) {
       throw new BadRequestException(
@@ -263,6 +265,7 @@ export class UserProfilesController {
     return this.learningProgressService.getKnowledge(
       userId,
       kind as KnowledgeKind,
+      query.lang,
     );
   }
 
