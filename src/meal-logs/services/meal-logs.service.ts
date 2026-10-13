@@ -297,7 +297,8 @@ export class MealLogsService {
   }
 
   /**
-   * Diet flags implied by the meal's items (NEVO foods and OFF products). OFF
+   * Diet flags implied by the meal's items and, for a meal based on a recipe,
+   * the recipe's ingredients (NEVO foods and OFF products). OFF
    * tags are read from the OFF Mongo copy because imported `FoodProduct` rows
    * don't keep them; the lookup is best-effort and falls back to stored data.
    * Any failure here logs and yields no derived flags rather than failing the
@@ -314,7 +315,13 @@ export class MealLogsService {
     mealId: string,
   ): Promise<MealFlagEventType[] | null> {
     try {
-      const items = await this.mealItemRepository.findByMealId(mealId);
+      // A meal based on a recipe is made of its own items plus the recipe's
+      // ingredients (which aren't copied into meal items).
+      const [mealItems, recipeIngredients] = await Promise.all([
+        this.mealItemRepository.findByMealId(mealId),
+        this.mealItemRepository.findRecipeIngredientFoodsByMealId(mealId),
+      ]);
+      const items = [...mealItems, ...recipeIngredients];
       const barcodes = [
         ...new Set(
           items

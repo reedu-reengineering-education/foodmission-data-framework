@@ -22,6 +22,9 @@ describe('MealItemRepository', () => {
       deleteMany: jest.fn(),
       count: jest.fn(),
     },
+    meal: {
+      findUnique: jest.fn(),
+    },
   };
 
   beforeEach(async () => {
@@ -295,6 +298,38 @@ describe('MealItemRepository', () => {
 
       expect(result).toBe(5);
       expect(prisma.mealItem.count).toHaveBeenCalled();
+    });
+  });
+
+  describe('findRecipeIngredientFoodsByMealId', () => {
+    it("returns the linked foods of the meal's recipe ingredients", async () => {
+      const ingredient = { genericFood: { nevoCode: 120 }, foodProduct: null };
+      mockPrismaService.meal.findUnique.mockResolvedValue({
+        recipe: { ingredients: [ingredient] },
+      });
+
+      await expect(
+        repository.findRecipeIngredientFoodsByMealId('meal-1'),
+      ).resolves.toEqual([ingredient]);
+      expect(mockPrismaService.meal.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: 'meal-1' } }),
+      );
+    });
+
+    it('returns [] for a meal without a recipe', async () => {
+      mockPrismaService.meal.findUnique.mockResolvedValue({ recipe: null });
+
+      await expect(
+        repository.findRecipeIngredientFoodsByMealId('meal-1'),
+      ).resolves.toEqual([]);
+    });
+
+    it('returns [] for a missing meal', async () => {
+      mockPrismaService.meal.findUnique.mockResolvedValue(null);
+
+      await expect(
+        repository.findRecipeIngredientFoodsByMealId('meal-1'),
+      ).resolves.toEqual([]);
     });
   });
 });

@@ -45,6 +45,7 @@ describe('MealLogsService', () => {
 
   const mockMealItemRepository = {
     findByMealId: jest.fn(),
+    findRecipeIngredientFoodsByMealId: jest.fn(),
   };
 
   const mockOffMongoProductRepository = {
@@ -57,6 +58,9 @@ describe('MealLogsService', () => {
     };
     progressWheelService = { recordImpact: jest.fn().mockResolvedValue({}) };
     mockMealItemRepository.findByMealId.mockResolvedValue([]);
+    mockMealItemRepository.findRecipeIngredientFoodsByMealId.mockResolvedValue(
+      [],
+    );
     mockOffMongoProductRepository.findMealFactsByBarcodes.mockResolvedValue(
       new Map(),
     );
@@ -544,6 +548,65 @@ describe('MealLogsService', () => {
         [EventType.MEAL_VEGAN, 'derived'],
         [EventType.MEAL_LEGUME_CONSUMED, 'derived'],
       ]);
+    });
+
+    describe('meals based on a recipe', () => {
+      const derivedFlags = () =>
+        mockMealLogRepository.create.mock.calls[0][0].flags;
+
+      it('derives from the recipe ingredients when the meal has no items', async () => {
+        mockMealItemRepository.findByMealId.mockResolvedValue([]);
+        mockMealItemRepository.findRecipeIngredientFoodsByMealId.mockResolvedValue(
+          [lentils],
+        );
+
+        await service.create(
+          { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+          userId,
+        );
+
+        expect(
+          mockMealItemRepository.findRecipeIngredientFoodsByMealId,
+        ).toHaveBeenCalledWith('meal-1');
+        expect(derivedFlags()).toEqual([
+          EventType.MEAL_MEAT_FREE,
+          EventType.MEAL_VEGAN,
+          EventType.MEAL_LEGUME_CONSUMED,
+        ]);
+      });
+
+      it('combines meal items and recipe ingredients', async () => {
+        // Vegan items, but the recipe has chicken.
+        mockMealItemRepository.findByMealId.mockResolvedValue([lentils]);
+        mockMealItemRepository.findRecipeIngredientFoodsByMealId.mockResolvedValue(
+          [chicken],
+        );
+
+        await service.create(
+          { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+          userId,
+        );
+
+        expect(derivedFlags()).toEqual([
+          EventType.MEAL_MEAT_CONSUMED,
+          EventType.MEAL_LEGUME_CONSUMED,
+        ]);
+      });
+
+      it('treats an unlinked ingredient as unknown', async () => {
+        mockMealItemRepository.findByMealId.mockResolvedValue([]);
+        mockMealItemRepository.findRecipeIngredientFoodsByMealId.mockResolvedValue(
+          [lentils, { genericFood: null, foodProduct: null }],
+        );
+
+        await service.create(
+          { mealId: 'meal-1', typeOfMeal: TypeOfMeal.DINNER },
+          userId,
+        );
+
+        // Legume still counts; vegan / meat-free can't be claimed.
+        expect(derivedFlags()).toEqual([EventType.MEAL_LEGUME_CONSUMED]);
+      });
     });
 
     it('keeps the client flag and drops a contradicting derived one', async () => {
