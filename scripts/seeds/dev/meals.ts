@@ -62,8 +62,6 @@ function mapRecipeCategoryToMealTaxonomy(recipe: Recipe): {
     if (normalized === 'gluten-free') dietaryLabels.add('GLUTEN_FREE');
     if (normalized === 'dairy-free') dietaryLabels.add('DAIRY_FREE');
     if (normalized === 'nut-free') dietaryLabels.add('NUT_FREE');
-    if (normalized === 'halal') dietaryLabels.add('HALAL');
-    if (normalized === 'kosher') dietaryLabels.add('KOSHER');
   }
 
   return {

@@ -58,8 +58,6 @@ enum DietaryLabel {
   GLUTEN_FREE
   DAIRY_FREE
   NUT_FREE
-  HALAL
-  KOSHER
 }
 
 enum RecipeOrigin {

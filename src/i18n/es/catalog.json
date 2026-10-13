@@ -77,9 +77,7 @@
     "PESCATARIAN": "Pescetariano",
     "GLUTEN_FREE": "Sin gluten",
     "DAIRY_FREE": "Sin lácteos",
-    "NUT_FREE": "Sin frutos secos",
-    "HALAL": "Halal",
-    "KOSHER": "Kosher"
+    "NUT_FREE": "Sin frutos secos"
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Sin respuesta específica",

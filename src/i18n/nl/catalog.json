@@ -77,9 +77,7 @@
     "PESCATARIAN": "Pescotarisch",
     "GLUTEN_FREE": "Glutenvrij",
     "DAIRY_FREE": "Zuivelvrij",
-    "NUT_FREE": "Notenvrij",
-    "HALAL": "Halal",
-    "KOSHER": "Kosjer"
+    "NUT_FREE": "Notenvrij"
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Geen specifiek antwoord",
