@@ -1,5 +1,6 @@
 import { ContentLevel, ProgressStatus, QuestContentType } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { TranslationService } from '../../translations/services/translation.service';
 import { DimensionLevelService } from './dimension-level.service';
 import { LearningProgressService } from './learning-progress.service';
 
@@ -8,6 +9,32 @@ const flags = (health: boolean, foodChoice: boolean, foodWaste: boolean) => ({
   foodChoice,
   foodWaste,
 });
+
+/** German translations; anything not listed has none. */
+const GERMAN: Record<string, Record<string, Record<string, string>>> = {
+  Mission: { m1: { title: 'Mahlzeit loggen' } },
+  Quest: { q1: { name: 'Essen loggen' } },
+  Dimension: { 'd-diet': { name: 'Ernährung' } },
+};
+
+function mockTranslationService() {
+  return {
+    resolveLocale: jest.fn((lang?: string) => lang ?? 'en'),
+    resolveMany: jest.fn(
+      (entityType: string, ids: string[], _locale: string, fields: string[]) =>
+        Promise.resolve(
+          Object.fromEntries(
+            ids.map((id) => [
+              id,
+              Object.fromEntries(
+                fields.map((f) => [f, GERMAN[entityType]?.[id]?.[f] ?? null]),
+              ),
+            ]),
+          ),
+        ),
+    ),
+  };
+}
 
 function build() {
   const prisma = {
@@ -50,26 +77,35 @@ function build() {
     quizProgress: { findMany: jest.fn().mockResolvedValue([]) },
     foodFactProgress: { findMany: jest.fn().mockResolvedValue([]) },
     mission: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([
-          { code: 'M.1', title: 'Log a meal', ...flags(true, true, false) },
-        ]),
+      findMany: jest.fn().mockResolvedValue([
+        {
+          id: 'm1',
+          code: 'M.1',
+          title: 'Log a meal',
+          ...flags(true, true, false),
+        },
+      ]),
     },
     challenge: { findMany: jest.fn().mockResolvedValue([]) },
     quiz: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([
-          { code: 'Q.1', question: 'Why?', ...flags(true, false, false) },
-        ]),
+      findMany: jest.fn().mockResolvedValue([
+        {
+          id: 'qz1',
+          code: 'Q.1',
+          title: 'Why?',
+          ...flags(true, false, false),
+        },
+      ]),
     },
     foodFact: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([
-          { code: 'FF.1', body: 'Fact', ...flags(false, false, true) },
-        ]),
+      findMany: jest.fn().mockResolvedValue([
+        {
+          id: 'ff1',
+          code: 'FF.1',
+          title: 'Fact',
+          ...flags(false, false, true),
+        },
+      ]),
     },
     microLearning: { findMany: jest.fn().mockResolvedValue([]) },
   };
@@ -89,11 +125,13 @@ function build() {
       },
     ]),
   };
+  const translationService = mockTranslationService();
   const service = new LearningProgressService(
     prisma as unknown as PrismaService,
     dimensionLevelService as unknown as DimensionLevelService,
+    translationService as unknown as TranslationService,
   );
-  return { service, prisma };
+  return { service, prisma, translationService };
 }
 
 describe('LearningProgressService', () => {
@@ -141,6 +179,43 @@ describe('LearningProgressService', () => {
         finished: false,
       },
     ]);
+  });
+
+  it('localizes item titles, keeping English where no translation exists', async () => {
+    const { service, translationService } = build();
+
+    const bar = await service.getKnowledge('u1', 'HEALTH', 'de');
+
+    expect(bar.items?.map((i) => i.title)).toEqual(['Mahlzeit loggen', 'Why?']);
+    expect(translationService.resolveMany).toHaveBeenCalledWith(
+      'Quiz',
+      ['qz1'],
+      'de',
+      ['title'],
+      {},
+    );
+  });
+
+  it('reads quiz and food fact titles, not the question or body', async () => {
+    const { service, prisma } = build();
+
+    await service.getKnowledge('u1', 'HEALTH');
+
+    for (const model of [prisma.quiz, prisma.foodFact]) {
+      expect(model.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          select: expect.objectContaining({ title: true }),
+        }),
+      );
+    }
+  });
+
+  it('skips translation lookups for English', async () => {
+    const { service, translationService } = build();
+
+    await service.getKnowledge('u1', 'HEALTH');
+
+    expect(translationService.resolveMany).not.toHaveBeenCalled();
   });
 
   it('counts every available quest for the bars, not just current levels', async () => {
@@ -203,6 +278,39 @@ describe('LearningProgressService', () => {
     expect(diet.quests[0].items).toHaveLength(2);
   });
 
+  it('localizes dimension names, quests and item titles', async () => {
+    const { service } = build();
+
+    const diet = await service.getDimension('u1', 'DIET_CHANGES', 'de');
+
+    expect(diet).toMatchObject({
+      dimensionName: 'Ernährung',
+      quests: [
+        {
+          name: 'Essen loggen',
+          description: null,
+          items: [{ title: 'Mahlzeit loggen' }, { title: 'Why?' }],
+        },
+      ],
+    });
+  });
+
+  it('localizes the dimension list without looking up item titles', async () => {
+    const { service, translationService } = build();
+
+    const [diet, waste] = await service.listDimensions('u1', 'de');
+
+    expect(diet.dimensionName).toBe('Ernährung');
+    expect(diet.quests[0].name).toBe('Essen loggen');
+    expect(waste).toMatchObject({
+      dimensionName: 'Waste',
+      quests: [{ name: 'Save leftovers' }],
+    });
+    expect(
+      translationService.resolveMany.mock.calls.map(([type]) => type).sort(),
+    ).toEqual(['Dimension', 'Quest']);
+  });
+
   it('404s for a dimension the user has no level in', async () => {
     const { service } = build();
 
@@ -215,7 +323,12 @@ describe('LearningProgressService', () => {
 describe('LearningProgressService.getCurrentQuest', () => {
   function buildCurrent(currentQuest: unknown) {
     const prisma = {
-      user: { findUnique: jest.fn().mockResolvedValue({ currentQuest }) },
+      // Cloned because localizing mutates the quest in place.
+      user: {
+        findUnique: jest
+          .fn()
+          .mockResolvedValue({ currentQuest: structuredClone(currentQuest) }),
+      },
       questProgress: { findUnique: jest.fn().mockResolvedValue(null) },
       missionProgress: {
         findMany: jest.fn().mockResolvedValue([
@@ -237,11 +350,14 @@ describe('LearningProgressService.getCurrentQuest', () => {
         findMany: jest.fn().mockResolvedValue([{ foodFact: { code: 'FF.1' } }]),
       },
       mission: {
-        findMany: jest
-          .fn()
-          .mockResolvedValue([
-            { code: 'M.1', title: 'Log a meal', ...flags(true, true, false) },
-          ]),
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'm1',
+            code: 'M.1',
+            title: 'Log a meal',
+            ...flags(true, true, false),
+          },
+        ]),
       },
       challenge: {
         findMany: jest
@@ -251,24 +367,31 @@ describe('LearningProgressService.getCurrentQuest', () => {
           ]),
       },
       quiz: {
-        findMany: jest
-          .fn()
-          .mockResolvedValue([
-            { code: 'Q.1', question: 'Why?', ...flags(true, false, false) },
-          ]),
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'qz1',
+            code: 'Q.1',
+            title: 'Why?',
+            ...flags(true, false, false),
+          },
+        ]),
       },
       foodFact: {
-        findMany: jest
-          .fn()
-          .mockResolvedValue([
-            { code: 'FF.1', body: 'Fact', ...flags(false, false, true) },
-          ]),
+        findMany: jest.fn().mockResolvedValue([
+          {
+            id: 'ff1',
+            code: 'FF.1',
+            title: 'Fact',
+            ...flags(false, false, true),
+          },
+        ]),
       },
       microLearning: { findMany: jest.fn().mockResolvedValue([]) },
     };
     const service = new LearningProgressService(
       prisma as unknown as PrismaService,
       {} as DimensionLevelService,
+      mockTranslationService() as unknown as TranslationService,
     );
     return { service, prisma };
   }
@@ -366,6 +489,20 @@ describe('LearningProgressService.getCurrentQuest', () => {
         },
       ],
     });
+  });
+
+  it('localizes the quest name and item titles', async () => {
+    const { service } = buildCurrent(quest);
+
+    const current = await service.getCurrentQuest('u1', 'de');
+
+    expect(current?.name).toBe('Essen loggen');
+    expect(current?.items.map((i) => i.title)).toEqual([
+      'Mahlzeit loggen',
+      'Try it',
+      'Fact',
+      'Why?',
+    ]);
   });
 
   it('keeps a rewarded quest complete', async () => {

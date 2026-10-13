@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "locale": "sl"
+  },
+  "questions": {
+    "weeklyMeatConsumption": {
+      "text": "Koliko obrokov z mesom običajno pojeste na teden?",
+      "options": {
+        "ZERO_TO_FOUR": "0–4 obroke na teden",
+        "FIVE_TO_NINE": "5–9 obrokov na teden",
+        "TEN_TO_FOURTEEN": "10–14 obrokov na teden",
+        "FIFTEEN_PLUS": "15+ obrokov na teden"
+      }
+    },
+    "weeklyBeefConsumption": {
+      "text": "Kako pogosto uživate govedino?",
+      "options": {
+        "NEVER": "Nikoli",
+        "LESS_THAN_ONCE_PER_WEEK": "Manj kot enkrat na teden",
+        "ONE_TO_TWO_TIMES_PER_WEEK": "1–2-krat na teden",
+        "THREE_PLUS_TIMES_PER_WEEK": "3+ krat na teden"
+      }
+    },
+    "weeklyLegumeConsumption": {
+      "text": "Kako pogosto jeste stročnice (fižol, lečo, čičeriko, grah)?",
+      "options": {
+        "NEVER": "Nikoli",
+        "LESS_THAN_ONCE_PER_WEEK": "Manj kot enkrat na teden",
+        "ONCE_PER_WEEK": "Enkrat na teden",
+        "SEVERAL_TIMES_PER_WEEK": "Večkrat na teden",
+        "DAILY": "Vsak dan"
+      }
+    },
+    "checksCountryOfOrigin": {
+      "text": "Kako pogosto preverite državo porekla živil?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Skoraj vedno"
+      }
+    },
+    "choosesSeasonalProduce": {
+      "text": "Kako pogosto namerno izberete sezonsko sadje in zelenjavo?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Občasno",
+        "SOMETIMES": "Približno v polovici primerov",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Skoraj vedno"
+      }
+    },
+    "considersSustainabilityInfo": {
+      "text": "Kako pogosto pred nakupom hrane upoštevate informacije o vplivu na okolje ali trajnostnosti?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Skoraj vedno"
+      }
+    },
+    "readsIngredientLists": {
+      "text": "Kako pogosto pred nakupom pakiranih živil preberete seznam sestavin?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Skoraj vedno"
+      }
+    },
+    "sustainabilityLabelFamiliarity": {
+      "text": "Kako dobro poznate oznake in navedbe, povezane s trajnostnostjo?",
+      "options": {
+        "NOT_FAMILIAR": "Ne poznam jih",
+        "SLIGHTLY_FAMILIAR": "Malo jih poznam",
+        "MODERATELY_FAMILIAR": "Srednje dobro jih poznam",
+        "FAMILIAR": "Dobro jih poznam",
+        "VERY_FAMILIAR": "Zelo dobro jih poznam"
+      }
+    },
+    "productionMethodsInfluence": {
+      "text": "Kako pogosto načini pridelave vplivajo na vaše nakupne odločitve?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Skoraj vedno"
+      }
+    },
+    "weeklyReusableOrRefill": {
+      "text": "Kako pogosto uporabljate posode za večkratno uporabo ali kupujete izdelke za ponovno polnjenje?",
+      "options": {
+        "ZERO_TO_TWO": "0–2 dejanji na teden",
+        "THREE_TO_SIX": "3–6 dejanj na teden",
+        "SEVEN_TO_NINE": "7–9 dejanj na teden",
+        "TEN_PLUS": "10+ dejanj na teden"
+      }
+    },
+    "checksPackagingDisposal": {
+      "text": "Kako pogosto preverite navodila za recikliranje, ponovno uporabo ali odstranjevanje na embalaži?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Skoraj vedno"
+      }
+    },
+    "weeklyFoodWaste": {
+      "text": "Kako pogosto zavržete užitno hrano?",
+      "options": {
+        "ZERO": "Nikoli",
+        "ONE_TO_TWO": "1–2-krat na teden",
+        "THREE_TO_FOUR": "3–4-krat na teden",
+        "FIVE_PLUS": "5+ krat na teden"
+      }
+    },
+    "plansMealsBeforeShopping": {
+      "text": "Kako pogosto pred nakupovanjem načrtujete obroke?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Vedno"
+      }
+    },
+    "usesLeftovers": {
+      "text": "Kako pogosto ostanke hrane namerno porabite za drug obrok?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Vedno"
+      }
+    },
+    "weeklyUpfConsumption": {
+      "text": "Kako pogosto uživate visoko predelana živila, kot so pakirani prigrizki, sladkane pijače, pripravljeni obroki ali predelani mesni izdelki?",
+      "options": {
+        "ZERO_TO_THREE": "0–3-krat na teden",
+        "FOUR_TO_NINE": "4–9-krat na teden",
+        "TEN_TO_FOURTEEN": "10–14-krat na teden",
+        "FIFTEEN_PLUS": "15+ krat na teden"
+      }
+    },
+    "wholeGrainFrequency": {
+      "text": "Kako pogosto izberete polnozrnata živila?",
+      "options": {
+        "NEVER": "Nikoli",
+        "RARELY": "Redko",
+        "SOMETIMES": "Včasih",
+        "OFTEN": "Pogosto",
+        "ALWAYS": "Vsak dan"
+      }
+    },
+    "dailyFruitVegServings": {
+      "text": "Koliko porcij sadja in zelenjave običajno zaužijete na dan?",
+      "options": {
+        "LESS_THAN_ONE": "Manj kot 1 porcija na dan",
+        "ONE_TO_TWO": "1–2 porciji na dan",
+        "THREE_TO_FOUR": "3–4 porcije na dan",
+        "FIVE_PLUS": "5+ porcij na dan"
+      }
+    }
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "locale": "de"
+  },
+  "questions": {
+    "weeklyMeatConsumption": {
+      "text": "Wie viele Mahlzeiten mit Fleisch isst du normalerweise pro Woche?",
+      "options": {
+        "ZERO_TO_FOUR": "0–4 Mahlzeiten pro Woche",
+        "FIVE_TO_NINE": "5–9 Mahlzeiten pro Woche",
+        "TEN_TO_FOURTEEN": "10–14 Mahlzeiten pro Woche",
+        "FIFTEEN_PLUS": "15+ Mahlzeiten pro Woche"
+      }
+    },
+    "weeklyBeefConsumption": {
+      "text": "Wie oft isst du Rindfleisch?",
+      "options": {
+        "NEVER": "Nie",
+        "LESS_THAN_ONCE_PER_WEEK": "Weniger als einmal pro Woche",
+        "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 Mal pro Woche",
+        "THREE_PLUS_TIMES_PER_WEEK": "3+ Mal pro Woche"
+      }
+    },
+    "weeklyLegumeConsumption": {
+      "text": "Wie oft isst du Hülsenfrüchte (Bohnen, Linsen, Kichererbsen, Erbsen)?",
+      "options": {
+        "NEVER": "Nie",
+        "LESS_THAN_ONCE_PER_WEEK": "Weniger als einmal pro Woche",
+        "ONCE_PER_WEEK": "Einmal pro Woche",
+        "SEVERAL_TIMES_PER_WEEK": "Mehrmals pro Woche",
+        "DAILY": "Täglich"
+      }
+    },
+    "checksCountryOfOrigin": {
+      "text": "Wie oft prüfst du das Herkunftsland von Lebensmitteln?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Fast immer"
+      }
+    },
+    "choosesSeasonalProduce": {
+      "text": "Wie oft wählst du bewusst saisonales Obst und Gemüse?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Gelegentlich",
+        "SOMETIMES": "Etwa jedes zweite Mal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Fast immer"
+      }
+    },
+    "considersSustainabilityInfo": {
+      "text": "Wie oft berücksichtigst du vor dem Kauf von Lebensmitteln Informationen zu Umwelt oder Nachhaltigkeit?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Fast immer"
+      }
+    },
+    "readsIngredientLists": {
+      "text": "Wie oft liest du vor dem Kauf verpackter Lebensmittel die Zutatenliste?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Fast immer"
+      }
+    },
+    "sustainabilityLabelFamiliarity": {
+      "text": "Wie vertraut bist du mit Siegeln und Angaben zur Nachhaltigkeit?",
+      "options": {
+        "NOT_FAMILIAR": "Nicht vertraut",
+        "SLIGHTLY_FAMILIAR": "Wenig vertraut",
+        "MODERATELY_FAMILIAR": "Mäßig vertraut",
+        "FAMILIAR": "Vertraut",
+        "VERY_FAMILIAR": "Sehr vertraut"
+      }
+    },
+    "productionMethodsInfluence": {
+      "text": "Wie oft beeinflussen Produktionsmethoden deine Kaufentscheidungen?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Fast immer"
+      }
+    },
+    "weeklyReusableOrRefill": {
+      "text": "Wie oft nutzt du Mehrwegbehälter oder kaufst Nachfüllprodukte?",
+      "options": {
+        "ZERO_TO_TWO": "0–2 Mal pro Woche",
+        "THREE_TO_SIX": "3–6 Mal pro Woche",
+        "SEVEN_TO_NINE": "7–9 Mal pro Woche",
+        "TEN_PLUS": "10+ Mal pro Woche"
+      }
+    },
+    "checksPackagingDisposal": {
+      "text": "Wie oft prüfst du die Hinweise zu Recycling, Wiederverwendung oder Entsorgung auf Verpackungen?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Fast immer"
+      }
+    },
+    "weeklyFoodWaste": {
+      "text": "Wie oft wirfst du noch essbare Lebensmittel weg?",
+      "options": {
+        "ZERO": "Nie",
+        "ONE_TO_TWO": "1–2 Mal pro Woche",
+        "THREE_TO_FOUR": "3–4 Mal pro Woche",
+        "FIVE_PLUS": "5+ Mal pro Woche"
+      }
+    },
+    "plansMealsBeforeShopping": {
+      "text": "Wie oft planst du deine Mahlzeiten vor dem Einkaufen?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Immer"
+      }
+    },
+    "usesLeftovers": {
+      "text": "Wie oft verwendest du Reste bewusst für eine weitere Mahlzeit?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Immer"
+      }
+    },
+    "weeklyUpfConsumption": {
+      "text": "Wie oft isst oder trinkst du hochverarbeitete Lebensmittel wie abgepackte Snacks, zuckerhaltige Getränke, Fertiggerichte oder verarbeitete Fleischprodukte?",
+      "options": {
+        "ZERO_TO_THREE": "0–3 Mal pro Woche",
+        "FOUR_TO_NINE": "4–9 Mal pro Woche",
+        "TEN_TO_FOURTEEN": "10–14 Mal pro Woche",
+        "FIFTEEN_PLUS": "15+ Mal pro Woche"
+      }
+    },
+    "wholeGrainFrequency": {
+      "text": "Wie oft wählst du Vollkornprodukte?",
+      "options": {
+        "NEVER": "Nie",
+        "RARELY": "Selten",
+        "SOMETIMES": "Manchmal",
+        "OFTEN": "Oft",
+        "ALWAYS": "Täglich"
+      }
+    },
+    "dailyFruitVegServings": {
+      "text": "Wie viele Portionen Obst und Gemüse isst du normalerweise pro Tag?",
+      "options": {
+        "LESS_THAN_ONE": "Weniger als 1 Portion pro Tag",
+        "ONE_TO_TWO": "1–2 Portionen pro Tag",
+        "THREE_TO_FOUR": "3–4 Portionen pro Tag",
+        "FIVE_PLUS": "5+ Portionen pro Tag"
+      }
+    }
+  }
+}

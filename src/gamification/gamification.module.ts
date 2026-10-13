@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
 import { EventsModule } from '../events/events.module';
+import { TranslationsModule } from '../translations/translations.module';
 import { GamificationWalletService } from './services/gamification-wallet.service';
 import { CompletionRewardService } from './services/completion-reward.service';
 import { COMPLETION_REWARD_AWARDER } from './completion-reward.types';
@@ -14,7 +15,7 @@ import { DimensionLevelService } from './services/dimension-level.service';
 import { LearningProgressService } from './services/learning-progress.service';
 
 @Module({
-  imports: [DatabaseModule, EventsModule],
+  imports: [DatabaseModule, EventsModule, TranslationsModule],
   providers: [
     GamificationWalletService,
     CompletionRewardService,

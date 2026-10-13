@@ -11,7 +11,7 @@ export class ContentItemProgressDto {
 
   @ApiProperty({
     description:
-      'Mission/challenge title, quiz question or food fact text (English)',
+      'Title of the mission, challenge, quiz or food fact, in `lang`',
   })
   title!: string;
 

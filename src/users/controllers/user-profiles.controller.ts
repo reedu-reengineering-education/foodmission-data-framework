@@ -20,6 +20,7 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { UserProfilesService } from '../services/user-profiles.service';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
@@ -50,6 +51,9 @@ import {
   OnboardingSurveyDto,
   OnboardingSurveyResultDto,
 } from '../../gamification/dto/onboarding-survey.dto';
+import { SurveyQueryDto } from '../../surveys/dto/survey-query.dto';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   RecordWheelImpactDto,
   RecordWheelImpactResultDto,
@@ -186,8 +190,9 @@ export class UserProfilesController {
   @ApiOkResponse({ type: [DimensionProgressDto] })
   async getMyDimensions(
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<DimensionProgressDto[]> {
-    return this.learningProgressService.listDimensions(userId);
+    return this.learningProgressService.listDimensions(userId, query.lang);
   }
 
   @Get('me/gamification/dimensions/:code')
@@ -201,8 +206,9 @@ export class UserProfilesController {
   async getMyDimension(
     @CurrentUser('id') userId: string,
     @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<DimensionProgressDto> {
-    return this.learningProgressService.getDimension(userId, code);
+    return this.learningProgressService.getDimension(userId, code, query.lang);
   }
 
   @Get('me/gamification/current-quest')
@@ -218,8 +224,9 @@ export class UserProfilesController {
   @ApiOkResponse({ type: CurrentQuestDto })
   async getMyCurrentQuest(
     @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<CurrentQuestDto | null> {
-    return this.learningProgressService.getCurrentQuest(userId);
+    return this.learningProgressService.getCurrentQuest(userId, query.lang);
   }
 
   @Get('me/gamification/knowledge-progress')
@@ -251,6 +258,7 @@ export class UserProfilesController {
   async getMyKnowledgeBar(
     @CurrentUser('id') userId: string,
     @Param('kind') kind: string,
+    @Query() query: LearningLangQueryDto,
   ): Promise<KnowledgeProgressDto> {
     if (!(KNOWLEDGE_KINDS as string[]).includes(kind)) {
       throw new BadRequestException(
@@ -260,6 +268,7 @@ export class UserProfilesController {
     return this.learningProgressService.getKnowledge(
       userId,
       kind as KnowledgeKind,
+      query.lang,
     );
   }
 
@@ -273,10 +282,18 @@ export class UserProfilesController {
       'each). Answers map 1:1 to preferences.onboardingSurvey / the fields ' +
       'submitted via POST of this same route.',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated question texts and option labels. Defaults to ${DEFAULT_LOCALE}.`,
+  })
   @ApiOkResponse({ type: OnboardingSurveyDto })
-  getOnboardingSurvey(): OnboardingSurveyDto {
+  getOnboardingSurvey(@Query() query: SurveyQueryDto): OnboardingSurveyDto {
     return {
-      questions: [...this.onboardingSurveyService.getSurveyQuestions()],
+      questions: [
+        ...this.onboardingSurveyService.getSurveyQuestions(query.lang),
+      ],
     };
   }
 

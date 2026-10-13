@@ -330,7 +330,7 @@ per target locale, grouped into a sheet per content category.
 
 | Sheets | Content | Source file |
 | --- | --- | --- |
-| `ui-catalog`, `ui-common`, `ui-surveys` | App/API strings | `src/i18n/<locale>/<namespace>.json` |
+| `ui-catalog`, `ui-common`, `ui-surveys`, `ui-onboarding-survey` | App/API strings | `src/i18n/<locale>/<namespace>.json` |
 | `survey-meta`, `survey-questions` | Survey titles/descriptions, question texts | `prisma/seeds/data/surveys/translations/<locale>.json` |
 | `catalog-dimensions`, `catalog-topics`, `catalog-food-facts`, `catalog-quizzes`, `catalog-missions`, `catalog-challenges`, `catalog-quests`, `catalog-micro-learnings` | Learning catalog content | `prisma/seeds/data/learning/translations/<locale>.json` |
 | `food-groups`, `food-names` | NEVO food data | `prisma/seeds/data/nevo/nevo_translations.csv` |
