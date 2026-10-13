@@ -3,6 +3,8 @@ import {
   DerivableMealItem,
   deriveMealFlags,
   mergeDerivedFlags,
+  refreshDraftFlags,
+  sourcesForReviewedFlags,
 } from './derive-meal-flags';
 
 const nevo = (
@@ -185,5 +187,67 @@ describe('mergeDerivedFlags', () => {
       [EventType.MEAL_MEAT_FREE]: 'both',
       [EventType.MEAL_LEGUME_CONSUMED]: 'derived',
     });
+  });
+});
+
+describe('sourcesForReviewedFlags', () => {
+  it('marks kept proposals both, additions user, and drops removed ones', () => {
+    const sources = sourcesForReviewedFlags(
+      [EventType.MEAL_VEGAN, EventType.MEAL_LOCAL_PRODUCE],
+      [EventType.MEAL_VEGAN, EventType.MEAL_LEGUME_CONSUMED],
+    );
+
+    expect(Object.fromEntries(sources)).toEqual({
+      [EventType.MEAL_VEGAN]: 'both',
+      // Implied by the kept MEAL_VEGAN.
+      [EventType.MEAL_MEAT_FREE]: 'both',
+      [EventType.MEAL_LOCAL_PRODUCE]: 'user',
+    });
+  });
+});
+
+describe('refreshDraftFlags', () => {
+  it('removes proposals that no longer apply and adds new ones', () => {
+    // Was vegan lentils; chicken was added to the meal.
+    expect(
+      refreshDraftFlags(
+        [
+          EventType.MEAL_VEGAN,
+          EventType.MEAL_LEGUME_CONSUMED,
+          EventType.MEAL_LOCAL_PRODUCE,
+        ],
+        [EventType.MEAL_VEGAN, EventType.MEAL_LEGUME_CONSUMED],
+        [EventType.MEAL_MEAT_CONSUMED, EventType.MEAL_LEGUME_CONSUMED],
+      ),
+    ).toEqual([
+      EventType.MEAL_LEGUME_CONSUMED,
+      EventType.MEAL_LOCAL_PRODUCE,
+      EventType.MEAL_MEAT_CONSUMED,
+    ]);
+  });
+
+  it("keeps the user's decisions on unchanged proposals", () => {
+    // The user removed the legume proposal; it is still derived.
+    expect(
+      refreshDraftFlags(
+        [EventType.MEAL_VEGAN],
+        [EventType.MEAL_VEGAN, EventType.MEAL_LEGUME_CONSUMED],
+        [
+          EventType.MEAL_VEGAN,
+          EventType.MEAL_LEGUME_CONSUMED,
+          EventType.MEAL_ANCIENT_GRAIN,
+        ],
+      ),
+    ).toEqual([EventType.MEAL_VEGAN, EventType.MEAL_ANCIENT_GRAIN]);
+  });
+
+  it('drops a new proposal that contradicts a user flag', () => {
+    expect(
+      refreshDraftFlags(
+        [EventType.MEAL_VEGAN],
+        [],
+        [EventType.MEAL_MEAT_CONSUMED],
+      ),
+    ).toEqual([EventType.MEAL_VEGAN]);
   });
 });

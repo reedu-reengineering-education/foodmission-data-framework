@@ -1,17 +1,22 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { MealLogsRepository } from '../repositories/meal-logs.repository';
 import { MealsRepository } from '../../meals/repositories/meals.repository';
 import { MealItemRepository } from '../../meals/meal-items/repositories/meal-items.repository';
 import { OffMongoProductRepository } from '../../food-products/repositories/off-mongo-product.repository';
-import { CreateMealLogDto } from '../dto/create-meal-log.dto';
+import { CreateMealLogDto, MealLogFactsDto } from '../dto/create-meal-log.dto';
 import { UpdateMealLogDto } from '../dto/update-meal-log.dto';
 import {
   MealLogResponseDto,
   MultipleMealLogResponseDto,
 } from '../dto/meal-log-response.dto';
 import { QueryMealLogDto } from '../dto/query-meal-log.dto';
-import { MealLog, Prisma } from '@prisma/client';
+import { MealLog, MealLogStatus, Prisma } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
 import {
@@ -33,6 +38,8 @@ import {
   deriveMealFlags,
   FlagSource,
   mergeDerivedFlags,
+  refreshDraftFlags,
+  sourcesForReviewedFlags,
 } from '../derive-meal-flags';
 import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 import { wheelActionsForMealLog } from '../../gamification/meal-log-wheel-actions.config';
@@ -98,61 +105,159 @@ export class MealLogsService {
     createMealLogDto: CreateMealLogDto,
     userId: string,
   ): Promise<MealLogResponseDto> {
-    const clientFlags = createMealLogDto.flags ?? [];
-    const swaps = createMealLogDto.swaps ?? [];
+    const { draft = false, ...dto } = createMealLogDto;
+    const clientFlags = dto.flags ?? [];
+    const swaps = dto.swaps ?? [];
 
-    // A log has to say *what* was eaten: a linked meal, diet flags, or a swap.
-    if (
-      !createMealLogDto.mealId &&
-      clientFlags.length === 0 &&
-      swaps.length === 0
-    ) {
-      throw new BadRequestException(
-        'Provide mealId, at least one diet flag in flags, or at least one swap in swaps',
-      );
+    this.assertLoggable(dto.mealId, clientFlags, swaps);
+    if (dto.mealId) {
+      await this.getOwnedMealOrThrow(dto.mealId, userId);
     }
 
-    const conflicts = conflictingFlags(clientFlags);
-    if (conflicts.length > 0) {
-      throw new BadRequestException(
-        `Flag ${EventType.MEAL_MEAT_CONSUMED} conflicts with ${conflicts.join(', ')}`,
-      );
-    }
-
-    // Validate meal exists and belongs to user
-    if (createMealLogDto.mealId) {
-      await this.getOwnedMealOrThrow(createMealLogDto.mealId, userId);
-    }
-
-    const { flags, sources } = mergeDerivedFlags(
-      clientFlags,
-      createMealLogDto.mealId
-        ? await this.deriveFlagsForMeal(createMealLogDto.mealId)
-        : [],
-    );
+    const derived = dto.mealId ? await this.deriveFlagsForMeal(dto.mealId) : [];
+    const { flags, sources } = mergeDerivedFlags(clientFlags, derived);
 
     let mealLog;
     try {
       mealLog = await this.mealLogRepository.create({
-        ...createMealLogDto,
+        ...dto,
         userId,
         flags,
         swaps,
-        mealFromPantry: createMealLogDto.mealFromPantry ?? false,
-        timestamp: createMealLogDto.timestamp
-          ? new Date(createMealLogDto.timestamp)
-          : undefined,
+        status: draft ? MealLogStatus.DRAFT : MealLogStatus.CONFIRMED,
+        derivedFlags: derived,
+        mealFromPantry: dto.mealFromPantry ?? false,
+        timestamp: dto.timestamp ? new Date(dto.timestamp) : undefined,
       });
     } catch (error) {
       throw handlePrismaError(error, 'create meal log', 'MealLog');
     }
 
-    // Events are dated at the meal, not the request, so a catch-up log of
-    // past days lands on those days (dayBucket, rule windows) on the ledger.
-    const loggedAt = this.resolveLoggedAt(
-      mealLog.timestamp,
-      createMealLogDto.timestamp,
+    // A draft counts toward nothing until it is confirmed.
+    if (draft) {
+      return this.toResponse(mealLog);
+    }
+
+    await this.recordConfirmed(
+      mealLog,
+      flags,
+      swaps,
+      sources,
+      {
+        ...(dto.mealId !== undefined ? { mealId: dto.mealId } : {}),
+        typeOfMeal: dto.typeOfMeal,
+        ...(clientFlags.length > 0 ? { flags: clientFlags } : {}),
+        ...(swaps.length > 0 ? { swaps } : {}),
+        ...(dto.timestamp !== undefined ? { timestamp: dto.timestamp } : {}),
+        ...(dto.mealFromPantry !== undefined
+          ? { mealFromPantry: dto.mealFromPantry }
+          : {}),
+        ...(dto.eatenOut !== undefined ? { eatenOut: dto.eatenOut } : {}),
+      },
+      dto.timestamp,
     );
+
+    return this.toResponse(mealLog);
+  }
+
+  /**
+   * Submits a staged log: applies the reviewed flags/swaps, flips it to
+   * CONFIRMED and records its events, dated at the meal like a direct create.
+   * Confirming an already confirmed log returns it unchanged.
+   */
+  async confirm(
+    id: string,
+    facts: MealLogFactsDto,
+    userId: string,
+  ): Promise<MealLogResponseDto> {
+    const mealLog = await this.getOwnedMealLogOrThrow(id, userId);
+    if (mealLog.status === MealLogStatus.CONFIRMED) {
+      return this.toResponse(mealLog);
+    }
+
+    const flags = facts.flags ?? (mealLog.flags as MealFlagEventType[]);
+    const swaps = facts.swaps ?? (mealLog.swaps as MealSwapEventType[]);
+    this.assertLoggable(mealLog.mealId, flags, swaps);
+
+    let flipped: boolean;
+    try {
+      flipped = await this.mealLogRepository.confirmDraft(id, new Date(), {
+        flags,
+        swaps,
+      });
+    } catch (error) {
+      throw handlePrismaError(error, 'confirm meal log', 'MealLog');
+    }
+    const confirmed = await this.mealLogRepository.findById(id);
+    if (!confirmed) {
+      throw new NotFoundException('Meal log not found');
+    }
+    // A concurrent confirm got there first and records the events.
+    if (!flipped) {
+      return this.toResponse(confirmed);
+    }
+
+    await this.recordConfirmed(
+      confirmed,
+      flags,
+      swaps,
+      sourcesForReviewedFlags(
+        flags,
+        confirmed.derivedFlags as MealFlagEventType[],
+      ),
+      {
+        ...(confirmed.mealId ? { mealId: confirmed.mealId } : {}),
+        typeOfMeal: confirmed.typeOfMeal,
+        ...(flags.length > 0 ? { flags } : {}),
+        ...(swaps.length > 0 ? { swaps } : {}),
+        timestamp: confirmed.timestamp.toISOString(),
+        mealFromPantry: confirmed.mealFromPantry,
+        eatenOut: confirmed.eatenOut,
+        reviewed: true,
+      },
+    );
+
+    return this.toResponse(confirmed);
+  }
+
+  /**
+   * A log has to say *what* was eaten (a linked meal, a flag or a swap), and
+   * its flags must not contradict each other.
+   */
+  private assertLoggable(
+    mealId: string | null | undefined,
+    flags: readonly MealFlagEventType[],
+    swaps: readonly MealSwapEventType[],
+  ): void {
+    if (!mealId && flags.length === 0 && swaps.length === 0) {
+      throw new BadRequestException(
+        'Provide mealId, at least one diet flag in flags, or at least one swap in swaps',
+      );
+    }
+
+    const conflicts = conflictingFlags([...flags]);
+    if (conflicts.length > 0) {
+      throw new BadRequestException(
+        `Flag ${EventType.MEAL_MEAT_CONSUMED} conflicts with ${conflicts.join(', ')}`,
+      );
+    }
+  }
+
+  /**
+   * Records what a confirmed log counts toward: MEAL_LOGGED, one fact per flag
+   * and swap, and the wheel impacts. Events are dated at the meal, not the
+   * request, so a catch-up log of past days lands on those days (dayBucket,
+   * rule windows) on the ledger.
+   */
+  private async recordConfirmed(
+    mealLog: MealLog,
+    flags: MealFlagEventType[],
+    swaps: MealSwapEventType[],
+    sources: ReadonlyMap<EventTypeValue, FlagSource>,
+    body: Record<string, unknown>,
+    inputTimestamp?: string,
+  ): Promise<void> {
+    const loggedAt = this.resolveLoggedAt(mealLog.timestamp, inputTimestamp);
     const mealDayBucket = toDayBucket(loggedAt);
 
     // Best-effort: the meal log is already persisted, so a failure recording
@@ -160,7 +265,7 @@ export class MealLogsService {
     // a call that already succeeded, creating a duplicate meal log).
     try {
       await this.userEventService.record({
-        userId,
+        userId: mealLog.userId,
         eventType: EventType.MEAL_LOGGED,
         source: EventSource.MEAL_LOG,
         metadata: {
@@ -168,23 +273,7 @@ export class MealLogsService {
           mealId: mealLog.mealId,
           mealDayBucket,
           source: EventSource.API,
-          body: {
-            ...(createMealLogDto.mealId !== undefined
-              ? { mealId: createMealLogDto.mealId }
-              : {}),
-            typeOfMeal: createMealLogDto.typeOfMeal,
-            ...(clientFlags.length > 0 ? { flags: clientFlags } : {}),
-            ...(swaps.length > 0 ? { swaps } : {}),
-            ...(createMealLogDto.timestamp !== undefined
-              ? { timestamp: createMealLogDto.timestamp }
-              : {}),
-            ...(createMealLogDto.mealFromPantry !== undefined
-              ? { mealFromPantry: createMealLogDto.mealFromPantry }
-              : {}),
-            ...(createMealLogDto.eatenOut !== undefined
-              ? { eatenOut: createMealLogDto.eatenOut }
-              : {}),
-          },
+          body,
         },
         idempotencyKey: `meal-logged:${mealLog.id}`,
         createdAt: loggedAt,
@@ -196,14 +285,20 @@ export class MealLogsService {
       );
     }
 
-    await this.recordFlagEvents(mealLog, flags, sources, swaps,loggedAt, mealDayBucket);
+    await this.recordFlagEvents(
+      mealLog,
+      flags,
+      sources,
+      swaps,
+      loggedAt,
+      mealDayBucket,
+    );
     await this.recordWheelImpacts(mealLog, flags, swaps);
-
-    return this.toResponse(mealLog);
   }
 
   /**
-   * Diet flags implied by the meal's items (NEVO foods and OFF products). OFF
+   * Diet flags implied by the meal's items and, for a meal based on a recipe,
+   * the recipe's ingredients (NEVO foods and OFF products). OFF
    * tags are read from the OFF Mongo copy because imported `FoodProduct` rows
    * don't keep them; the lookup is best-effort and falls back to stored data.
    * Any failure here logs and yields no derived flags rather than failing the
@@ -212,8 +307,21 @@ export class MealLogsService {
   private async deriveFlagsForMeal(
     mealId: string,
   ): Promise<MealFlagEventType[]> {
+    return (await this.tryDeriveFlagsForMeal(mealId)) ?? [];
+  }
+
+  /** Like deriveFlagsForMeal, but `null` on a failure instead of `[]`. */
+  private async tryDeriveFlagsForMeal(
+    mealId: string,
+  ): Promise<MealFlagEventType[] | null> {
     try {
-      const items = await this.mealItemRepository.findByMealId(mealId);
+      // A meal based on a recipe is made of its own items plus the recipe's
+      // ingredients (which aren't copied into meal items).
+      const [mealItems, recipeIngredients] = await Promise.all([
+        this.mealItemRepository.findByMealId(mealId),
+        this.mealItemRepository.findRecipeIngredientFoodsByMealId(mealId),
+      ]);
+      const items = [...mealItems, ...recipeIngredients];
       const barcodes = [
         ...new Set(
           items
@@ -229,7 +337,7 @@ export class MealLogsService {
         `Failed to derive meal flags for meal ${mealId}`,
         error instanceof Error ? error.stack : error,
       );
-      return [];
+      return null;
     }
   }
 
@@ -335,11 +443,13 @@ export class MealLogsService {
       typeOfMeal,
       mealFromPantry,
       eatenOut,
+      status = MealLogStatus.CONFIRMED,
     } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.MealLogWhereInput = {
       userId,
+      status,
       ...(typeOfMeal ? { typeOfMeal } : {}),
       ...(mealFromPantry !== undefined ? { mealFromPantry } : {}),
       ...(eatenOut !== undefined ? { eatenOut } : {}),
@@ -380,7 +490,49 @@ export class MealLogsService {
 
   async findOne(id: string, userId: string): Promise<MealLogResponseDto> {
     const ownedMealLog = await this.getOwnedMealLogOrThrow(id, userId);
-    return this.toResponse(ownedMealLog);
+    return this.toResponse(await this.refreshDraftProposals(ownedMealLog));
+  }
+
+  /**
+   * The meal's items may have changed since a draft was created, so a fetched
+   * draft is derived again and its proposals updated (see refreshDraftFlags).
+   * Confirmed logs and quick logs are returned as they are. Best-effort: on a
+   * failure the stored draft is returned.
+   */
+  private async refreshDraftProposals(mealLog: MealLog): Promise<MealLog> {
+    if (mealLog.status !== MealLogStatus.DRAFT || !mealLog.mealId) {
+      return mealLog;
+    }
+
+    const oldDerived = mealLog.derivedFlags as MealFlagEventType[];
+    // A failed derivation must not read as "no proposals any more".
+    const derived = await this.tryDeriveFlagsForMeal(mealLog.mealId);
+    if (!derived) {
+      return mealLog;
+    }
+    const unchanged =
+      derived.length === oldDerived.length &&
+      derived.every((flag) => oldDerived.includes(flag));
+    if (unchanged) {
+      return mealLog;
+    }
+
+    try {
+      return await this.mealLogRepository.update(mealLog.id, {
+        flags: refreshDraftFlags(
+          mealLog.flags as MealFlagEventType[],
+          oldDerived,
+          derived,
+        ),
+        derivedFlags: derived,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to refresh derived flags for draft meal log ${mealLog.id}`,
+        error instanceof Error ? error.stack : error,
+      );
+      return mealLog;
+    }
   }
 
   async update(
@@ -389,21 +541,51 @@ export class MealLogsService {
     userId: string,
   ): Promise<MealLogResponseDto> {
     const mealLog = await this.getOwnedMealLogOrThrow(id, userId);
+    const { flags: newFlags, swaps: newSwaps, ...fields } = updateMealLogDto;
+    const isDraft = mealLog.status === MealLogStatus.DRAFT;
 
-    if (updateMealLogDto.mealId && updateMealLogDto.mealId !== mealLog.mealId) {
-      await this.getOwnedMealOrThrow(updateMealLogDto.mealId, userId);
+    // On a confirmed log `flags` and `swaps` recorded events, and that ledger
+    // is append-only, so what a log claims and what was counted stay the same
+    // thing. Only a draft (nothing recorded yet) can change them.
+    if (!isDraft && (newFlags !== undefined || newSwaps !== undefined)) {
+      throw new BadRequestException(
+        'flags and swaps can only be changed on a DRAFT meal log',
+      );
     }
 
-    // `flags` and `swaps` are not updatable (see UpdateMealLogDto): the events
-    // they recorded on create are an append-only ledger, so what a log claims
-    // and what was counted stay the same thing.
+    const mealChanged = !!fields.mealId && fields.mealId !== mealLog.mealId;
+    if (mealChanged) {
+      await this.getOwnedMealOrThrow(fields.mealId!, userId);
+    }
+
+    let facts: {
+      flags?: MealFlagEventType[];
+      swaps?: MealSwapEventType[];
+      derivedFlags?: MealFlagEventType[];
+    } = {};
+    if (isDraft) {
+      const oldDerived = mealLog.derivedFlags as MealFlagEventType[];
+      let flags = newFlags ?? (mealLog.flags as MealFlagEventType[]);
+      let derivedFlags = oldDerived;
+      if (mealChanged) {
+        derivedFlags = await this.deriveFlagsForMeal(fields.mealId!);
+        // Keep what the user added, swap the old meal's proposals for the
+        // new meal's — unless the request names the flags itself.
+        if (newFlags === undefined) {
+          const userAdded = flags.filter((flag) => !oldDerived.includes(flag));
+          flags = mergeDerivedFlags(userAdded, derivedFlags).flags;
+        }
+      }
+      const swaps = newSwaps ?? (mealLog.swaps as MealSwapEventType[]);
+      this.assertLoggable(fields.mealId ?? mealLog.mealId, flags, swaps);
+      facts = { flags, swaps, derivedFlags };
+    }
 
     try {
       const updated = await this.mealLogRepository.update(id, {
-        ...updateMealLogDto,
-        timestamp: updateMealLogDto.timestamp
-          ? new Date(updateMealLogDto.timestamp)
-          : undefined,
+        ...fields,
+        ...facts,
+        timestamp: fields.timestamp ? new Date(fields.timestamp) : undefined,
       });
 
       return this.toResponse(updated);

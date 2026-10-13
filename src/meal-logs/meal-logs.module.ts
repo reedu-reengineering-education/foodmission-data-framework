@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MealLogsController } from './controllers/meal-logs.controller';
 import { MealLogsService } from './services/meal-logs.service';
+import { MealLogDraftCleanupScheduler } from './services/meal-log-draft-cleanup.scheduler';
 import { MealLogsRepository } from './repositories/meal-logs.repository';
 import { DatabaseModule } from '../database/database.module';
 import { CommonModule } from '../common/common.module';
@@ -22,6 +23,7 @@ import { OffMongoProductRepository } from '../food-products/repositories/off-mon
   controllers: [MealLogsController],
   providers: [
     MealLogsService,
+    MealLogDraftCleanupScheduler,
     MealLogsRepository,
     UsersRepository,
     MealItemRepository,

@@ -31,9 +31,17 @@ describe('UpdateMealLogDto', () => {
     },
   );
 
-  it('rejects flags and swaps, so an edit cannot diverge from the event ledger', async () => {
-    // Matches the global pipe in main.ts, which is what strips/refuses
-    // properties the DTO does not declare.
+  // Whether they may change (drafts only) is checked by the service.
+  it('accepts flags and swaps', async () => {
+    expect(
+      await validate_({
+        flags: [EventType.MEAL_VEGAN],
+        swaps: [EventType.SWAP_BEEF_TO_LEGUMES],
+      }),
+    ).toHaveLength(0);
+  });
+
+  it('rejects an unknown flag', async () => {
     const pipe = new ValidationPipe({
       transform: true,
       whitelist: true,
@@ -42,10 +50,7 @@ describe('UpdateMealLogDto', () => {
 
     await expect(
       pipe.transform(
-        {
-          flags: [EventType.MEAL_VEGAN],
-          swaps: [EventType.SWAP_BEEF_TO_LEGUMES],
-        },
+        { flags: ['NOT_A_FLAG'] },
         { type: 'body', metatype: UpdateMealLogDto },
       ),
     ).rejects.toThrow(BadRequestException);
