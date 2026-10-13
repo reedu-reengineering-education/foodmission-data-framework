@@ -65,22 +65,63 @@ export function rejectUnknownIdentifiers(rule: RuleDefinition): RuleDefinition {
   return rule;
 }
 
+const whereValueSchema = Joi.alternatives().try(
+  Joi.string().min(1).max(256),
+  Joi.number(),
+  Joi.boolean(),
+);
+
+/** Metadata constraints; an array value means "any of these". */
+export const whereSchema = Joi.object()
+  .pattern(
+    Joi.string().min(1).max(128),
+    Joi.alternatives().try(
+      whereValueSchema,
+      Joi.array().items(whereValueSchema).min(1),
+    ),
+  )
+  .min(1);
+
+/** See RuleGroupBy in rule-evaluator.ts. */
+export const groupBySchema = Joi.object({
+  key: Joi.string().min(1).max(128).required(),
+  minDistinct: Joi.number().integer().min(1).required(),
+  of: Joi.string().min(1).max(128),
+  values: Joi.array().items(Joi.string().min(1).max(64)).min(1),
+  require: Joi.array()
+    .items(Joi.string().valid(...EVENT_TYPE_VALUES))
+    .min(1),
+})
+  // `require` names event types; `of` counts metadata values instead.
+  .oxor('of', 'require')
+  // An allow-list only filters metadata values.
+  .with('values', 'of');
+
+/**
+ * Joi `custom` hook for a counter: `groupBy.require` may only name event
+ * types the counter matches, or no bucket could ever qualify.
+ */
+export function rejectUnmatchedRequire(counter: RuleCounter): RuleCounter {
+  const matched = new Set(counter.event ? [counter.event] : counter.anyOf);
+  const unmatched = (counter.groupBy?.require ?? []).filter(
+    (type) => !matched.has(type),
+  );
+  if (unmatched.length > 0) {
+    throw new Error(
+      `groupBy.require names events the counter does not match: ${unmatched.join(', ')}`,
+    );
+  }
+  return counter;
+}
+
 const counterSchema = Joi.object({
   event: Joi.string().valid(...EVENT_TYPE_VALUES),
   anyOf: Joi.array()
     .items(Joi.string().valid(...EVENT_TYPE_VALUES))
     .min(1),
   distinctBy: Joi.string().min(1).max(128),
-  where: Joi.object()
-    .pattern(
-      Joi.string().min(1).max(128),
-      Joi.alternatives().try(
-        Joi.string().min(1).max(256),
-        Joi.number(),
-        Joi.boolean(),
-      ),
-    )
-    .min(1),
+  groupBy: groupBySchema,
+  where: whereSchema,
   window: Joi.object({
     type: Joi.string()
       .valid(...COUNTER_WINDOW_TYPES)
@@ -90,6 +131,8 @@ const counterSchema = Joi.object({
   }),
 })
   .xor('event', 'anyOf')
+  .oxor('distinctBy', 'groupBy')
+  .custom(rejectUnmatchedRequire)
   .required();
 
 const ruleSchema = Joi.object({
