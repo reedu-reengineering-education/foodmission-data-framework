@@ -18,6 +18,7 @@ When a log has a `mealId`, the server also derives flags from the meal's items: 
 | `NUTRITION_HIGH_FIBRE_MEAL` | any item | `fiber` ≥ 6 g per 100 g (EU "high fibre") | `fiber_100g` ≥ 6 g |
 | `NUTRITION_WHOLEGRAIN_CHOSEN` | any item | a fixed list of NEVO codes: wholemeal and rye breads, oats, porridge, muesli, brown rice, wholemeal pasta/couscous/wraps, bulgur, whole barley, millet, buckwheat, quinoa, whole spelt/barley flakes, wholemeal flours | a category or label naming whole grain / wholemeal / whole wheat (`en:whole-grain-pastas`, `en:wholemeal-breads`, label `en:whole-grain`), or `en:oat-flakes`, `en:mueslis`, `en:brown-rices`, `en:bulgur`, `en:quinoa`, … |
 | `NUTRITION_HEALTHY_FAT_CHOSEN` | any item | oily fish (≥ 1 g omega-3 per 100 g), or a vegetarian oil, nut, seed, avocado/olive or nut/seed spread with ≥ 10 g fat per 100 g and mono- + polyunsaturated ≥ 2 × saturated | oily fish categories, or a plant fat category (oils, nuts, seeds, avocados, olives, margarines) with fat ≥ 10 g and (fat − saturated) ≥ 2 × saturated; without fat values the category decides |
+| `NUTRITION_FRUIT_VEG_SERVING_ADDED` | any item | food group `Vegetables` or `Fruits` (potatoes, juices, soups and mixed dishes are other groups). The portion isn't checked: any amount counts | `en:fruits` / `en:vegetables` or a narrower fresh, frozen, canned or dried variant, unless the product is also potatoes, crisps, a juice, a fruit soda, jam or a preserve |
 
 ### Per-food count events
 
@@ -127,9 +128,8 @@ Detection never blocks a meal log. If loading the items or querying Mongo fails,
 | `MEAL_ALTERNATIVE_STAPLE` | not defined yet |
 | `MEAL_SUSTAINABLE_PLATE` | not defined yet |
 | `NUTRITION_SALT_FREE_TABLE` | it's a behaviour (no salt added at the table), not something the food data shows |
-| `NUTRITION_RAINBOW_COLOURS_LOGGED` | NEVO and OFF have no colour data, and the rule (M.A6.1) isn't defined |
+| `NUTRITION_RAINBOW_COLOURS_LOGGED` | NEVO and OFF have no colour data; sent via `POST /events` with `metadata.colours` (M.A6.1) |
 | `NUTRITION_ADDED_SUGAR_AVOIDED` | possible, not built yet: NEVO `addedSugars` ≈ 0, or no sugar among the first three OFF ingredients |
-| `NUTRITION_FRUIT_VEG_SERVING_ADDED` | possible, not built yet: a fruit/veg item of ≥ 80 g or ≥ 1 piece; "extra" serving can't be known |
 
 ## Code
 

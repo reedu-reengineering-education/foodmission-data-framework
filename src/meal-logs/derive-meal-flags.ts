@@ -17,6 +17,7 @@ import { conflictingFlags, eventsForFlags } from './meal-log-events';
 import {
   ANCIENT_GRAIN_NEVO_CODES,
   isHighFibre,
+  isNevoFruitOrVegetable,
   isNevoPlantFood,
   NevoFood,
   nevoHealthyFat,
@@ -59,6 +60,7 @@ export interface ItemFacts {
   highFibre: boolean;
   wholegrain: boolean;
   healthyFat: boolean;
+  fruitVeg: boolean;
   /** `GenericFood.id` when the item is a NEVO plant food (plant diversity). */
   plantFoodId: string | null;
 }
@@ -74,6 +76,7 @@ const UNKNOWN_ITEM: ItemFacts = {
   highFibre: false,
   wholegrain: false,
   healthyFat: false,
+  fruitVeg: false,
   plantFoodId: null,
 };
 
@@ -99,6 +102,7 @@ export function itemFacts(
       highFibre: isHighFibre(food.fiber),
       wholegrain: WHOLEGRAIN_NEVO_CODES.has(food.nevoCode),
       healthyFat: nevoHealthyFat(food),
+      fruitVeg: isNevoFruitOrVegetable(food),
       plantFoodId: isNevoPlantFood(food) ? food.id : null,
     };
   }
@@ -138,6 +142,7 @@ export function itemFacts(
     highFibre: isHighFibre(nutriments.fiber),
     wholegrain: isWholegrainProduct([...categories, ...labels]),
     healthyFat: offHealthyFat(kinds, isVegetarian, nutriments),
+    fruitVeg: kinds.fruitVeg,
     plantFoodId: null,
   };
 }
@@ -201,7 +206,7 @@ const NOTHING_DERIVED: DerivedMeal = {
 /**
  * Meal flags and per-food facts implied by a meal's items. "Any" flags (meat,
  * legume, ancient grain, certified, protein, high fibre, wholegrain, healthy
- * fat) need one item; meat-free and vegan need every item to be known
+ * fat, fruit/veg) need one item; meat-free and vegan need every item to be known
  * vegetarian / vegan, so one unknown item blocks them. No items, nothing.
  */
 export function deriveMeal(
@@ -246,6 +251,10 @@ export function deriveMeal(
   }
   if (any((f) => f.healthyFat)) {
     derived.add(EventType.NUTRITION_HEALTHY_FAT_CHOSEN);
+  }
+  // Any fruit or vegetable; the portion isn't checked.
+  if (any((f) => f.fruitVeg)) {
+    derived.add(EventType.NUTRITION_FRUIT_VEG_SERVING_ADDED);
   }
 
   return {

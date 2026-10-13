@@ -322,6 +322,50 @@ describe('deriveMeal: nutrition facts', () => {
   });
 });
 
+describe('deriveMeal: fruit and vegetables', () => {
+  const FRUIT_VEG = EventType.NUTRITION_FRUIT_VEG_SERVING_ADDED;
+
+  it('flags a meal with any NEVO vegetable or fruit', () => {
+    expect(
+      deriveMealFlags([
+        nevo(),
+        nevo({ foodGroup: 'Vegetables', foodName: 'Spinach raw' }),
+      ]),
+    ).toContain(FRUIT_VEG);
+    expect(
+      deriveMealFlags([nevo({ foodGroup: 'Fruits', foodName: 'Apple' })]),
+    ).toContain(FRUIT_VEG);
+  });
+
+  it('does not count potatoes, juice or pulses from NEVO', () => {
+    for (const foodGroup of [
+      'Potatoes and tubers',
+      'Non-alcoholic beverages',
+      'Legumes',
+    ]) {
+      expect(deriveMealFlags([nevo({ foodGroup })])).not.toContain(FRUIT_VEG);
+    }
+  });
+
+  it('flags an OFF fruit or vegetable but not juice, jam or crisps', () => {
+    expect(
+      deriveMealFlags([
+        off({ categories: ['en:plant-based-foods', 'en:vegetables'] }),
+      ]),
+    ).toContain(FRUIT_VEG);
+    expect(
+      deriveMealFlags([off({ categories: ['en:frozen-vegetables'] })]),
+    ).toContain(FRUIT_VEG);
+    for (const categories of [
+      ['en:fruits', 'en:fruit-juices'],
+      ['en:fruits-based-foods', 'en:jams'],
+      ['en:vegetables', 'en:potatoes', 'en:potato-crisps'],
+    ]) {
+      expect(deriveMealFlags([off({ categories })])).not.toContain(FRUIT_VEG);
+    }
+  });
+});
+
 describe('mergeDerivedFlags', () => {
   it('drops a derived flag that contradicts a client flag', () => {
     const { flags } = mergeDerivedFlags(

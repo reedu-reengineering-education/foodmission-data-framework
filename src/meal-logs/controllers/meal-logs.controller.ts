@@ -54,8 +54,9 @@ export class MealLogsController {
       'also derived from the meal items (NEVO foods and OpenFoodFacts products): ' +
       'MEAL_MEAT_CONSUMED, MEAL_MEAT_FREE, MEAL_VEGAN, MEAL_LEGUME_CONSUMED, ' +
       'MEAL_ANCIENT_GRAIN, MEAL_CERTIFIED_PRODUCT, NUTRITION_PROTEIN_INCLUDED, ' +
-      'NUTRITION_HIGH_FIBRE_MEAL, NUTRITION_WHOLEGRAIN_CHOSEN and ' +
-      'NUTRITION_HEALTHY_FAT_CHOSEN. It also records one ' +
+      'NUTRITION_HIGH_FIBRE_MEAL, NUTRITION_WHOLEGRAIN_CHOSEN, ' +
+      'NUTRITION_HEALTHY_FAT_CHOSEN and NUTRITION_FRUIT_VEG_SERVING_ADDED. ' +
+      'It also records one ' +
       'NUTRITION_PROTEIN_VARIETY_LOGGED per protein source and one ' +
       'NUTRITION_PLANT_DIVERSITY_COUNT per NEVO plant food. A derived flag ' +
       'that contradicts a reported one is dropped. With draft: true the log is ' +

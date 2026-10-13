@@ -57,6 +57,12 @@ const FAT_SOURCE_GROUPS: ReadonlySet<string> = new Set([
   'Fruits',
 ]);
 
+/**
+ * NEVO groups that are fruit or vegetables. Potatoes, juices (non-alcoholic
+ * drinks), soups and mixed dishes are separate groups, so they don't count.
+ */
+const FRUIT_VEG_GROUPS: ReadonlySet<string> = new Set(['Vegetables', 'Fruits']);
+
 /** Whole plant foods for plant diversity (fruit, veg, pulses, nuts, seeds). */
 const PLANT_GROUPS: ReadonlySet<string> = new Set([
   'Vegetables',
@@ -177,6 +183,11 @@ export function nevoHealthyFat(food: NevoFood): boolean {
  * hummus) and herbs and spices with fibre (so not stock, salt or seasoning
  * powders).
  */
+/** Whether a NEVO food is a fruit or vegetable (no portion size check). */
+export function isNevoFruitOrVegetable(food: NevoFood): boolean {
+  return FRUIT_VEG_GROUPS.has(food.foodGroup);
+}
+
 export function isNevoPlantFood(food: NevoFood): boolean {
   if (PLANT_GROUPS.has(food.foodGroup)) return true;
   if (WHOLEGRAIN_NEVO_CODES.has(food.nevoCode)) return true;

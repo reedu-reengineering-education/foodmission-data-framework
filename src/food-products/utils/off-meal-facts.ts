@@ -168,6 +168,39 @@ const FAT_SOURCE_CATEGORIES: ReadonlySet<string> = new Set([
   ...SEED_CATEGORIES,
 ]);
 
+/**
+ * Fruit and vegetables. OFF also tags a product with its parent categories, so
+ * `en:fruits` / `en:vegetables` already cover most; the rest are listed for
+ * products tagged only with a narrower one.
+ */
+const FRUIT_VEG_CATEGORIES: ReadonlySet<string> = new Set([
+  'en:fruits',
+  'en:fresh-fruits',
+  'en:frozen-fruits',
+  'en:canned-fruits',
+  'en:dried-fruits',
+  'en:vegetables',
+  'en:fresh-vegetables',
+  'en:frozen-vegetables',
+  'en:canned-vegetables',
+  'en:mixed-vegetables',
+  'en:leaf-vegetables',
+  'en:tomatoes',
+]);
+
+/** Products under a fruit/vegetable parent that don't count as eating one. */
+const NOT_FRUIT_VEG_CATEGORIES: ReadonlySet<string> = new Set([
+  'en:potatoes',
+  'en:potato-crisps',
+  'en:chips-and-fries',
+  'en:fruit-juices',
+  'en:vegetable-juices',
+  'en:fruit-based-beverages',
+  'en:fruit-sodas',
+  'en:jams',
+  'en:fruit-and-vegetable-preserves',
+]);
+
 /** Whole-grain staples OFF doesn't tag with a "whole-grain" name. */
 const WHOLEGRAIN_CATEGORIES: ReadonlySet<string> = new Set([
   'en:oat-flakes',
@@ -198,6 +231,7 @@ export interface OffCategoryFacts {
   meatSubstitute: boolean;
   fatSource: boolean;
   ancientGrain: boolean;
+  fruitVeg: boolean;
 }
 
 export function offCategoryFacts(
@@ -218,6 +252,7 @@ export function offCategoryFacts(
     meatSubstitute: has(MEAT_SUBSTITUTE_CATEGORIES),
     fatSource: has(FAT_SOURCE_CATEGORIES),
     ancientGrain: has(ANCIENT_GRAIN_CATEGORIES),
+    fruitVeg: has(FRUIT_VEG_CATEGORIES) && !has(NOT_FRUIT_VEG_CATEGORIES),
   };
 }
 
