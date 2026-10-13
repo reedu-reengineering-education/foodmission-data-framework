@@ -4,7 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { TranslationService } from '../../translations/services/translation.service';
 import {
-  CONTENT_TITLE_SOURCE,
+  CONTENT_ENTITY_TYPE,
   ContentItemDetails,
   ContentItemRef,
   contentItemKey,
@@ -335,16 +335,15 @@ export class LearningProgressService {
 
     await Promise.all(
       [...byType].map(async ([contentType, items]) => {
-        const { entityType, field } = CONTENT_TITLE_SOURCE[contentType];
         const translated = await this.translationService.resolveMany(
-          entityType,
+          CONTENT_ENTITY_TYPE[contentType],
           items.map((item) => item.id!),
           locale,
-          [field],
+          ['title'],
           {},
         );
         for (const item of items) {
-          item.title = translated[item.id!]?.[field] ?? item.title;
+          item.title = translated[item.id!]?.title ?? item.title;
         }
       }),
     );

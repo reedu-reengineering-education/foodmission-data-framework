@@ -237,22 +237,16 @@ const NO_DETAILS: ContentRowDetails = {
   foodWaste: false,
 };
 
-/**
- * Where findItemDetails takes each type's title from, as the translation
- * entity and field that localize it.
- */
-export const CONTENT_TITLE_SOURCE: Record<
+/** The translation entity type behind each quest content type. */
+export const CONTENT_ENTITY_TYPE: Record<
   QuestContentType,
-  { entityType: TranslatableEntityType; field: string }
+  TranslatableEntityType
 > = {
-  [QuestContentType.MISSION]: { entityType: 'Mission', field: 'title' },
-  [QuestContentType.CHALLENGE]: { entityType: 'Challenge', field: 'title' },
-  [QuestContentType.QUIZ]: { entityType: 'Quiz', field: 'question' },
-  [QuestContentType.FOOD_FACT]: { entityType: 'FoodFact', field: 'body' },
-  [QuestContentType.MICRO_LEARNING]: {
-    entityType: 'MicroLearning',
-    field: 'title',
-  },
+  [QuestContentType.MISSION]: 'Mission',
+  [QuestContentType.CHALLENGE]: 'Challenge',
+  [QuestContentType.QUIZ]: 'Quiz',
+  [QuestContentType.FOOD_FACT]: 'FoodFact',
+  [QuestContentType.MICRO_LEARNING]: 'MicroLearning',
 };
 
 /**
@@ -264,8 +258,10 @@ export async function findItemDetails(
   items: ContentItemRef[],
 ): Promise<Map<string, ContentItemDetails>> {
   const details = new Map<string, ContentItemDetails>();
-  const shared = {
+  const select = {
+    code: true,
     id: true,
+    title: true,
     health: true,
     foodChoice: true,
     foodWaste: true,
@@ -277,38 +273,19 @@ export async function findItemDetails(
       let rows: Array<{ code: string } & ContentRowDetails> = [];
       switch (contentType) {
         case QuestContentType.MISSION:
-          rows = await db.mission.findMany({
-            where,
-            select: { code: true, title: true, ...shared },
-          });
+          rows = await db.mission.findMany({ where, select });
           break;
         case QuestContentType.CHALLENGE:
-          rows = await db.challenge.findMany({
-            where,
-            select: { code: true, title: true, ...shared },
-          });
+          rows = await db.challenge.findMany({ where, select });
           break;
         case QuestContentType.QUIZ:
-          rows = (
-            await db.quiz.findMany({
-              where,
-              select: { code: true, question: true, ...shared },
-            })
-          ).map(({ question, ...rest }) => ({ ...rest, title: question }));
+          rows = await db.quiz.findMany({ where, select });
           break;
         case QuestContentType.FOOD_FACT:
-          rows = (
-            await db.foodFact.findMany({
-              where,
-              select: { code: true, body: true, ...shared },
-            })
-          ).map(({ body, ...rest }) => ({ ...rest, title: body }));
+          rows = await db.foodFact.findMany({ where, select });
           break;
         case QuestContentType.MICRO_LEARNING:
-          rows = await db.microLearning.findMany({
-            where,
-            select: { code: true, title: true, ...shared },
-          });
+          rows = await db.microLearning.findMany({ where, select });
           break;
       }
       for (const { code, ...rest } of rows) {

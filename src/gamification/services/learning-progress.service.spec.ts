@@ -92,7 +92,7 @@ function build() {
         {
           id: 'qz1',
           code: 'Q.1',
-          question: 'Why?',
+          title: 'Why?',
           ...flags(true, false, false),
         },
       ]),
@@ -102,7 +102,7 @@ function build() {
         {
           id: 'ff1',
           code: 'FF.1',
-          body: 'Fact',
+          title: 'Fact',
           ...flags(false, false, true),
         },
       ]),
@@ -191,9 +191,23 @@ describe('LearningProgressService', () => {
       'Quiz',
       ['qz1'],
       'de',
-      ['question'],
+      ['title'],
       {},
     );
+  });
+
+  it('reads quiz and food fact titles, not the question or body', async () => {
+    const { service, prisma } = build();
+
+    await service.getKnowledge('u1', 'HEALTH');
+
+    for (const model of [prisma.quiz, prisma.foodFact]) {
+      expect(model.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          select: expect.objectContaining({ title: true }),
+        }),
+      );
+    }
   });
 
   it('skips translation lookups for English', async () => {
@@ -357,7 +371,7 @@ describe('LearningProgressService.getCurrentQuest', () => {
           {
             id: 'qz1',
             code: 'Q.1',
-            question: 'Why?',
+            title: 'Why?',
             ...flags(true, false, false),
           },
         ]),
@@ -367,7 +381,7 @@ describe('LearningProgressService.getCurrentQuest', () => {
           {
             id: 'ff1',
             code: 'FF.1',
-            body: 'Fact',
+            title: 'Fact',
             ...flags(false, false, true),
           },
         ]),
