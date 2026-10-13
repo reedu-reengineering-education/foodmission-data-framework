@@ -14,6 +14,7 @@ describe('UsageAnalyticsService', () => {
       getTotals: jest.fn(),
       getBreakdown: jest.fn(),
       getWeeklyTrend: jest.fn(),
+      getWeeklyTrendBreakdown: jest.fn(),
     } as unknown as jest.Mocked<UsageAnalyticsRepository>;
     service = new UsageAnalyticsService(repository);
   });
@@ -65,6 +66,21 @@ describe('UsageAnalyticsService', () => {
 
     expect(result.stickiness).toEqual({ dauOverMau: null, wauOverMau: null });
   });
+
+  it('wraps the weekly trend breakdown with its dimension', async () => {
+    const rows = [
+      { weekStart: new Date('2026-10-05'), value: 'DE', activeUsers: 4 },
+    ];
+    repository.getWeeklyTrendBreakdown.mockResolvedValue(rows);
+
+    const result = await service.getWeeklyTrendBreakdown('country', 12);
+
+    expect(repository.getWeeklyTrendBreakdown).toHaveBeenCalledWith(
+      'country',
+      12,
+    );
+    expect(result).toEqual({ dimension: 'country', rows });
+  });
 });
 
 describe('UsageAnalyticsController', () => {
@@ -72,14 +88,17 @@ describe('UsageAnalyticsController', () => {
     const service = {
       getOverview: jest.fn(),
       getWeeklyTrend: jest.fn(),
+      getWeeklyTrendBreakdown: jest.fn(),
     } as unknown as jest.Mocked<UsageAnalyticsService>;
     const controller = new UsageAnalyticsController(service);
 
     await controller.getOverview(undefined);
     await controller.getTrend('26');
+    await controller.getTrendBreakdown('country', undefined);
 
     expect(service.getOverview).toHaveBeenCalledWith(7);
     expect(service.getWeeklyTrend).toHaveBeenCalledWith(26);
+    expect(service.getWeeklyTrendBreakdown).toHaveBeenCalledWith('country', 12);
     expect(() => parseBoundedInt('0', 'weeks', 12, 104)).toThrow(
       'Invalid weeks "0"',
     );

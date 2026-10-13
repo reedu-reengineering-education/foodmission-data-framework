@@ -4,6 +4,7 @@ import {
   UsageAnalyticsRepository,
   UsageBreakdownRow,
   UsageDimension,
+  UsageTrendBreakdownRow,
   UsageTrendRow,
 } from '../repositories/usage-analytics.repository';
 
@@ -26,6 +27,11 @@ export interface UsageBreakdownDto {
   dimension: UsageDimension;
   activeWindowDays: number;
   rows: UsageBreakdownRow[];
+}
+
+export interface UsageTrendBreakdownDto {
+  dimension: UsageDimension;
+  rows: UsageTrendBreakdownRow[];
 }
 
 function ratio(numerator: number, denominator: number): number | null {
@@ -81,5 +87,15 @@ export class UsageAnalyticsService {
 
   getWeeklyTrend(weeks: number): Promise<UsageTrendRow[]> {
     return this.repository.getWeeklyTrend(weeks);
+  }
+
+  async getWeeklyTrendBreakdown(
+    dimension: UsageDimension,
+    weeks: number,
+  ): Promise<UsageTrendBreakdownDto> {
+    return {
+      dimension,
+      rows: await this.repository.getWeeklyTrendBreakdown(dimension, weeks),
+    };
   }
 }

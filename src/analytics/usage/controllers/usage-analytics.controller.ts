@@ -138,4 +138,32 @@ export class UsageAnalyticsController {
       parseBoundedInt(weeks, 'weeks', DEFAULT_TREND_WEEKS, MAX_TREND_WEEKS),
     );
   }
+
+  @Get('trend/breakdown')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @Roles('admin')
+  @ApiOperation({
+    summary: 'Weekly active users by a single dimension (admin only)',
+    description:
+      'Same weeks and active definition as /trend, split by country, age group, gender or language. ' +
+      'Weeks or buckets without activity are omitted.',
+  })
+  @ApiQuery({ name: 'dim', required: true, enum: USAGE_DIMENSIONS })
+  @ApiQuery({
+    name: 'weeks',
+    required: false,
+    type: Number,
+    example: DEFAULT_TREND_WEEKS,
+  })
+  @ApiResponse({ status: 200, description: 'Weekly usage series by dimension' })
+  async getTrendBreakdown(
+    @Query('dim', new ParseEnumPipe(UsageDimensionEnum)) dim: UsageDimension,
+    @Query('weeks') weeks?: string,
+  ) {
+    return this.usageService.getWeeklyTrendBreakdown(
+      dim,
+      parseBoundedInt(weeks, 'weeks', DEFAULT_TREND_WEEKS, MAX_TREND_WEEKS),
+    );
+  }
 }

@@ -35,6 +35,12 @@ export interface UsageTrendRow {
   totalUsers: number;
 }
 
+export interface UsageTrendBreakdownRow {
+  weekStart: Date;
+  value: string;
+  activeUsers: number;
+}
+
 /** Bucket value for users that never filled in the dimension. */
 export const UNKNOWN_BUCKET = 'unknown';
 
@@ -49,6 +55,18 @@ const DIMENSION_SQL: Record<UsageDimension, Prisma.Sql> = {
   gender: Prisma.sql`u."gender"::text`,
   ageGroup: AGE_GROUP_SQL,
 };
+
+/** ISO weeks (Monday start, UTC) of the last `weeks` weeks, current one last. */
+function weeksCte(weeks: number): Prisma.Sql {
+  return Prisma.sql`
+    weeks AS (
+      SELECT generate_series(
+        date_trunc('week', ${NOW_UTC}) - make_interval(weeks => ${weeks - 1}::int),
+        date_trunc('week', ${NOW_UTC}),
+        INTERVAL '1 week'
+      ) AS "weekStart"
+    )`;
+}
 
 /**
  * Live usage queries straight off `users` / `user_events`. Unlike the
@@ -101,13 +119,7 @@ export class UsageAnalyticsRepository {
    */
   getWeeklyTrend(weeks: number): Promise<UsageTrendRow[]> {
     return this.prisma.$queryRaw<UsageTrendRow[]>`
-      WITH weeks AS (
-        SELECT generate_series(
-          date_trunc('week', ${NOW_UTC}) - make_interval(weeks => ${weeks - 1}::int),
-          date_trunc('week', ${NOW_UTC}),
-          INTERVAL '1 week'
-        ) AS "weekStart"
-      )
+      WITH ${weeksCte(weeks)}
       SELECT
         w."weekStart",
         (
@@ -129,5 +141,28 @@ export class UsageAnalyticsRepository {
         )::int AS "totalUsers"
       FROM weeks w
       ORDER BY w."weekStart" ASC`;
+  }
+
+  /**
+   * Weekly actives (same event-ledger definition as `getWeeklyTrend`) split
+   * by a user dimension. Weeks/buckets without activity are omitted.
+   */
+  getWeeklyTrendBreakdown(
+    dimension: UsageDimension,
+    weeks: number,
+  ): Promise<UsageTrendBreakdownRow[]> {
+    return this.prisma.$queryRaw<UsageTrendBreakdownRow[]>`
+      WITH ${weeksCte(weeks)}
+      SELECT
+        w."weekStart",
+        COALESCE(${DIMENSION_SQL[dimension]}, ${UNKNOWN_BUCKET}) AS "value",
+        COUNT(DISTINCT e."userId")::int AS "activeUsers"
+      FROM weeks w
+      JOIN user_events e
+        ON e."createdAt" >= w."weekStart"
+       AND e."createdAt" < w."weekStart" + INTERVAL '1 week'
+      JOIN users u ON u."id" = e."userId"
+      GROUP BY 1, 2
+      ORDER BY 1 ASC, 3 DESC, 2 ASC`;
   }
 }
