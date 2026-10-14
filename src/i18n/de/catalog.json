@@ -77,9 +77,7 @@
     "PESCATARIAN": "Pescetarisch",
     "GLUTEN_FREE": "Glutenfrei",
     "DAIRY_FREE": "Milchfrei",
-    "NUT_FREE": "Nussfrei",
-    "HALAL": "Halal",
-    "KOSHER": "Koscher"
+    "NUT_FREE": "Nussfrei"
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Keine genaue Angabe",

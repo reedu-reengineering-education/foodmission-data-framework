@@ -77,9 +77,7 @@
     "PESCATARIAN": "Peskariansko",
     "GLUTEN_FREE": "Brez glutena",
     "DAIRY_FREE": "Brez laktoze / mlečnih izdelkov",
-    "NUT_FREE": "Brez oreščkov",
-    "HALAL": "Halal",
-    "KOSHER": "Košer"
+    "NUT_FREE": "Brez oreščkov"
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Brez posebnega odgovora",

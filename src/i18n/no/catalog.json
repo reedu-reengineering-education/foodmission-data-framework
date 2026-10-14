@@ -77,9 +77,7 @@
     "PESCATARIAN": "Pescetarisk",
     "GLUTEN_FREE": "Glutenfri",
     "DAIRY_FREE": "Laktosefri / Melkefri",
-    "NUT_FREE": "Nøttefri",
-    "HALAL": "Halal",
-    "KOSHER": "Kosher"
+    "NUT_FREE": "Nøttefri"
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Ikke noe spesifikt svar",
