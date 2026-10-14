@@ -2,13 +2,13 @@
 
 `POST /meal-logs` accepts diet flags (`flags`, values of `MEAL_FLAG_EVENT_TYPES`). Each flag becomes a `MEAL_*` event that mission rules count.
 
-When a log has a `mealId`, the server also derives flags from the meal's items: NEVO foods (`GenericFood`) and OpenFoodFacts products (`FoodProduct`). Clients don't have to send flags the food data already shows. Logs without a `mealId` have no items, so their flags remain manual.
+When a log has a `mealId`, the server also derives flags from the meal's items: NEVO foods (`GenericFood`) and OpenFoodFacts products (`FoodProduct`). If the meal is based on a recipe (`Meal.recipeId`), the recipe's ingredients count as items too, since a meal made from a recipe doesn't copy them into meal items. An ingredient without a linked food is unknown, like an unlinked meal item. Clients don't have to send flags the food data already shows. Logs without a `mealId` have no items, so their flags remain manual.
 
 ## Flags set automatically
 
 | Flag | Rule | NEVO item | OFF item |
 |---|---|---|---|
-| `MEAL_MEAT_CONSUMED` | any item | `meatOrFish = true` | a meat, fish or seafood category: `en:meats`, `en:meats-and-their-products`, `en:prepared-meats`, `en:poultry`, `en:sausages`, `en:hams`, `en:fishes`, `en:seafood`, `en:crustaceans`, `en:meals-with-meat` / `-chicken` / `-fish`, `en:poultry-meals` |
+| `MEAL_MEAT_CONSUMED` | any item | `meatOrFish = true` | a meat, fish or seafood category: `en:meats`, `en:meats-and-their-products`, `en:prepared-meats`, `en:poultry`, `en:poultries`, `en:sausages`, `en:hams`, `en:fishes`, `en:fishes-and-their-products`, `en:seafood`, `en:crustaceans`, `en:meals-with-meat` / `-chicken` / `-fish`, `en:poultry-meals` |
 | `MEAL_MEAT_FREE` | every item, and no item is meat | `vegetarian = true` | vegetarian per `ingredients_analysis_tags` (`en:vegetarian`) or the `en:vegetarian` label. Uses the stored `isVegetarian` if the tags don't say. Unknown or "maybe" blocks the flag. |
 | `MEAL_VEGAN` | every item, and no item is meat | `vegan = true` | the same with `en:vegan` / `isVegan`. Unknown or "maybe" blocks the flag. |
 | `MEAL_LEGUME_CONSUMED` | any item | `legume = true` | a legume category: `en:legumes`, `en:pulses`, `en:beans`, `en:lentils`, `en:chickpeas`, `en:peas`, `en:green-beans`, `en:broad-beans`, `en:peanuts`, `en:peanut-butters`, `en:tofu`, `en:tempeh`, `en:hummus`, `en:falafels`, … Soy drinks, desserts, yoghurts and sauce don't count. |
@@ -68,15 +68,25 @@ Each flag event's metadata has a `flagSource`:
 | `derived` | derived from the meal items only |
 | `both` | sent by the client and also derived |
 
+## Staged logs (review before submitting)
+
+`POST /meal-logs` with `draft: true` runs the same detection but stores the log as `DRAFT` and records no events. The response has the merged `flags` and, in `derivedFlags`, everything the items suggested (including proposals dropped because they contradict a client flag), so the app can show them for review.
+
+- `GET /meal-logs/:id` derives a draft again, so changes to the meal's items since the draft was created show up: proposals that no longer apply are removed from `flags`, new ones are added (unless they contradict a user flag), and proposals the user already kept or removed stay that way. If deriving fails, the stored draft is returned. `POST /meal-logs/:id/confirm` does not derive again; it records the reviewed flags.
+- `PATCH /meal-logs/:id` can change `flags` and `swaps` while the log is a draft. Changing `mealId` derives again: user-added flags are kept, the old meal's proposals are replaced by the new meal's.
+- `POST /meal-logs/:id/confirm` (optional body `{ flags, swaps }` with the final lists) makes it `CONFIRMED` and records the events, dated at the meal's `timestamp`. A kept proposal is recorded with `flagSource: both`, a flag the user added with `user`; removed proposals are not recorded.
+- Drafts don't appear in `GET /meal-logs` unless `status=DRAFT` is asked for, and drafts not confirmed within 7 days are deleted.
+- Without `draft`, a log is submitted directly as before.
+
 ## Where the OFF data comes from
 
 Products imported via `POST /food-products/import/openfoodfacts/:barcode` are stored with only name, barcode and diet flags. Their categories, labels and ingredient-analysis tags are empty in Postgres.
 
 At log time, those three tag lists are therefore read from the OFF Mongo copy (`MONGODB_OFF_URL`). It's a single query for all of the meal's barcodes, projected to `categories_tags`, `labels_tags` and `ingredients_analysis_tags`.
 
-Fallback: if Mongo isn't configured, takes longer than 2 seconds, fails, or has no document for a barcode, the fields stored on `FoodProduct` are used. The live OFF HTTP API is never called at log time.
+Fallback: if Mongo isn't configured, takes longer than 2 seconds, fails, or has no document for a barcode, the fields stored on `FoodProduct` are used. When a Mongo document exists, its tag lists are used as they are, even if empty; only `isVegan` / `isVegetarian` still fill in from `FoodProduct`. The live OFF HTTP API is never called at log time.
 
-Detection never blocks a meal log. If loading the items or querying Mongo fails, the error is logged and the log is created with the client's flags only.
+Detection never blocks a meal log. A Mongo failure only switches to the stored fields (above). If loading the meal's items fails, the error is logged and the log is created with the client's flags only.
 
 ## Not derived
 
@@ -86,6 +96,8 @@ Detection never blocks a meal log. If loading the items or querying Mongo fails,
 | `MEAL_SEASONAL_PRODUCE` | neither NEVO nor OFF has seasonal data |
 | `MEAL_ALTERNATIVE_STAPLE` | not defined yet |
 | `MEAL_SUSTAINABLE_PLATE` | not defined yet |
+| `NUTRITION_*` (all) | not derived yet; NEVO/OFF nutrient data could cover protein, fibre, added sugar, fruit/vegetables and whole grain later |
+| `FOOD_WASTE_*` (all) | only the user knows what was left on the plate or which product was past its date |
 
 ## Code
 
@@ -95,7 +107,7 @@ Detection never blocks a meal log. If loading the items or querying Mongo fails,
 | `src/food-products/utils/off-meal-facts.ts` | OFF category lists (`offCategoryFacts`) and certification patterns (`isCertifiedLabel`) |
 | `src/food-products/utils/off-diet-flags.ts` | `parseOffDietFlags`: vegan and vegetarian from OFF tags |
 | `src/food-products/repositories/off-mongo-product.repository.ts` | `findMealFactsByBarcodes`: the Mongo lookup for several barcodes at once |
-| `src/meal-logs/services/meal-logs.service.ts` | `create` → `deriveFlagsForMeal` → `mergeDerivedFlags` → `recordFlagEvents` |
+| `src/meal-logs/services/meal-logs.service.ts` | `create` → `deriveFlagsForMeal` → `mergeDerivedFlags` → `recordConfirmed` (events); `confirm` → `sourcesForReviewedFlags` → `recordConfirmed` |
 
 ## Testing it by hand
 
