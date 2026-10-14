@@ -1,0 +1,540 @@
+{
+  "country": "NO",
+  "description": "Months (1-12) in which fruit, berries and vegetables come from Norwegian production. 'harvest' = high season / good availability; 'storage' = Norwegian crop from storage. Items with domestic=false are imported only. Items not listed are not covered by the source (no data), not necessarily imported.",
+  "source": "Transcribed from 'Sesongkalender for bær, frukt og grønnsaker' (Statsforvalteren i Vestfold og Telemark with Vestfold og Telemark Bondelag, 2021). The import-only list was added by FoodMission. The calendar states no reuse licence.",
+  "sourceLinks": [
+    {
+      "title": "Sesongkalender for frukt, bær, grønsaker og potet (Statsforvalteren i Vestfold og Telemark, 2021)",
+      "url": "https://www.statsforvalteren.no/vestfold-og-telemark/landbruk-og-mat/nyheter/2021/07/sesongkalender-for-frukt-bar-gronsaker-og-potet/"
+    },
+    {
+      "title": "Sesongkalender PDF (A2)",
+      "url": "https://files.nettsteder.regjeringen.no/wpuploads01/sites/407/2021/08/FYLK0002_kalender_A2.pdf"
+    }
+  ],
+  "lastReviewed": "2026-10-13",
+  "items": [
+    {
+      "id": "raspberry",
+      "nameNo": "Bringebær",
+      "nameEn": "Raspberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "strawberry",
+      "nameNo": "Jordbær",
+      "nameEn": "Strawberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "redcurrant",
+      "nameNo": "Rips",
+      "nameEn": "Redcurrant",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "gooseberry",
+      "nameNo": "Stikkelsbær",
+      "nameEn": "Gooseberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "blackcurrant",
+      "nameNo": "Solbær",
+      "nameEn": "Blackcurrant",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "apple",
+      "nameNo": "Epler",
+      "nameEn": "Apple",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1]
+    },
+    {
+      "id": "cherry-sweet",
+      "nameNo": "Moreller",
+      "nameEn": "Sweet cherry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "plum",
+      "nameNo": "Plommer",
+      "nameEn": "Plum",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9],
+      "storage": []
+    },
+    {
+      "id": "pear",
+      "nameNo": "Pærer",
+      "nameEn": "Pear",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [9, 10],
+      "storage": []
+    },
+    {
+      "id": "white-asparagus",
+      "nameNo": "Asparges",
+      "nameEn": "Asparagus",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6],
+      "storage": []
+    },
+    {
+      "id": "flat-leaf-parsley",
+      "nameNo": "Bladpersille",
+      "nameEn": "Flat-leaf parsley",
+      "type": "herb",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "cauliflower",
+      "nameNo": "Blomkål",
+      "nameEn": "Cauliflower",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "broccoli",
+      "nameNo": "Brokkoli",
+      "nameEn": "Broccoli",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "green-bean",
+      "nameNo": "Bønner",
+      "nameEn": "Green bean",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "pumpkin",
+      "nameNo": "Gresskar",
+      "nameEn": "Pumpkin",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11]
+    },
+    {
+      "id": "kale",
+      "nameNo": "Grønnkål",
+      "nameEn": "Kale",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12]
+    },
+    {
+      "id": "carrot",
+      "nameNo": "Gulrot",
+      "nameEn": "Carrot",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5, 6]
+    },
+    {
+      "id": "lettuce",
+      "nameNo": "Hjertesalat",
+      "nameEn": "Lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "white-cabbage",
+      "nameNo": "Hodekål",
+      "nameEn": "White cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": [11, 12, 1, 2, 3, 4]
+    },
+    {
+      "id": "iceberg-lettuce",
+      "nameNo": "Isbergsalat",
+      "nameEn": "Iceberg lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "jerusalem-artichoke",
+      "nameNo": "Jordskokk",
+      "nameEn": "Jerusalem artichoke",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12]
+    },
+    {
+      "id": "chinese-cabbage",
+      "nameNo": "Kinakål",
+      "nameEn": "Chinese cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": [11, 12]
+    },
+    {
+      "id": "swede",
+      "nameNo": "Kålrot",
+      "nameEn": "Swede",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5]
+    },
+    {
+      "id": "onion",
+      "nameNo": "Løk",
+      "nameEn": "Onion",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": [10, 11, 12, 1, 2, 3, 4, 5, 6]
+    },
+    {
+      "id": "sweetcorn",
+      "nameNo": "Mais",
+      "nameEn": "Sweetcorn",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "parsnip",
+      "nameNo": "Pastinakk",
+      "nameEn": "Parsnip",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4]
+    },
+    {
+      "id": "parsley",
+      "nameNo": "Persille",
+      "nameEn": "Parsley",
+      "type": "herb",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "parsley-root",
+      "nameNo": "Persillerot",
+      "nameEn": "Parsley root",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4]
+    },
+    {
+      "id": "potato",
+      "nameNo": "Potet",
+      "nameEn": "Potato",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5]
+    },
+    {
+      "id": "leek",
+      "nameNo": "Purre",
+      "nameEn": "Leek",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": [10, 11, 12, 1]
+    },
+    {
+      "id": "rhubarb",
+      "nameNo": "Rabarbra",
+      "nameEn": "Rhubarb",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6],
+      "storage": []
+    },
+    {
+      "id": "radish",
+      "nameNo": "Reddik",
+      "nameEn": "Radish",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "brussels-sprouts",
+      "nameNo": "Rosenkål",
+      "nameEn": "Brussels sprouts",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "rocket",
+      "nameNo": "Rukkola",
+      "nameEn": "Rocket",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "beetroot",
+      "nameNo": "Rødbeter",
+      "nameEn": "Beetroot",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5, 6]
+    },
+    {
+      "id": "red-cabbage",
+      "nameNo": "Rødkål",
+      "nameEn": "Red cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4]
+    },
+    {
+      "id": "celeriac",
+      "nameNo": "Sellerirot",
+      "nameEn": "Celeriac",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4]
+    },
+    {
+      "id": "spinach",
+      "nameNo": "Spinat",
+      "nameEn": "Spinach",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "zucchini",
+      "nameNo": "Squash",
+      "nameEn": "Courgette",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "celery",
+      "nameNo": "Stangselleri",
+      "nameEn": "Celery",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": [11]
+    },
+    {
+      "id": "sugar-snap-pea",
+      "nameNo": "Sukkererter",
+      "nameEn": "Sugar snap pea",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "spring-onion",
+      "nameNo": "Vårløk",
+      "nameEn": "Spring onion",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "avocado",
+      "nameNo": "Avokado",
+      "nameEn": "Avocado",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "banana",
+      "nameNo": "Banan",
+      "nameEn": "Banana",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "fig",
+      "nameNo": "Fiken",
+      "nameEn": "Fig",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "grapefruit",
+      "nameNo": "Grapefrukt",
+      "nameEn": "Grapefruit",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "kiwi",
+      "nameNo": "Kiwi",
+      "nameEn": "Kiwi",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lemon",
+      "nameNo": "Sitron",
+      "nameEn": "Lemon",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lime",
+      "nameNo": "Lime",
+      "nameEn": "Lime",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lychee",
+      "nameNo": "Litchi",
+      "nameEn": "Lychee",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "mandarin",
+      "nameNo": "Mandarin/Klementin",
+      "nameEn": "Mandarin",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "mango",
+      "nameNo": "Mango",
+      "nameEn": "Mango",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "orange",
+      "nameNo": "Appelsin",
+      "nameEn": "Orange",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "papaya",
+      "nameNo": "Papaya",
+      "nameEn": "Papaya",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "persimmon",
+      "nameNo": "Kaki",
+      "nameEn": "Persimmon",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pineapple",
+      "nameNo": "Ananas",
+      "nameEn": "Pineapple",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pomegranate",
+      "nameNo": "Granateple",
+      "nameEn": "Pomegranate",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pomelo",
+      "nameNo": "Pomelo",
+      "nameEn": "Pomelo",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    }
+  ]
+}

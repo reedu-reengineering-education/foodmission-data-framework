@@ -1,0 +1,528 @@
+{
+  "country": "SI",
+  "description": "Months (1-12) in which fruit, nuts and vegetables are available from Slovenian production. 'harvest' = fresh domestic supply (the source's 'obdobje ponudbe' / 'obdobje z močno ponudbo' bands for crops that are not stored); 'storage' = Slovenian crop sold from storage (cold-stored crops marked (H) in the source, stored apples, pears and nuts). Items with domestic=false are imported only. Items not listed are not covered by the source (no data), not necessarily imported.",
+  "source": "Transcribed from the seasonal calendars of the Ministry of Agriculture's 'Naša super hrana' portal: Tabela 1-3 'Sezonski koledar' (vegetables, fruit, apples) in the article 'Jesenska svežina', supplemented by the chart 'Dostopnost slovenskega sadja skozi leto' (peach, plum, redcurrant, apple and pear storage). Where the two charts disagree, the fresh months are their union. The harvest/storage split for stored crops is a FoodMission interpretation, as is main-crop potato beyond the source's early-potato row. The import-only list was added by FoodMission. No open licence: the portal's terms state that all content is the property of the Ministry of Agriculture and is protected by copyright.",
+  "sourceLinks": [
+    {
+      "title": "Jesenska svežina, with Tabela 1-3 'Sezonski koledar' (Naša super hrana, Ministrstvo za kmetijstvo)",
+      "url": "https://www.nasasuperhrana.si/clanek/jesenska-svezina/"
+    },
+    {
+      "title": "Tabela 1: Sezonski koledar za zelenjavo (image)",
+      "url": "https://www.nasasuperhrana.si/app/uploads/2024/07/tabela-1-510x484-1.png"
+    },
+    {
+      "title": "Tabela 2: Sezonski koledar za sadje, razen za jabolka (image)",
+      "url": "https://www.nasasuperhrana.si/app/uploads/2024/07/tabeal-2.png"
+    },
+    {
+      "title": "Tabela 3: Sezonski koledar za jabolka (image)",
+      "url": "https://www.nasasuperhrana.si/app/uploads/2024/07/tabela-3.png"
+    },
+    {
+      "title": "Uživajmo sezonsko slovensko sadje skozi celo leto (Naša super hrana)",
+      "url": "https://www.nasasuperhrana.si/clanek/uzivajmo-sezonsko-slovensko-sadje-skozi-celo-leto/"
+    },
+    {
+      "title": "Dostopnost slovenskega sadja skozi leto (image)",
+      "url": "https://www.nasasuperhrana.si/app/uploads/2024/01/Shema-dostopnost-slovenskega-sadja.png"
+    },
+    {
+      "title": "Slovenski krompir naj bo naša prva izbira (Naša super hrana)",
+      "url": "https://www.nasasuperhrana.si/clanek/slovenski-krompir-naj-bo-nasa-prva-izbira/"
+    },
+    {
+      "title": "Naša super hrana: Splošni pogoji (copyright terms)",
+      "url": "https://www.nasasuperhrana.si/pravni-dokumenti/nasasuperhrana-si/splosni-pogoji/"
+    }
+  ],
+  "lastReviewed": "2026-10-13",
+  "items": [
+    {
+      "id": "white-cabbage",
+      "nameSl": "Zelje",
+      "nameEn": "White cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10, 11],
+      "storage": [12, 1, 2, 3, 4]
+    },
+    {
+      "id": "sweet-pepper",
+      "nameSl": "Paprika",
+      "nameEn": "Sweet pepper",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "lettuce",
+      "nameSl": "Solata",
+      "nameEn": "Lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [3, 4, 5, 6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "endive",
+      "nameSl": "Endivija",
+      "nameEn": "Endive",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "radicchio",
+      "nameSl": "Radič",
+      "nameEn": "Radicchio",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [3, 4, 8, 9, 10, 11],
+      "storage": [12, 1, 2]
+    },
+    {
+      "id": "lambs-lettuce",
+      "nameSl": "Motovilec",
+      "nameEn": "Lamb's lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [1, 2, 3, 4, 9, 10, 11, 12],
+      "storage": []
+    },
+    {
+      "id": "chinese-cabbage",
+      "nameSl": "Kitajski kupus",
+      "nameEn": "Chinese cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10, 11],
+      "storage": [12, 1, 2, 3]
+    },
+    {
+      "id": "carrot",
+      "nameSl": "Korenček",
+      "nameEn": "Carrot",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10, 11, 12],
+      "storage": [1, 2, 3, 4]
+    },
+    {
+      "id": "cauliflower",
+      "nameSl": "Cvetača",
+      "nameEn": "Cauliflower",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "storage": []
+    },
+    {
+      "id": "aubergine",
+      "nameSl": "Jajčevci",
+      "nameEn": "Aubergine",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "leek",
+      "nameSl": "Por",
+      "nameEn": "Leek",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [1, 2, 3, 4, 8, 9, 10, 11, 12],
+      "storage": []
+    },
+    {
+      "id": "melon",
+      "nameSl": "Melona",
+      "nameEn": "Melon",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "watermelon",
+      "nameSl": "Lubenica",
+      "nameEn": "Watermelon",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "zucchini",
+      "nameSl": "Bučke",
+      "nameEn": "Courgette",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "white-asparagus",
+      "nameSl": "Šparglji",
+      "nameEn": "Asparagus",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6],
+      "storage": []
+    },
+    {
+      "id": "garlic",
+      "nameSl": "Česen",
+      "nameEn": "Garlic",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": [11, 12]
+    },
+    {
+      "id": "onion",
+      "nameSl": "Čebula",
+      "nameEn": "Onion",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": [10, 11, 12, 1, 2, 3]
+    },
+    {
+      "id": "spring-onion",
+      "nameSl": "Mlada čebula",
+      "nameEn": "Spring onion",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [2, 3, 4, 5, 6],
+      "storage": []
+    },
+    {
+      "id": "tomato",
+      "nameSl": "Paradižnik",
+      "nameEn": "Tomato",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "cucumber",
+      "nameSl": "Kumare",
+      "nameEn": "Cucumber",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "potato",
+      "nameSl": "Krompir",
+      "nameEn": "Potato",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6, 7, 8, 9, 10],
+      "storage": [11, 12, 1, 2, 3]
+    },
+    {
+      "id": "celeriac",
+      "nameSl": "Zelena",
+      "nameEn": "Celeriac",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10, 11],
+      "storage": [12, 1, 2, 3, 4]
+    },
+    {
+      "id": "broccoli",
+      "nameSl": "Brokoli",
+      "nameEn": "Broccoli",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "storage": []
+    },
+    {
+      "id": "rocket",
+      "nameSl": "Rukola",
+      "nameEn": "Rocket",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [1, 2, 3, 4, 9, 10, 11, 12],
+      "storage": []
+    },
+    {
+      "id": "radish",
+      "nameSl": "Mesečna redkvica",
+      "nameEn": "Radish",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "apple",
+      "nameSl": "Jabolka",
+      "nameEn": "Apple",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5, 6, 7]
+    },
+    {
+      "id": "pear",
+      "nameSl": "Hruške",
+      "nameEn": "Pear",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4]
+    },
+    {
+      "id": "peach-nectarine",
+      "nameSl": "Breskve",
+      "nameEn": "Peach/Nectarine",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "apricot",
+      "nameSl": "Marelice",
+      "nameEn": "Apricot",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "cherry-sweet",
+      "nameSl": "Češnje",
+      "nameEn": "Sweet cherry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [5, 6, 7],
+      "storage": []
+    },
+    {
+      "id": "plum",
+      "nameSl": "Slive",
+      "nameEn": "Plum",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9],
+      "storage": []
+    },
+    {
+      "id": "strawberry",
+      "nameSl": "Jagode",
+      "nameEn": "Strawberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [3, 4, 5, 6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "blueberry",
+      "nameSl": "Ameriške borovnice",
+      "nameEn": "Blueberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "raspberry",
+      "nameSl": "Maline",
+      "nameEn": "Raspberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "blackberry",
+      "nameSl": "Robide",
+      "nameEn": "Blackberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "redcurrant",
+      "nameSl": "Rdeči ribez",
+      "nameEn": "Redcurrant",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "walnut",
+      "nameSl": "Oreh",
+      "nameEn": "Walnut",
+      "type": "nut",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5, 6, 7]
+    },
+    {
+      "id": "hazelnut",
+      "nameSl": "Lešnik",
+      "nameEn": "Hazelnut",
+      "type": "nut",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5, 6, 7]
+    },
+    {
+      "id": "almond",
+      "nameSl": "Mandelj",
+      "nameEn": "Almond",
+      "type": "nut",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5, 6, 7]
+    },
+    {
+      "id": "chestnut",
+      "nameSl": "Kostanj",
+      "nameEn": "Chestnut",
+      "type": "nut",
+      "domestic": true,
+      "harvest": [10, 11],
+      "storage": []
+    },
+    {
+      "id": "persimmon",
+      "nameSl": "Kaki",
+      "nameEn": "Persimmon",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [10, 11, 12],
+      "storage": []
+    },
+    {
+      "id": "fig",
+      "nameSl": "Figa",
+      "nameEn": "Fig",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "avocado",
+      "nameSl": "Avokado",
+      "nameEn": "Avocado",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "banana",
+      "nameSl": "Banana",
+      "nameEn": "Banana",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "grapefruit",
+      "nameSl": "Grenivka",
+      "nameEn": "Grapefruit",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lemon",
+      "nameSl": "Limona",
+      "nameEn": "Lemon",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lime",
+      "nameSl": "Limeta",
+      "nameEn": "Lime",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lychee",
+      "nameSl": "Liči",
+      "nameEn": "Lychee",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "mandarin",
+      "nameSl": "Mandarina",
+      "nameEn": "Mandarin",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "mango",
+      "nameSl": "Mango",
+      "nameEn": "Mango",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "orange",
+      "nameSl": "Pomaranča",
+      "nameEn": "Orange",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "papaya",
+      "nameSl": "Papaja",
+      "nameEn": "Papaya",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pineapple",
+      "nameSl": "Ananas",
+      "nameEn": "Pineapple",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pomelo",
+      "nameSl": "Pomelo",
+      "nameEn": "Pomelo",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    }
+  ]
+}

@@ -1,0 +1,859 @@
+{
+  "country": "DE",
+  "description": "Months (1-12) in which fruit and vegetables come from German production. 'harvest' = fresh from the field or unheated/protected cultivation; 'storage' = domestic crop from storage. Items with domestic=false are imported only and are never in season locally.",
+  "source": "Compiled by FoodMission from German harvest calendars; cross-checked against the domestic-supply bands of the BZfE Saisonkalender (© BLE). No BZfE content is reproduced; obtain BLE permission before citing BZfE as the source.",
+  "sourceLinks": [
+    {
+      "title": "BZfE: Der Saisonkalender (Bundeszentrum für Ernährung, © BLE), used for cross-checking only",
+      "url": "https://www.bzfe.de/kueche-und-alltag/einkaufen/der-saisonkalender"
+    },
+    {
+      "title": "BZfE Saisonkalender chart (image)",
+      "url": "https://www.bzfe.de/fileadmin/user_upload/K%C3%BCche_und_Alltag/Einkaufen/Saisonkalender_Ansicht_Wasserzeichen.jpg"
+    }
+  ],
+  "lastReviewed": "2026-10-13",
+  "items": [
+    {
+      "id": "artichoke",
+      "nameDe": "Artischocke",
+      "nameEn": "Artichoke",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "aubergine",
+      "nameDe": "Aubergine",
+      "nameEn": "Aubergine",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "beetroot",
+      "nameDe": "Rote Bete",
+      "nameEn": "Beetroot",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": [11, 12, 1, 2, 3]
+    },
+    {
+      "id": "broad-bean",
+      "nameDe": "Dicke Bohnen",
+      "nameEn": "Broad bean",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7],
+      "storage": []
+    },
+    {
+      "id": "broccoli",
+      "nameDe": "Brokkoli",
+      "nameEn": "Broccoli",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "brussels-sprouts",
+      "nameDe": "Rosenkohl",
+      "nameEn": "Brussels sprouts",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10, 11, 12, 1, 2, 3],
+      "storage": []
+    },
+    {
+      "id": "carrot",
+      "nameDe": "Möhre",
+      "nameEn": "Carrot",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10, 11],
+      "storage": [12, 1, 2, 3, 4, 5]
+    },
+    {
+      "id": "cauliflower",
+      "nameDe": "Blumenkohl",
+      "nameEn": "Cauliflower",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "celeriac",
+      "nameDe": "Knollensellerie",
+      "nameEn": "Celeriac",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10, 11],
+      "storage": [12, 1, 2, 3, 4]
+    },
+    {
+      "id": "celery",
+      "nameDe": "Staudensellerie",
+      "nameEn": "Celery",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "chicory",
+      "nameDe": "Chicorée",
+      "nameEn": "Chicory",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [10, 11, 12, 1, 2, 3, 4],
+      "storage": []
+    },
+    {
+      "id": "chinese-cabbage",
+      "nameDe": "Chinakohl",
+      "nameEn": "Chinese cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10, 11],
+      "storage": [12, 1, 2]
+    },
+    {
+      "id": "cucumber",
+      "nameDe": "Salatgurke",
+      "nameEn": "Cucumber",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "endive",
+      "nameDe": "Endivie",
+      "nameEn": "Endive",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "fennel",
+      "nameDe": "Gemüsefenchel",
+      "nameEn": "Fennel",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "garlic",
+      "nameDe": "Knoblauch",
+      "nameEn": "Garlic",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": [9, 10, 11, 12, 1, 2, 3]
+    },
+    {
+      "id": "green-bean",
+      "nameDe": "Grüne Bohnen",
+      "nameEn": "Green bean",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "iceberg-lettuce",
+      "nameDe": "Eisbergsalat",
+      "nameEn": "Iceberg lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "jerusalem-artichoke",
+      "nameDe": "Topinambur",
+      "nameEn": "Jerusalem artichoke",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [10, 11, 12, 1, 2, 3],
+      "storage": []
+    },
+    {
+      "id": "kale",
+      "nameDe": "Grünkohl",
+      "nameEn": "Kale",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [10, 11, 12, 1, 2],
+      "storage": []
+    },
+    {
+      "id": "kohlrabi",
+      "nameDe": "Kohlrabi",
+      "nameEn": "Kohlrabi",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "lambs-lettuce",
+      "nameDe": "Feldsalat",
+      "nameEn": "Lamb's lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [10, 11, 12, 1, 2, 3, 4],
+      "storage": []
+    },
+    {
+      "id": "leek",
+      "nameDe": "Porree/Lauch",
+      "nameEn": "Leek",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4],
+      "storage": []
+    },
+    {
+      "id": "lettuce",
+      "nameDe": "Kopfsalat",
+      "nameEn": "Lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "lollo-lettuce",
+      "nameDe": "Lollo Rossa/Lollo Bionda",
+      "nameEn": "Lollo lettuce",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "mushroom",
+      "nameDe": "Champignon",
+      "nameEn": "Button mushroom",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "storage": [],
+      "note": "Indoor cultivation, available all year."
+    },
+    {
+      "id": "onion",
+      "nameDe": "Zwiebel",
+      "nameEn": "Onion",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": [10, 11, 12, 1, 2, 3, 4, 5]
+    },
+    {
+      "id": "parsley-root",
+      "nameDe": "Petersilienwurzel",
+      "nameEn": "Parsley root",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10, 11],
+      "storage": [12, 1, 2, 3]
+    },
+    {
+      "id": "parsnip",
+      "nameDe": "Pastinake",
+      "nameEn": "Parsnip",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [10, 11, 12, 1, 2, 3],
+      "storage": []
+    },
+    {
+      "id": "pea",
+      "nameDe": "Erbsen/Zuckererbsen",
+      "nameEn": "Pea",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "pointed-cabbage",
+      "nameDe": "Spitzkohl",
+      "nameEn": "Pointed cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "potato",
+      "nameDe": "Kartoffel",
+      "nameEn": "Potato",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": [11, 12, 1, 2, 3, 4, 5]
+    },
+    {
+      "id": "pumpkin",
+      "nameDe": "Kürbis",
+      "nameEn": "Pumpkin",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12]
+    },
+    {
+      "id": "radicchio",
+      "nameDe": "Radicchio",
+      "nameEn": "Radicchio",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "radish",
+      "nameDe": "Radieschen",
+      "nameEn": "Radish",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "red-cabbage",
+      "nameDe": "Rotkohl",
+      "nameEn": "Red cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10, 11],
+      "storage": [12, 1, 2, 3, 4, 5]
+    },
+    {
+      "id": "rhubarb",
+      "nameDe": "Rhabarber",
+      "nameEn": "Rhubarb",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6],
+      "storage": []
+    },
+    {
+      "id": "rocket",
+      "nameDe": "Rucola",
+      "nameEn": "Rocket",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "salsify",
+      "nameDe": "Schwarzwurzel",
+      "nameEn": "Black salsify",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [10, 11, 12, 1, 2, 3],
+      "storage": []
+    },
+    {
+      "id": "savoy-cabbage",
+      "nameDe": "Wirsing",
+      "nameEn": "Savoy cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10, 11, 12],
+      "storage": [1, 2, 3]
+    },
+    {
+      "id": "spinach",
+      "nameDe": "Spinat",
+      "nameEn": "Spinach",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [3, 4, 5, 6, 7, 8, 9, 10, 11],
+      "storage": []
+    },
+    {
+      "id": "spring-onion",
+      "nameDe": "Frühlingszwiebel",
+      "nameEn": "Spring onion",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "swede",
+      "nameDe": "Steckrübe",
+      "nameEn": "Swede",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10, 11, 12],
+      "storage": [1, 2, 3]
+    },
+    {
+      "id": "sweet-pepper",
+      "nameDe": "Gemüsepaprika",
+      "nameEn": "Sweet pepper",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "sweet-potato",
+      "nameDe": "Süßkartoffel",
+      "nameEn": "Sweet potato",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [9, 10],
+      "storage": [11, 12, 1, 2, 3],
+      "note": "Small domestic production; most supply is imported."
+    },
+    {
+      "id": "sweetcorn",
+      "nameDe": "Zuckermais",
+      "nameEn": "Sweetcorn",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "swiss-chard",
+      "nameDe": "Mangold",
+      "nameEn": "Swiss chard",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "tomato",
+      "nameDe": "Tomate",
+      "nameEn": "Tomato",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "white-asparagus",
+      "nameDe": "Spargel",
+      "nameEn": "Asparagus",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [4, 5, 6],
+      "storage": []
+    },
+    {
+      "id": "white-cabbage",
+      "nameDe": "Weißkohl",
+      "nameEn": "White cabbage",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10, 11],
+      "storage": [12, 1, 2, 3, 4, 5]
+    },
+    {
+      "id": "white-radish",
+      "nameDe": "Rettich",
+      "nameEn": "White radish",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "wild-garlic",
+      "nameDe": "Bärlauch",
+      "nameEn": "Wild garlic",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [3, 4, 5],
+      "storage": []
+    },
+    {
+      "id": "zucchini",
+      "nameDe": "Zucchini",
+      "nameEn": "Courgette",
+      "type": "vegetable",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+
+    {
+      "id": "apple",
+      "nameDe": "Apfel",
+      "nameEn": "Apple",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9, 10, 11],
+      "storage": [12, 1, 2, 3, 4, 5, 6]
+    },
+    {
+      "id": "apricot",
+      "nameDe": "Aprikose",
+      "nameEn": "Apricot",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7],
+      "storage": []
+    },
+    {
+      "id": "blackberry",
+      "nameDe": "Brombeere",
+      "nameEn": "Blackberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "blackcurrant",
+      "nameDe": "Schwarze Johannisbeere",
+      "nameEn": "Blackcurrant",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7],
+      "storage": []
+    },
+    {
+      "id": "blueberry",
+      "nameDe": "Heidelbeere",
+      "nameEn": "Blueberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "cherry-sour",
+      "nameDe": "Sauerkirsche",
+      "nameEn": "Sour cherry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7],
+      "storage": []
+    },
+    {
+      "id": "cherry-sweet",
+      "nameDe": "Süßkirsche",
+      "nameEn": "Sweet cherry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7],
+      "storage": []
+    },
+    {
+      "id": "chestnut",
+      "nameDe": "Esskastanie",
+      "nameEn": "Chestnut",
+      "type": "nut",
+      "domestic": true,
+      "harvest": [9, 10],
+      "storage": []
+    },
+    {
+      "id": "cranberry-lingonberry",
+      "nameDe": "Preiselbeere",
+      "nameEn": "Lingonberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "elderberry",
+      "nameDe": "Holunderbeere",
+      "nameEn": "Elderberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9],
+      "storage": []
+    },
+    {
+      "id": "gooseberry",
+      "nameDe": "Stachelbeere",
+      "nameEn": "Gooseberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7],
+      "storage": []
+    },
+    {
+      "id": "grape",
+      "nameDe": "Tafeltraube",
+      "nameEn": "Grape",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "hazelnut",
+      "nameDe": "Haselnuss",
+      "nameEn": "Hazelnut",
+      "type": "nut",
+      "domestic": true,
+      "harvest": [9, 10],
+      "storage": []
+    },
+    {
+      "id": "melon",
+      "nameDe": "Melone",
+      "nameEn": "Melon",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "mirabelle-greengage",
+      "nameDe": "Mirabelle/Reneklode",
+      "nameEn": "Mirabelle plum/Greengage",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8, 9],
+      "storage": []
+    },
+    {
+      "id": "peach-nectarine",
+      "nameDe": "Pfirsich/Nektarine",
+      "nameEn": "Peach/Nectarine",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+    {
+      "id": "pear",
+      "nameDe": "Birne",
+      "nameEn": "Pear",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [8, 9, 10],
+      "storage": [11, 12, 1, 2, 3]
+    },
+    {
+      "id": "plum",
+      "nameDe": "Pflaume/Zwetschge",
+      "nameEn": "Plum",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "quince",
+      "nameDe": "Quitte",
+      "nameEn": "Quince",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [9, 10, 11],
+      "storage": [12]
+    },
+    {
+      "id": "raspberry",
+      "nameDe": "Himbeere",
+      "nameEn": "Raspberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8, 9, 10],
+      "storage": []
+    },
+    {
+      "id": "redcurrant",
+      "nameDe": "Rote Johannisbeere",
+      "nameEn": "Redcurrant",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "strawberry",
+      "nameDe": "Erdbeere",
+      "nameEn": "Strawberry",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [5, 6, 7, 8],
+      "storage": []
+    },
+    {
+      "id": "walnut",
+      "nameDe": "Walnuss",
+      "nameEn": "Walnut",
+      "type": "nut",
+      "domestic": true,
+      "harvest": [9, 10],
+      "storage": []
+    },
+    {
+      "id": "watermelon",
+      "nameDe": "Wassermelone",
+      "nameEn": "Watermelon",
+      "type": "fruit",
+      "domestic": true,
+      "harvest": [7, 8],
+      "storage": []
+    },
+
+    {
+      "id": "avocado",
+      "nameDe": "Avocado",
+      "nameEn": "Avocado",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "banana",
+      "nameDe": "Banane",
+      "nameEn": "Banana",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "fig",
+      "nameDe": "Feige",
+      "nameEn": "Fig",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "grapefruit",
+      "nameDe": "Grapefruit",
+      "nameEn": "Grapefruit",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "kiwi",
+      "nameDe": "Kiwi",
+      "nameEn": "Kiwi",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lemon",
+      "nameDe": "Zitrone",
+      "nameEn": "Lemon",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lime",
+      "nameDe": "Limette",
+      "nameEn": "Lime",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "lychee",
+      "nameDe": "Litschi",
+      "nameEn": "Lychee",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "mandarin",
+      "nameDe": "Mandarine/Clementine",
+      "nameEn": "Mandarin",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "mango",
+      "nameDe": "Mango",
+      "nameEn": "Mango",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "orange",
+      "nameDe": "Orange",
+      "nameEn": "Orange",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "papaya",
+      "nameDe": "Papaya",
+      "nameEn": "Papaya",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "persimmon",
+      "nameDe": "Kaki",
+      "nameEn": "Persimmon",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pineapple",
+      "nameDe": "Ananas",
+      "nameEn": "Pineapple",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pomegranate",
+      "nameDe": "Granatapfel",
+      "nameEn": "Pomegranate",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    },
+    {
+      "id": "pomelo",
+      "nameDe": "Pampelmuse",
+      "nameEn": "Pomelo",
+      "type": "fruit",
+      "domestic": false,
+      "harvest": [],
+      "storage": []
+    }
+  ]
+}
