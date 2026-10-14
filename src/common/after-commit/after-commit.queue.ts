@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { setTimeout as delay } from 'node:timers/promises';
+import {
+  afterCommitQueuePending,
+  afterCommitTasksTotal,
+} from './after-commit.metrics';
 
 export interface AfterCommitTask {
   /** Used in log lines, e.g. `quest QUEST.DIET_CHANGES.BEGINNER.1 for user u1`. */
@@ -62,8 +66,9 @@ export class AfterCommitQueue {
       return;
     }
 
+    afterCommitQueuePending.inc(tasks.length);
     this.pending = this.pending
-      .then(() => this.drain(tasks, confirmDelaysMs))
+      .then(() => this.drain(tasks, confirmDelaysMs, true))
       .catch((error) => {
         this.logger.error(
           'After-commit drain failed',
@@ -95,20 +100,28 @@ export class AfterCommitQueue {
   private async drain(
     tasks: AfterCommitTask[],
     confirmDelaysMs: number[],
+    scheduled = false,
   ): Promise<void> {
     for (const task of tasks) {
       try {
         if (task.confirm && !(await this.confirm(task, confirmDelaysMs))) {
+          afterCommitTasksTotal.inc({ outcome: 'skipped' });
           this.logger.warn(`Skipping ${task.label}: never confirmed`);
           continue;
         }
         await task.run();
+        afterCommitTasksTotal.inc({ outcome: 'ok' });
       } catch (error) {
         // One failing task must not strand the ones queued behind it.
+        afterCommitTasksTotal.inc({ outcome: 'failed' });
         this.logger.error(
           `After-commit task failed: ${task.label}`,
           error instanceof Error ? error.stack : error,
         );
+      } finally {
+        if (scheduled) {
+          afterCommitQueuePending.dec();
+        }
       }
     }
   }

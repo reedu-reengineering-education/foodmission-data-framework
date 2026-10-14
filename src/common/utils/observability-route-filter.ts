@@ -16,9 +16,7 @@ export function shouldSkipObservabilityRoute(
     path.startsWith('/api/v1/health') ||
     path.startsWith('/health') ||
     path.startsWith('/api/v1/metrics') ||
-    path.startsWith('/metrics') ||
-    path.startsWith('/api/v1/performance') ||
-    path.startsWith('/performance');
+    path.startsWith('/metrics');
 
   if (isHealthOrMonitoringPath) {
     return true;
