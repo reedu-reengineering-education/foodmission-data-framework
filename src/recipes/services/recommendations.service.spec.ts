@@ -3,6 +3,7 @@ import { RecommendationsService } from './recommendations.service';
 import { PantryService } from '../../pantry/services/pantry.service';
 import { PantryItemRepository } from '../../pantry/repositories/pantry-items.repository';
 import { RecipesRepository } from '../repositories/recipes.repository';
+import { RecipesService } from './recipes.service';
 
 describe('RecommendationsService', () => {
   let service: RecommendationsService;
@@ -20,6 +21,10 @@ describe('RecommendationsService', () => {
     findWithPagination: jest.fn(),
   };
 
+  const mockRecipesService = {
+    localizeIngredients: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -27,11 +32,15 @@ describe('RecommendationsService', () => {
         { provide: PantryService, useValue: mockPantryService },
         { provide: PantryItemRepository, useValue: mockPantryItemRepository },
         { provide: RecipesRepository, useValue: mockRecipesRepository },
+        { provide: RecipesService, useValue: mockRecipesService },
       ],
     }).compile();
 
     service = module.get<RecommendationsService>(RecommendationsService);
     jest.clearAllMocks();
+    mockRecipesService.localizeIngredients.mockImplementation((recipes) =>
+      Promise.resolve(recipes),
+    );
   });
 
   it('falls back to name-based matching when id-based candidates are empty', async () => {
@@ -192,5 +201,64 @@ describe('RecommendationsService', () => {
     const match = result.data[0].matchedIngredients[0];
     expect(match.isExpiringSoon).toBe(true);
     expect(match.daysUntilExpiry).toBeLessThanOrEqual(7);
+  });
+
+  it('returns localized ingredient names, including matched ingredients', async () => {
+    mockPantryService.validatePantryExists.mockResolvedValue('pantry-1');
+    mockPantryItemRepository.findMany.mockResolvedValue([
+      {
+        id: 'pantry-item-1',
+        pantryId: 'pantry-1',
+        foodProductId: null,
+        genericFoodId: 'gf-flour',
+        expiryDate: null,
+        foodProduct: null,
+        genericFood: { foodName: 'Flour wheat white' },
+      },
+    ]);
+    const recipe = {
+      id: 'recipe-1',
+      userId: null,
+      title: 'Pizza',
+      isPublic: true,
+      tags: [],
+      allergens: [],
+      dietaryLabels: [],
+      ingredients: [
+        {
+          id: 'ing-flour',
+          recipeId: 'recipe-1',
+          name: 'Plain Flour',
+          order: 0,
+          itemType: 'generic_food',
+          foodProductId: null,
+          genericFoodId: 'gf-flour',
+          foodProduct: null,
+          genericFood: null,
+        },
+      ],
+    };
+    mockRecipesRepository.findCandidatesForRecommendation.mockResolvedValue([
+      recipe,
+    ]);
+    mockRecipesService.localizeIngredients.mockResolvedValue([
+      {
+        ...recipe,
+        ingredients: [{ ...recipe.ingredients[0], name: 'Weißes Weizenmehl' }],
+      },
+    ]);
+
+    const result = await service.getRecommendations('user-1', { lang: 'de' });
+
+    expect(mockRecipesService.localizeIngredients).toHaveBeenCalledWith(
+      [recipe],
+      'de',
+    );
+    expect(result.data[0].recipe.ingredients?.[0].name).toBe(
+      'Weißes Weizenmehl',
+    );
+    expect(result.data[0].matchedIngredients[0].ingredientName).toBe(
+      'Weißes Weizenmehl',
+    );
   });
 });

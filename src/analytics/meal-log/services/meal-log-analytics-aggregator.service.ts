@@ -501,7 +501,8 @@ export class MealLogAnalyticsAggregator {
       LEFT JOIN meal_items mi ON mi."mealId" = m.id
       LEFT JOIN food_products f ON mi."foodProductId" = f.id
       LEFT JOIN generic_foods fc ON mi."genericFoodId" = fc.id
-      WHERE ml."timestamp" >= ${periodStart}
+      WHERE ml."status" = 'CONFIRMED'
+        AND ml."timestamp" >= ${periodStart}
         AND ml."timestamp" < ${periodEnd}
       ORDER BY ml."userId", ml."timestamp"
     `;

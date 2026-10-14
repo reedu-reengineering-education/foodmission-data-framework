@@ -28,6 +28,16 @@ export class MissionProgressResponseDto {
   @Expose()
   completed: boolean;
 
+  @ApiProperty({
+    enum: ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'FAILED'],
+    example: 'IN_PROGRESS',
+    description:
+      'FAILED: the rule window ended without the goal, the rule failed, or ' +
+      'the user gave up. COMPLETED and FAILED are final.',
+  })
+  @Expose()
+  status: string;
+
   @ApiProperty({ example: 'Bring Your Own Bag' })
   @Expose()
   missionTitle: string;

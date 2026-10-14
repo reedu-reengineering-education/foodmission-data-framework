@@ -17,7 +17,8 @@ function resolveTagFlags(input: {
     foodChoice: input.foodChoice ?? tags.includes('FOOD_CHOICE'),
     foodWaste:
       input.foodWaste ??
-      (tags.includes('FOOD_AND_WASTE') || tags.includes('FOOD_WASTE')),
+      // FOOD_AND_WASTE: the tag's former name, still accepted from older clients.
+      (tags.includes('FOOD_WASTE') || tags.includes('FOOD_AND_WASTE')),
   };
 }
 

@@ -8,14 +8,19 @@ import {
   NotFoundException,
   Delete,
   Query,
+  Param,
+  BadRequestException,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Roles } from 'nest-keycloak-connect';
 import {
   ApiTags,
   ApiOperation,
   ApiBearerAuth,
   ApiOkResponse,
+  ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { UserProfilesService } from '../services/user-profiles.service';
 import { ProfileUpdateDto } from '../dto/profile-update.dto';
@@ -24,6 +29,16 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { GamificationProfileService } from '../../gamification/services/gamification-profile.service';
 import { ProgressWheelService } from '../../gamification/services/progress-wheel.service';
 import { OnboardingSurveyService } from '../../gamification/services/onboarding-survey.service';
+import { LearningProgressService } from '../../gamification/services/learning-progress.service';
+import {
+  CurrentQuestDto,
+  DimensionProgressDto,
+  KnowledgeProgressDto,
+} from '../../gamification/dto/learning-progress.dto';
+import {
+  KNOWLEDGE_KINDS,
+  KnowledgeKind,
+} from '../../gamification/knowledge-progress.config';
 import {
   GamificationProfileQueryDto,
   GamificationProfileResponseDto,
@@ -36,6 +51,9 @@ import {
   OnboardingSurveyDto,
   OnboardingSurveyResultDto,
 } from '../../gamification/dto/onboarding-survey.dto';
+import { SurveyQueryDto } from '../../surveys/dto/survey-query.dto';
+import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   RecordWheelImpactDto,
   RecordWheelImpactResultDto,
@@ -49,6 +67,7 @@ export class UserProfilesController {
     private readonly gamificationProfileService: GamificationProfileService,
     private readonly progressWheelService: ProgressWheelService,
     private readonly onboardingSurveyService: OnboardingSurveyService,
+    private readonly learningProgressService: LearningProgressService,
   ) {}
 
   @Get('me')
@@ -99,6 +118,7 @@ export class UserProfilesController {
     return this.gamificationProfileService.getProfileForUserId(userId, {
       eventsLimit: query.eventsLimit,
       walletEntriesLimit: query.walletEntriesLimit,
+      eventTypes: query.eventTypes,
     });
   }
 
@@ -110,7 +130,8 @@ export class UserProfilesController {
     description:
       'CO2 reduction, energy reduction, water savings, land use reduction. ' +
       'Each wheel tracks the current stage (1-5) of the sustainability ' +
-      'profile chosen at onboarding; empty until the user has a profile.',
+      'profile set by the onboarding survey; BEGINNER until the survey is ' +
+      'submitted.',
   })
   @ApiOkResponse({ type: [ProgressWheelDto] })
   async getMyProgressWheels(
@@ -119,17 +140,26 @@ export class UserProfilesController {
     return this.progressWheelService.getWheelsForUser(userId);
   }
 
+  // Admin-only on purpose: wheels move automatically from meal logs (see
+  // MealLogsService.recordWheelImpacts). Open to users, any client could
+  // submit any actionCode any number of times and farm wheel progress and
+  // segment promotion. Kept for testing/support and for actions with no
+  // triggering event yet (packaging: REUSABLE_CONTAINER_USE, REFILL_PRODUCT).
   @Post('me/gamification/progress-wheels/impact')
+  @Roles('admin')
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Record a validated action against the progress wheels',
+    summary:
+      '[Admin] Record a validated action against your own progress wheels',
     description:
       "Adds the action's impact to every wheel it affects. A wheel that " +
       'crosses 100% archives its stage, rolls any excess into the next ' +
       'stage, and starts a new cycle. Completing stage 5 promotes the user ' +
       'segment (BEGINNER -> INTERMEDIATE -> ADVANCED) and resets all wheels ' +
-      'to stage 1. Valid actionCodes are listed in the request body schema.',
+      'to stage 1; before the onboarding survey stage 5 just repeats. ' +
+      'Valid actionCodes are listed in the request body schema. ' +
+      'Admin only: for users the wheels move automatically from meal logs.',
   })
   @ApiOkResponse({ type: RecordWheelImpactResultDto })
   @UsePipes(
@@ -143,11 +173,104 @@ export class UserProfilesController {
     @CurrentUser('id') userId: string,
     @Body() body: RecordWheelImpactDto,
   ): Promise<RecordWheelImpactResultDto> {
-    // TODO: Temporary. Any client can submit any actionCode any number of
-    // times, so users can farm wheel progress and trigger segment promotion.
-    // Replace with automatic recordImpact() calls from meal-log / challenge
-    // completion, then remove this endpoint or restrict it (admin/feature flag).
     return this.progressWheelService.recordImpact(userId, body.actionCode);
+  }
+
+  @Get('me/gamification/dimensions')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the level and available quests per dimension',
+    description:
+      'One level per learning dimension, inferred from the onboarding survey ' +
+      'and raised once the CO2, energy, water and land saved through that ' +
+      "dimension's wheel actions all reach the level's targets. Each " +
+      "dimension lists the quests at the user's level with their progress. " +
+      'Empty until onboarding is done.',
+  })
+  @ApiOkResponse({ type: [DimensionProgressDto] })
+  async getMyDimensions(
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<DimensionProgressDto[]> {
+    return this.learningProgressService.listDimensions(userId, query.lang);
+  }
+
+  @Get('me/gamification/dimensions/:code')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({ name: 'code', example: 'DIET_CHANGES' })
+  @ApiOperation({
+    summary: 'Get one dimension with finished and open quest items',
+  })
+  @ApiOkResponse({ type: DimensionProgressDto })
+  async getMyDimension(
+    @CurrentUser('id') userId: string,
+    @Param('code') code: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<DimensionProgressDto> {
+    return this.learningProgressService.getDimension(userId, code, query.lang);
+  }
+
+  @Get('me/gamification/current-quest')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the current quest with the status of each item',
+    description:
+      'The quest set as currentQuestId, with every trackable item ' +
+      '(micro-learnings excluded) in quest order. The body is null when ' +
+      'no quest is selected.',
+  })
+  @ApiOkResponse({ type: CurrentQuestDto })
+  async getMyCurrentQuest(
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<CurrentQuestDto | null> {
+    return this.learningProgressService.getCurrentQuest(userId, query.lang);
+  }
+
+  @Get('me/gamification/knowledge-progress')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get the knowledge progress bars',
+    description:
+      'Health, food choices and food & waste: share of tagged items ' +
+      '(missions, challenges, quizzes answered correctly, food facts read) ' +
+      'finished across all quests, every dimension and level. The total ' +
+      'is fixed, so a bar only grows.',
+  })
+  @ApiOkResponse({ type: [KnowledgeProgressDto] })
+  async getMyKnowledgeProgress(
+    @CurrentUser('id') userId: string,
+  ): Promise<KnowledgeProgressDto[]> {
+    return this.learningProgressService.listKnowledge(userId);
+  }
+
+  @Get('me/gamification/knowledge-progress/:kind')
+  @UseGuards(DataBaseAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiParam({ name: 'kind', enum: KNOWLEDGE_KINDS })
+  @ApiOperation({
+    summary: 'Get one knowledge bar with its finished and open items',
+  })
+  @ApiOkResponse({ type: KnowledgeProgressDto })
+  async getMyKnowledgeBar(
+    @CurrentUser('id') userId: string,
+    @Param('kind') kind: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<KnowledgeProgressDto> {
+    if (!(KNOWLEDGE_KINDS as string[]).includes(kind)) {
+      throw new BadRequestException(
+        `kind must be one of ${KNOWLEDGE_KINDS.join(', ')}`,
+      );
+    }
+    return this.learningProgressService.getKnowledge(
+      userId,
+      kind as KnowledgeKind,
+      query.lang,
+    );
   }
 
   @Get('me/gamification/onboarding-survey')
@@ -156,14 +279,22 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Get the onboarding survey questions for the progress wheels',
     description:
-      'Static 5-question survey (habit frequency, 4 options each). Answers ' +
-      'map 1:1 to preferences.onboardingSurvey / the fields submitted via ' +
-      'POST of this same route.',
+      'Static 17-question survey grouped by learning dimension (4-5 options ' +
+      'each). Answers map 1:1 to preferences.onboardingSurvey / the fields ' +
+      'submitted via POST of this same route.',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    enum: SUPPORTED_LOCALES,
+    description: `Optional locale for translated question texts and option labels. Defaults to ${DEFAULT_LOCALE}.`,
   })
   @ApiOkResponse({ type: OnboardingSurveyDto })
-  getOnboardingSurvey(): OnboardingSurveyDto {
+  getOnboardingSurvey(@Query() query: SurveyQueryDto): OnboardingSurveyDto {
     return {
-      questions: [...this.onboardingSurveyService.getSurveyQuestions()],
+      questions: [
+        ...this.onboardingSurveyService.getSurveyQuestions(query.lang),
+      ],
     };
   }
 
@@ -173,10 +304,13 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Submit onboarding survey answers',
     description:
-      'Computes the sustainability profile (dimension) from the 5 answers, ' +
-      'persists it, applies first-time onboarding side effects (wallet + ' +
-      'progress wheels, idempotent), and returns the computed segment ' +
-      'together with the resulting progress wheels.',
+      'Every answer is optional (skipped questions are simply omitted). ' +
+      'Scores each learning dimension from its answered questions, derives ' +
+      'the sustainability profile (segment) from those levels (BEGINNER when ' +
+      'nothing was answered), persists it with the answers, applies ' +
+      'first-time onboarding side effects (wallet, progress wheels, ' +
+      'per-dimension starting levels; idempotent), and returns the computed ' +
+      'segment together with the resulting progress wheels.',
   })
   @ApiOkResponse({ type: OnboardingSurveyResultDto })
   @UsePipes(
@@ -228,7 +362,9 @@ export class UserProfilesController {
   @ApiOperation({
     summary: 'Update current user profile',
     description:
-      'Onboarding baselines under preferences.onboardingSurvey. Segment is chosen by the client at onboarding.',
+      'Onboarding baselines under preferences.onboardingSurvey. Segment is chosen by the client at onboarding. ' +
+      'dimensionLevels sets the learning level per dimension (any level, ' +
+      'e.g. after the user reviews the levels proposed by the survey).',
   })
   @UsePipes(
     new ValidationPipe({

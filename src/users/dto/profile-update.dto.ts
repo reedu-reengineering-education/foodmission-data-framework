@@ -8,8 +8,12 @@ import {
   IsObject,
   MaxLength,
   ValidateIf,
+  IsArray,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { ContentLevel } from '@prisma/client';
 import {
   GenderLocal,
   ActivityLevel,
@@ -19,6 +23,16 @@ import {
 import { UserSegment } from './gamification-enums.dto';
 import { UserPreferencesDto } from './user-preferences.dto';
 import { UserSettingsDto } from './user-settings.dto';
+
+export class DimensionLevelInputDto {
+  @ApiProperty({ example: 'DIET_CHANGES' })
+  @IsString()
+  dimensionCode!: string;
+
+  @ApiProperty({ enum: ContentLevel })
+  @IsEnum(ContentLevel)
+  level!: ContentLevel;
+}
 
 export class ProfileUpdateDto {
   @ApiProperty({ description: 'Year of birth (YYYY)', required: false })
@@ -149,4 +163,19 @@ export class ProfileUpdateDto {
   @IsString()
   @MaxLength(255)
   currentQuestId?: string | null;
+
+  @ApiProperty({
+    description:
+      'Learning level per dimension chosen by the user, e.g. after reviewing ' +
+      'the levels proposed by the onboarding survey. Any level can be set at ' +
+      'any time; dimensions not listed keep their level. Levels set before ' +
+      'the survey can still be raised (never lowered) by its first submission.',
+    required: false,
+    type: [DimensionLevelInputDto],
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => DimensionLevelInputDto)
+  dimensionLevels?: DimensionLevelInputDto[];
 }

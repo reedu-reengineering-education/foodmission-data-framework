@@ -130,7 +130,7 @@
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Lebensmittelauswahl",
-    "FOOD_AND_WASTE": "Lebensmittel und Abfall",
+    "FOOD_WASTE": "Lebensmittelverschwendung",
     "HEALTH": "Gesundheit",
     "CO2_REDUCTION": "CO₂-Reduktion",
     "ENERGY_REDUCTION": "Energieeinsparung",
@@ -167,6 +167,6 @@
   "contentTags": {
     "HEALTH": "Gesundheit",
     "FOOD_CHOICE": "Lebensmittelauswahl",
-    "FOOD_AND_WASTE": "Lebensmittel und Abfall"
+    "FOOD_WASTE": "Lebensmittelverschwendung"
   }
 }

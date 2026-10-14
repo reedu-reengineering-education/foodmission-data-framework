@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "locale": "no"
+  },
+  "questions": {
+    "weeklyMeatConsumption": {
+      "text": "Hvor mange måltider med kjøtt spiser du vanligvis i løpet av en uke?",
+      "options": {
+        "ZERO_TO_FOUR": "0–4 måltider per uke",
+        "FIVE_TO_NINE": "5–9 måltider per uke",
+        "TEN_TO_FOURTEEN": "10–14 måltider per uke",
+        "FIFTEEN_PLUS": "15+ måltider per uke"
+      }
+    },
+    "weeklyBeefConsumption": {
+      "text": "Hvor ofte spiser du storfekjøtt?",
+      "options": {
+        "NEVER": "Aldri",
+        "LESS_THAN_ONCE_PER_WEEK": "Mindre enn én gang per uke",
+        "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 ganger per uke",
+        "THREE_PLUS_TIMES_PER_WEEK": "3+ ganger per uke"
+      }
+    },
+    "weeklyLegumeConsumption": {
+      "text": "Hvor ofte spiser du belgfrukter (bønner, linser, kikerter, erter)?",
+      "options": {
+        "NEVER": "Aldri",
+        "LESS_THAN_ONCE_PER_WEEK": "Mindre enn én gang per uke",
+        "ONCE_PER_WEEK": "Én gang per uke",
+        "SEVERAL_TIMES_PER_WEEK": "Flere ganger per uke",
+        "DAILY": "Daglig"
+      }
+    },
+    "checksCountryOfOrigin": {
+      "text": "Hvor ofte sjekker du opprinnelseslandet til matvarer?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Nesten alltid"
+      }
+    },
+    "choosesSeasonalProduce": {
+      "text": "Hvor ofte velger du bevisst frukt og grønnsaker som er i sesong?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Av og til",
+        "SOMETIMES": "Omtrent halvparten av gangene",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Nesten alltid"
+      }
+    },
+    "considersSustainabilityInfo": {
+      "text": "Hvor ofte tar du hensyn til miljø- eller bærekraftsinformasjon før du kjøper mat?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Nesten alltid"
+      }
+    },
+    "readsIngredientLists": {
+      "text": "Hvor ofte leser du ingredienslisten før du kjøper ferdigpakket mat?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Nesten alltid"
+      }
+    },
+    "sustainabilityLabelFamiliarity": {
+      "text": "Hvor kjent er du med merkeordninger og påstander knyttet til bærekraft?",
+      "options": {
+        "NOT_FAMILIAR": "Ikke kjent",
+        "SLIGHTLY_FAMILIAR": "Litt kjent",
+        "MODERATELY_FAMILIAR": "Middels kjent",
+        "FAMILIAR": "Kjent",
+        "VERY_FAMILIAR": "Svært kjent"
+      }
+    },
+    "productionMethodsInfluence": {
+      "text": "Hvor ofte påvirker produksjonsmetoder kjøpsbeslutningene dine?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Nesten alltid"
+      }
+    },
+    "weeklyReusableOrRefill": {
+      "text": "Hvor ofte bruker du gjenbrukbare beholdere eller kjøper påfyllingsprodukter?",
+      "options": {
+        "ZERO_TO_TWO": "0–2 ganger per uke",
+        "THREE_TO_SIX": "3–6 ganger per uke",
+        "SEVEN_TO_NINE": "7–9 ganger per uke",
+        "TEN_PLUS": "10+ ganger per uke"
+      }
+    },
+    "checksPackagingDisposal": {
+      "text": "Hvor ofte sjekker du emballasjen for anvisninger om resirkulering, gjenbruk eller avfallssortering?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Nesten alltid"
+      }
+    },
+    "weeklyFoodWaste": {
+      "text": "Hvor ofte kaster du mat som fortsatt kunne vært spist?",
+      "options": {
+        "ZERO": "Aldri",
+        "ONE_TO_TWO": "1–2 ganger per uke",
+        "THREE_TO_FOUR": "3–4 ganger per uke",
+        "FIVE_PLUS": "5+ ganger per uke"
+      }
+    },
+    "plansMealsBeforeShopping": {
+      "text": "Hvor ofte planlegger du måltidene før du handler?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Alltid"
+      }
+    },
+    "usesLeftovers": {
+      "text": "Hvor ofte bruker du bevisst rester til et nytt måltid?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Alltid"
+      }
+    },
+    "weeklyUpfConsumption": {
+      "text": "Hvor ofte spiser eller drikker du ultrabearbeidede produkter, for eksempel pakket snacks, sukkerholdige drikker, ferdigretter eller bearbeidede kjøttprodukter?",
+      "options": {
+        "ZERO_TO_THREE": "0–3 ganger per uke",
+        "FOUR_TO_NINE": "4–9 ganger per uke",
+        "TEN_TO_FOURTEEN": "10–14 ganger per uke",
+        "FIFTEEN_PLUS": "15+ ganger per uke"
+      }
+    },
+    "wholeGrainFrequency": {
+      "text": "Hvor ofte velger du fullkornsprodukter?",
+      "options": {
+        "NEVER": "Aldri",
+        "RARELY": "Sjelden",
+        "SOMETIMES": "Noen ganger",
+        "OFTEN": "Ofte",
+        "ALWAYS": "Daglig"
+      }
+    },
+    "dailyFruitVegServings": {
+      "text": "Hvor mange porsjoner frukt og grønnsaker spiser du vanligvis per dag?",
+      "options": {
+        "LESS_THAN_ONE": "Mindre enn 1 porsjon per dag",
+        "ONE_TO_TWO": "1–2 porsjoner per dag",
+        "THREE_TO_FOUR": "3–4 porsjoner per dag",
+        "FIVE_PLUS": "5+ porsjoner per dag"
+      }
+    }
+  }
+}

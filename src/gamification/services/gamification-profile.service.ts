@@ -23,7 +23,11 @@ export class GamificationProfileService {
 
   async getProfileForUserId(
     userId: string,
-    options?: { eventsLimit?: number; walletEntriesLimit?: number },
+    options?: {
+      eventsLimit?: number;
+      walletEntriesLimit?: number;
+      eventTypes?: string[];
+    },
   ): Promise<GamificationProfileResponseDto> {
     const eventsLimit = options?.eventsLimit ?? 20;
     const walletEntriesLimit = options?.walletEntriesLimit ?? 20;
@@ -37,6 +41,9 @@ export class GamificationProfileService {
           orderBy: { kind: 'asc' },
         },
         userEvents: {
+          ...(options?.eventTypes?.length
+            ? { where: { eventType: { in: options.eventTypes } } }
+            : {}),
           orderBy: { createdAt: 'desc' },
           take: eventsLimit,
         },

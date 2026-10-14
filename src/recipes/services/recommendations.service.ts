@@ -17,11 +17,13 @@ import {
   RecommendationResponseDto,
 } from '../dto/recommendation-response.dto';
 import { RecipeResponseDto } from '../dto/recipe-response.dto';
+import { RecipesService } from './recipes.service';
 
 export interface RecommendationOptions {
   expiringWithinDays?: number;
   limit?: number;
   offset?: number;
+  lang?: string;
 }
 
 @Injectable()
@@ -32,13 +34,14 @@ export class RecommendationsService {
     private readonly pantryService: PantryService,
     private readonly pantryItemRepository: PantryItemRepository,
     private readonly recipesRepository: RecipesRepository,
+    private readonly recipesService: RecipesService,
   ) {}
 
   async getRecommendations(
     userId: string,
     options: RecommendationOptions = {},
   ): Promise<MultipleRecommendationResponseDto> {
-    const { expiringWithinDays = 7, limit = 10, offset = 0 } = options;
+    const { expiringWithinDays = 7, limit = 10, offset = 0, lang } = options;
 
     try {
       const pantryId = await this.pantryService.validatePantryExists(userId);
@@ -108,8 +111,16 @@ export class RecommendationsService {
           b.matchCount - a.matchCount,
       );
 
-      const data = sortedRecipes.map((scored) =>
-        this.toRecommendationResponse(scored),
+      // Localize after scoring so name-based matching runs on stored names.
+      const localizedRecipes = await this.recipesService.localizeIngredients(
+        sortedRecipes.map((scored) => scored.recipe),
+        lang,
+      );
+      const data = sortedRecipes.map((scored, index) =>
+        this.toRecommendationResponse({
+          ...scored,
+          recipe: localizedRecipes[index],
+        }),
       );
 
       return {
@@ -410,7 +421,9 @@ export class RecommendationsService {
       plainToInstance(
         MatchedIngredientDto,
         {
-          ingredientName: m.ingredientName,
+          ingredientName:
+            scored.recipe.ingredients.find((i) => i.id === m.recipeIngredientId)
+              ?.name ?? m.ingredientName,
           pantryItemName: m.pantryItemName,
           isExpiringSoon: m.isExpiringSoon,
           daysUntilExpiry: m.daysUntilExpiry,

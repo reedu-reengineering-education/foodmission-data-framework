@@ -6,11 +6,18 @@
  *   npm run i18n:workbook:import -- --dry-run
  *   npm run i18n:workbook:import
  *   npm run i18n:workbook:import -- --file translations/round-2.xlsx --locales de
+ *   npm run i18n:workbook:import -- --accept-english
  *
  * Writes to:
  *   src/i18n/<locale>/*.json                              (ui-* sheets)
  *   prisma/seeds/data/surveys/translations/<locale>.json  (survey-* sheets)
  *   prisma/seeds/data/nevo/nevo_translations.csv          (food-* sheets)
+ *
+ * English is owned by the repository: edited `en` cells are only reported,
+ * unless `--accept-english` is passed. Then they are written to the English
+ * source (src/i18n/en/*.json, prisma/seeds/data/catalog/*.en.json) for the
+ * sheets that support it, and translations left untouched on those rows are
+ * listed as `staleTranslations` in the report.
  *
  * Commit the changed files; the next deployment seeds the DB categories with
  * `npm run db:translations`.
@@ -25,6 +32,7 @@ import {
   resolveLocales,
   runScript,
   writeReportFile,
+  type EnglishUpdate,
   type LocaleUpdate,
 } from './partner-workbook';
 import { readWorkbook } from './partner-workbook-xlsx';
@@ -35,7 +43,9 @@ type SkipReason =
   | 'blank_cell'
   | 'unchanged'
   | 'placeholder_mismatch'
-  | 'english_changed';
+  | 'english_changed'
+  | 'english_unsupported'
+  | 'english_placeholder_mismatch';
 
 type ImportReport = {
   importedAt: string;
@@ -45,8 +55,12 @@ type ImportReport = {
   updated: number;
   updatedPerLocale: Record<string, number>;
   touchedFiles: string[];
-  perSheet: Record<string, { updated: number }>;
+  perSheet: Record<string, { updated: number; englishUpdated: number }>;
   skipped: Record<SkipReason, string[]>;
+  /** Rows whose English text was written back (`--accept-english`). */
+  englishUpdated: string[];
+  /** Existing translations kept on rows whose English text changed. */
+  staleTranslations: string[];
 };
 
 const SKIP_REASONS: SkipReason[] = [
@@ -56,6 +70,8 @@ const SKIP_REASONS: SkipReason[] = [
   'unchanged',
   'placeholder_mismatch',
   'english_changed',
+  'english_unsupported',
+  'english_placeholder_mismatch',
 ];
 
 async function main(): Promise<void> {
@@ -65,11 +81,13 @@ async function main(): Promise<void> {
       locales: { type: 'string' },
       sheets: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
+      'accept-english': { type: 'boolean', default: false },
     },
   });
 
   const file = values.file ?? DEFAULT_WORKBOOK_PATH;
   const dryRun = values['dry-run'] ?? false;
+  const acceptEnglish = values['accept-english'] ?? false;
   const locales = resolveLocales(parseCsvList(values.locales));
   const categories = resolveCategories(parseCsvList(values.sheets));
   const categoryById = new Map(
@@ -88,6 +106,8 @@ async function main(): Promise<void> {
     skipped: Object.fromEntries(
       SKIP_REASONS.map((reason) => [reason, [] as string[]]),
     ) as Record<SkipReason, string[]>,
+    englishUpdated: [],
+    staleTranslations: [],
   };
 
   const sheets = await readWorkbook(file, locales);
@@ -103,6 +123,7 @@ async function main(): Promise<void> {
       category.collect(locales).map((entry) => [entry.key, entry]),
     );
     const updates: LocaleUpdate[] = [];
+    const englishUpdates: EnglishUpdate[] = [];
 
     for (const row of sheet.rows) {
       const entry = current.get(row.key);
@@ -111,25 +132,52 @@ async function main(): Promise<void> {
         continue;
       }
 
-      // English is owned by the repository — a changed cell means the source
-      // moved on since the export, so the translations may be stale.
+      // English is owned by the repository — a changed cell means either the
+      // source moved on since the export, or the partner edited it. Only
+      // written back when explicitly accepted.
+      let en = entry.en;
+      let englishAccepted = false;
       if (row.en && row.en !== entry.en.trim()) {
-        report.skipped.english_changed.push(`${sheet.name}/${row.key}`);
+        const englishRowId = `${sheet.name}/${row.key}`;
+        if (!acceptEnglish) {
+          report.skipped.english_changed.push(englishRowId);
+        } else if (!category.applyEnglish) {
+          report.skipped.english_unsupported.push(englishRowId);
+        } else if (
+          category.checkPlaceholders &&
+          !checkPlaceholders(entry.en, row.en)
+        ) {
+          report.skipped.english_placeholder_mismatch.push(englishRowId);
+        } else {
+          englishUpdates.push({ key: row.key, value: row.en });
+          report.englishUpdated.push(englishRowId);
+          en = row.en;
+          englishAccepted = true;
+        }
       }
 
       for (const locale of sheet.locales) {
         const value = row.translations[locale] ?? '';
         const rowId = `${locale}/${sheet.name}/${row.key}`;
+        const currentValue = entry.translations[locale] ?? '';
+
+        if (
+          englishAccepted &&
+          currentValue &&
+          (!value || value === currentValue)
+        ) {
+          report.staleTranslations.push(rowId);
+        }
 
         if (!value) {
           report.skipped.blank_cell.push(rowId);
           continue;
         }
-        if (value === (entry.translations[locale] ?? '')) {
+        if (value === currentValue) {
           report.skipped.unchanged.push(rowId);
           continue;
         }
-        if (category.checkPlaceholders && !checkPlaceholders(entry.en, value)) {
+        if (category.checkPlaceholders && !checkPlaceholders(en, value)) {
           report.skipped.placeholder_mismatch.push(rowId);
           continue;
         }
@@ -143,7 +191,15 @@ async function main(): Promise<void> {
       validKeys: new Set(current.keys()),
     });
     report.touchedFiles.push(...touched);
-    report.perSheet[sheet.name] = { updated: updates.length };
+    if (englishUpdates.length > 0) {
+      report.touchedFiles.push(
+        ...category.applyEnglish!(englishUpdates, dryRun),
+      );
+    }
+    report.perSheet[sheet.name] = {
+      updated: updates.length,
+      englishUpdated: englishUpdates.length,
+    };
     report.updated += updates.length;
     for (const update of updates) {
       report.updatedPerLocale[update.locale] += 1;
@@ -158,9 +214,14 @@ async function main(): Promise<void> {
   console.log(`\n📥 Translation workbook import${dryRun ? ' (dry-run)' : ''}`);
   console.log(`   file: ${file}`);
   console.log(`   updated cells: ${report.updated}`);
+  if (acceptEnglish) {
+    console.log(`   updated english: ${report.englishUpdated.length}`);
+  }
   for (const [sheetName, stats] of Object.entries(report.perSheet)) {
-    if (stats.updated > 0) {
-      console.log(`   ${sheetName}: ${stats.updated}`);
+    if (stats.updated > 0 || stats.englishUpdated > 0) {
+      const english =
+        stats.englishUpdated > 0 ? ` (+${stats.englishUpdated} en)` : '';
+      console.log(`   ${sheetName}: ${stats.updated}${english}`);
     }
   }
   for (const reason of SKIP_REASONS) {
@@ -169,6 +230,16 @@ async function main(): Promise<void> {
       console.log(`   skipped.${reason}: ${count}`);
     }
   }
+  if (report.staleTranslations.length > 0) {
+    console.log(
+      `   stale translations (English changed, translation kept): ${report.staleTranslations.length}`,
+    );
+  }
+  if (!acceptEnglish && report.skipped.english_changed.length > 0) {
+    console.log(
+      '   ↳ re-run with --accept-english to write the edited English text back',
+    );
+  }
   if (report.touchedFiles.length > 0) {
     console.log(`\n   ${dryRun ? 'Would write' : 'Wrote'}:`);
     for (const touched of report.touchedFiles) {
@@ -176,7 +247,7 @@ async function main(): Promise<void> {
     }
   }
   console.log(`\n   Report: ${reportPath}`);
-  if (!dryRun && report.updated > 0) {
+  if (!dryRun && (report.updated > 0 || report.englishUpdated.length > 0)) {
     console.log(
       '\n👉 Commit the changed files, then run `npm run db:translations` on deploy.',
     );
@@ -184,6 +255,7 @@ async function main(): Promise<void> {
 
   if (
     report.skipped.placeholder_mismatch.length > 0 ||
+    report.skipped.english_placeholder_mismatch.length > 0 ||
     report.skipped.unknown_key.length > 0 ||
     report.skipped.unknown_sheet.length > 0
   ) {

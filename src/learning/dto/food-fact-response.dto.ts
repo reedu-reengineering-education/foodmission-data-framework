@@ -15,6 +15,10 @@ export class FoodFactResponseDto {
   @Expose()
   topicId: string;
 
+  @ApiProperty({ example: 'Less Red Meat, Lower Impact' })
+  @Expose()
+  title: string;
+
   @ApiProperty({
     example:
       'Eating less red meat is one of the most effective ways to reduce the environmental impact of your diet.',

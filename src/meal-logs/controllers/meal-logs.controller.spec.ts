@@ -3,7 +3,8 @@ import { MealLogsController } from './meal-logs.controller';
 import { MealLogsService } from '../services/meal-logs.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { TypeOfMeal } from '@prisma/client';
+import { MealLogStatus, TypeOfMeal } from '@prisma/client';
+import { EventType } from '../../events/event-types';
 
 describe('MealLogsController', () => {
   let controller: MealLogsController;
@@ -19,6 +20,9 @@ describe('MealLogsController', () => {
     eatenOut: false,
     flags: [],
     swaps: [],
+    status: MealLogStatus.CONFIRMED,
+    derivedFlags: [],
+    confirmedAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -30,6 +34,7 @@ describe('MealLogsController', () => {
       findOne: jest.fn(),
       update: jest.fn(),
       remove: jest.fn(),
+      confirm: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -93,5 +98,14 @@ describe('MealLogsController', () => {
     service.remove.mockResolvedValueOnce(undefined);
     await controller.remove('log-1', 'user-1');
     expect(service.remove).toHaveBeenCalledWith('log-1', 'user-1');
+  });
+
+  it('confirm should pass the reviewed facts', async () => {
+    service.confirm.mockResolvedValueOnce(mockLog);
+    const facts = { flags: [EventType.MEAL_VEGAN] };
+    const result = await controller.confirm('log-1', facts, 'user-1');
+
+    expect(result).toEqual(mockLog);
+    expect(service.confirm).toHaveBeenCalledWith('log-1', facts, 'user-1');
   });
 });

@@ -1,6 +1,7 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Optional } from '@nestjs/common';
+import { I18nService } from 'nestjs-i18n';
 import { PrismaService } from '../../database/prisma.service';
-import { OnboardingBaselines } from '../onboarding.utils';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import { deriveUserSegment } from '../onboarding-scoring';
 import {
   ONBOARDING_SURVEY_QUESTIONS,
@@ -8,7 +9,10 @@ import {
 } from '../onboarding-survey.config';
 import { GamificationOnboardingService } from './gamification-onboarding.service';
 import { ProgressWheelService } from './progress-wheel.service';
-import { OnboardingSurveyResultDto } from '../dto/onboarding-survey.dto';
+import {
+  OnboardingSurveyAnswersDto,
+  OnboardingSurveyResultDto,
+} from '../dto/onboarding-survey.dto';
 
 @Injectable()
 export class OnboardingSurveyService {
@@ -16,20 +20,57 @@ export class OnboardingSurveyService {
     private readonly prisma: PrismaService,
     private readonly gamificationOnboardingService: GamificationOnboardingService,
     private readonly progressWheelService: ProgressWheelService,
+    // Global I18nModule from app.module.ts; optional so module graphs built
+    // without the app root (wiring specs, e2e fixtures) still resolve.
+    @Optional() private readonly i18n?: I18nService,
   ) {}
 
-  getSurveyQuestions(): readonly OnboardingSurveyQuestion[] {
-    return ONBOARDING_SURVEY_QUESTIONS;
+  /**
+   * Survey questions with texts and option labels from
+   * `onboarding-survey.questions.<field>` in the requested locale; falls back to the
+   * English config for unsupported locales, missing keys, or no I18nModule.
+   */
+  getSurveyQuestions(lang?: string): readonly OnboardingSurveyQuestion[] {
+    const i18n = this.i18n;
+    const locale = (lang ?? DEFAULT_LOCALE).trim().toLowerCase();
+    if (
+      !i18n ||
+      locale === DEFAULT_LOCALE ||
+      !(SUPPORTED_LOCALES as readonly string[]).includes(locale)
+    ) {
+      return ONBOARDING_SURVEY_QUESTIONS;
+    }
+
+    const translate = (key: string, fallback: string): string => {
+      const value = i18n.translate(`onboarding-survey.questions.${key}`, {
+        lang: locale,
+        defaultValue: fallback,
+      });
+      return typeof value === 'string' ? value : fallback;
+    };
+
+    return ONBOARDING_SURVEY_QUESTIONS.map((question) => ({
+      ...question,
+      text: translate(`${question.field}.text`, question.text),
+      options: question.options.map((option) => ({
+        ...option,
+        label: translate(
+          `${question.field}.options.${option.value}`,
+          option.label,
+        ),
+      })),
+    }));
   }
 
   /**
-   * Scores the answers into a sustainability profile, persists the answers +
-   * segment, applies first-time onboarding side effects (wallet + progress
-   * wheels, idempotent), and returns the computed segment with the wheels.
+   * Scores the answers (all optional) into a sustainability profile,
+   * persists them + segment, applies first-time onboarding side effects
+   * (wallet, progress wheels, per-dimension levels; idempotent), and returns
+   * the computed segment with the wheels.
    */
   async submitSurvey(
     userId: string,
-    answers: OnboardingBaselines,
+    answers: OnboardingSurveyAnswersDto,
   ): Promise<OnboardingSurveyResultDto> {
     const segment = deriveUserSegment(answers);
 

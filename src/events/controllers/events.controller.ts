@@ -47,7 +47,8 @@ export class EventsController {
       'achievements, account events) remain server-only and will be rejected. ' +
       'For APP_SESSION_* events include metadata.sessionId (UUID) — the server builds ' +
       'the idempotency key as {eventType}:{userId}:{sessionId}. ' +
-      'For behavioural events supply an optional idempotencyKey to prevent duplicate writes.',
+      'For behavioural events supply an optional idempotencyKey to prevent duplicate writes. ' +
+      'Supply createdAt to record an event in the past or future (defaults to now).',
   })
   @ApiBody({ type: CreateClientEventDto })
   @ApiResponse({
@@ -65,6 +66,7 @@ export class EventsController {
       eventType: dto.eventType,
       metadata: dto.metadata,
       idempotencyKey: dto.idempotencyKey,
+      createdAt: dto.createdAt,
     });
     return event;
   }

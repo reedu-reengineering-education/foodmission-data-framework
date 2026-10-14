@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MealLog, Prisma, TypeOfMeal } from '@prisma/client';
+import { MealLog, MealLogStatus, Prisma, TypeOfMeal } from '@prisma/client';
 import { MealFlagEventType, MealSwapEventType } from '../../events/event-types';
 import {
   BaseRepository,
@@ -19,9 +19,13 @@ export interface CreateMealLogData {
   eatenOut?: boolean;
   flags?: MealFlagEventType[];
   swaps?: MealSwapEventType[];
+  status?: MealLogStatus;
+  derivedFlags?: MealFlagEventType[];
 }
 
-export type UpdateMealLogData = Partial<Omit<CreateMealLogData, 'userId'>>;
+export type UpdateMealLogData = Partial<
+  Omit<CreateMealLogData, 'userId' | 'status'>
+>;
 
 @Injectable()
 export class MealLogsRepository implements BaseRepository<
@@ -101,6 +105,32 @@ export class MealLogsRepository implements BaseRepository<
       data: data,
       include: { meal: true },
     });
+  }
+
+  /**
+   * DRAFT → CONFIRMED, guarded on the status so concurrent confirms flip it
+   * once. Returns whether this call did the flip.
+   */
+  async confirmDraft(
+    id: string,
+    confirmedAt: Date,
+    facts: { flags: MealFlagEventType[]; swaps: MealSwapEventType[] },
+  ): Promise<boolean> {
+    // The final facts are written in the same guarded update, so a concurrent
+    // confirm can't change a log that is already confirmed.
+    const { count } = await this.prisma.mealLog.updateMany({
+      where: { id, status: MealLogStatus.DRAFT },
+      data: { ...facts, status: MealLogStatus.CONFIRMED, confirmedAt },
+    });
+    return count > 0;
+  }
+
+  /** Removes drafts created before `before`; they never recorded events. */
+  async deleteDraftsCreatedBefore(before: Date): Promise<number> {
+    const { count } = await this.prisma.mealLog.deleteMany({
+      where: { status: MealLogStatus.DRAFT, createdAt: { lt: before } },
+    });
+    return count;
   }
 
   async delete(id: string): Promise<void> {

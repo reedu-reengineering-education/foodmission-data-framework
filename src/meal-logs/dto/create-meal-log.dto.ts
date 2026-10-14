@@ -80,4 +80,48 @@ export class CreateMealLogDto {
   @IsOptionalNotNull()
   @IsBoolean()
   eatenOut?: boolean;
+
+  @ApiPropertyOptional({
+    description:
+      'Stage the log for review instead of submitting it: the backend derives ' +
+      'flags and stores the log as DRAFT without recording any events. Edit it ' +
+      'with PATCH and submit it with POST /meal-logs/:id/confirm. Omit (or ' +
+      'false) to submit directly, as before.',
+    default: false,
+  })
+  @IsOptionalNotNull()
+  @IsBoolean()
+  draft?: boolean;
+}
+
+/**
+ * The reviewed facts of a staged log. Same rules as on create: what is given
+ * replaces what the draft holds; omitted keeps the draft's value.
+ */
+export class MealLogFactsDto {
+  @ApiPropertyOptional({
+    description:
+      "Final flags, replacing the draft's (derived flags not listed are dropped). " +
+      'MEAL_MEAT_CONSUMED cannot be combined with MEAL_MEAT_FREE or MEAL_VEGAN.',
+    enum: [...MEAL_FLAG_EVENT_TYPES],
+    isArray: true,
+  })
+  @IsOptionalNotNull()
+  @IsArray()
+  @ArrayUnique()
+  @ArrayMaxSize(MEAL_FLAG_EVENT_TYPES.length)
+  @IsIn([...MEAL_FLAG_EVENT_TYPES], { each: true })
+  flags?: MealFlagEventType[];
+
+  @ApiPropertyOptional({
+    description: "Final swaps, replacing the draft's",
+    enum: [...MEAL_SWAP_EVENT_TYPES],
+    isArray: true,
+  })
+  @IsOptionalNotNull()
+  @IsArray()
+  @ArrayUnique()
+  @ArrayMaxSize(MEAL_SWAP_EVENT_TYPES.length)
+  @IsIn([...MEAL_SWAP_EVENT_TYPES], { each: true })
+  swaps?: MealSwapEventType[];
 }

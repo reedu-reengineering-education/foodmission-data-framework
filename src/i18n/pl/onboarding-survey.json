@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "locale": "pl"
+  },
+  "questions": {
+    "weeklyMeatConsumption": {
+      "text": "Ile posiłków zawierających mięso zwykle jesz w tygodniu?",
+      "options": {
+        "ZERO_TO_FOUR": "0–4 posiłki w tygodniu",
+        "FIVE_TO_NINE": "5–9 posiłków w tygodniu",
+        "TEN_TO_FOURTEEN": "10–14 posiłków w tygodniu",
+        "FIFTEEN_PLUS": "15+ posiłków w tygodniu"
+      }
+    },
+    "weeklyBeefConsumption": {
+      "text": "Jak często jesz wołowinę?",
+      "options": {
+        "NEVER": "Nigdy",
+        "LESS_THAN_ONCE_PER_WEEK": "Rzadziej niż raz w tygodniu",
+        "ONE_TO_TWO_TIMES_PER_WEEK": "1–2 razy w tygodniu",
+        "THREE_PLUS_TIMES_PER_WEEK": "3+ razy w tygodniu"
+      }
+    },
+    "weeklyLegumeConsumption": {
+      "text": "Jak często jesz rośliny strączkowe (fasolę, soczewicę, ciecierzycę, groch)?",
+      "options": {
+        "NEVER": "Nigdy",
+        "LESS_THAN_ONCE_PER_WEEK": "Rzadziej niż raz w tygodniu",
+        "ONCE_PER_WEEK": "Raz w tygodniu",
+        "SEVERAL_TIMES_PER_WEEK": "Kilka razy w tygodniu",
+        "DAILY": "Codziennie"
+      }
+    },
+    "checksCountryOfOrigin": {
+      "text": "Jak często sprawdzasz kraj pochodzenia produktów spożywczych?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Prawie zawsze"
+      }
+    },
+    "choosesSeasonalProduce": {
+      "text": "Jak często celowo wybierasz sezonowe owoce i warzywa?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Sporadycznie",
+        "SOMETIMES": "Mniej więcej w połowie przypadków",
+        "OFTEN": "Często",
+        "ALWAYS": "Prawie zawsze"
+      }
+    },
+    "considersSustainabilityInfo": {
+      "text": "Jak często przed zakupem żywności bierzesz pod uwagę informacje o wpływie na środowisko lub zrównoważonym rozwoju?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Prawie zawsze"
+      }
+    },
+    "readsIngredientLists": {
+      "text": "Jak często czytasz listę składników przed zakupem pakowanej żywności?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Prawie zawsze"
+      }
+    },
+    "sustainabilityLabelFamiliarity": {
+      "text": "Jak dobrze znasz oznaczenia i deklaracje dotyczące zrównoważonego rozwoju?",
+      "options": {
+        "NOT_FAMILIAR": "Nie znam",
+        "SLIGHTLY_FAMILIAR": "Znam słabo",
+        "MODERATELY_FAMILIAR": "Znam umiarkowanie",
+        "FAMILIAR": "Znam dobrze",
+        "VERY_FAMILIAR": "Znam bardzo dobrze"
+      }
+    },
+    "productionMethodsInfluence": {
+      "text": "Jak często metody produkcji wpływają na Twoje decyzje zakupowe?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Prawie zawsze"
+      }
+    },
+    "weeklyReusableOrRefill": {
+      "text": "Jak często korzystasz z pojemników wielokrotnego użytku lub kupujesz produkty w systemie ponownego napełniania?",
+      "options": {
+        "ZERO_TO_TWO": "0–2 działania w tygodniu",
+        "THREE_TO_SIX": "3–6 działań w tygodniu",
+        "SEVEN_TO_NINE": "7–9 działań w tygodniu",
+        "TEN_PLUS": "10+ działań w tygodniu"
+      }
+    },
+    "checksPackagingDisposal": {
+      "text": "Jak często sprawdzasz na opakowaniu instrukcje dotyczące recyklingu, ponownego użycia lub utylizacji?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Prawie zawsze"
+      }
+    },
+    "weeklyFoodWaste": {
+      "text": "Jak często wyrzucasz jedzenie, które nadaje się jeszcze do spożycia?",
+      "options": {
+        "ZERO": "Nigdy",
+        "ONE_TO_TWO": "1–2 razy w tygodniu",
+        "THREE_TO_FOUR": "3–4 razy w tygodniu",
+        "FIVE_PLUS": "5+ razy w tygodniu"
+      }
+    },
+    "plansMealsBeforeShopping": {
+      "text": "Jak często planujesz posiłki przed zakupami?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Zawsze"
+      }
+    },
+    "usesLeftovers": {
+      "text": "Jak często celowo wykorzystujesz resztki do przygotowania kolejnego posiłku?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Zawsze"
+      }
+    },
+    "weeklyUpfConsumption": {
+      "text": "Jak często spożywasz żywność wysoko przetworzoną, taką jak pakowane przekąski, słodzone napoje, gotowe dania czy przetworzone produkty mięsne?",
+      "options": {
+        "ZERO_TO_THREE": "0–3 razy w tygodniu",
+        "FOUR_TO_NINE": "4–9 razy w tygodniu",
+        "TEN_TO_FOURTEEN": "10–14 razy w tygodniu",
+        "FIFTEEN_PLUS": "15+ razy w tygodniu"
+      }
+    },
+    "wholeGrainFrequency": {
+      "text": "Jak często wybierasz produkty pełnoziarniste?",
+      "options": {
+        "NEVER": "Nigdy",
+        "RARELY": "Rzadko",
+        "SOMETIMES": "Czasami",
+        "OFTEN": "Często",
+        "ALWAYS": "Codziennie"
+      }
+    },
+    "dailyFruitVegServings": {
+      "text": "Ile porcji owoców i warzyw zwykle zjadasz w ciągu dnia?",
+      "options": {
+        "LESS_THAN_ONE": "Mniej niż 1 porcja dziennie",
+        "ONE_TO_TWO": "1–2 porcje dziennie",
+        "THREE_TO_FOUR": "3–4 porcje dziennie",
+        "FIVE_PLUS": "5+ porcji dziennie"
+      }
+    }
+  }
+}

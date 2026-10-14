@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
 import { EventsModule } from '../events/events.module';
+import { TranslationsModule } from '../translations/translations.module';
 import { GamificationWalletService } from './services/gamification-wallet.service';
 import { CompletionRewardService } from './services/completion-reward.service';
 import { COMPLETION_REWARD_AWARDER } from './completion-reward.types';
@@ -10,9 +11,11 @@ import { BadgeService } from './services/badge.service';
 import { ProgressWheelService } from './services/progress-wheel.service';
 import { OnboardingSurveyService } from './services/onboarding-survey.service';
 import { RewardService } from './services/reward.service';
+import { DimensionLevelService } from './services/dimension-level.service';
+import { LearningProgressService } from './services/learning-progress.service';
 
 @Module({
-  imports: [DatabaseModule, EventsModule],
+  imports: [DatabaseModule, EventsModule, TranslationsModule],
   providers: [
     GamificationWalletService,
     CompletionRewardService,
@@ -28,6 +31,8 @@ import { RewardService } from './services/reward.service';
     ProgressWheelService,
     OnboardingSurveyService,
     RewardService,
+    DimensionLevelService,
+    LearningProgressService,
   ],
   exports: [
     GamificationWalletService,
@@ -39,6 +44,8 @@ import { RewardService } from './services/reward.service';
     ProgressWheelService,
     OnboardingSurveyService,
     RewardService,
+    DimensionLevelService,
+    LearningProgressService,
   ],
 })
 export class GamificationModule {}

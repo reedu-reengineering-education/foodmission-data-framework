@@ -140,6 +140,53 @@ describe('rulesCoverageSchema counter.where', () => {
 
     expect(error).toBeUndefined();
   });
+
+  it('accepts before_start as a counter window but not as a rule window', () => {
+    const missionWith = (
+      ruleWindow: Record<string, unknown>,
+      counterWindow: Record<string, unknown>,
+    ) => ({
+      ...BASE_DOC,
+      missions: [
+        {
+          code: 'M.B1.3',
+          shape: 'bounded_max_with_fail',
+          rule: {
+            window: ruleWindow,
+            counters: {
+              previous: {
+                event: 'MEAL_MEAT_CONSUMED',
+                window: counterWindow,
+              },
+            },
+            target: 'previous >= 1',
+            progress: 'min(previous, 1)',
+            notes: ['test'],
+          },
+        },
+      ],
+      challenges: [{ code: 'CH.B1.1', shape: 'undecided' }],
+    });
+    const validate = (doc: unknown) =>
+      rulesCoverageSchema.validate(doc, { abortEarly: false }).error;
+
+    expect(
+      validate(
+        missionWith(
+          { type: 'since_start', days: 7 },
+          { type: 'before_start', days: 7 },
+        ),
+      ),
+    ).toBeUndefined();
+    expect(
+      validate(
+        missionWith(
+          { type: 'before_start', days: 7 },
+          { type: 'since_start', days: 7 },
+        ),
+      ),
+    ).toBeDefined();
+  });
 });
 
 describe('rulesCoverageSchema expression identifiers', () => {
@@ -188,5 +235,119 @@ describe('rulesCoverageSchema expression identifiers', () => {
   ])('rejects an unknown counter in %s', (field, expression) => {
     const { error } = validate({ [field]: expression });
     expect(error?.message).toContain('unknown counters: quizzez');
+  });
+});
+
+describe('rulesCoverageSchema counter.groupBy and where arrays', () => {
+  function validate(counter: Record<string, unknown>) {
+    return rulesCoverageSchema.validate(
+      {
+        ...BASE_DOC,
+        missions: [
+          {
+            code: 'M.B1.1',
+            shape: 'count_at_least',
+            rule: {
+              window: { type: 'since_start', days: 7 },
+              counters: { reads: counter },
+              target: 'reads >= 1',
+              progress: 'min(reads, 1)',
+              notes: ['test'],
+            },
+          },
+        ],
+        challenges: [{ code: 'CH.B1.1', shape: 'undecided' }],
+      },
+      { abortEarly: false, allowUnknown: false },
+    );
+  }
+
+  const facts = {
+    anyOf: ['SHOPPING_ORIGIN_CHECKED', 'SHOPPING_SEASONAL_CHOSEN'],
+  };
+
+  it('accepts groupBy with require and with of/values', () => {
+    expect(
+      validate({
+        ...facts,
+        groupBy: {
+          key: 'metadata.productId',
+          minDistinct: 2,
+          require: ['SHOPPING_ORIGIN_CHECKED'],
+        },
+      }).error,
+    ).toBeUndefined();
+    expect(
+      validate({
+        event: 'NUTRITION_RAINBOW_COLOURS_LOGGED',
+        groupBy: {
+          key: 'metadata.dayBucket',
+          of: 'metadata.colours',
+          values: ['GREEN', 'RED'],
+          minDistinct: 5,
+        },
+      }).error,
+    ).toBeUndefined();
+  });
+
+  it('accepts an array of where values', () => {
+    expect(
+      validate({
+        event: 'MEAL_LOGGED',
+        where: { 'metadata.mealType': ['BREAKFAST', 'LUNCH'] },
+      }).error,
+    ).toBeUndefined();
+  });
+
+  it.each([
+    [
+      'groupBy with distinctBy',
+      {
+        ...facts,
+        distinctBy: 'metadata.productId',
+        groupBy: { key: 'metadata.productId', minDistinct: 2 },
+      },
+    ],
+    ['groupBy without key', { ...facts, groupBy: { minDistinct: 2 } }],
+    [
+      'minDistinct below 1',
+      { ...facts, groupBy: { key: 'metadata.productId', minDistinct: 0 } },
+    ],
+    [
+      'require together with of',
+      {
+        ...facts,
+        groupBy: {
+          key: 'metadata.productId',
+          minDistinct: 1,
+          of: 'metadata.x',
+          require: ['SHOPPING_ORIGIN_CHECKED'],
+        },
+      },
+    ],
+    [
+      'values without of',
+      {
+        ...facts,
+        groupBy: { key: 'metadata.productId', minDistinct: 1, values: ['A'] },
+      },
+    ],
+    ['an empty where array', { ...facts, where: { 'metadata.x': [] } }],
+  ])('rejects %s', (_label, counter) => {
+    expect(validate(counter).error).toBeDefined();
+  });
+
+  it('rejects require naming an event the counter does not match', () => {
+    const { error } = validate({
+      ...facts,
+      groupBy: {
+        key: 'metadata.productId',
+        minDistinct: 2,
+        require: ['SHOPPING_CERTIFICATION_CHOSEN'],
+      },
+    });
+    expect(error?.message).toContain(
+      'groupBy.require names events the counter does not match',
+    );
   });
 });

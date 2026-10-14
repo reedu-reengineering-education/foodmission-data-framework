@@ -46,6 +46,7 @@ export async function loadRewardsByLevel(
 export interface FoodFactSeedRow {
   code: string;
   topicCode: string;
+  title: string;
   body: string;
   source: string | null;
   level: ContentLevel | string;
@@ -107,6 +108,7 @@ export async function seedFoodFacts(prisma: PrismaClient) {
       where: { code: row.code },
       update: {
         topicId,
+        title: row.title,
         body: row.body,
         source: row.source,
         level,
@@ -119,6 +121,7 @@ export async function seedFoodFacts(prisma: PrismaClient) {
       create: {
         code: row.code,
         topicId,
+        title: row.title,
         body: row.body,
         source: row.source,
         level,
