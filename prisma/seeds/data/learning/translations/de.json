@@ -1062,7 +1062,7 @@
     },
     "Q1.1.3": {
       "title": "Ernährung und Flächenbedarf",
-      "question": "Du hast die Wahl zwischen zwei wöchentlichen Ernährungsweisen: Ernährungsweise A beinhaltet fast täglich rotes Fleisch. Ernährungsweise B orientiert sich am mediterranen Ernährungsmuster mit mehr Hülsenfrüchten, Gemüse und moderaten Fleischmengen. Welche Ernährungsweise erfordert voraussichtlich insgesamt weniger landwirtschaftliche Anbaufläche?",
+      "question": "Du hast die Wahl zwischen zwei wöchentlichen Ernährungsweisen:\nErnährungsweise A beinhaltet fast täglich rotes Fleisch.\nErnährungsweise B orientiert sich am mediterranen Ernährungsmuster mit mehr Hülsenfrüchten, Gemüse und moderaten Fleischmengen.\nWelche Ernährungsweise erfordert voraussichtlich insgesamt weniger landwirtschaftliche Anbaufläche?",
       "explanation": "Die Produktion tierischer Lebensmittel erfordert in der Regel mehr Land als die Produktion pflanzlicher Lebensmittel. Eine Ernährung nach mediterranem Vorbild wird oft mit einem geringeren Flächenbedarf in Verbindung gebracht, gewährleistet aber dennoch eine ausreichende Nährstoffversorgung.",
       "options": {
         "A": "Ernährungsplan A, da Fleisch sehr nährstoffreich ist",
@@ -1106,7 +1106,7 @@
     "Q1.2.2": {
       "title": "Proteinmix der Woche",
       "question": "Welche wöchentliche Proteinstrategie entspricht am ehesten den Empfehlungen der WHO?",
-      "explanation": "Die WHO betont die Bedeutung einer abwechslungsreichen Ernährung und einer breiteren Auswahl an Eiweißquellen",
+      "explanation": "Die WHO hebt eine abwechslungsreiche Ernährung und eine breitere Auswahl an Eiweißquellen als vielversprechenden Ansatz für Gesundheit und Nachhaltigkeit gleichermaßen hervor.",
       "options": {
         "A": "Jeden Tag Rindfleisch",
         "B": "Eine Mischung aus Hülsenfrüchten, Fisch, Eiern und gelegentlich Fleisch",
@@ -1304,7 +1304,7 @@
     "Q2.2.5": {
       "title": "Wassersparende Mahlzeiten",
       "question": "Welche Mahlzeit hat in der Regel den geringsten Wasser-Fußabdruck?",
-      "explanation": "Pflanzliche Mahlzeiten erfordern in der Regel weniger Wasser",
+      "explanation": "Pflanzliche Mahlzeiten erfordern in der Regel weniger Wasserressourcen als Mahlzeiten, bei denen Fleisch von Wiederkäuern im Mittelpunkt steht.",
       "options": {
         "A": "Kichererbsen-Gemüse-Curry",
         "B": "Rindfleisch-Lasagne",
@@ -1392,7 +1392,7 @@
     "Q2.4.3": {
       "title": "Emissionen senken ohne neue Lebensmittel",
       "question": "Welche Maßnahme senkt die Emissionen, ohne dass du deine Einkaufsgewohnheiten ändern musst?",
-      "explanation": "Lebensmittelabfälle verursachen erhebliche Treibhausgasemissionen, da alle die",
+      "explanation": "Lebensmittelabfälle verursachen erhebliche Treibhausgasemissionen, da alle für die Herstellung der Lebensmittel eingesetzten Ressourcen verloren gehen, wenn sie weggeworfen werden.",
       "options": {
         "A": "Weniger Lebensmittel verschwenden",
         "B": "Seltener einkaufen",
@@ -1479,7 +1479,7 @@
     },
     "Q3.1.1": {
       "title": "Verarbeitung und Nachhaltigkeit",
-      "question": "Du vergleichst zwei proteinreiche Mahlzeiten: einen Bohneneintopf aus einfachen Zutaten und pflanzliche Fleischnuggets. Welche Schlussfolgerung lässt sich anhand der vorliegenden Beweise am besten begründen?",
+      "question": "Du vergleichst zwei proteinreiche Mahlzeiten:\nBohneneintopf aus einfachen Zutaten\nPflanzliche Fleischnuggets\nWelche Schlussfolgerung lässt sich anhand der vorliegenden Beweise am besten begründen?",
       "explanation": "Die Lebensmittelverarbeitung kann zwar den Energieverbrauch erhöhen, aber sie kann auch die Haltbarkeit verlängern und Lebensmittelabfälle reduzieren. Die Nachhaltigkeit hängt vom gesamten Lebenszyklus ab und nicht allein von der Verarbeitungsstufe.",
       "options": {
         "A": "Der Bohneneintopf ist gesünder und nachhaltiger",
@@ -1589,7 +1589,7 @@
     },
     "Q3.3.1": {
       "title": "Integrierter Pflanzenschutz",
-      "question": "Du hast die Wahl zwischen zwei Apfelprodukten: Produkt A: „Hergestellt unter Anwendung des integrierten Pflanzenschutzes (IPM)“ Produkt B: Keine Angaben zur Anbaumethode Was lässt die Angabe „IPM“ höchstwahrscheinlich vermuten?",
+      "question": "Du hast die Wahl zwischen zwei Apfelprodukten:\nProdukt A: „Hergestellt unter Anwendung des integrierten Pflanzenschutzes (IPM)“\nProdukt B: Keine Angaben zur Anbaumethode\nWas lässt die Angabe „IPM“ höchstwahrscheinlich vermuten?",
       "explanation": "Der integrierte Pflanzenschutz kombiniert biologische, physikalische, kulturspezifische und, falls erforderlich, chemische Maßnahmen, um Schädlingsschäden zu reduzieren und gleichzeitig die Auswirkungen auf Umwelt und Gesundheit so gering wie möglich zu halten.",
       "options": {
         "A": "Auf dem Bauernhof werden niemals Pestizide eingesetzt",
@@ -1611,7 +1611,7 @@
     },
     "Q3.3.3": {
       "title": "Kaffee aus Schattenanbau",
-      "question": "Du hast die Wahl zwischen zwei Kaffeeprodukten: Kaffee A: Im Schattenanbau in einem Agroforstsystem angebaut; Kaffee B: Auf einer Monokultur-Plantage angebaut. Warum könnten manche Verbraucher Kaffee A bevorzugen?",
+      "question": "Du hast die Wahl zwischen zwei Kaffeeprodukten:\nKaffee A: Im Schattenanbau in einem Agroforstsystem angebaut\nKaffee B: Auf einer Monokultur-Plantage angebaut\nWarum könnten manche Verbraucher Kaffee A bevorzugen?",
       "explanation": "Die Agroforstwirtschaft verbindet den Anbau von Bäumen mit der landwirtschaftlichen Produktion. Diese Systeme können die Bodengesundheit, die Artenvielfalt und die Kohlenstoffbindung verbessern.",
       "options": {
         "A": "Es schmeckt immer besser",
@@ -1633,7 +1633,7 @@
     },
     "Q3.3.5": {
       "title": "Klimafreundliche Landwirtschaft",
-      "question": "Du hast die Wahl zwischen zwei Reisprodukten: Produkt A: Hergestellt im Rahmen klimafreundlicher Landwirtschaft Produkt B: Keine Angaben zur Anbaumethode Was ist das Hauptziel der klimafreundlichen Landwirtschaft?",
+      "question": "Du hast die Wahl zwischen zwei Reisprodukten:\nProdukt A: Hergestellt im Rahmen klimafreundlicher Landwirtschaft\nProdukt B: Keine Angaben zur Anbaumethode\nWas ist das Hauptziel der klimafreundlichen Landwirtschaft?",
       "explanation": "Die klimafreundliche Landwirtschaft zielt darauf ab, die Produktivität zu steigern, die Widerstandsfähigkeit gegenüber dem Klimawandel zu stärken und die Treibhausgasemissionen zu senken.",
       "options": {
         "A": "Maximierung der Erträge unabhängig von den Auswirkungen auf die Umwelt",
@@ -1667,7 +1667,7 @@
     "Q3.4.3": {
       "title": "Nachhaltiges Fischfutter",
       "question": "Du hast die Wahl zwischen zwei Fischprodukten. Das eine stammt von einem Aquakulturunternehmen, das Fischfutter aus Wildfisch teilweise durch Insektenmehl und Algenöle ersetzt. Was ist der wichtigste Nachhaltigkeitsgrund für diese Entscheidung?",
-      "explanation": "In der Aquakultur werden zunehmend alternative Futtermittelzutaten wie Insektenmehl, Algenöle und Einzellerenproteine eingesetzt, um die Abhängigkeit von Wildfisch zu verringern.",
+      "explanation": "In der Aquakultur werden zunehmend alternative Futtermittelzutaten wie Insektenmehl, Algenöle und Einzellerproteine eingesetzt, um die Abhängigkeit von Wildfischbeständen zu verringern.",
       "options": {
         "A": "Es garantiert niedrigere Preise",
         "B": "Dies trägt dazu bei, den Druck auf die Wildfischbestände, die als Futter verwendet werden, zu verringern",
@@ -1699,7 +1699,7 @@
     },
     "Q3.5.1": {
       "title": "Fairtrade-Siegel",
-      "question": "Du hast die Wahl zwischen zwei Schokoladentafeln mit ähnlichen Nährwert- und Umweltangaben. Eine davon trägt das Fairtrade-Siegel. Welchen zusätzlichen Aspekt der Nachhaltigkeit soll das Fairtrade-Siegel in erster Linie berücksichtigen?",
+      "question": "Du hast die Wahl zwischen zwei Schokoladentafeln mit ähnlichen Nährwert- und Umweltangaben. Eine davon trägt das Fairtrade-Siegel.\nWelchen zusätzlichen Aspekt der Nachhaltigkeit soll das Fairtrade-Siegel in erster Linie berücksichtigen?",
       "explanation": "Fairtrade hat sich zum Ziel gesetzt, die Lebensgrundlagen durch faire Preise, Arbeitsschutz, Gemeindeentwicklung und bessere Handelsbedingungen für Produzenten und Arbeitnehmer zu verbessern.",
       "options": {
         "A": "Geringere Treibhausgasemissionen",
@@ -1721,7 +1721,7 @@
     },
     "Q3.5.3": {
       "title": "Zertifizierte Meeresfrüchte",
-      "question": "Du kaufst Meeresfrüchte und stellst fest, dass ein Produkt aus einer zertifizierten Fischerei stammt, die die Arbeitsbedingungen überwacht, während zu einem anderen Produkt keine Angaben gemacht werden. Warum könnten manche Verbraucher das zertifizierte Produkt bevorzugen?",
+      "question": "Du kaufst Meeresfrüchte und stellst fest, dass ein Produkt aus einer zertifizierten Fischerei stammt, die die Arbeitsbedingungen überwacht, während zu einem anderen Produkt keine Angaben gemacht werden.\nWarum könnten manche Verbraucher das zertifizierte Produkt bevorzugen?",
       "explanation": "Die Fischerei gilt als ein Sektor mit hohem Risiko für Arbeitsausbeutung. Zertifizierungsprogramme sehen zunehmend die Überwachung der Arbeits- und Menschenrechtsbedingungen vor.",
       "options": {
         "A": "Zertifizierte Meeresfrüchte sind gesünder",
@@ -1733,7 +1733,7 @@
     "Q3.5.4": {
       "title": "Kleinbauern unterstützen",
       "question": "Auf einer Kaffeeverpackung wird die Unterstützung von Kleinbauern hervorgehoben. Inwiefern ist diese Information für die Nachhaltigkeit relevant?",
-      "explanation": "Soziale Nachhaltigkeit umfasst einen fairen Zugang zu Märkten, re",
+      "explanation": "Soziale Nachhaltigkeit umfasst einen fairen Zugang zu Märkten, Ressourcen und wirtschaftlichen Chancen für Erzeuger, einschließlich Kleinbauern.",
       "options": {
         "A": "Kleinbauern haben stets geringere Auswirkungen auf die Umwelt",
         "B": "Zu nachhaltigen Ernährungssystemen gehört eine gerechte Verteilung der wirtschaftlichen Vorteile",
@@ -1799,7 +1799,7 @@
     "Q4.1.5": {
       "title": "EU-Verpackungshierarchie",
       "question": "Ein Supermarkt möchte die Nachhaltigkeit seiner Verpackungen verbessern und gleichzeitig die Lebensmittelqualität gewährleisten. Welche Strategie steht am besten im Einklang mit der EU-Verpackungshierarchie?",
-      "explanation": "Die EU-Verpackungshierarchie sieht vor, zunächst unnötige Verpackungen zu reduzieren, dann Verpackungen nach Möglichkeit wiederzuverwenden und schließlich Materialien zu recyceln. Das Ziel besteht darin, Produkte zu schützen und gleichzeitig den Abfall zu minimieren.",
+      "explanation": "Die EU-Verpackungshierarchie sieht vor, zunächst unnötige Verpackungen zu reduzieren, dann Verpackungen nach Möglichkeit wiederzuverwenden und schließlich Materialien zu recyceln. Das Ziel besteht darin, Produkte zu schützen und gleichzeitig den Ressourcenverbrauch zu minimieren.",
       "options": {
         "A": "Alle Verpackungen durch kompostierbare Einwegmaterialien ersetzen",
         "B": "Zunächst unnötige Verpackungen reduzieren, dann Wiederverwendung und Recycling fördern",
@@ -1809,7 +1809,7 @@
     },
     "Q4.2.1": {
       "title": "Mehrwegbehälter für Essen zum Mitnehmen",
-      "question": "Du hast zwei Optionen für Speisen zum Mitnehmen: Option A: Ein Einwegbehälter, der recycelt werden kann. Option B: Ein wiederverwendbarer Behälter, der an das Restaurant zurückgegeben werden muss. Welcher Faktor ist am wichtigsten, um zu entscheiden, ob Option B tatsächlich nachhaltiger ist?",
+      "question": "Du hast zwei Optionen für Speisen zum Mitnehmen:\nOption A: Ein Einwegbehälter, der recycelt werden kann.\nOption B: Ein wiederverwendbarer Behälter, der an das Restaurant zurückgegeben werden muss.\nWelcher Faktor ist am wichtigsten, um zu entscheiden, ob Option B tatsächlich nachhaltiger ist?",
       "explanation": "Wiederverwendbare Verpackungen sind erst dann ökologisch vorteilhaft, wenn sie ihren ökologischen Break-even-Punkt (e-BEP) erreicht haben; das bedeutet, dass sie so oft wiederverwendet werden müssen, dass die anfänglichen Auswirkungen ihrer Herstellung ausgeglichen werden.",
       "options": {
         "A": "Die Entfernung, die Kunden zurücklegen müssen, um den Behälter zurückzugeben",
@@ -1831,7 +1831,7 @@
     },
     "Q4.2.3": {
       "title": "Verpackungen beim Lieferdienst",
-      "question": "Du vergleichst zwei Essenslieferdienste: Dienst A verwendet Einwegverpackungen, die recycelt werden. Dienst B verwendet wiederverwendbare Behälter, die eingesammelt, gereinigt und wiederverwendet werden. Welche Aussage ist am zutreffendsten?",
+      "question": "Du vergleichst zwei Essenslieferdienste:\nDienst A verwendet Einwegverpackungen, die recycelt werden.\nDienst B verwendet wiederverwendbare Behälter, die eingesammelt, gereinigt und wiederverwendet werden.\nWelche Aussage ist am zutreffendsten?",
       "explanation": "Wiederverwendbare Systeme können Einwegsysteme in ihrer Leistung übertreffen, doch hängt ihre Leistung von Faktoren wie Rücklaufquoten, Transport, Reinigung und der Anzahl der Wiederverwendungszyklen ab.",
       "options": {
         "A": "Service B ist immer die bessere Wahl",
@@ -2095,7 +2095,7 @@
     },
     "Q6.1.2": {
       "title": "Protein-Mittagessen im Vergleich",
-      "question": "Zwei Mittagessen enthalten eine ähnliche Menge an Eiweiß: Linsen-Quinoa-Salat, Sandwich mit Fleischprodukten. Welche Aussage ist am zutreffendsten?",
+      "question": "Zwei Mittagessen enthalten eine ähnliche Menge an Eiweiß:\nLinsen-Quinoa-Salat\nSandwich mit Fleischprodukten\nWelche Aussage ist am zutreffendsten?",
       "explanation": "Proteinreiche Lebensmittel unterscheiden sich hinsichtlich der darin enthaltenen Nährstoffe wie Ballaststoffe, Natrium, gesättigte Fettsäuren, Vitamine und Mineralstoffe. Auf die Gesamtzusammensetzung der Proteine kommt es an.",
       "options": {
         "A": "Sie sind ernährungsphysiologisch identisch, da ihr Proteingehalt ähnlich ist.",
@@ -2117,7 +2117,7 @@
     },
     "Q6.1.4": {
       "title": "Angaben zum Proteingehalt",
-      "question": "Du vergleichst zwei Lebensmittel: Produkt A: „Proteinquelle“ Produkt B: „Proteinreich“ Welche Schlussfolgerung kannst du daraus ziehen?",
+      "question": "Du vergleichst zwei Lebensmittel:\nProdukt A: „Proteinquelle“\nProdukt B: „Proteinreich“\nWelche Schlussfolgerung kannst du daraus ziehen?",
       "options": {
         "A": "Produkt B enthält zwangsläufig doppelt so viel Eiweiß",
         "B": "Produkt A ist weniger gesund",
@@ -2150,8 +2150,8 @@
     },
     "Q6.2.2": {
       "title": "Fettprofil von Mittagessen",
-      "question": "Du vergleichst zwei Mittagessen, die ähnliche Mengen an Eiweiß enthalten: Linsen-Walnuss-Salat, Sandwich mit Fleischprodukten. Welche Aussage ist am zutreffendsten?",
-      "explanation": "Pflanzliches Protein",
+      "question": "Du vergleichst zwei Mittagessen, die ähnliche Mengen an Eiweiß enthalten:\nLinsen-Walnuss-Salat\nSandwich mit Fleischprodukten\nWelche Aussage ist am zutreffendsten?",
+      "explanation": "Pflanzliche Proteinquellen enthalten tendenziell mehr ungesättigte und weniger gesättigte Fette als viele Produkte aus rotem und verarbeitetem Fleisch. Zudem gehen sie im Allgemeinen mit geringeren Umweltauswirkungen einher.",
       "options": {
         "A": "Beide Mahlzeiten sind ernährungsphysiologisch gleichwertig, da sie Eiweiß enthalten.",
         "B": "Das Sandwich mit Fleischprodukten ist gesünder, da es tierisches Eiweiß enthält.",
@@ -2216,7 +2216,7 @@
     },
     "Q6.3.3": {
       "title": "Angabe „Ohne Zuckerzusatz“",
-      "question": "Du vergleichst zwei Produkte: Produkt A: „Ohne Zuckerzusatz“ Produkt B: Normale Version Was lässt sich aus der Angabe auf Produkt A schließen?",
+      "question": "Du vergleichst zwei Produkte:\nProdukt A: „Ohne Zuckerzusatz“\nProdukt B: Normale Version\nWas lässt sich aus der Angabe auf Produkt A schließen?",
       "explanation": "Produkte mit der Kennzeichnung „ohne Zuckerzusatz“ können dennoch natürlich vorkommenden Zucker enthalten. Nach EU-Recht müssen Produkte gegebenenfalls den Hinweis „enthält natürlich vorkommenden Zucker“ tragen.",
       "options": {
         "A": "Es enthält keinen Zucker.",
@@ -2305,7 +2305,7 @@
     "Q6.5.1": {
       "title": "Ballaststoffreiches Frühstück",
       "question": "Du möchtest mehr Ballaststoffe zu dir nehmen. Welches Frühstück ist dafür am besten geeignet?",
-      "explanation": "Hafer, Obst und Nüsse sind alle wichtig",
+      "explanation": "Hafer, Obst und Nüsse sind alle wichtige Ballaststoffquellen. Die Kombination verschiedener ballaststoffreicher Lebensmittel hilft, die Ballaststoffzufuhr zu erhöhen, und liefert gleichzeitig Vitamine, Mineralstoffe und andere wertvolle Nährstoffe.",
       "options": {
         "A": "Weißer Toast mit Schokoladenaufstrich",
         "B": "Haferflocken mit Obst und Nüssen",
@@ -2316,7 +2316,7 @@
     "Q6.5.2": {
       "title": "Ballaststoffe in Nudeln",
       "question": "Du hast die Wahl zwischen zwei Nudelprodukten. Welche Variante enthält wahrscheinlich mehr Ballaststoffe?",
-      "explanation": "Vollkornprodukte enthalten mehr der natürlichen Ballaststoffe des Getreides als Produkte aus raffiniertem Getreide. Vollkornnudeln sind im Allgemeinen eine bessere",
+      "explanation": "Vollkornprodukte enthalten mehr der natürlichen Ballaststoffe des Getreides als Produkte aus raffiniertem Getreide. Vollkornnudeln sind im Allgemeinen eine bessere Ballaststoffquelle als weiße Nudeln aus raffiniertem Mehl.",
       "options": {
         "A": "Weiße, raffinierte Nudeln",
         "B": "Vollkornnudeln",
@@ -2371,7 +2371,7 @@
     "Q6.6.2": {
       "title": "Vitamin D aus der Nahrung",
       "question": "Jemand möchte über die Ernährung einen ausreichenden Vitamin-D-Spiegel aufrechterhalten. Welche Mahlzeit trägt am ehesten dazu bei?",
-      "explanation": "Naturkost",
+      "explanation": "Natürliche Vitamin-D-Quellen in Lebensmitteln sind relativ begrenzt. Fetter Fisch wie Lachs, Milch und einige Pilze gehören zu den Nahrungsquellen, die zur Vitamin-D-Zufuhr beitragen können.",
       "options": {
         "A": "Weißer Reis mit Gemüse",
         "B": "Lachs mit Pilzen und Milch",
@@ -2403,7 +2403,7 @@
     },
     "Q6.6.5": {
       "title": "Kochen und Vitamine",
-      "question": "Du hast die Wahl zwischen zwei Beilagen: Gedünstetes Gemüse – Gemüse, das sehr lange bei hoher Temperatur gegart wurde. Bei welcher Variante bleiben die Vitamine eher erhalten?",
+      "question": "Du hast die Wahl zwischen zwei Beilagen:\nGedünstetes Gemüse\nGemüse, das sehr lange bei hoher Temperatur gegart wurde\nBei welcher Variante bleiben die Vitamine eher erhalten?",
       "explanation": "Zu langes Garen kann den Gehalt einiger Vitamine verringern. Die WHO empfiehlt, Obst und Gemüse nicht zu lange zu garen, um wichtige Nährstoffe zu erhalten.",
       "options": {
         "A": "Gedämpftes Gemüse",
@@ -2506,7 +2506,7 @@
     },
     "M.A2.3": {
       "title": "Käufer mit vielfältigen Kaufmotiven",
-      "goal": "Berücksichtige bei mindestens drei Kaufentscheidungen zwei verschiedene Umweltaspekte, bevor du dich für ein Produkt entscheidest. Beispiele: Landnutzung + CO₂-Fußabdruck, CO₂-Fußabdruck + Transportweg, Wasserverbrauch + Produktionsmethode",
+      "goal": "Berücksichtige bei mindestens drei Kaufentscheidungen zwei verschiedene Umweltaspekte, bevor du dich für ein Produkt entscheidest. Beispiele:\nLandnutzung + CO₂-Fußabdruck\nCO₂-Fußabdruck + Transportweg\nWasserverbrauch + Produktionsmethode",
       "whyItMatters": "Nachhaltigkeit im Lebensmittelbereich ist ein vielschichtiges Thema."
     },
     "M.A2.4": {
@@ -2516,7 +2516,7 @@
     },
     "M.A2.5": {
       "title": "Bewusste Kaufgewohnheiten",
-      "goal": "Bevor du ein Lebensmittel kaufst, solltest du mindestens drei der folgenden Aspekte berücksichtigen: Herkunftsland, Herstellungsverfahren, Zertifizierung, Saisonabhängigkeit und Transportweg. Wende diesen Prozess auf mindestens vier Lebensmittel an.",
+      "goal": "Bevor du ein Lebensmittel kaufst, solltest du mindestens drei der folgenden Aspekte berücksichtigen:\nHerkunftsland\nHerstellungsverfahren\nZertifizierung\nSaisonabhängigkeit\nTransportweg\nWende diesen Prozess auf mindestens vier Lebensmittel an.",
       "whyItMatters": "Kein einzelner Umweltindikator reicht aus, um die Nachhaltigkeit zu bestimmen."
     },
     "M.A3.1": {
@@ -2691,7 +2691,7 @@
     },
     "M.B3.5": {
       "title": "Erster Verarbeitungs-Swap",
-      "goal": "Protokolliere 2 Umstellungen im Zusammenhang mit verarbeiteten Lebensmitteln. Mögliche Maßnahmen: Zuckerhaltiges Getränk → Wasser, zuckerhaltiger Snack → Obst oder Nüsse, zuckerhaltiges Müsli → Haferflocken/Obst, Fertiggericht → selbst zubereitetes Essen, verarbeitetes Fleisch → Hülsenfrüchte",
+      "goal": "Protokolliere 2 Umstellungen im Zusammenhang mit verarbeiteten Lebensmitteln. Mögliche Maßnahmen:\nZuckerhaltiges Getränk → Wasser\nZuckerhaltiger Snack → Obst oder Nüsse\nZuckerhaltiges Müsli → Haferflocken/Obst\nFertiggericht → selbst zubereitetes Essen\nVerarbeitetes Fleisch → Hülsenfrüchte",
       "whyItMatters": "Schon kleine Änderungen können die Abhängigkeit von stark verarbeiteten Lebensmitteln verringern und gleichzeitig die Nährstoffqualität verbessern sowie die Umweltbelastung senken."
     },
     "M.B4.1": {
@@ -2776,7 +2776,7 @@
     },
     "M.I1.2": {
       "title": "Erklimme die Proteinleiter",
-      "goal": "Pro Erhebungsstufe mindestens einen Austausch vermerken: Rindfleisch → Schweinefleisch oder Rindfleisch → Hähnchenfleisch; Rindfleisch → Hülsenfrüchte; Schweinefleisch → Hülsenfrüchte oder Hähnchenfleisch → Hülsenfrüchte. Ersetze nach und nach Proteine mit höherer Umweltbelastung durch Alternativen mit geringerer Umweltbelastung.",
+      "goal": "Protokolliere mindestens einen Austausch pro Belastungsstufe:\nRindfleisch → Schweinefleisch oder Rindfleisch → Hähnchenfleisch\nRindfleisch → Hülsenfrüchte\nSchweinefleisch → Hülsenfrüchte oder Hähnchenfleisch → Hülsenfrüchte\nErsetze nach und nach Proteine mit höherer Umweltbelastung durch Alternativen mit geringerer Umweltbelastung.",
       "whyItMatters": "Nicht alle Substitutionen von Proteinen haben denselben ökologischen Nutzen. Der Umstieg von Rindfleisch auf Hülsenfrüchte führt in der Regel zu größeren ökologischen Einsparungen als der Umstieg von Rindfleisch auf Schweinefleisch."
     },
     "M.I1.3": {
@@ -2830,7 +2830,7 @@
     },
     "M.I3.3": {
       "title": "Woche der Maßnahmen zur Verringerung der Rechenlast",
-      "goal": "Protokolliere 4 verarbeitungsbezogene Austauschmaßnahmen. Mögliche Maßnahmen: Zuckerhaltiges Getränk → Wasser; zuckerhaltiger Snack → Obst oder Nüsse; zuckerhaltiges Müsli → Haferflocken/Obst; Fertiggericht → selbstgekochtes Essen; verarbeitetes Fleisch → Hülsenfrüchte",
+      "goal": "Protokolliere 4 verarbeitungsbezogene Austauschmaßnahmen. Mögliche Maßnahmen:\nZuckerhaltiges Getränk → Wasser\nZuckerhaltiger Snack → Obst oder Nüsse\nZuckerhaltiges Müsli → Haferflocken/Obst\nFertiggericht → selbstgekochtes Essen\nVerarbeitetes Fleisch → Hülsenfrüchte",
       "whyItMatters": "Bewusstsein gewinnt erst dann an Bedeutung, wenn es sich in konkreten Ernährungsentscheidungen niederschlägt."
     },
     "M.I3.4": {

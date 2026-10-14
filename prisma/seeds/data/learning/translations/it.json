@@ -1062,7 +1062,7 @@
     },
     "Q1.1.3": {
       "title": "Diete e uso del suolo",
-      "question": "Devi scegliere tra due regimi alimentari settimanali: la dieta A prevede il consumo di carne rossa quasi ogni giorno; la dieta B segue un modello di tipo mediterraneo, con un maggiore consumo di legumi e verdure e quantità moderate di carne. Quale delle due diete si ritiene, in generale, che richieda meno terreno agricolo?",
+      "question": "Devi scegliere tra due regimi alimentari settimanali:\nLa dieta A prevede il consumo di carne rossa quasi ogni giorno.\nLa dieta B segue un modello di tipo mediterraneo, con un maggiore consumo di legumi e verdure e quantità moderate di carne.\nQuale delle due diete si ritiene, in generale, che richieda meno terreno agricolo?",
       "explanation": "La produzione di alimenti di origine animale richiede in genere una superficie maggiore rispetto a quella necessaria per la produzione di alimenti di origine vegetale. Le diete di tipo mediterraneo sono spesso associate a un minore fabbisogno di terreno, pur garantendo un apporto nutrizionale adeguato.",
       "options": {
         "A": "La dieta A, poiché la carne è ricca di sostanze nutritive",
@@ -1106,7 +1106,7 @@
     "Q1.2.2": {
       "title": "Le proteine della settimana",
       "question": "Quale strategia proteica settimanale è più in linea con le raccomandazioni dell’OMS?",
-      "explanation": "L’OMS sottolinea l’importanza della varietà alimentare e di un mix più ampio di proteine",
+      "explanation": "L’OMS sottolinea l’importanza della varietà alimentare e di un mix più ampio di fonti proteiche come approccio promettente sia per la salute sia per la sostenibilità.",
       "options": {
         "A": "Carne di manzo tutti i giorni",
         "B": "Un mix di legumi, pesce, uova e, occasionalmente, carne",
@@ -1304,7 +1304,7 @@
     "Q2.2.5": {
       "title": "Pasti che risparmiano acqua",
       "question": "Quale pasto si ritiene generalmente che abbia l'impronta idrica più bassa?",
-      "explanation": "I pasti a base vegetale richiedono in genere meno acqua",
+      "explanation": "I pasti a base vegetale richiedono in genere meno risorse idriche rispetto ai pasti incentrati sulla carne di ruminanti.",
       "options": {
         "A": "Curry di ceci e verdure",
         "B": "Lasagne di manzo",
@@ -1392,7 +1392,7 @@
     "Q2.4.3": {
       "title": "Meno emissioni, stessi alimenti",
       "question": "Quale azione permette di ridurre le emissioni senza cambiare i prodotti alimentari che acquisti?",
-      "explanation": "Lo spreco alimentare genera notevoli emissioni di gas serra poiché tutti i re",
+      "explanation": "Lo spreco alimentare genera notevoli emissioni di gas serra poiché tutte le risorse utilizzate per produrre il cibo vanno perse quando questo viene gettato.",
       "options": {
         "A": "Ridurre gli sprechi alimentari",
         "B": "Fare la spesa meno spesso",
@@ -1479,7 +1479,7 @@
     },
     "Q3.1.1": {
       "title": "Trasformazione e sostenibilità",
-      "question": "Stai mettendo a confronto due pasti ricchi di proteine: uno stufato di fagioli preparato con ingredienti semplici e dei bocconcini di carne vegetale. Quale conclusione risulta meglio supportata dai dati?",
+      "question": "Stai mettendo a confronto due pasti ricchi di proteine:\nStufato di fagioli preparato con ingredienti semplici\nBocconcini di carne vegetale\nQuale conclusione risulta meglio supportata dai dati?",
       "explanation": "La trasformazione alimentare può comportare un aumento del consumo energetico, ma può anche prolungare la durata di conservazione e ridurre lo spreco alimentare. La sostenibilità dipende dall'intero ciclo di vita del prodotto, piuttosto che dalla sola fase di trasformazione.",
       "options": {
         "A": "Lo stufato di fagioli è più sano e più sostenibile",
@@ -1589,7 +1589,7 @@
     },
     "Q3.3.1": {
       "title": "Gestione integrata dei parassiti",
-      "question": "Devi scegliere tra due prodotti a base di mela: Prodotto A: «Prodotto con il metodo della gestione integrata dei parassiti (IPM)»; Prodotto B: Nessuna informazione fornita sulle modalità di coltivazione. Cosa suggerisce, con maggiore probabilità, l’indicazione relativa all’IPM?",
+      "question": "Devi scegliere tra due prodotti a base di mela:\nProdotto A: «Prodotto con il metodo della gestione integrata dei parassiti (IPM)»\nProdotto B: Nessuna informazione fornita sulle modalità di coltivazione\nCosa suggerisce, con maggiore probabilità, l’indicazione relativa all’IPM?",
       "explanation": "La gestione integrata dei parassiti combina approcci biologici, fisici, specifici per coltura e, se necessario, chimici, al fine di ridurre i danni causati dai parassiti, minimizzando al contempo l'impatto sull'ambiente e sulla salute.",
       "options": {
         "A": "L'azienda agricola non utilizza mai pesticidi",
@@ -1611,7 +1611,7 @@
     },
     "Q3.3.3": {
       "title": "Caffè coltivato all'ombra",
-      "question": "Devi scegliere tra due prodotti a base di caffè: Caffè A: coltivato all’ombra in un sistema agroforestale; Caffè B: prodotto in una piantagione a monocoltura. Perché alcuni consumatori potrebbero preferire il Caffè A?",
+      "question": "Devi scegliere tra due prodotti a base di caffè:\nCaffè A: coltivato all’ombra in un sistema agroforestale\nCaffè B: prodotto in una piantagione a monocoltura\nPerché alcuni consumatori potrebbero preferire il Caffè A?",
       "explanation": "L'agroforestazione combina la presenza di alberi con la produzione agricola. Questi sistemi possono migliorare la salute del suolo, la biodiversità e il sequestro del carbonio.",
       "options": {
         "A": "Ha sempre un sapore migliore",
@@ -1633,7 +1633,7 @@
     },
     "Q3.3.5": {
       "title": "Agricoltura climaticamente intelligente",
-      "question": "Devi scegliere tra due prodotti a base di riso: Prodotto A: prodotto con tecniche agricole climaticamente intelligenti; Prodotto B: nessuna informazione fornita sulle tecniche agricole. Qual è l'obiettivo principale dell'agricoltura climaticamente intelligente?",
+      "question": "Devi scegliere tra due prodotti a base di riso:\nProdotto A: prodotto con tecniche agricole climaticamente intelligenti\nProdotto B: nessuna informazione fornita sulle tecniche agricole\nQual è l'obiettivo principale dell'agricoltura climaticamente intelligente?",
       "explanation": "L'agricoltura climaticamente intelligente mira ad aumentare la produttività, rafforzare la resilienza ai cambiamenti climatici e ridurre le emissioni di gas serra.",
       "options": {
         "A": "Ottimizzare le rese indipendentemente dall'impatto ambientale",
@@ -1699,7 +1699,7 @@
     },
     "Q3.5.1": {
       "title": "Il marchio Fairtrade",
-      "question": "Devi scegliere tra due barrette di cioccolato con valori nutrizionali e informazioni ambientali simili. Una delle due reca il marchio Fairtrade. Qual è l’aspetto aggiuntivo della sostenibilità che il marchio Fairtrade intende principalmente affrontare?",
+      "question": "Devi scegliere tra due barrette di cioccolato con valori nutrizionali e informazioni ambientali simili. Una delle due reca il marchio Fairtrade.\nQual è l’aspetto aggiuntivo della sostenibilità che il marchio Fairtrade intende principalmente affrontare?",
       "explanation": "Il commercio equo e solidale mira a migliorare le condizioni di vita attraverso prezzi equi, tutele sul lavoro, sviluppo delle comunità e migliori condizioni commerciali per i produttori e i lavoratori.",
       "options": {
         "A": "Riduzione delle emissioni di gas serra",
@@ -1721,7 +1721,7 @@
     },
     "Q3.5.3": {
       "title": "Prodotti ittici certificati",
-      "question": "Stai acquistando prodotti ittici e noti che uno proviene da un'azienda ittica certificata che controlla le condizioni di lavoro, mentre un altro non fornisce alcuna informazione. Perché alcuni consumatori potrebbero preferire il prodotto certificato?",
+      "question": "Stai acquistando prodotti ittici e noti che uno proviene da un'azienda ittica certificata che controlla le condizioni di lavoro, mentre un altro non fornisce alcuna informazione.\nPerché alcuni consumatori potrebbero preferire il prodotto certificato?",
       "explanation": "Il settore della pesca è considerato un settore ad alto rischio di sfruttamento lavorativo. I programmi di certificazione prevedono sempre più spesso il monitoraggio delle condizioni di lavoro e del rispetto dei diritti umani.",
       "options": {
         "A": "I prodotti ittici certificati sono più salutari",
@@ -1733,7 +1733,7 @@
     "Q3.5.4": {
       "title": "Sostenere i piccoli agricoltori",
       "question": "Una confezione di caffè mette in evidenza il sostegno offerto ai piccoli agricoltori. Perché questa informazione è rilevante ai fini della sostenibilità?",
-      "explanation": "La sostenibilità sociale comprende l'accesso equo ai mercati, re",
+      "explanation": "La sostenibilità sociale comprende l'accesso equo ai mercati, alle risorse e alle opportunità economiche per i produttori, compresi i piccoli agricoltori.",
       "options": {
         "A": "I piccoli agricoltori hanno sempre un impatto ambientale minore",
         "B": "I sistemi alimentari sostenibili prevedono una distribuzione equa dei benefici economici",
@@ -1799,7 +1799,7 @@
     "Q4.1.5": {
       "title": "La gerarchia UE degli imballaggi",
       "question": "Una catena di supermercati intende migliorare la sostenibilità degli imballaggi, garantendo al contempo la qualità degli alimenti. Quale strategia è più in linea con la gerarchia degli imballaggi dell’UE?",
-      "explanation": "La gerarchia degli imballaggi dell’UE prevede innanzitutto la riduzione degli imballaggi superflui, poi il riutilizzo degli imballaggi, ove possibile, e infine il riciclaggio dei materiali. L’obiettivo è proteggere i prodotti riducendo al minimo i",
+      "explanation": "La gerarchia degli imballaggi dell’UE prevede innanzitutto la riduzione degli imballaggi superflui, poi il riutilizzo degli imballaggi, ove possibile, e infine il riciclaggio dei materiali. L’obiettivo è proteggere i prodotti riducendo al minimo il consumo di risorse.",
       "options": {
         "A": "Sostituire tutti gli imballaggi con materiali compostabili monouso",
         "B": "In primo luogo, ridurre gli imballaggi superflui; in secondo luogo, promuovere il riutilizzo e il riciclaggio",
@@ -1809,7 +1809,7 @@
     },
     "Q4.2.1": {
       "title": "Contenitori da asporto riutilizzabili",
-      "question": "Hai due opzioni per il cibo da asporto: Opzione A: un contenitore usa e getta riciclabile. Opzione B: un contenitore riutilizzabile che deve essere restituito al ristorante. Qual è il fattore più importante per stabilire se l'opzione B sia effettivamente più sostenibile?",
+      "question": "Hai due opzioni per il cibo da asporto:\nOpzione A: un contenitore usa e getta riciclabile.\nOpzione B: un contenitore riutilizzabile che deve essere restituito al ristorante.\nQual è il fattore più importante per stabilire se l'opzione B sia effettivamente più sostenibile?",
       "explanation": "Gli imballaggi riutilizzabili diventano ecologicamente preferibili solo dopo aver raggiunto il proprio punto di pareggio ambientale (e-BEP), il che significa che devono essere riutilizzati un numero di volte sufficiente a compensare l'impatto ambientale della loro produzione iniziale.",
       "options": {
         "A": "La distanza che i clienti devono percorrere per restituire il contenitore",
@@ -1831,7 +1831,7 @@
     },
     "Q4.2.3": {
       "title": "Imballaggi per le consegne",
-      "question": "Stai confrontando due servizi di consegna di cibo a domicilio: il Servizio A utilizza imballaggi monouso che vengono riciclati; il Servizio B utilizza contenitori riutilizzabili che vengono ritirati, puliti e riutilizzati. Quale delle seguenti affermazioni è la più corretta?",
+      "question": "Stai confrontando due servizi di consegna di cibo a domicilio:\nIl Servizio A utilizza imballaggi monouso che vengono riciclati.\nIl Servizio B utilizza contenitori riutilizzabili che vengono ritirati, puliti e riutilizzati.\nQuale delle seguenti affermazioni è la più corretta?",
       "explanation": "I sistemi riutilizzabili possono offrire prestazioni superiori rispetto a quelli monouso, ma le loro prestazioni dipendono da fattori quali i tassi di restituzione, il trasporto, la pulizia e il numero di cicli di riutilizzo.",
       "options": {
         "A": "Il servizio B è sempre l'opzione migliore",
@@ -2095,7 +2095,7 @@
     },
     "Q6.1.2": {
       "title": "Pranzi proteici a confronto",
-      "question": "Due pranzi contengono una quantità simile di proteine: insalata di lenticchie e quinoa; panino con salumi. Quale delle seguenti affermazioni è più corretta?",
+      "question": "Due pranzi contengono una quantità simile di proteine:\nInsalata di lenticchie e quinoa\nPanino con salumi\nQuale delle seguenti affermazioni è più corretta?",
       "explanation": "Gli alimenti ricchi di proteine si differenziano per le sostanze nutritive che contengono, quali fibre, sodio, grassi saturi, vitamine e minerali. È importante considerare il profilo proteico complessivo.",
       "options": {
         "A": "Sono identici dal punto di vista nutrizionale perché il contenuto proteico è simile",
@@ -2117,7 +2117,7 @@
     },
     "Q6.1.4": {
       "title": "Indicazioni sulle proteine",
-      "question": "Stai mettendo a confronto due prodotti alimentari: Prodotto A: \"Fonte di proteine\" Prodotto B: \"Ad alto contenuto proteico\" Cosa puoi concludere?",
+      "question": "Stai mettendo a confronto due prodotti alimentari:\nProdotto A: \"Fonte di proteine\"\nProdotto B: \"Ad alto contenuto proteico\"\nCosa puoi concludere?",
       "options": {
         "A": "Il prodotto B contiene necessariamente il doppio delle proteine",
         "B": "Il prodotto A è meno salutare",
@@ -2150,8 +2150,8 @@
     },
     "Q6.2.2": {
       "title": "I grassi nei pranzi",
-      "question": "Stai confrontando due pranzi che contengono quantità simili di proteine: insalata di lenticchie e noci e panino con salumi. Quale delle seguenti affermazioni è più corretta?",
-      "explanation": "Proteine di origine vegetale",
+      "question": "Stai confrontando due pranzi che contengono quantità simili di proteine:\nInsalata di lenticchie e noci\nPanino con salumi\nQuale delle seguenti affermazioni è più corretta?",
+      "explanation": "Le fonti proteiche di origine vegetale tendono a contenere più grassi insaturi e meno grassi saturi rispetto a molti prodotti a base di carne rossa e di carne lavorata. Sono inoltre generalmente associate a un minore impatto ambientale.",
       "options": {
         "A": "Entrambi i pasti hanno lo stesso valore nutrizionale poiché contengono proteine",
         "B": "Il panino con carne lavorata è più sano perché contiene proteine animali",
@@ -2216,7 +2216,7 @@
     },
     "Q6.3.3": {
       "title": "La dicitura \"Senza zuccheri aggiunti\"",
-      "question": "Stai confrontando due prodotti: Prodotto A: “Senza zuccheri aggiunti” Prodotto B: Versione normale. Cosa puoi dedurre dall’indicazione riportata sul Prodotto A?",
+      "question": "Stai confrontando due prodotti:\nProdotto A: “Senza zuccheri aggiunti”\nProdotto B: Versione normale\nCosa puoi dedurre dall’indicazione riportata sul Prodotto A?",
       "explanation": "I prodotti contrassegnati con la dicitura \"senza zuccheri aggiunti\" possono comunque contenere zuccheri presenti naturalmente. La normativa dell'UE impone che sui prodotti figuri la dicitura \"contiene zuccheri presenti naturalmente\", ove pertinente.",
       "options": {
         "A": "Non contiene zucchero",
@@ -2305,7 +2305,7 @@
     "Q6.5.1": {
       "title": "Una colazione ricca di fibre",
       "question": "Vuoi aumentare l'apporto di fibre. Quale colazione potrebbe aiutarti di più?",
-      "explanation": "L'avena, la frutta e la frutta secca sono tutte importanti",
+      "explanation": "L'avena, la frutta e la frutta secca sono tutte importanti fonti di fibre alimentari. Combinare diversi alimenti ricchi di fibre aiuta ad aumentare l'apporto di fibre, fornendo al contempo vitamine, minerali e altri nutrienti benefici.",
       "options": {
         "A": "Fetta di pane tostato bianco con crema al cioccolato",
         "B": "Fiocchi d'avena con frutta e noci",
@@ -2316,7 +2316,7 @@
     "Q6.5.2": {
       "title": "Le fibre nella pasta",
       "question": "Devi scegliere tra due tipi di pasta. Quale delle due opzioni è più probabile che contenga più fibre?",
-      "explanation": "I prodotti a base di cereali integrali conservano una quantità maggiore di fibre naturali rispetto ai prodotti a base di cereali raffinati. La pasta integrale è in genere una scelta migliore",
+      "explanation": "I prodotti a base di cereali integrali conservano una quantità maggiore di fibre naturali rispetto ai prodotti a base di cereali raffinati. La pasta integrale è in genere una fonte di fibre alimentari migliore rispetto alla pasta bianca raffinata.",
       "options": {
         "A": "Pasta bianca raffinata",
         "B": "Pasta integrale",
@@ -2371,7 +2371,7 @@
     "Q6.6.2": {
       "title": "La vitamina D dagli alimenti",
       "question": "Una persona desidera mantenere livelli adeguati di vitamina D attraverso l'alimentazione. Quale pasto è più indicato a tal fine?",
-      "explanation": "Alimenti naturali",
+      "explanation": "Le fonti alimentari naturali di vitamina D sono relativamente limitate. Il pesce grasso come il salmone, il latte e alcuni funghi sono tra le fonti alimentari che possono contribuire all'apporto di vitamina D.",
       "options": {
         "A": "Riso bianco con verdure",
         "B": "Salmone con funghi e latte",
@@ -2403,7 +2403,7 @@
     },
     "Q6.6.5": {
       "title": "Cottura e vitamine",
-      "question": "Puoi scegliere tra due contorni: verdure al vapore e verdure cotte a lungo ad alta temperatura. Quale delle due opzioni permette di preservare meglio le vitamine?",
+      "question": "Puoi scegliere tra due contorni:\nVerdure al vapore\nVerdure cotte molto a lungo ad alta temperatura\nQuale delle due opzioni permette di preservare meglio le vitamine?",
       "explanation": "Una cottura eccessiva può ridurre il contenuto di alcune vitamine. L’OMS raccomanda di evitare di cuocere troppo frutta e verdura per preservarne le sostanze nutritive fondamentali.",
       "options": {
         "A": "Verdure al vapore",
@@ -2506,7 +2506,7 @@
     },
     "M.A2.3": {
       "title": "Acquirente con molteplici interessi",
-      "goal": "Per almeno 3 decisioni di acquisto, prendi in considerazione due diverse dimensioni ambientali prima di scegliere un prodotto. Esempi: Utilizzo del suolo + impronta di carbonio; Impronta di carbonio + distanza di trasporto; Consumo idrico + metodo di produzione",
+      "goal": "Per almeno 3 decisioni di acquisto, prendi in considerazione due diverse dimensioni ambientali prima di scegliere un prodotto. Esempi:\nUtilizzo del suolo + impronta di carbonio\nImpronta di carbonio + distanza di trasporto\nConsumo idrico + metodo di produzione",
       "whyItMatters": "La sostenibilità alimentare è un concetto multidimensionale."
     },
     "M.A2.4": {
@@ -2516,7 +2516,7 @@
     },
     "M.A2.5": {
       "title": "Abitudine di acquisto consapevole",
-      "goal": "Prima di acquistare un prodotto alimentare, prendi in considerazione almeno tre dei seguenti aspetti: paese di origine, metodo di produzione, certificazione, stagionalità, distanza percorsa. Applica questo procedimento ad almeno 4 scelte alimentari.",
+      "goal": "Prima di acquistare un prodotto alimentare, prendi in considerazione almeno tre dei seguenti aspetti:\nPaese di origine\nMetodo di produzione\nCertificazione\nStagionalità\nDistanza percorsa\nApplica questo procedimento ad almeno 4 scelte alimentari.",
       "whyItMatters": "Nessun indicatore ambientale, da solo, è sufficiente a determinare la sostenibilità."
     },
     "M.A3.1": {
@@ -2691,7 +2691,7 @@
     },
     "M.B3.5": {
       "title": "Prima elaborazione dello swap",
-      "goal": "Registra 2 sostituzioni relative agli alimenti trasformati. Azioni ammesse: Bevanda zuccherata → Acqua; Snack zuccherato → Frutta o frutta secca; Cereali zuccherati → Avena/frutta; Piatto pronto → Pasto cucinato in casa; Carne lavorata → Legumi",
+      "goal": "Registra 2 sostituzioni relative agli alimenti trasformati. Azioni ammesse:\nBevanda zuccherata → Acqua\nSnack zuccherato → Frutta o frutta secca\nCereali zuccherati → Avena/frutta\nPiatto pronto → Pasto cucinato in casa\nCarne lavorata → Legumi",
       "whyItMatters": "Piccole sostituzioni possono ridurre la dipendenza dagli alimenti altamente trasformati, migliorando al contempo la qualità nutrizionale e riducendo l'impatto ambientale."
     },
     "M.B4.1": {
@@ -2776,7 +2776,7 @@
     },
     "M.I1.2": {
       "title": "Sali la scala delle proteine",
-      "goal": "Registra almeno una sostituzione per ciascun livello di impatto: manzo → maiale o manzo → pollo; manzo → legumi; maiale → legumi o pollo → legumi. Sostituisci progressivamente le proteine ad alto impatto con opzioni a basso impatto.",
+      "goal": "Registra almeno una sostituzione per ciascun livello di impatto:\nManzo → maiale o manzo → pollo\nManzo → legumi\nMaiale → legumi o pollo → legumi\nSostituisci progressivamente le proteine ad alto impatto con opzioni a basso impatto.",
       "whyItMatters": "Non tutte le sostituzioni proteiche comportano gli stessi benefici ambientali. Passare dalla carne bovina ai legumi comporta in genere un risparmio ambientale maggiore rispetto al passaggio dalla carne bovina a quella suina."
     },
     "M.I1.3": {
@@ -2830,7 +2830,7 @@
     },
     "M.I3.3": {
       "title": "Settimana dedicata alle attività che richiedono meno elaborazione",
-      "goal": "Registra 4 sostituzioni relative all'elaborazione. Azioni ammissibili: Bevanda zuccherata → Acqua; Snack zuccherato → Frutta o frutta secca; Cereali zuccherati → Avena/Frutta; Piatto pronto → Pasto cucinato in casa; Carne lavorata → Legumi",
+      "goal": "Registra 4 sostituzioni relative all'elaborazione. Azioni ammissibili:\nBevanda zuccherata → Acqua\nSnack zuccherato → Frutta o frutta secca\nCereali zuccherati → Avena/Frutta\nPiatto pronto → Pasto cucinato in casa\nCarne lavorata → Legumi",
       "whyItMatters": "La consapevolezza acquista significato quando si traduce in scelte alimentari concrete."
     },
     "M.I3.4": {

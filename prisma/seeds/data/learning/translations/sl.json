@@ -1062,7 +1062,7 @@
     },
     "Q1.1.3": {
       "title": "Prehrana in raba zemljišč",
-      "question": "Izbirate med dvema tedenskima načinoma prehrane: prehrana A vsebuje rdeče meso skoraj vsak dan. Prehrana B sledi sredozemskemu vzorcu z več stročnicami, zelenjavo in zmernimi količinami mesa. Za katero prehrano se praviloma pričakuje, da zahteva manj kmetijskih zemljišč?",
+      "question": "Izbirate med dvema tedenskima načinoma prehrane:\nPrehrana A vsebuje rdeče meso skoraj vsak dan.\nPrehrana B sledi sredozemskemu vzorcu z več stročnicami, zelenjavo in zmernimi količinami mesa.\nZa katero prehrano se praviloma pričakuje, da zahteva manj kmetijskih zemljišč?",
       "explanation": "Pridelava živil živalskega izvora praviloma zahteva več zemljišč kot pridelava rastlinskih živil. Sredozemski način prehrane je pogosto povezan z manjšo rabo zemljišč, hkrati pa še vedno zagotavlja ustrezno prehranjenost.",
       "options": {
         "A": "Prehrana A, ker je meso hranilno bogato",
@@ -1106,7 +1106,7 @@
     "Q1.2.2": {
       "title": "Tedenska izbira beljakovin",
       "question": "Katera tedenska strategija glede beljakovin se najbolje ujema s priporočili SZO?",
-      "explanation": "SZO poudarja prehransko raznolikost in širšo mešanico beljakovin",
+      "explanation": "SZO poudarja prehransko raznolikost in širšo mešanico virov beljakovin kot obetaven pristop tako za zdravje kot za trajnostnost.",
       "options": {
         "A": "Govedina vsak dan",
         "B": "Mešanica stročnic, rib, jajc in občasno mesa",
@@ -1304,7 +1304,7 @@
     "Q2.2.5": {
       "title": "Obroki, varčni z vodo",
       "question": "Kateri obrok bi praviloma imel najmanjši vodni odtis?",
-      "explanation": "Rastlinski obroki praviloma zahtevajo manj vodnih vi",
+      "explanation": "Rastlinski obroki praviloma zahtevajo manj vodnih virov kot obroki, katerih osnova je meso prežvekovalcev.",
       "options": {
         "A": "Curry s čičeriko in zelenjavo",
         "B": "Goveje lazanje",
@@ -1392,7 +1392,7 @@
     "Q2.4.3": {
       "title": "Manj emisij z istimi živili",
       "question": "Katero dejanje zmanjša emisije, ne da bi spremenili živila, ki jih kupujete?",
-      "explanation": "Zavržena hrana povzroči znatne emisije toplogrednih plinov, saj so vsi vi",
+      "explanation": "Zavržena hrana povzroči znatne emisije toplogrednih plinov, saj so vsi viri, porabljeni za pridelavo hrane, izgubljeni, ko jo zavržemo.",
       "options": {
         "A": "Manj zavržene hrane",
         "B": "Redkejše nakupovanje",
@@ -1479,7 +1479,7 @@
     },
     "Q3.1.1": {
       "title": "Predelava in trajnostnost",
-      "question": "Primerjate dva obroka, bogata z beljakovinami: enolončnico iz fižola iz preprostih sestavin in rastlinske mesne nagete. Kateri sklep je najbolje podprt z dokazi?",
+      "question": "Primerjate dva obroka, bogata z beljakovinami:\nEnolončnica iz fižola iz preprostih sestavin\nRastlinski mesni nageti\nKateri sklep je najbolje podprt z dokazi?",
       "explanation": "Predelava hrane lahko poveča porabo energije, hkrati pa lahko podaljša rok uporabnosti in zmanjša količino zavržene hrane. Trajnostnost je odvisna od celotnega življenjskega kroga in ne le od stopnje predelave.",
       "options": {
         "A": "Enolončnica iz fižola je bolj zdrava in bolj trajnostna",
@@ -1589,7 +1589,7 @@
     },
     "Q3.3.1": {
       "title": "Integrirano varstvo rastlin",
-      "question": "Izbirate med dvema izdelkoma iz jabolk: izdelek A: „Pridelano z integriranim varstvom rastlin (IVR)“, izdelek B: brez podatkov o pridelavi. Kaj navedba o IVR najverjetneje pomeni?",
+      "question": "Izbirate med dvema izdelkoma iz jabolk:\nIzdelek A: „Pridelano z integriranim varstvom rastlin (IVR)“\nIzdelek B: brez podatkov o pridelavi\nKaj navedba o IVR najverjetneje pomeni?",
       "explanation": "Integrirano varstvo rastlin združuje biološke, fizikalne, za posamezno poljščino značilne in po potrebi kemične pristope za zmanjšanje škode zaradi škodljivcev ob čim manjših vplivih na okolje in zdravje.",
       "options": {
         "A": "Kmetija nikoli ne uporablja pesticidov",
@@ -1611,7 +1611,7 @@
     },
     "Q3.3.3": {
       "title": "Kava, gojena v senci",
-      "question": "Izbirate med dvema izdelkoma kave: kava A: gojena v senci v sistemu kmetijskega gozdarstva, kava B: pridelana na monokulturni plantaži. Zakaj bi nekateri potrošniki morda imeli raje kavo A?",
+      "question": "Izbirate med dvema izdelkoma kave:\nKava A: gojena v senci v sistemu kmetijskega gozdarstva\nKava B: pridelana na monokulturni plantaži\nZakaj bi nekateri potrošniki morda imeli raje kavo A?",
       "explanation": "Kmetijsko gozdarstvo združuje drevesa s kmetijsko pridelavo. Taki sistemi lahko izboljšajo zdravje tal, biotsko raznovrstnost in vezavo ogljika.",
       "options": {
         "A": "Vedno ima boljši okus",
@@ -1633,7 +1633,7 @@
     },
     "Q3.3.5": {
       "title": "Podnebju prilagojeno kmetijstvo",
-      "question": "Izbirate med dvema izdelkoma iz riža: izdelek A: pridelan s podnebju prilagojenim kmetijstvom, izdelek B: brez podatkov o pridelavi. Kaj je glavni cilj podnebju prilagojenega kmetijstva?",
+      "question": "Izbirate med dvema izdelkoma iz riža:\nIzdelek A: pridelan s podnebju prilagojenim kmetijstvom\nIzdelek B: brez podatkov o pridelavi\nKaj je glavni cilj podnebju prilagojenega kmetijstva?",
       "explanation": "Podnebju prilagojeno kmetijstvo želi povečati produktivnost, okrepiti odpornost na podnebne spremembe in zmanjšati emisije toplogrednih plinov.",
       "options": {
         "A": "Čim večji pridelek ne glede na vplive na okolje",
@@ -1667,7 +1667,7 @@
     "Q3.4.3": {
       "title": "Trajnostna ribja krma",
       "question": "Izbirate med dvema ribjima izdelkoma. Eden prihaja iz ribogojnice, ki krmo iz divjih rib delno nadomešča z moko iz žuželk in olji iz alg. Kaj je glavni trajnostni razlog za to izbiro?",
-      "explanation": "Ribogojstvo vse pogosteje uvaja alternativne sestavine krme, kot so moka iz žuželk, olja iz alg in enocelične beljakovine, da zmanjša odvisnost od divjih ulovljenih rib",
+      "explanation": "Ribogojstvo vse pogosteje uvaja alternativne sestavine krme, kot so moka iz žuželk, olja iz alg in enocelične beljakovine, da zmanjša odvisnost od virov divje ulovljenih rib.",
       "options": {
         "A": "Zagotavlja nižje cene",
         "B": "Pomaga zmanjšati pritisk na staleže divjih rib, ki se uporabljajo za krmo",
@@ -1699,7 +1699,7 @@
     },
     "Q3.5.1": {
       "title": "Oznaka Fairtrade",
-      "question": "Izbirate med dvema čokoladnima ploščicama s podobno hranilno vrednostjo in okoljskimi podatki. Ena nosi oznako Fairtrade. Kateri dodatni vidik trajnostnosti naj bi oznaka Fairtrade predvsem naslavljala?",
+      "question": "Izbirate med dvema čokoladnima ploščicama s podobno hranilno vrednostjo in okoljskimi podatki. Ena nosi oznako Fairtrade.\nKateri dodatni vidik trajnostnosti naj bi oznaka Fairtrade predvsem naslavljala?",
       "explanation": "Fairtrade želi izboljšati preživetje ljudi s poštenimi cenami, varstvom delavcev, razvojem skupnosti in boljšimi trgovinskimi pogoji za pridelovalce in delavce.",
       "options": {
         "A": "Manjše emisije toplogrednih plinov",
@@ -1721,7 +1721,7 @@
     },
     "Q3.5.3": {
       "title": "Certificirani morski sadeži",
-      "question": "Kupujete morske sadeže in opazite, da en izdelek prihaja iz certificiranega ribolova, ki spremlja delovne prakse, drugi pa nima podatkov. Zakaj bi nekateri potrošniki imeli raje certificiran izdelek?",
+      "question": "Kupujete morske sadeže in opazite, da en izdelek prihaja iz certificiranega ribolova, ki spremlja delovne prakse, drugi pa nima podatkov.\nZakaj bi nekateri potrošniki imeli raje certificiran izdelek?",
       "explanation": "Ribištvo velja za sektor z velikim tveganjem izkoriščanja delavcev. Programi certificiranja vse pogosteje vključujejo spremljanje delovnih razmer in človekovih pravic.",
       "options": {
         "A": "Certificirani morski sadeži so bolj zdravi",
@@ -1733,7 +1733,7 @@
     "Q3.5.4": {
       "title": "Podpora malim kmetom",
       "question": "Embalaža kave poudarja podporo malim kmetom. Zakaj je ta podatek pomemben za trajnostnost?",
-      "explanation": "Družbena trajnostnost vključuje pravičen dostop do trgov, vi",
+      "explanation": "Družbena trajnostnost vključuje pravičen dostop do trgov, virov in gospodarskih priložnosti za pridelovalce, vključno z malimi kmeti.",
       "options": {
         "A": "Mali kmetje imajo vedno manjše vplive na okolje",
         "B": "Trajnostni prehranski sistemi vključujejo pravično porazdelitev gospodarskih koristi",
@@ -1799,7 +1799,7 @@
     "Q4.1.5": {
       "title": "Hierarhija embalaže v EU",
       "question": "Trgovina želi izboljšati trajnostnost embalaže in hkrati ohraniti kakovost živil. Katera strategija je najbolj skladna z evropsko hierarhijo ravnanja z embalažo?",
-      "explanation": "Evropska hierarhija ravnanja z embalažo daje prednost najprej zmanjšanju nepotrebne embalaže, nato ponovni uporabi, kadar je mogoča, in nazadnje recikliranju materialov. Cilj je zaščititi izdelke ob čim manjši porabi vi",
+      "explanation": "Evropska hierarhija ravnanja z embalažo daje prednost najprej zmanjšanju nepotrebne embalaže, nato ponovni uporabi, kadar je mogoča, in nazadnje recikliranju materialov. Cilj je zaščititi izdelke ob čim manjši porabi virov.",
       "options": {
         "A": "Vso embalažo nadomestite s kompostirnimi materiali za enkratno uporabo",
         "B": "Najprej zmanjšajte nepotrebno embalažo, nato spodbujajte ponovno uporabo in recikliranje",
@@ -1809,7 +1809,7 @@
     },
     "Q4.2.1": {
       "title": "Povratne posode za hrano s seboj",
-      "question": "Na voljo imate dve možnosti za hrano s seboj: možnost A: posoda za enkratno uporabo, ki jo je mogoče reciklirati; možnost B: posoda za večkratno uporabo, ki jo je treba vrniti restavraciji. Kateri dejavnik je najpomembnejši pri presoji, ali je možnost B res bolj trajnostna?",
+      "question": "Na voljo imate dve možnosti za hrano s seboj:\nMožnost A: posoda za enkratno uporabo, ki jo je mogoče reciklirati.\nMožnost B: posoda za večkratno uporabo, ki jo je treba vrniti restavraciji.\nKateri dejavnik je najpomembnejši pri presoji, ali je možnost B res bolj trajnostna?",
       "explanation": "Embalaža za večkratno uporabo postane okoljsko ugodnejša šele, ko doseže svoj okoljski prag (e-BEP), kar pomeni, da mora biti uporabljena dovolj velikokrat, da nadomesti vplive svoje začetne proizvodnje.",
       "options": {
         "A": "Razdalja, ki jo morajo stranke prevoziti za vračilo posode",
@@ -1831,7 +1831,7 @@
     },
     "Q4.2.3": {
       "title": "Embalaža pri dostavi hrane",
-      "question": "Primerjate dve storitvi dostave hrane: storitev A uporablja embalažo za enkratno uporabo, ki se reciklira. Storitev B uporablja posode za večkratno uporabo, ki jih zbira, čisti in znova uporablja. Katera trditev je najbolj točna?",
+      "question": "Primerjate dve storitvi dostave hrane:\nStoritev A uporablja embalažo za enkratno uporabo, ki se reciklira.\nStoritev B uporablja posode za večkratno uporabo, ki jih zbira, čisti in znova uporablja.\nKatera trditev je najbolj točna?",
       "explanation": "Sistemi za večkratno uporabo se lahko odrežejo bolje od sistemov za enkratno uporabo, a je njihova učinkovitost odvisna od dejavnikov, kot so stopnje vračanja, prevoz, čiščenje in število ciklov ponovne uporabe.",
       "options": {
         "A": "Storitev B je vedno boljša možnost",
@@ -2095,7 +2095,7 @@
     },
     "Q6.1.2": {
       "title": "Primerjava beljakovinskih kosil",
-      "question": "Dve kosili vsebujeta podobno količino beljakovin: solata iz leče in kvinoje ter sendvič s predelanim mesom. Katera trditev je najbolj točna?",
+      "question": "Dve kosili vsebujeta podobno količino beljakovin:\nSolata iz leče in kvinoje\nSendvič s predelanim mesom\nKatera trditev je najbolj točna?",
       "explanation": "Živila, bogata z beljakovinami, se razlikujejo po hranilih, ki jih spremljajo, kot so vlaknine, natrij, nasičene maščobe, vitamini in minerali. Pomembna je celotna beljakovinska sestava.",
       "options": {
         "A": "Hranilno sta enaka, ker je vsebnost beljakovin podobna",
@@ -2117,7 +2117,7 @@
     },
     "Q6.1.4": {
       "title": "Navedbe o beljakovinah",
-      "question": "Primerjate dve živili: izdelek A: „vir beljakovin“, izdelek B: „visoka vsebnost beljakovin“. Kaj lahko sklepate?",
+      "question": "Primerjate dve živili:\nIzdelek A: „vir beljakovin“\nIzdelek B: „visoka vsebnost beljakovin“\nKaj lahko sklepate?",
       "options": {
         "A": "Izdelek B nujno vsebuje dvakrat več beljakovin",
         "B": "Izdelek A je manj zdrav",
@@ -2150,8 +2150,8 @@
     },
     "Q6.2.2": {
       "title": "Profil maščob v kosilih",
-      "question": "Primerjate dve kosili s podobno količino beljakovin: solato iz leče in orehov ter sendvič s predelanim mesom. Katera trditev je najbolj točna?",
-      "explanation": "Rastlinske beljakovine",
+      "question": "Primerjate dve kosili s podobno količino beljakovin:\nSolata iz leče in orehov\nSendvič s predelanim mesom\nKatera trditev je najbolj točna?",
+      "explanation": "Rastlinski viri beljakovin običajno vsebujejo več nenasičenih in manj nasičenih maščob kot številni izdelki iz rdečega in predelanega mesa. Praviloma so povezani tudi z manjšimi vplivi na okolje.",
       "options": {
         "A": "Obroka sta hranilno enakovredna, ker vsebujeta beljakovine",
         "B": "Sendvič s predelanim mesom je bolj zdrav, ker vsebuje živalske beljakovine",
@@ -2216,7 +2216,7 @@
     },
     "Q6.3.3": {
       "title": "Navedba „brez dodanih sladkorjev“",
-      "question": "Primerjate dva izdelka: izdelek A: „brez dodanih sladkorjev“, izdelek B: običajna različica. Kaj lahko sklepate iz navedbe na izdelku A?",
+      "question": "Primerjate dva izdelka:\nIzdelek A: „brez dodanih sladkorjev“\nIzdelek B: običajna različica\nKaj lahko sklepate iz navedbe na izdelku A?",
       "explanation": "Izdelki z oznako „brez dodanih sladkorjev“ lahko še vedno vsebujejo naravno prisotne sladkorje. Zakonodaja EU zahteva, da izdelki, kadar je to ustrezno, navedejo „vsebuje naravno prisotne sladkorje“.",
       "options": {
         "A": "Ne vsebuje sladkorja",
@@ -2305,7 +2305,7 @@
     "Q6.5.1": {
       "title": "Zajtrk, bogat z vlakninami",
       "question": "Želite povečati vnos vlaknin. Kateri zajtrk bo najverjetneje pomagal?",
-      "explanation": "Ovseni kosmiči, sadje in oreški so vsi pomembni",
+      "explanation": "Ovseni kosmiči, sadje in oreški so vsi pomembni viri prehranskih vlaknin. Kombiniranje različnih živil, bogatih z vlakninami, pomaga povečati vnos vlaknin, hkrati pa zagotavlja vitamine, minerale in druga koristna hranila.",
       "options": {
         "A": "Bel toast s čokoladnim namazom",
         "B": "Ovsena kaša s sadjem in oreški",
@@ -2316,7 +2316,7 @@
     "Q6.5.2": {
       "title": "Vlaknine v testeninah",
       "question": "Izbirate med dvema izdelkoma iz testenin. Katera možnost najverjetneje vsebuje več vlaknin?",
-      "explanation": "Polnozrnati izdelki ohranijo več naravnih vlaknin zrna kot izdelki iz rafiniranih žit. Polnozrnate testenine so praviloma boljša",
+      "explanation": "Polnozrnati izdelki ohranijo več naravnih vlaknin zrna kot izdelki iz rafiniranih žit. Polnozrnate testenine so praviloma boljši vir prehranskih vlaknin kot rafinirane bele testenine.",
       "options": {
         "A": "Rafinirane bele testenine",
         "B": "Polnozrnate testenine",
@@ -2371,7 +2371,7 @@
     "Q6.6.2": {
       "title": "Vitamin D iz hrane",
       "question": "Oseba želi s hrano ohranjati ustrezno raven vitamina D. Kateri obrok bo najverjetneje prispeval k temu?",
-      "explanation": "Naravna živila",
+      "explanation": "Naravnih živilskih virov vitamina D je razmeroma malo. Med prehranske vire, ki lahko prispevajo k vnosu vitamina D, sodijo mastne ribe, na primer losos, pa tudi mleko in nekatere gobe.",
       "options": {
         "A": "Beli riž z zelenjavo",
         "B": "Losos z gobami in mlekom",
@@ -2403,7 +2403,7 @@
     },
     "Q6.6.5": {
       "title": "Kuhanje in vitamini",
-      "question": "Izbirate med dvema prilogama: zelenjava, kuhana v sopari, in zelenjava, kuhana zelo dolgo pri visoki temperaturi. Katera možnost bo verjetneje ohranila vitamine?",
+      "question": "Izbirate med dvema prilogama:\nZelenjava, kuhana v sopari\nZelenjava, kuhana zelo dolgo pri visoki temperaturi\nKatera možnost bo verjetneje ohranila vitamine?",
       "explanation": "Prekomerno kuhanje lahko zmanjša vsebnost nekaterih vitaminov. SZO priporoča, da sadja in zelenjave ne prekuhavamo, da ohranimo pomembna hranila.",
       "options": {
         "A": "Zelenjava, kuhana v sopari",
@@ -2506,7 +2506,7 @@
     },
     "M.A2.3": {
       "title": "Kupec z več vidiki",
-      "goal": "Pri vsaj 3 nakupnih odločitvah pred izbiro izdelka upoštevajte dve različni okoljski razsežnosti. Primeri: raba zemljišč + ogljični odtis; ogljični odtis + transportna razdalja; poraba vode + način pridelave.",
+      "goal": "Pri vsaj 3 nakupnih odločitvah pred izbiro izdelka upoštevajte dve različni okoljski razsežnosti. Primeri:\nRaba zemljišč + ogljični odtis\nOgljični odtis + transportna razdalja\nPoraba vode + način pridelave",
       "whyItMatters": "Trajnostnost hrane je večrazsežnostna."
     },
     "M.A2.4": {
@@ -2516,7 +2516,7 @@
     },
     "M.A2.5": {
       "title": "Navada premišljenega nakupa",
-      "goal": "Pred nakupom živila upoštevajte vsaj tri od naslednjih vidikov: država porekla, način pridelave, certifikat, sezonskost, transportna razdalja. Ta postopek uporabite pri vsaj 4 izbirah živil.",
+      "goal": "Pred nakupom živila upoštevajte vsaj tri od naslednjih vidikov:\nDržava porekla\nNačin pridelave\nCertifikat\nSezonskost\nTransportna razdalja\nTa postopek uporabite pri vsaj 4 izbirah živil.",
       "whyItMatters": "Noben posamezen okoljski kazalnik ne zadošča za določitev trajnostnosti."
     },
     "M.A3.1": {
@@ -2691,7 +2691,7 @@
     },
     "M.B3.5": {
       "title": "Prva zamenjava pri predelavi",
-      "goal": "Zabeležite 2 zamenjavi, povezani s predelanimi živili. Možna dejanja: sladka pijača v vodo; sladek prigrizek v sadje ali oreške; sladki kosmiči v ovsene kosmiče/sadje; pripravljen obrok v doma kuhan obrok; predelano meso v stročnice.",
+      "goal": "Zabeležite 2 zamenjavi, povezani s predelanimi živili. Možna dejanja:\nSladka pijača → voda\nSladek prigrizek → sadje ali oreški\nSladki kosmiči → ovseni kosmiči/sadje\nPripravljen obrok → doma kuhan obrok\nPredelano meso → stročnice",
       "whyItMatters": "Majhne zamenjave lahko zmanjšajo odvisnost od visoko predelanih živil ter hkrati izboljšajo hranilno kakovost in zmanjšajo vplive na okolje."
     },
     "M.B4.1": {
@@ -2776,7 +2776,7 @@
     },
     "M.I1.2": {
       "title": "Vzpon po lestvici beljakovin",
-      "goal": "Zabeležite vsaj eno zamenjavo z vsake ravni vpliva: govedina v svinjino ali govedina v piščanca; govedina v stročnice; svinjina v stročnice ali piščanec v stročnice. Beljakovine z večjim vplivom postopoma zamenjujte z možnostmi z manjšim vplivom.",
+      "goal": "Zabeležite vsaj eno zamenjavo z vsake ravni vpliva:\nGovedina → svinjina ali govedina → piščanec\nGovedina → stročnice\nSvinjina → stročnice ali piščanec → stročnice\nBeljakovine z večjim vplivom postopoma zamenjujte z možnostmi z manjšim vplivom.",
       "whyItMatters": "Vse zamenjave beljakovin nimajo enake okoljske koristi. Prehod z govedine na stročnice praviloma prinese večje okoljske prihranke kot prehod z govedine na svinjino."
     },
     "M.I1.3": {
@@ -2830,7 +2830,7 @@
     },
     "M.I3.3": {
       "title": "Teden dejanj za manjšo predelavo",
-      "goal": "Zabeležite 4 zamenjave, povezane s predelavo. Možna dejanja: sladka pijača v vodo; sladek prigrizek v sadje ali oreške; sladki kosmiči v ovsene kosmiče/sadje; pripravljen obrok v doma kuhan obrok; predelano meso v stročnice.",
+      "goal": "Zabeležite 4 zamenjave, povezane s predelavo. Možna dejanja:\nSladka pijača → voda\nSladek prigrizek → sadje ali oreški\nSladki kosmiči → ovseni kosmiči/sadje\nPripravljen obrok → doma kuhan obrok\nPredelano meso → stročnice",
       "whyItMatters": "Zavedanje postane smiselno, ko se prevede v konkretne izbire hrane."
     },
     "M.I3.4": {

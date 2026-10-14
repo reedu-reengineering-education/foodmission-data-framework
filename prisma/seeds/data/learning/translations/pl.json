@@ -1062,7 +1062,7 @@
     },
     "Q1.1.3": {
       "title": "Dieta a grunty rolne",
-      "question": "Masz do wyboru dwie diety tygodniowe: dieta A obejmuje spożywanie czerwonego mięsa niemal codziennie, natomiast dieta B opiera się na modelu śródziemnomorskim, w którym przeważają rośliny strączkowe i warzywa, a mięso spożywa się w umiarkowanych ilościach. Która z tych diet, ogólnie rzecz biorąc, wymaga mniej gruntów rolnych?",
+      "question": "Masz do wyboru dwie diety tygodniowe:\nDieta A obejmuje spożywanie czerwonego mięsa niemal codziennie.\nDieta B opiera się na modelu śródziemnomorskim, w którym przeważają rośliny strączkowe i warzywa, a mięso spożywa się w umiarkowanych ilościach.\nKtóra z tych diet, ogólnie rzecz biorąc, wymaga mniej gruntów rolnych?",
       "explanation": "Produkcja żywności pochodzenia zwierzęcego zazwyczaj wymaga większej powierzchni gruntów niż produkcja żywności pochodzenia roślinnego. Dieta w stylu śródziemnomorskim często wiąże się z mniejszym zapotrzebowaniem na grunty, a jednocześnie zapewnia odpowiednią wartość odżywczą.",
       "options": {
         "A": "Dieta A, ponieważ mięso jest bogate w składniki odżywcze",
@@ -1106,7 +1106,7 @@
     "Q1.2.2": {
       "title": "Białko w tygodniowym jadłospisie",
       "question": "Która strategia dotycząca tygodniowego spożycia białka najlepiej odpowiada zaleceniom WHO?",
-      "explanation": "WHO podkreśla znaczenie różnorodności diety oraz szerszego wyboru źródeł białka",
+      "explanation": "WHO podkreśla znaczenie różnorodności diety oraz szerszego wyboru źródeł białka, uznając je za obiecujące podejście korzystne zarówno dla zdrowia, jak i dla zrównoważonego rozwoju.",
       "options": {
         "A": "Codziennie wołowina",
         "B": "Mieszanka roślin strączkowych, ryb, jajek i sporadycznie mięsa",
@@ -1304,7 +1304,7 @@
     "Q2.2.5": {
       "title": "Posiłki oszczędzające wodę",
       "question": "Który posiłek zazwyczaj charakteryzuje się najmniejszym śladem wodnym?",
-      "explanation": "Posiłki pochodzenia roślinnego zazwyczaj wymagają mniejszego zużycia wody",
+      "explanation": "Posiłki pochodzenia roślinnego zazwyczaj wymagają mniejszego zużycia wody niż posiłki oparte na mięsie przeżuwaczy.",
       "options": {
         "A": "Curry z ciecierzycy i warzyw",
         "B": "Lasagne z wołowiną",
@@ -1392,7 +1392,7 @@
     "Q2.4.3": {
       "title": "Mniej emisji bez zmiany zakupów",
       "question": "Które działanie pozwala ograniczyć emisje bez zmiany asortymentu kupowanych przez Ciebie produktów spożywczych?",
-      "explanation": "Marnotrawstwo żywności powoduje znaczne emisje gazów cieplarnianych, ponieważ wszystkie resztki",
+      "explanation": "Marnotrawstwo żywności powoduje znaczne emisje gazów cieplarnianych, ponieważ wszystkie zasoby wykorzystane do wyprodukowania żywności zostają utracone, gdy zostaje ona wyrzucona.",
       "options": {
         "A": "Ograniczanie marnotrawstwa żywności",
         "B": "Rzadsze zakupy",
@@ -1479,7 +1479,7 @@
     },
     "Q3.1.1": {
       "title": "Przetwarzanie a zrównoważony rozwój",
-      "question": "Porównujesz dwa posiłki bogate w białko: gulasz fasolowy przygotowany z prostych składników oraz roślinne nuggetsy mięsne. Który wniosek najlepiej potwierdzają przedstawione dowody?",
+      "question": "Porównujesz dwa posiłki bogate w białko:\nGulasz fasolowy przygotowany z prostych składników\nNuggetsy z roślinnego zamiennika mięsa\nKtóry wniosek najlepiej potwierdzają przedstawione dowody?",
       "explanation": "Przetwórstwo żywności może zwiększać zużycie energii, ale może też wydłużyć okres przydatności do spożycia i ograniczyć marnotrawstwo żywności. Zrównoważony rozwój zależy od całego cyklu życia produktu, a nie wyłącznie od etapu przetwórstwa.",
       "options": {
         "A": "Gulasz z fasoli jest zdrowszy i bardziej ekologiczny",
@@ -1589,7 +1589,7 @@
     },
     "Q3.3.1": {
       "title": "Zintegrowana ochrona roślin",
-      "question": "Masz do wyboru dwa produkty z jabłek: Produkt A: „Wyprodukowany z zastosowaniem zintegrowanej ochrony roślin (IPM)”; Produkt B: Brak informacji dotyczących uprawy. Co najprawdopodobniej sugeruje informacja o zastosowaniu IPM?",
+      "question": "Masz do wyboru dwa produkty z jabłek:\nProdukt A: „Wyprodukowany z zastosowaniem zintegrowanej ochrony roślin (IPM)”\nProdukt B: Brak informacji dotyczących uprawy\nCo najprawdopodobniej sugeruje informacja o zastosowaniu IPM?",
       "explanation": "Zintegrowana ochrona przed szkodnikami łączy metody biologiczne, fizyczne, dostosowane do konkretnych upraw oraz, w razie potrzeby, chemiczne, mające na celu ograniczenie szkód powodowanych przez szkodniki przy jednoczesnym zminimalizowaniu wpływu na środowisko i zdrowie.",
       "options": {
         "A": "W gospodarstwie nigdy nie stosuje się pestycydów",
@@ -1611,7 +1611,7 @@
     },
     "Q3.3.3": {
       "title": "Kawa uprawiana w cieniu",
-      "question": "Masz do wyboru dwa rodzaje kawy: Kawa A: uprawiana w cieniu w systemie agroleśnym; Kawa B: produkowana na plantacji monokulturowej. Dlaczego niektórzy konsumenci mogą preferować kawę A?",
+      "question": "Masz do wyboru dwa rodzaje kawy:\nKawa A: uprawiana w cieniu w systemie agroleśnym\nKawa B: produkowana na plantacji monokulturowej\nDlaczego niektórzy konsumenci mogą preferować kawę A?",
       "explanation": "Agroleśnictwo łączy uprawę drzew z produkcją rolniczą. Systemy te mogą poprawiać stan gleby, różnorodność biologiczną oraz sekwestrację dwutlenku węgla.",
       "options": {
         "A": "Zawsze smakuje lepiej",
@@ -1633,7 +1633,7 @@
     },
     "Q3.3.5": {
       "title": "Rolnictwo dostosowane do zmian klimatu",
-      "question": "Masz do wyboru dwa produkty ryżowe: Produkt A: Wyprodukowany z wykorzystaniem rolnictwa dostosowanego do zmian klimatu Produkt B: Brak informacji na temat sposobu uprawy Jaki jest główny cel rolnictwa dostosowanego do zmian klimatu?",
+      "question": "Masz do wyboru dwa produkty ryżowe:\nProdukt A: Wyprodukowany z wykorzystaniem rolnictwa dostosowanego do zmian klimatu\nProdukt B: Brak informacji na temat sposobu uprawy\nJaki jest główny cel rolnictwa dostosowanego do zmian klimatu?",
       "explanation": "Rolnictwo dostosowane do zmian klimatu ma na celu zwiększenie wydajności, wzmocnienie odporności na zmiany klimatu oraz ograniczenie emisji gazów cieplarnianych.",
       "options": {
         "A": "Maksymalizacja plonów bez względu na wpływ na środowisko",
@@ -1667,7 +1667,7 @@
     "Q3.4.3": {
       "title": "Zrównoważona pasza dla ryb",
       "question": "Masz do wyboru dwa produkty rybne. Jeden z nich pochodzi z przedsiębiorstwa zajmującego się akwakulturą, które częściowo zastępuje paszę dla ryb, wytwarzaną z ryb dziko żyjących, mączką owadzią i olejami z alg. Jaka jest główna przesłanka związana ze zrównoważonym rozwojem, stojąca za tym wyborem?",
-      "explanation": "W akwakulturze coraz częściej stosuje się alternatywne składniki paszowe, takie jak mączka z owadów, oleje z alg i białka jednokomórkowe, aby zmniejszyć zależność od ryb pochodzących z połowów dzikich",
+      "explanation": "W akwakulturze coraz częściej stosuje się alternatywne składniki paszowe, takie jak mączka z owadów, oleje z alg i białka jednokomórkowe, aby zmniejszyć zależność od zasobów ryb pochodzących z połowów w środowisku naturalnym.",
       "options": {
         "A": "Gwarantuje to niższe ceny",
         "B": "Pomaga to zmniejszyć presję na dzikie stada ryb wykorzystywane jako pasza",
@@ -1699,7 +1699,7 @@
     },
     "Q3.5.1": {
       "title": "Znak Fairtrade",
-      "question": "Masz do wyboru dwie tabliczki czekolady o podobnych wartościach odżywczych i informacjach dotyczących wpływu na środowisko. Jedna z nich posiada znak Fairtrade. Jaki dodatkowy aspekt zrównoważonego rozwoju ma na celu przede wszystkim znak Fairtrade?",
+      "question": "Masz do wyboru dwie tabliczki czekolady o podobnych wartościach odżywczych i informacjach dotyczących wpływu na środowisko. Jedna z nich posiada znak Fairtrade.\nJakiego dodatkowego aspektu zrównoważonego rozwoju ma przede wszystkim dotyczyć znak Fairtrade?",
       "explanation": "Celem Fairtrade jest poprawa warunków życia poprzez zapewnienie sprawiedliwych cen, ochronę praw pracowniczych, rozwój społeczności oraz lepsze warunki handlowe dla producentów i pracowników.",
       "options": {
         "A": "Niższa emisja gazów cieplarnianych",
@@ -1721,7 +1721,7 @@
     },
     "Q3.5.3": {
       "title": "Certyfikowane owoce morza",
-      "question": "Kupujesz owoce morza i zauważasz, że jeden produkt pochodzi z certyfikowanego łowiska, które monitoruje warunki pracy, podczas gdy drugi nie zawiera żadnych informacji na ten temat. Dlaczego niektórzy konsumenci mogą preferować produkt certyfikowany?",
+      "question": "Kupujesz owoce morza i zauważasz, że jeden produkt pochodzi z certyfikowanego łowiska, które monitoruje warunki pracy, podczas gdy drugi nie zawiera żadnych informacji na ten temat.\nDlaczego niektórzy konsumenci mogą preferować produkt certyfikowany?",
       "explanation": "Rybołówstwo uznaje się za sektor o wysokim ryzyku wykorzystywania pracowników. Programy certyfikacyjne w coraz większym stopniu obejmują monitorowanie warunków pracy i przestrzegania praw człowieka.",
       "options": {
         "A": "Ocertyfikowane owoce morza są zdrowsze",
@@ -1733,7 +1733,7 @@
     "Q3.5.4": {
       "title": "Wsparcie drobnych rolników",
       "question": "Na opakowaniu kawy podkreślono wsparcie dla drobnych rolników. Dlaczego ta informacja ma znaczenie z punktu widzenia zrównoważonego rozwoju?",
-      "explanation": "Zrównoważony rozwój społeczny obejmuje sprawiedliwy dostęp do rynków, re",
+      "explanation": "Zrównoważony rozwój społeczny obejmuje sprawiedliwy dostęp producentów, w tym drobnych rolników, do rynków, zasobów i możliwości gospodarczych.",
       "options": {
         "A": "Drobni rolnicy zawsze wywierają mniejszy wpływ na środowisko",
         "B": "Zrównoważone systemy żywnościowe obejmują sprawiedliwy podział korzyści ekonomicznych",
@@ -1799,7 +1799,7 @@
     "Q4.1.5": {
       "title": "Unijna hierarchia opakowań",
       "question": "Sieć supermarketów chce zwiększyć zrównoważony charakter opakowań, zachowując jednocześnie jakość żywności. Która strategia najlepiej wpisuje się w unijną hierarchię opakowań?",
-      "explanation": "W ramach unijnej hierarchii opakowań priorytetem jest przede wszystkim ograniczenie zbędnych opakowań, następnie ponowne wykorzystanie opakowań tam, gdzie to możliwe, a na końcu recykling materiałów. Celem jest ochrona produktów przy jednoczesnym zminimalizowaniu",
+      "explanation": "W ramach unijnej hierarchii opakowań priorytetem jest przede wszystkim ograniczenie zbędnych opakowań, następnie ponowne wykorzystanie opakowań tam, gdzie to możliwe, a na końcu recykling materiałów. Celem jest ochrona produktów przy jednoczesnym zminimalizowaniu zużycia zasobów.",
       "options": {
         "A": "Wymienić wszystkie opakowania na materiały jednorazowego użytku nadające się do kompostowania",
         "B": "Najpierw należy ograniczyć zbędne opakowania, a następnie promować ponowne wykorzystanie i recykling",
@@ -1809,7 +1809,7 @@
     },
     "Q4.2.1": {
       "title": "Pojemniki na wynos wielokrotnego użytku",
-      "question": "Masz do wyboru dwie opcje na wynos: Opcja A: Pojemnik jednorazowy, który można poddać recyklingowi. Opcja B: Pojemnik wielokrotnego użytku, który należy zwrócić do restauracji. Który czynnik ma największe znaczenie przy ustalaniu, czy opcja B jest rzeczywiście bardziej ekologiczna?",
+      "question": "Masz do wyboru dwie opcje na wynos:\nOpcja A: Pojemnik jednorazowy, który można poddać recyklingowi.\nOpcja B: Pojemnik wielokrotnego użytku, który należy zwrócić do restauracji.\nKtóry czynnik ma największe znaczenie przy ustalaniu, czy opcja B jest rzeczywiście bardziej ekologiczna?",
       "explanation": "Opakowania wielokrotnego użytku stają się bardziej przyjazne dla środowiska dopiero po osiągnięciu progu opłacalności środowiskowej (e-BEP), co oznacza, że muszą zostać ponownie wykorzystane wystarczającą liczbę razy, aby zrównoważyć początkowy wpływ ich produkcji na środowisko.",
       "options": {
         "A": "Odległość, jaką klienci muszą pokonać, aby zwrócić pojemnik",
@@ -1831,7 +1831,7 @@
     },
     "Q4.2.3": {
       "title": "Opakowania w dostawach jedzenia",
-      "question": "Porównujesz dwie usługi dostawy jedzenia: Usługa A wykorzystuje opakowania jednorazowego użytku, które są poddawane recyklingowi. Usługa B wykorzystuje pojemniki wielokrotnego użytku, które są odbierane, czyszczone i ponownie wykorzystywane. Które stwierdzenie jest najbardziej trafne?",
+      "question": "Porównujesz dwie usługi dostawy jedzenia:\nUsługa A wykorzystuje opakowania jednorazowego użytku, które są poddawane recyklingowi.\nUsługa B wykorzystuje pojemniki wielokrotnego użytku, które są odbierane, czyszczone i ponownie wykorzystywane.\nKtóre stwierdzenie jest najbardziej trafne?",
       "explanation": "Systemy wielokrotnego użytku mogą przewyższać wydajnością systemy jednorazowego użytku, jednak ich wydajność zależy od takich czynników, jak wskaźniki zwrotów, transport, czyszczenie oraz liczba cykli ponownego użycia.",
       "options": {
         "A": "Usługa B jest zawsze lepszym wyborem",
@@ -2095,7 +2095,7 @@
     },
     "Q6.1.2": {
       "title": "Porównanie białkowych obiadów",
-      "question": "Dwa obiady zawierają podobną ilość białka: sałatka z soczewicy i komosy ryżowej oraz kanapka z wędliną. Które stwierdzenie jest najbardziej trafne?",
+      "question": "Dwa obiady zawierają podobną ilość białka:\nSałatka z soczewicy i komosy ryżowej\nKanapka z wędliną\nKtóre stwierdzenie jest najbardziej trafne?",
       "explanation": "Produkty bogate w białko różnią się pod względem zawartości innych składników odżywczych, takich jak błonnik, sód, tłuszcze nasycone, witaminy i minerały. Istotny jest ogólny skład odżywczy tych produktów.",
       "options": {
         "A": "Są identyczne pod względem wartości odżywczych, ponieważ zawartość białka jest podobna",
@@ -2117,7 +2117,7 @@
     },
     "Q6.1.4": {
       "title": "Oświadczenia dotyczące białka",
-      "question": "Porównujesz dwa produkty spożywcze: Produkt A: „Źródło białka” Produkt B: „Wysoka zawartość białka” Jaki wniosek możesz wyciągnąć?",
+      "question": "Porównujesz dwa produkty spożywcze:\nProdukt A: „Źródło białka”\nProdukt B: „Wysoka zawartość białka”\nJaki wniosek możesz wyciągnąć?",
       "options": {
         "A": "Produkt B zawiera z konieczności dwa razy więcej białka",
         "B": "Produkt A jest mniej zdrowy",
@@ -2150,8 +2150,8 @@
     },
     "Q6.2.2": {
       "title": "Profil tłuszczowy obiadów",
-      "question": "Porównujesz dwa obiady zawierające podobne ilości białka: sałatkę z soczewicy i orzechów włoskich oraz kanapkę z wędliną. Które stwierdzenie jest najbardziej trafne?",
-      "explanation": "Białko pochodzenia roślinnego",
+      "question": "Porównujesz dwa obiady zawierające podobne ilości białka:\nSałatka z soczewicy i orzechów włoskich\nKanapka z wędliną\nKtóre stwierdzenie jest najbardziej trafne?",
+      "explanation": "Źródła białka pochodzenia roślinnego zawierają zazwyczaj więcej tłuszczów nienasyconych i mniej tłuszczów nasyconych niż wiele produktów z czerwonego i przetworzonego mięsa. Na ogół wiążą się też z mniejszym wpływem na środowisko.",
       "options": {
         "A": "Oba posiłki mają taką samą wartość odżywczą, ponieważ zawierają białko",
         "B": "Kanapka z przetworzonym mięsem jest zdrowsza, ponieważ zawiera białko zwierzęce",
@@ -2216,7 +2216,7 @@
     },
     "Q6.3.3": {
       "title": "Oznaczenie „Bez dodatku cukru”",
-      "question": "Porównujesz dwa produkty: Produkt A: „Bez dodatku cukru” Produkt B: Wersja standardowa Jakie wnioski możesz wyciągnąć na podstawie informacji podanej na produkcie A?",
+      "question": "Porównujesz dwa produkty:\nProdukt A: „Bez dodatku cukru”\nProdukt B: Wersja standardowa\nJakie wnioski możesz wyciągnąć na podstawie informacji podanej na produkcie A?",
       "explanation": "Produkty oznaczone jako „bez dodatku cukru” mogą nadal zawierać cukry występujące naturalnie. Przepisy UE wymagają, aby na produktach umieszczano informację „zawiera cukry występujące naturalnie”, jeśli ma to zastosowanie.",
       "options": {
         "A": "Nie zawiera cukru",
@@ -2305,7 +2305,7 @@
     "Q6.5.1": {
       "title": "Śniadanie bogate w błonnik",
       "question": "Chcesz zwiększyć spożycie błonnika. Które śniadanie najprawdopodobniej Ci w tym pomoże?",
-      "explanation": "Owies, owoce i orzechy są bardzo ważne",
+      "explanation": "Owies, owoce i orzechy to ważne źródła błonnika pokarmowego. Łączenie różnych produktów bogatych w błonnik pomaga zwiększyć jego spożycie, a jednocześnie dostarcza witamin, składników mineralnych i innych korzystnych składników odżywczych.",
       "options": {
         "A": "Biały tost z kremem czekoladowym",
         "B": "Płatki owsiane z owocami i orzechami",
@@ -2316,7 +2316,7 @@
     "Q6.5.2": {
       "title": "Błonnik w makaronie",
       "question": "Masz do wyboru dwa rodzaje makaronu. Która z tych opcji najprawdopodobniej zawiera więcej błonnika?",
-      "explanation": "Produkty pełnoziarniste zachowują więcej naturalnego błonnika zbożowego niż produkty z mąki rafinowanej. Makaron z mąki pełnoziarnistej jest zazwyczaj lepszym",
+      "explanation": "Produkty pełnoziarniste zachowują więcej naturalnego błonnika zbożowego niż produkty z mąki rafinowanej. Makaron z mąki pełnoziarnistej jest zazwyczaj lepszym źródłem błonnika pokarmowego niż makaron z rafinowanej białej mąki.",
       "options": {
         "A": "Wypolerowany biały makaron",
         "B": "Makaron pełnoziarnisty",
@@ -2371,7 +2371,7 @@
     "Q6.6.2": {
       "title": "Witamina D z pożywienia",
       "question": "Ktoś chce utrzymać odpowiedni poziom witaminy D poprzez dietę. Który posiłek najprawdopodobniej się do tego przyczyni?",
-      "explanation": "Naturalna żywność",
+      "explanation": "Naturalne źródła witaminy D w żywności są stosunkowo nieliczne. Tłuste ryby, takie jak łosoś, a także mleko i niektóre grzyby należą do produktów, które mogą przyczyniać się do dostarczania witaminy D z dietą.",
       "options": {
         "A": "Biały ryż z warzywami",
         "B": "Łosoś z grzybami i mlekiem",
@@ -2403,7 +2403,7 @@
     },
     "Q6.6.5": {
       "title": "Gotowanie a witaminy",
-      "question": "Masz do wyboru dwa dodatki: warzywa gotowane na parze oraz warzywa gotowane przez bardzo długi czas w wysokiej temperaturze. Która opcja z większym prawdopodobieństwem pozwoli zachować witaminy?",
+      "question": "Masz do wyboru dwa dodatki:\nWarzywa gotowane na parze\nWarzywa gotowane przez bardzo długi czas w wysokiej temperaturze\nKtóra opcja z większym prawdopodobieństwem pozwoli zachować witaminy?",
       "explanation": "Zbyt długie gotowanie może zmniejszyć zawartość niektórych witamin. WHO zaleca, aby unikać zbyt długiego gotowania owoców i warzyw, co pomaga zachować ważne składniki odżywcze.",
       "options": {
         "A": "Warzywa gotowane na parze",
@@ -2506,7 +2506,7 @@
     },
     "M.A2.3": {
       "title": "Klient o zróżnicowanych preferencjach zakupowych",
-      "goal": "W przypadku co najmniej trzech decyzji zakupowych przed wyborem produktu weź pod uwagę dwa różne aspekty środowiskowe. Przykłady: Zagospodarowanie terenu + ślad węglowy; Ślad węglowy + odległość transportu; Zużycie wody + metoda produkcji",
+      "goal": "W przypadku co najmniej trzech decyzji zakupowych przed wyborem produktu weź pod uwagę dwa różne aspekty środowiskowe. Przykłady:\nZagospodarowanie terenu + ślad węglowy\nŚlad węglowy + odległość transportu\nZużycie wody + metoda produkcji",
       "whyItMatters": "Zrównoważony rozwój w zakresie żywności ma wiele wymiarów."
     },
     "M.A2.4": {
@@ -2516,7 +2516,7 @@
     },
     "M.A2.5": {
       "title": "Świadome nawyki zakupowe",
-      "goal": "Przed zakupem produktu spożywczego weź pod uwagę co najmniej trzy z poniższych aspektów: kraj pochodzenia, metodę produkcji, certyfikaty oraz sezonowość; odległość transportu. Zastosuj tę procedurę przy wyborze co najmniej czterech produktów spożywczych.",
+      "goal": "Przed zakupem produktu spożywczego weź pod uwagę co najmniej trzy z poniższych aspektów:\nKraj pochodzenia\nMetoda produkcji\nCertyfikaty\nSezonowość\nOdległość transportu\nZastosuj tę procedurę przy wyborze co najmniej czterech produktów spożywczych.",
       "whyItMatters": "Żaden pojedynczy wskaźnik środowiskowy nie wystarcza do określenia zrównoważonego rozwoju."
     },
     "M.A3.1": {
@@ -2691,7 +2691,7 @@
     },
     "M.B3.5": {
       "title": "Pierwsza operacja swapowa",
-      "goal": "Zapisz 2 zamiany związane z przetworzoną żywnością. Dopuszczalne zamiany: Napój słodzony → Woda; Słodka przekąska → Owoce lub orzechy; Słodkie płatki śniadaniowe → Płatki owsiane/owoce; Gotowy posiłek → Posiłek domowej roboty; Przetworzone mięso → Rośliny strączkowe",
+      "goal": "Zapisz 2 zamiany związane z przetworzoną żywnością. Dopuszczalne zamiany:\nNapój słodzony → Woda\nSłodka przekąska → Owoce lub orzechy\nSłodkie płatki śniadaniowe → Płatki owsiane/owoce\nGotowy posiłek → Posiłek domowej roboty\nPrzetworzone mięso → Rośliny strączkowe",
       "whyItMatters": "Niewielkie zmiany w diecie mogą zmniejszyć zależność od wysoko przetworzonej żywności, poprawiając jednocześnie jej wartość odżywczą i ograniczając wpływ na środowisko."
     },
     "M.B4.1": {
@@ -2776,7 +2776,7 @@
     },
     "M.I1.2": {
       "title": "Wspinaj się po drabinie białkowej",
-      "goal": "Zapisz co najmniej jedną zamianę z każdego poziomu oddziaływania: wołowina → wieprzowina lub wołowina → kurczak; wołowina → rośliny strączkowe; wieprzowina → rośliny strączkowe lub kurczak → rośliny strączkowe. Stopniowo zastępuj białka o większym oddziaływaniu opcjami o mniejszym oddziaływaniu.",
+      "goal": "Zapisz co najmniej jedną zamianę z każdego poziomu oddziaływania:\nWołowina → wieprzowina lub wołowina → kurczak\nWołowina → rośliny strączkowe\nWieprzowina → rośliny strączkowe lub kurczak → rośliny strączkowe\nStopniowo zastępuj białka o większym oddziaływaniu opcjami o mniejszym oddziaływaniu.",
       "whyItMatters": "Nie wszystkie zamienniki białka przynoszą takie same korzyści dla środowiska. Zastąpienie wołowiny roślinami strączkowymi zazwyczaj przynosi większe korzyści dla środowiska niż zastąpienie wołowiny wieprzowiną."
     },
     "M.I1.3": {
@@ -2830,7 +2830,7 @@
     },
     "M.I3.3": {
       "title": "Tydzień działań na rzecz ograniczenia obciążenia systemów",
-      "goal": "Zapisz 4 zamiany związane z przetwarzaniem żywności. Dopuszczalne zamiany: Napój słodzony → Woda; Przekąska słodzona → Owoce lub orzechy; Płatki śniadaniowe ze słodzikiem → Płatki owsiane/owoce; Gotowy posiłek → Posiłek domowej roboty; Przetworzone mięso → Rośliny strączkowe",
+      "goal": "Zapisz 4 zamiany związane z przetwarzaniem żywności. Dopuszczalne zamiany:\nNapój słodzony → Woda\nSłodka przekąska → Owoce lub orzechy\nSłodkie płatki śniadaniowe → Płatki owsiane/owoce\nGotowy posiłek → Posiłek domowej roboty\nPrzetworzone mięso → Rośliny strączkowe",
       "whyItMatters": "Świadomość nabiera znaczenia, gdy przekłada się ją na konkretne wybory żywieniowe."
     },
     "M.I3.4": {
