@@ -1,71 +1,68 @@
 {
   "country": "NO",
-  "description": "Months (1-12) in which fruit, berries and vegetables come from Norwegian production. 'harvest' = high season / good availability; 'storage' = Norwegian crop from storage. Items with domestic=false are imported only. Items not listed are not covered by the source (no data), not necessarily imported.",
-  "source": "Transcribed from 'Sesongkalender for bær, frukt og grønnsaker' (Statsforvalteren i Vestfold og Telemark with Vestfold og Telemark Bondelag, 2021). The import-only list was added by FoodMission. The calendar states no reuse licence.",
+  "description": "Months (1-12) from the Norwegian seasonal calendar. 'months' = 'Høysesong/god tilgjengelighet' (high season / good availability, blue dots); 'storage' = 'Lagersesong' (storage season, orange dots). Only Norwegian-grown items the calendar lists are included.",
   "sourceLinks": [
     {
-      "title": "Sesongkalender for frukt, bær, grønsaker og potet (Statsforvalteren i Vestfold og Telemark, 2021)",
-      "url": "https://www.statsforvalteren.no/vestfold-og-telemark/landbruk-og-mat/nyheter/2021/07/sesongkalender-for-frukt-bar-gronsaker-og-potet/"
+      "id": "statsforvalteren-vt",
+      "title": "Sesongkalender for bær, frukt og grønnsaker (Statsforvalteren i Vestfold og Telemark with Vestfold og Telemark Bondelag, 2021), PDF",
+      "url": "https://files.nettsteder.regjeringen.no/wpuploads01/sites/407/2021/08/FYLK0002_kalender_A2.pdf"
     },
     {
-      "title": "Sesongkalender PDF (A2)",
-      "url": "https://files.nettsteder.regjeringen.no/wpuploads01/sites/407/2021/08/FYLK0002_kalender_A2.pdf"
+      "id": "statsforvalteren-vt-news",
+      "title": "Sesongkalender for frukt, bær, grønsaker og potet (Statsforvalteren news article, 2021; returned 404 on 2026-10-13)",
+      "url": "https://www.statsforvalteren.no/vestfold-og-telemark/landbruk-og-mat/nyheter/2021/07/sesongkalender-for-frukt-bar-gronsaker-og-potet/"
     }
   ],
-  "lastReviewed": "2026-10-13",
+  "licence": "No reuse licence stated in the calendar. Published by a Norwegian public body (Statsforvalteren i Vestfold og Telemark) with Vestfold og Telemark Bondelag; design Matbyrået Impuls.",
+  "lastReviewed": "2026-10-15",
   "items": [
     {
       "id": "raspberry",
       "nameNo": "Bringebær",
       "nameEn": "Raspberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [7, 8]
     },
     {
       "id": "strawberry",
       "nameNo": "Jordbær",
       "nameEn": "Strawberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8]
     },
     {
       "id": "redcurrant",
       "nameNo": "Rips",
       "nameEn": "Redcurrant",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [7, 8]
     },
     {
       "id": "gooseberry",
       "nameNo": "Stikkelsbær",
       "nameEn": "Gooseberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [7, 8]
     },
     {
       "id": "blackcurrant",
       "nameNo": "Solbær",
       "nameEn": "Blackcurrant",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [7, 8]
     },
     {
       "id": "apple",
       "nameNo": "Epler",
       "nameEn": "Apple",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12, 1]
     },
     {
@@ -73,80 +70,72 @@
       "nameNo": "Moreller",
       "nameEn": "Sweet cherry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [7, 8]
     },
     {
       "id": "plum",
       "nameNo": "Plommer",
       "nameEn": "Plum",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [8, 9]
     },
     {
       "id": "pear",
       "nameNo": "Pærer",
       "nameEn": "Pear",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [9, 10]
     },
     {
       "id": "white-asparagus",
       "nameNo": "Asparges",
       "nameEn": "Asparagus",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6]
     },
     {
       "id": "flat-leaf-parsley",
       "nameNo": "Bladpersille",
       "nameEn": "Flat-leaf parsley",
       "type": "herb",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6, 7, 8, 9]
     },
     {
       "id": "cauliflower",
       "nameNo": "Blomkål",
       "nameEn": "Cauliflower",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "broccoli",
       "nameNo": "Brokkoli",
       "nameEn": "Broccoli",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "green-bean",
       "nameNo": "Bønner",
       "nameEn": "Green bean",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10]
     },
     {
       "id": "pumpkin",
       "nameNo": "Gresskar",
       "nameEn": "Pumpkin",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11]
     },
     {
@@ -154,8 +143,8 @@
       "nameNo": "Grønnkål",
       "nameEn": "Kale",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12]
     },
     {
@@ -163,8 +152,8 @@
       "nameNo": "Gulrot",
       "nameEn": "Carrot",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [7, 8, 9, 10],
       "storage": [11, 12, 1, 2, 3, 4, 5, 6]
     },
     {
@@ -172,17 +161,16 @@
       "nameNo": "Hjertesalat",
       "nameEn": "Lettuce",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6, 7, 8, 9, 10]
     },
     {
       "id": "white-cabbage",
       "nameNo": "Hodekål",
       "nameEn": "White cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9],
       "storage": [11, 12, 1, 2, 3, 4]
     },
     {
@@ -190,17 +178,16 @@
       "nameNo": "Isbergsalat",
       "nameEn": "Iceberg lettuce",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "jerusalem-artichoke",
       "nameNo": "Jordskokk",
       "nameEn": "Jerusalem artichoke",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12]
     },
     {
@@ -208,8 +195,8 @@
       "nameNo": "Kinakål",
       "nameEn": "Chinese cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9, 10],
       "storage": [11, 12]
     },
     {
@@ -217,8 +204,8 @@
       "nameNo": "Kålrot",
       "nameEn": "Swede",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12, 1, 2, 3, 4, 5]
     },
     {
@@ -226,8 +213,8 @@
       "nameNo": "Løk",
       "nameEn": "Onion",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9],
+      "source": "statsforvalteren-vt",
+      "months": [7, 8, 9],
       "storage": [10, 11, 12, 1, 2, 3, 4, 5, 6]
     },
     {
@@ -235,17 +222,16 @@
       "nameNo": "Mais",
       "nameEn": "Sweetcorn",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10]
     },
     {
       "id": "parsnip",
       "nameNo": "Pastinakk",
       "nameEn": "Parsnip",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12, 1, 2, 3, 4]
     },
     {
@@ -253,17 +239,16 @@
       "nameNo": "Persille",
       "nameEn": "Parsley",
       "type": "herb",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6, 7, 8, 9, 10]
     },
     {
       "id": "parsley-root",
       "nameNo": "Persillerot",
       "nameEn": "Parsley root",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12, 1, 2, 3, 4]
     },
     {
@@ -271,8 +256,8 @@
       "nameNo": "Potet",
       "nameEn": "Potato",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9, 10],
       "storage": [11, 12, 1, 2, 3, 4, 5]
     },
     {
@@ -280,8 +265,8 @@
       "nameNo": "Purre",
       "nameEn": "Leek",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9],
+      "source": "statsforvalteren-vt",
+      "months": [7, 8, 9],
       "storage": [10, 11, 12, 1]
     },
     {
@@ -289,44 +274,40 @@
       "nameNo": "Rabarbra",
       "nameEn": "Rhubarb",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6]
     },
     {
       "id": "radish",
       "nameNo": "Reddik",
       "nameEn": "Radish",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6, 7, 8]
     },
     {
       "id": "brussels-sprouts",
       "nameNo": "Rosenkål",
       "nameEn": "Brussels sprouts",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10, 11],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [7, 8, 9, 10, 11]
     },
     {
       "id": "rocket",
       "nameNo": "Rukkola",
       "nameEn": "Rocket",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6, 7, 8]
     },
     {
       "id": "beetroot",
       "nameNo": "Rødbeter",
       "nameEn": "Beetroot",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [9, 10],
       "storage": [11, 12, 1, 2, 3, 4, 5, 6]
     },
     {
@@ -334,8 +315,8 @@
       "nameNo": "Rødkål",
       "nameEn": "Red cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12, 1, 2, 3, 4]
     },
     {
@@ -343,8 +324,8 @@
       "nameNo": "Sellerirot",
       "nameEn": "Celeriac",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [8, 9, 10],
       "storage": [11, 12, 1, 2, 3, 4]
     },
     {
@@ -352,26 +333,24 @@
       "nameNo": "Spinat",
       "nameEn": "Spinach",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [5, 6, 7, 8, 9, 10]
     },
     {
       "id": "zucchini",
       "nameNo": "Squash",
       "nameEn": "Courgette",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "celery",
       "nameNo": "Stangselleri",
       "nameEn": "Celery",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
+      "source": "statsforvalteren-vt",
+      "months": [7, 8, 9, 10],
       "storage": [11]
     },
     {
@@ -379,162 +358,16 @@
       "nameNo": "Sukkererter",
       "nameEn": "Sugar snap pea",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [7, 8, 9, 10]
     },
     {
       "id": "spring-onion",
       "nameNo": "Vårløk",
       "nameEn": "Spring onion",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
-    },
-    {
-      "id": "avocado",
-      "nameNo": "Avokado",
-      "nameEn": "Avocado",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "banana",
-      "nameNo": "Banan",
-      "nameEn": "Banana",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "fig",
-      "nameNo": "Fiken",
-      "nameEn": "Fig",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "grapefruit",
-      "nameNo": "Grapefrukt",
-      "nameEn": "Grapefruit",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "kiwi",
-      "nameNo": "Kiwi",
-      "nameEn": "Kiwi",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "lemon",
-      "nameNo": "Sitron",
-      "nameEn": "Lemon",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "lime",
-      "nameNo": "Lime",
-      "nameEn": "Lime",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "lychee",
-      "nameNo": "Litchi",
-      "nameEn": "Lychee",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "mandarin",
-      "nameNo": "Mandarin/Klementin",
-      "nameEn": "Mandarin",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "mango",
-      "nameNo": "Mango",
-      "nameEn": "Mango",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "orange",
-      "nameNo": "Appelsin",
-      "nameEn": "Orange",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "papaya",
-      "nameNo": "Papaya",
-      "nameEn": "Papaya",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "persimmon",
-      "nameNo": "Kaki",
-      "nameEn": "Persimmon",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "pineapple",
-      "nameNo": "Ananas",
-      "nameEn": "Pineapple",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "pomegranate",
-      "nameNo": "Granateple",
-      "nameEn": "Pomegranate",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "pomelo",
-      "nameNo": "Pomelo",
-      "nameEn": "Pomelo",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
+      "source": "statsforvalteren-vt",
+      "months": [6, 7, 8, 9, 10]
     }
   ]
 }

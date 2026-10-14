@@ -1,666 +1,596 @@
 {
   "country": "GR",
-  "description": "Months (1-12) in which fruit, vegetables, nuts and herbs come from Greek production. 'harvest' = fresh domestic season (open field or citrus picked from the tree); 'storage' = Greek crop sold from storage. The underlying Greek calendars are plain month-by-month lists of what is in season and do not distinguish harvest from storage; the split into harvest and storage was added by FoodMission for storable crops (apple, pear, kiwi, potato, pumpkin, onion, garlic, walnut, almond). Greenhouse production: the sources show tomato, cucumber, pepper, aubergine and courgette only from late spring to autumn, so the large winter greenhouse production in Crete and the Peloponnese (heated or unheated) is excluded; whether early unheated protected crops (e.g. tunnel strawberries, early tomato and cucumber in May) are reflected in the spring months is not stated. Avocado and banana are domestic: the WWF Greece calendar lists them and both are grown commercially on a small scale in Crete (banana under cover). Items with domestic=false are imported only. Items not listed are not covered by the sources (no data), not necessarily imported.",
-  "source": "Compiled by FoodMission. Primary source: the month-by-month 'Κατάλογος εποχικότητας φρούτων και λαχανικών' published on Logodiatrofis.gr (Ελληνική Διατροφολογική Εταιρεία / ΕΛ.Δ.Ε., the Greek source listed by EUFIC), transcribed for the items it covers. Items it does not cover (avocado, banana, fennel, rocket, purslane, sweetcorn, dry onion/garlic season) and some season boundaries were taken from the WWF Greece seasonality poster 'Πότε τρώω, τι; Κάθε πράγμα στον καιρό του...' (2022), supplemented by well-established knowledge for the harvest/storage split and for olive, almond and walnut, which neither calendar covers. No public-body (ministry, ΕΦΕΤ, ΕΛΓΟ-ΔΗΜΗΤΡΑ) calendar was found. Neither source states an open reuse licence: Logodiatrofis.gr is '© Logodiatrofis.gr' (all rights reserved) and the WWF Greece poster carries no licence statement. The import-only list was added by FoodMission.",
+  "description": "Months (1-12) in which each fruit or vegetable is listed as in season in the cited Greek seasonality calendar, exactly as printed. Each item comes from one source (field 'source'): the Logodiatrofis.gr list for every item it contains (its 'all year' list = months 1-12), otherwise the WWF Greece poster. Neither source distinguishes harvest from storage or domestic from imported produce. Items not listed are not covered by the sources.",
   "sourceLinks": [
     {
-      "title": "Logodiatrofis.gr: Εποχικότητα τροφίμων: Απαραίτητη συνθήκη για τη διατροφή ORAC! (Κατάλογος εποχικότητας φρούτων και λαχανικών)",
+      "id": "logodiatrofis",
+      "title": "Logodiatrofis.gr: Εποχικότητα τροφίμων (ΕΛ.Δ.Ε.)",
       "url": "https://logodiatrofis.gr/epoxikotita-trofimwn-aparaititi-sunthiki-orac/"
     },
     {
-      "title": "WWF Ελλάς: Πότε τρώω, τι; Κάθε πράγμα στον καιρό του... (πίνακας εποχικότητας, PDF, 2022)",
+      "id": "wwf-gr",
+      "title": "WWF Greece: Πότε τρώω, τι; (2022, PDF)",
       "url": "https://wwfeu.awsassets.panda.org/downloads/pinakas_epohikotitas.pdf"
     }
   ],
-  "lastReviewed": "2026-10-14",
+  "licence": "Logodiatrofis.gr: '© Logodiatrofis.gr', all rights reserved. WWF Greece poster: no licence stated.",
+  "lastReviewed": "2026-10-15",
   "items": [
     {
       "id": "kiwi",
       "nameEl": "Ακτινίδιο",
       "nameEn": "Kiwi",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [10, 11],
-      "storage": [12, 1, 2]
+      "source": "logodiatrofis",
+      "months": [1, 2, 11, 12]
     },
     {
       "id": "grapefruit",
       "nameEl": "Γκρέιπφρουτ",
       "nameEn": "Grapefruit",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [11, 12, 1, 2, 3],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 11, 12]
     },
     {
       "id": "lemon",
-      "nameEl": "Λεμόνι",
+      "nameEl": "Λεμόνια",
       "nameEn": "Lemon",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 10, 11, 12]
     },
     {
       "id": "mandarin",
-      "nameEl": "Μανταρίνι",
+      "nameEl": "Μανταρίνια",
       "nameEn": "Mandarin",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4],
-      "storage": []
-    },
-    {
-      "id": "orange",
-      "nameEl": "Πορτοκάλι",
-      "nameEn": "Orange",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [11, 12, 1, 2, 3, 4, 5],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 10, 11, 12]
     },
     {
       "id": "apple",
-      "nameEl": "Μήλο",
+      "nameEl": "Μήλα",
       "nameEn": "Apple",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [9, 10],
-      "storage": [11, 12, 1, 2, 3]
+      "source": "logodiatrofis",
+      "months": [1, 9, 10, 11, 12]
     },
     {
-      "id": "pear",
-      "nameEl": "Αχλάδι",
-      "nameEn": "Pear",
+      "id": "orange",
+      "nameEl": "Πορτοκάλια",
+      "nameEn": "Orange",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": [11, 12]
-    },
-    {
-      "id": "quince",
-      "nameEl": "Κυδώνι",
-      "nameEn": "Quince",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [9, 10],
-      "storage": []
-    },
-    {
-      "id": "pomegranate",
-      "nameEl": "Ρόδι",
-      "nameEn": "Pomegranate",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [9, 10, 11],
-      "storage": []
-    },
-    {
-      "id": "persimmon",
-      "nameEl": "Λωτός",
-      "nameEn": "Persimmon",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [10, 11, 12],
-      "storage": []
-    },
-    {
-      "id": "grape",
-      "nameEl": "Σταφύλι",
-      "nameEn": "Grape",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
-    },
-    {
-      "id": "fig",
-      "nameEl": "Σύκο",
-      "nameEn": "Fig",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 11, 12]
     },
     {
       "id": "apricot",
       "nameEl": "Βερίκοκο",
       "nameEn": "Apricot",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [5, 6, 7],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6, 7]
     },
     {
       "id": "cherry-sweet",
-      "nameEl": "Κεράσι",
+      "nameEl": "Κεράσια",
       "nameEn": "Sweet cherry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [5, 6, 7],
-      "storage": []
-    },
-    {
-      "id": "cherry-sour",
-      "nameEl": "Βύσσινο",
-      "nameEn": "Sour cherry",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6, 7]
     },
     {
       "id": "mulberry",
-      "nameEl": "Μούρο",
+      "nameEl": "Μούρα",
       "nameEn": "Mulberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [5],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5]
     },
     {
       "id": "loquat",
-      "nameEl": "Μούσμουλο",
+      "nameEl": "Μούσμουλα",
       "nameEn": "Loquat",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [4, 5, 6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6]
     },
     {
       "id": "strawberry",
-      "nameEl": "Φράουλα",
+      "nameEl": "Φράουλες",
       "nameEn": "Strawberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [3, 4, 5, 6, 7],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6, 7]
+    },
+    {
+      "id": "pear",
+      "nameEl": "Αχλάδια",
+      "nameEn": "Pear",
+      "type": "fruit",
+      "source": "logodiatrofis",
+      "months": [6, 7, 8, 9, 11, 12]
+    },
+    {
+      "id": "cherry-sour",
+      "nameEl": "Βύσσινα",
+      "nameEn": "Sour cherry",
+      "type": "fruit",
+      "source": "logodiatrofis",
+      "months": [6]
     },
     {
       "id": "watermelon",
-      "nameEl": "Καρπούζι",
+      "nameEl": "Καρπούζια",
       "nameEn": "Watermelon",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [6, 7, 8, 9]
     },
     {
       "id": "melon",
-      "nameEl": "Πεπόνι",
+      "nameEl": "Πεπόνια",
       "nameEn": "Melon",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [6, 7, 8, 9]
     },
     {
-      "id": "peach-nectarine",
-      "nameEl": "Ροδάκινο/Νεκταρίνι",
-      "nameEn": "Peach/Nectarine",
+      "id": "peach",
+      "nameEl": "Ροδάκινα",
+      "nameEn": "Peach",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [6, 7, 8, 9]
     },
     {
       "id": "plum",
-      "nameEl": "Δαμάσκηνο/Κορόμηλο",
+      "nameEl": "Δαμάσκηνα",
       "nameEn": "Plum",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [6, 7, 8, 9]
+    },
+    {
+      "id": "cherry-plum",
+      "nameEl": "Κορόμηλα",
+      "nameEn": "Cherry plum",
+      "type": "fruit",
+      "source": "logodiatrofis",
+      "months": [6]
+    },
+    {
+      "id": "fig",
+      "nameEl": "Σύκα",
+      "nameEn": "Fig",
+      "type": "fruit",
+      "source": "logodiatrofis",
+      "months": [7, 8, 9]
     },
     {
       "id": "blackberry",
-      "nameEl": "Βατόμουρο",
+      "nameEl": "Βατόμουρα",
       "nameEn": "Blackberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [7, 8, 9]
     },
     {
-      "id": "avocado",
-      "nameEl": "Αβοκάντο",
-      "nameEn": "Avocado",
+      "id": "grape",
+      "nameEl": "Σταφύλι",
+      "nameEn": "Grape",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [11, 12, 1, 2, 3, 4, 5, 6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [8, 9, 10]
     },
     {
-      "id": "banana",
-      "nameEl": "Μπανάνα",
-      "nameEn": "Banana",
+      "id": "quince",
+      "nameEl": "Κυδώνια",
+      "nameEn": "Quince",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [9, 10]
+    },
+    {
+      "id": "pomegranate",
+      "nameEl": "Ρόδια",
+      "nameEn": "Pomegranate",
+      "type": "fruit",
+      "source": "logodiatrofis",
+      "months": [9, 10, 11]
+    },
+    {
+      "id": "persimmon",
+      "nameEl": "Λωτοί",
+      "nameEn": "Persimmon",
+      "type": "fruit",
+      "source": "logodiatrofis",
+      "months": [10]
     },
     {
       "id": "chestnut",
-      "nameEl": "Κάστανο",
+      "nameEl": "Κάστανα",
       "nameEn": "Chestnut",
       "type": "nut",
-      "domestic": true,
-      "harvest": [11, 12],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [11, 12]
     },
     {
       "id": "hazelnut",
-      "nameEl": "Φουντούκι",
+      "nameEl": "Φουντούκια",
       "nameEn": "Hazelnut",
       "type": "nut",
-      "domestic": true,
-      "harvest": [8],
-      "storage": []
-    },
-    {
-      "id": "walnut",
-      "nameEl": "Καρύδι",
-      "nameEn": "Walnut",
-      "type": "nut",
-      "domestic": true,
-      "harvest": [9, 10],
-      "storage": [11, 12, 1, 2, 3]
-    },
-    {
-      "id": "almond",
-      "nameEl": "Αμύγδαλο",
-      "nameEn": "Almond",
-      "type": "nut",
-      "domestic": true,
-      "harvest": [8, 9],
-      "storage": [10, 11, 12, 1, 2, 3]
-    },
-    {
-      "id": "olive",
-      "nameEl": "Ελιά",
-      "nameEn": "Olive",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [8]
     },
     {
       "id": "carrot",
-      "nameEl": "Καρότο",
+      "nameEl": "Καρότα",
       "nameEn": "Carrot",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "broad-bean",
       "nameEl": "Κουκιά",
       "nameEn": "Broad bean",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [4, 5, 6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 4]
     },
     {
       "id": "cauliflower",
       "nameEl": "Κουνουπίδι",
       "nameEn": "Cauliflower",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 10, 11, 12]
     },
     {
       "id": "white-cabbage",
       "nameEl": "Λάχανο",
-      "nameEn": "White cabbage",
+      "nameEn": "Cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 10, 11, 12]
     },
     {
       "id": "brussels-sprouts",
       "nameEl": "Λαχανάκια Βρυξελλών",
       "nameEn": "Brussels sprouts",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3],
-      "storage": []
-    },
-    {
-      "id": "broccoli",
-      "nameEl": "Μπρόκολο",
-      "nameEn": "Broccoli",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 11, 12]
     },
     {
       "id": "lettuce",
       "nameEl": "Μαρούλι",
       "nameEn": "Lettuce",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 9, 10, 11, 12]
+    },
+    {
+      "id": "broccoli",
+      "nameEl": "Μπρόκολο",
+      "nameEn": "Broccoli",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 10, 11, 12]
     },
     {
       "id": "leek",
       "nameEl": "Πράσο",
       "nameEn": "Leek",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 9, 10, 11, 12]
     },
     {
       "id": "chicory",
       "nameEl": "Ραδίκια",
       "nameEn": "Chicory",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [12, 1, 2, 3, 4, 5],
-      "storage": []
-    },
-    {
-      "id": "endive",
-      "nameEl": "Αντίδια",
-      "nameEn": "Endive",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4, 5],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5]
     },
     {
       "id": "swiss-chard",
       "nameEl": "Σέσκουλο",
       "nameEn": "Swiss chard",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4, 5],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 10, 11, 12]
     },
     {
       "id": "spinach",
       "nameEl": "Σπανάκι",
       "nameEn": "Spinach",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3, 4, 5],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 9, 10, 11, 12]
     },
     {
       "id": "artichoke",
       "nameEl": "Αγκινάρα",
       "nameEn": "Artichoke",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [11, 12, 1, 2, 3, 4, 5],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [2, 3]
+    },
+    {
+      "id": "endive",
+      "nameEl": "Αντίδια",
+      "nameEn": "Endive",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [2, 3, 5, 10, 11, 12]
     },
     {
       "id": "beetroot",
       "nameEl": "Παντζάρι",
       "nameEn": "Beetroot",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [3, 4, 5, 7, 10, 11, 12]
     },
     {
       "id": "radish",
       "nameEl": "Ραπανάκι",
       "nameEn": "Radish",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [2, 3, 4, 5, 6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [3, 5]
     },
     {
       "id": "white-asparagus",
-      "nameEl": "Σπαράγγι",
+      "nameEl": "Σπαράγγια",
       "nameEn": "Asparagus",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [3, 4, 5]
     },
     {
       "id": "spring-onion",
-      "nameEl": "Φρέσκο κρεμμυδάκι",
+      "nameEl": "Κρεμμυδάκια φρέσκα",
       "nameEn": "Spring onion",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [3, 4, 5, 9, 10, 11]
     },
     {
-      "id": "rocket",
-      "nameEl": "Ρόκα",
-      "nameEn": "Rocket",
+      "id": "mushroom",
+      "nameEl": "Μανιτάρια",
+      "nameEn": "Mushrooms",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3, 4, 5],
-      "storage": []
-    },
-    {
-      "id": "fennel",
-      "nameEl": "Φινόκιο",
-      "nameEn": "Fennel",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
-      "storage": []
-    },
-    {
-      "id": "pea",
-      "nameEl": "Αρακάς",
-      "nameEn": "Pea",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [4, 5, 6],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [4, 5, 10, 11]
     },
     {
       "id": "cucumber",
       "nameEl": "Αγγούρι",
       "nameEn": "Cucumber",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6, 7, 8, 9]
     },
     {
-      "id": "zucchini",
-      "nameEl": "Κολοκυθάκι",
-      "nameEn": "Courgette",
+      "id": "pea",
+      "nameEl": "Αρακάς",
+      "nameEn": "Pea",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
-    },
-    {
-      "id": "green-bean",
-      "nameEl": "Φασολάκια",
-      "nameEn": "Green bean",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
-    },
-    {
-      "id": "aubergine",
-      "nameEl": "Μελιτζάνα",
-      "nameEn": "Aubergine",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
-    },
-    {
-      "id": "sweet-pepper",
-      "nameEl": "Πιπεριά",
-      "nameEn": "Sweet pepper",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
-    },
-    {
-      "id": "tomato",
-      "nameEl": "Τομάτα",
-      "nameEn": "Tomato",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
-    },
-    {
-      "id": "okra",
-      "nameEl": "Μπάμια",
-      "nameEn": "Okra",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6]
     },
     {
       "id": "amaranth-greens",
       "nameEl": "Βλίτα",
       "nameEn": "Amaranth greens",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6]
     },
     {
-      "id": "purslane",
-      "nameEl": "Αντράκλα (γλιστρίδα)",
-      "nameEn": "Purslane",
+      "id": "zucchini",
+      "nameEl": "Κολοκυθάκια",
+      "nameEn": "Courgette",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6, 7, 8, 9]
     },
     {
-      "id": "sweetcorn",
-      "nameEl": "Καλαμπόκι",
-      "nameEn": "Sweetcorn",
+      "id": "green-bean",
+      "nameEl": "Φασολάκια",
+      "nameEn": "Green bean",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [5, 6, 7, 8, 9]
+    },
+    {
+      "id": "aubergine",
+      "nameEl": "Μελιτζάνα",
+      "nameEn": "Aubergine",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [6, 7, 8]
+    },
+    {
+      "id": "sweet-pepper",
+      "nameEl": "Πιπεριά",
+      "nameEn": "Pepper",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [6, 7, 8, 9]
+    },
+    {
+      "id": "tomato",
+      "nameEl": "Τομάτες",
+      "nameEn": "Tomato",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [6, 7, 8, 9]
+    },
+    {
+      "id": "okra",
+      "nameEl": "Μπάμιες",
+      "nameEn": "Okra",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [7, 8, 9]
     },
     {
       "id": "potato",
-      "nameEl": "Πατάτα",
+      "nameEl": "Πατάτες",
       "nameEn": "Potato",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10, 11, 12],
-      "storage": [1, 2]
+      "source": "logodiatrofis",
+      "months": [7, 8, 9, 10, 11, 12]
     },
     {
       "id": "pumpkin",
       "nameEl": "Κολοκύθα",
       "nameEn": "Pumpkin",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
-      "storage": [11, 12, 1]
+      "source": "logodiatrofis",
+      "months": [8, 10]
     },
     {
-      "id": "onion",
-      "nameEl": "Κρεμμύδι (ξερό)",
-      "nameEn": "Onion",
+      "id": "rocket",
+      "nameEl": "Ρόκα",
+      "nameEn": "Rocket",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8],
-      "storage": [9, 10, 11, 12, 1, 2, 3, 4]
-    },
-    {
-      "id": "garlic",
-      "nameEl": "Σκόρδο",
-      "nameEn": "Garlic",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [4, 5, 6, 7],
-      "storage": [8, 9, 10, 11, 12, 1, 2, 3]
-    },
-    {
-      "id": "leaf-celery",
-      "nameEl": "Σέλινο",
-      "nameEn": "Leaf celery",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
-    },
-    {
-      "id": "flat-leaf-parsley",
-      "nameEl": "Μαϊντανός",
-      "nameEn": "Flat-leaf parsley",
-      "type": "herb",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [10]
     },
     {
       "id": "dill",
       "nameEl": "Άνηθος",
       "nameEn": "Dill",
       "type": "herb",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    },
+    {
+      "id": "onion",
+      "nameEl": "Κρεμμύδι",
+      "nameEn": "Onion",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    },
+    {
+      "id": "garlic",
+      "nameEl": "Σκόρδο",
+      "nameEn": "Garlic",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "rosemary",
-      "nameEl": "Δεντρολίβανο",
+      "nameEl": "Δενδρολίβανο",
       "nameEn": "Rosemary",
       "type": "herb",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
-      "id": "pineapple",
-      "nameEl": "Ανανάς",
-      "nameEn": "Pineapple",
+      "id": "flat-leaf-parsley",
+      "nameEl": "Μαϊντανός",
+      "nameEn": "Parsley",
+      "type": "herb",
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    },
+    {
+      "id": "leaf-celery",
+      "nameEl": "Σέλινο",
+      "nameEn": "Celery",
+      "type": "vegetable",
+      "source": "logodiatrofis",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    },
+    {
+      "id": "banana",
+      "nameEl": "Μπανάνες",
+      "nameEn": "Banana",
       "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
+      "source": "wwf-gr",
+      "months": [1, 2, 3, 10, 11, 12]
+    },
+    {
+      "id": "avocado",
+      "nameEl": "Αβοκάντο",
+      "nameEn": "Avocado",
+      "type": "fruit",
+      "source": "wwf-gr",
+      "months": [1, 2, 3, 4, 5, 6, 11, 12]
+    },
+    {
+      "id": "nectarine",
+      "nameEl": "Νεκταρίνια",
+      "nameEn": "Nectarine",
+      "type": "fruit",
+      "source": "wwf-gr",
+      "months": [5, 6, 7, 8, 9, 10]
     },
     {
       "id": "mango",
-      "nameEl": "Μάνγκο",
+      "nameEl": "Μάγκο",
       "nameEn": "Mango",
       "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
+      "source": "wwf-gr",
+      "months": [8]
     },
     {
-      "id": "papaya",
-      "nameEl": "Παπάγια",
-      "nameEn": "Papaya",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
+      "id": "fennel",
+      "nameEl": "Φινόκιο",
+      "nameEn": "Fennel",
+      "type": "vegetable",
+      "source": "wwf-gr",
+      "months": [1, 2, 3, 4, 5, 6, 9, 10, 11, 12]
     },
     {
-      "id": "lychee",
-      "nameEl": "Λίτσι",
-      "nameEn": "Lychee",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
+      "id": "frisee",
+      "nameEl": "Σαλάτα φριζέ",
+      "nameEn": "Frisée lettuce",
+      "type": "vegetable",
+      "source": "wwf-gr",
+      "months": [1, 2, 3, 4, 5, 6, 11, 12]
+    },
+    {
+      "id": "purslane",
+      "nameEl": "Αντράκλα (γλυστρίδα)",
+      "nameEn": "Purslane",
+      "type": "vegetable",
+      "source": "wwf-gr",
+      "months": [6, 7, 8]
+    },
+    {
+      "id": "sweetcorn",
+      "nameEl": "Καλαμπόκι",
+      "nameEn": "Sweetcorn",
+      "type": "vegetable",
+      "source": "wwf-gr",
+      "months": [7, 8]
+    },
+    {
+      "id": "collard-greens",
+      "nameEl": "Λαχανίδες (παραπούλια)",
+      "nameEn": "Collard greens",
+      "type": "vegetable",
+      "source": "wwf-gr",
+      "months": [1]
+    },
+    {
+      "id": "turnip",
+      "nameEl": "Ράπα (ραίβα)",
+      "nameEn": "Turnip",
+      "type": "vegetable",
+      "source": "wwf-gr",
+      "months": [1]
     }
   ]
 }

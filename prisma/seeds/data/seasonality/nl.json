@@ -1,783 +1,583 @@
 {
   "country": "NL",
-  "description": "Months (1-12) in which fruit and vegetables come from Dutch production. 'harvest' = fresh domestic season (open field or unheated greenhouse); 'storage' = Dutch crop sold from storage. Heated-greenhouse production is excluded. The source calendar lists all seasonal months without separating fresh from stored produce; FoodMission split off storage months for typical storage crops (apple, pear, onion, carrot, beetroot, celeriac, white/red cabbage, pumpkin, swede, winter radish), following the Milieu Centraal convention (vollegrond + onverwarmde kas = harvest, bewaarproduct = storage). Items with domestic=false are imported only. Items not listed are not covered by the source (no data), not necessarily imported.",
-  "source": "Months transcribed from the Voedingscentrum 'Groente- en fruitkalender' (2023 PDF, compiled from Velt information with input from Bionext and Voedingscentrum), which Milieu Centraal links as its seasonal calendar. The harvest/storage split and the import-only list were added by FoodMission from well-established knowledge of Dutch cultivation and storage. The calendar states no reuse licence.",
+  "description": "Months (1-12) in which the item is listed in the Voedingscentrum 'Groente- en fruitkalender' (2023). The calendar is one column per month listing the vegetables (above a divider line) and fruit (below it) that are in season in that month. It has no further legend: it does not distinguish open field, greenhouse or storage produce and marks no peak season, so only 'months' is given. Footnote: compiled from Velt information, supplemented with insights from Bionext and the Voedingscentrum. The calendar label 'raap(steel)' (September, October) is applied to both 'Raap' and 'Raapsteel'. Items not listed are not covered by the source.",
   "sourceLinks": [
     {
-      "title": "Groente- en fruitkalender (Voedingscentrum, PDF)",
+      "id": "voedingscentrum",
+      "title": "Voedingscentrum: Groente- en fruitkalender (PDF, 2023)",
       "url": "https://www.voedingscentrum.nl/Assets/Uploads/voedingscentrum/Documents/Consumenten/Veelgestelde%20vragen/Voedingscentrum%20seizoengroente-%20en%20fruitkalender.pdf"
-    },
-    {
-      "title": "Groente en fruit – milieuvriendelijk kiezen (Milieu Centraal)",
-      "url": "https://www.milieucentraal.nl/eten-en-drinken/milieubewust-eten/groente-en-fruit/"
     }
   ],
-  "lastReviewed": "2026-10-13",
+  "licence": "None stated: the PDF gives no licence or reuse terms, and no reuse terms specific to it were found.",
+  "lastReviewed": "2026-10-15",
   "items": [
     {
       "id": "jerusalem-artichoke",
       "nameNl": "Aardpeer",
       "nameEn": "Jerusalem artichoke",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [11, 12, 1],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 11, 12]
     },
     {
       "id": "endive",
       "nameNl": "Andijvie",
       "nameEn": "Endive",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "artichoke",
       "nameNl": "Artisjok",
       "nameEn": "Artichoke",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "white-asparagus",
       "nameNl": "Asperge",
       "nameEn": "Asparagus",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [4, 5, 6],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [4, 5, 6]
     },
     {
       "id": "aubergine",
       "nameNl": "Aubergine",
       "nameEn": "Aubergine",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10]
     },
     {
       "id": "celery",
       "nameNl": "Bleekselderij",
       "nameEn": "Celery",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10, 11],
-      "storage": []
-    },
-    {
-      "id": "leaf-celery",
-      "nameNl": "Groene selderij",
-      "nameEn": "Leaf celery",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10, 11]
     },
     {
       "id": "cauliflower",
       "nameNl": "Bloemkool",
       "nameEn": "Cauliflower",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5, 6, 7, 8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [3, 4, 5, 6, 7, 8, 9, 10, 11]
     },
     {
       "id": "kale",
       "nameNl": "Boerenkool",
       "nameEn": "Kale",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 10, 11, 12]
     },
     {
       "id": "broccoli",
       "nameNl": "Broccoli",
       "nameEn": "Broccoli",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9, 10, 11]
     },
     {
       "id": "chinese-cabbage",
       "nameNl": "Chinese kool",
       "nameEn": "Chinese cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10, 11]
     },
     {
       "id": "zucchini",
       "nameNl": "Courgette",
       "nameEn": "Courgette",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10, 11]
     },
     {
       "id": "pea",
       "nameNl": "Doperwt",
       "nameEn": "Pea",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [5, 6, 7]
+    },
+    {
+      "id": "leaf-celery",
+      "nameNl": "Groene selderij",
+      "nameEn": "Leaf celery",
+      "type": "vegetable",
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "celeriac",
       "nameNl": "Knolselderij",
       "nameEn": "Celeriac",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10, 11],
-      "storage": [12, 1, 2, 3]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 8, 9, 10, 11, 12]
     },
     {
       "id": "cucumber",
       "nameNl": "Komkommer",
       "nameEn": "Cucumber",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10]
     },
     {
       "id": "swede",
       "nameNl": "Koolraap",
       "nameEn": "Swede",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [11, 12],
-      "storage": [1]
+      "source": "voedingscentrum",
+      "months": [1, 11, 12]
     },
     {
       "id": "kohlrabi",
       "nameNl": "Koolrabi",
       "nameEn": "Kohlrabi",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [5, 6, 7, 8, 9, 10]
     },
     {
       "id": "lettuce",
       "nameNl": "Kropsla",
       "nameEn": "Lettuce",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [5, 6, 7, 8, 9, 10]
     },
     {
       "id": "sweetcorn",
       "nameNl": "Mais",
       "nameEn": "Sweetcorn",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [8, 9]
     },
     {
       "id": "may-turnip",
       "nameNl": "Meiraap",
       "nameEn": "May turnip",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6],
-      "storage": []
-    },
-    {
-      "id": "turnip",
-      "nameNl": "Raap",
-      "nameEn": "Turnip",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12],
-      "storage": []
-    },
-    {
-      "id": "turnip-greens",
-      "nameNl": "Raapsteel",
-      "nameEn": "Turnip greens",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 6]
     },
     {
       "id": "mushroom",
       "nameNl": "Paddenstoelen",
-      "nameEn": "Button mushroom",
+      "nameEn": "Mushrooms",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "pak-choi",
       "nameNl": "Paksoi",
       "nameEn": "Pak choi",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [4, 5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [4, 5, 6, 7, 8, 9, 10]
     },
     {
       "id": "sweet-pepper",
       "nameNl": "Paprika",
       "nameEn": "Sweet pepper",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10]
     },
     {
       "id": "parsnip",
       "nameNl": "Pastinaak",
       "nameEn": "Parsnip",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 10, 11, 12]
     },
     {
       "id": "snow-pea",
       "nameNl": "Peultjes",
       "nameEn": "Snow pea",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [5, 6, 7]
     },
     {
       "id": "pumpkin",
       "nameNl": "Pompoen",
       "nameEn": "Pumpkin",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [8, 9, 10],
-      "storage": [11, 12, 1, 2, 3, 4]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 8, 9, 10, 11, 12]
     },
     {
       "id": "leek",
       "nameNl": "Prei",
       "nameEn": "Leek",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4],
-      "storage": [5]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    },
+    {
+      "id": "turnip",
+      "nameNl": "Raap",
+      "nameEn": "Turnip",
+      "type": "vegetable",
+      "source": "voedingscentrum",
+      "months": [9, 10, 11, 12]
+    },
+    {
+      "id": "turnip-greens",
+      "nameNl": "Raapsteel",
+      "nameEn": "Turnip greens",
+      "type": "vegetable",
+      "source": "voedingscentrum",
+      "months": [3, 4, 5, 8, 9, 10]
     },
     {
       "id": "rhubarb",
       "nameNl": "Rabarber",
       "nameEn": "Rhubarb",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5, 6, 7],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [3, 4, 5, 6, 7]
     },
     {
       "id": "radish",
       "nameNl": "Radijs",
       "nameEn": "Radish",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [3, 4, 5, 6, 7, 8, 9, 10]
     },
     {
       "id": "white-radish",
       "nameNl": "Rammenas",
       "nameEn": "White radish",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12],
-      "storage": [1, 2, 3]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 9, 10, 11, 12]
     },
     {
       "id": "beetroot",
       "nameNl": "Rode biet",
       "nameEn": "Beetroot",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10, 11],
-      "storage": [12, 1, 2, 3, 4, 5]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "red-cabbage",
       "nameNl": "Rodekool",
       "nameEn": "Red cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10, 11],
-      "storage": [12, 1, 2, 3]
-    },
-    {
-      "id": "white-cabbage",
-      "nameNl": "Witte kool",
-      "nameEn": "White cabbage",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10, 11],
-      "storage": [12, 1, 2, 3]
-    },
-    {
-      "id": "savoy-cabbage",
-      "nameNl": "Savooiekool",
-      "nameEn": "Savoy cabbage",
-      "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "red-chicory",
       "nameNl": "Roodlof",
       "nameEn": "Red chicory",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [3, 4, 5, 10]
     },
     {
-      "id": "chicory",
-      "nameNl": "Witlof",
-      "nameEn": "Chicory",
+      "id": "savoy-cabbage",
+      "nameNl": "Savooikool",
+      "nameEn": "Savoy cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3, 4],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "salsify",
       "nameNl": "Schorseneer",
       "nameEn": "Black salsify",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [9, 10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 9, 10, 11, 12]
     },
     {
       "id": "swiss-chard",
       "nameNl": "Snijbiet",
       "nameEn": "Swiss chard",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5, 6, 7, 8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [3, 4, 5, 6, 7, 8, 9, 10, 11]
     },
     {
       "id": "runner-bean",
       "nameNl": "Snijboon",
       "nameEn": "Runner bean",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10]
     },
     {
       "id": "green-bean",
       "nameNl": "Sperzieboon",
       "nameEn": "Green bean",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "spinach",
       "nameNl": "Spinazie",
       "nameEn": "Spinach",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [3, 4, 5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [3, 4, 5, 6, 7, 8, 9, 10]
     },
     {
       "id": "pointed-cabbage",
       "nameNl": "Spitskool",
       "nameEn": "Pointed cabbage",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [5, 6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [5, 6, 7, 8, 9, 10]
     },
     {
       "id": "brussels-sprouts",
       "nameNl": "Spruiten",
       "nameEn": "Brussels sprouts",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 10, 11, 12]
     },
     {
       "id": "tomato",
       "nameNl": "Tomaat",
       "nameEn": "Tomato",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "broad-bean",
       "nameNl": "Tuinboon",
       "nameEn": "Broad bean",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7]
     },
     {
       "id": "onion",
       "nameNl": "Ui",
       "nameEn": "Onion",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [7, 8, 9],
-      "storage": [10, 11, 12, 1, 2, 3, 4, 5, 6]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "lambs-lettuce",
       "nameNl": "Veldsla",
       "nameEn": "Lamb's lettuce",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 10, 11, 12]
     },
     {
       "id": "fennel",
       "nameNl": "Venkel",
       "nameEn": "Fennel",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9, 10, 11]
     },
     {
       "id": "watercress",
       "nameNl": "Waterkers",
       "nameEn": "Watercress",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [4, 5, 6, 7, 8, 9, 10, 11, 12, 1],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "winter-purslane",
       "nameNl": "Winterpostelein",
       "nameEn": "Winter purslane",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [10, 11, 12, 1, 2, 3],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 10, 11, 12]
+    },
+    {
+      "id": "chicory",
+      "nameNl": "Witlof",
+      "nameEn": "Chicory",
+      "type": "vegetable",
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 10, 11, 12]
+    },
+    {
+      "id": "white-cabbage",
+      "nameNl": "Witte kool",
+      "nameEn": "White cabbage",
+      "type": "vegetable",
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "carrot",
       "nameNl": "Wortel",
       "nameEn": "Carrot",
       "type": "vegetable",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10, 11],
-      "storage": [12, 1, 2, 3, 4, 5]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     },
     {
       "id": "strawberry",
       "nameNl": "Aardbei",
       "nameEn": "Strawberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [4, 5, 6, 7, 8],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [4, 5, 6, 7, 8]
     },
     {
       "id": "apricot",
       "nameNl": "Abrikoos",
       "nameEn": "Apricot",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8]
     },
     {
       "id": "apple",
       "nameNl": "Appel",
       "nameEn": "Apple",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9, 10],
-      "storage": [11, 12, 1, 2, 3, 4, 5]
-    },
-    {
-      "id": "pear",
-      "nameNl": "Peer",
-      "nameEn": "Pear",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9, 10],
-      "storage": [11, 12, 1, 2, 3, 4, 5]
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 8, 9, 10, 11, 12]
     },
     {
       "id": "blueberry",
       "nameNl": "Blauwe bes",
       "nameEn": "Blueberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9]
     },
     {
       "id": "blackberry",
       "nameNl": "Braam",
       "nameEn": "Blackberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [7, 8, 9, 10]
     },
     {
       "id": "grape",
       "nameNl": "Druif",
       "nameEn": "Grape",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [8, 9, 10, 11]
     },
     {
       "id": "raspberry",
       "nameNl": "Framboos",
       "nameEn": "Raspberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9, 10]
     },
     {
       "id": "cherry-sweet",
       "nameNl": "Kers",
-      "nameEn": "Sweet cherry",
+      "nameEn": "Cherry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8]
     },
     {
       "id": "kiwiberry",
       "nameNl": "Kiwibes",
       "nameEn": "Kiwiberry",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [9, 10]
     },
     {
       "id": "quince",
       "nameNl": "Kweepeer",
       "nameEn": "Quince",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [9, 10],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [9, 10]
     },
     {
       "id": "melon",
       "nameNl": "Meloen",
       "nameEn": "Melon",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9, 10, 11],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [8, 9, 10, 11]
     },
     {
-      "id": "peach-nectarine",
-      "nameNl": "Perzik/Nectarine",
-      "nameEn": "Peach/Nectarine",
+      "id": "nectarine",
+      "nameNl": "Nectarine",
+      "nameEn": "Nectarine",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8, 9],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9]
+    },
+    {
+      "id": "pear",
+      "nameNl": "Peer",
+      "nameEn": "Pear",
+      "type": "fruit",
+      "source": "voedingscentrum",
+      "months": [1, 2, 3, 4, 5, 8, 9, 10, 11, 12]
+    },
+    {
+      "id": "peach",
+      "nameNl": "Perzik",
+      "nameEn": "Peach",
+      "type": "fruit",
+      "source": "voedingscentrum",
+      "months": [6, 7, 8, 9]
     },
     {
       "id": "plum",
       "nameNl": "Pruim",
       "nameEn": "Plum",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [8, 9]
     },
     {
       "id": "redcurrant",
       "nameNl": "Rode bes",
       "nameEn": "Redcurrant",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7],
-      "storage": []
-    },
-    {
-      "id": "blackcurrant",
-      "nameNl": "Zwarte bes",
-      "nameEn": "Blackcurrant",
-      "type": "fruit",
-      "domestic": true,
-      "harvest": [6, 7, 8],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7]
     },
     {
       "id": "fig",
       "nameNl": "Vijg",
       "nameEn": "Fig",
       "type": "fruit",
-      "domestic": true,
-      "harvest": [8, 9],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [8, 9]
     },
     {
-      "id": "avocado",
-      "nameNl": "Avocado",
-      "nameEn": "Avocado",
+      "id": "blackcurrant",
+      "nameNl": "Zwarte bes",
+      "nameEn": "Blackcurrant",
       "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "banana",
-      "nameNl": "Banaan",
-      "nameEn": "Banana",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "grapefruit",
-      "nameNl": "Grapefruit",
-      "nameEn": "Grapefruit",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "kiwi",
-      "nameNl": "Kiwi",
-      "nameEn": "Kiwi",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "lemon",
-      "nameNl": "Citroen",
-      "nameEn": "Lemon",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "lime",
-      "nameNl": "Limoen",
-      "nameEn": "Lime",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "lychee",
-      "nameNl": "Lychee",
-      "nameEn": "Lychee",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "mandarin",
-      "nameNl": "Mandarijn",
-      "nameEn": "Mandarin",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "mango",
-      "nameNl": "Mango",
-      "nameEn": "Mango",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "orange",
-      "nameNl": "Sinaasappel",
-      "nameEn": "Orange",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "papaya",
-      "nameNl": "Papaja",
-      "nameEn": "Papaya",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "persimmon",
-      "nameNl": "Kaki",
-      "nameEn": "Persimmon",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "pineapple",
-      "nameNl": "Ananas",
-      "nameEn": "Pineapple",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "pomegranate",
-      "nameNl": "Granaatappel",
-      "nameEn": "Pomegranate",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
-    },
-    {
-      "id": "pomelo",
-      "nameNl": "Pomelo",
-      "nameEn": "Pomelo",
-      "type": "fruit",
-      "domestic": false,
-      "harvest": [],
-      "storage": []
+      "source": "voedingscentrum",
+      "months": [6, 7, 8]
     }
   ]
 }
