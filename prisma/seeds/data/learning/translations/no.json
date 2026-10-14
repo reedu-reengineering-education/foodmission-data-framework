@@ -1062,7 +1062,7 @@
     },
     "Q1.1.3": {
       "title": "Kosthold og arealbruk",
-      "question": "Du skal velge mellom to ukentlige kosthold: Kosthold A inneholder rødt kjøtt nesten hver dag. Kosthold B følger et middelhavsinspirert mønster med mer belgfrukter, grønnsaker og moderate mengder kjøtt. Hvilket kosthold forventes generelt å kreve mindre jordbruksareal?",
+      "question": "Du skal velge mellom to ukentlige kosthold:\nKosthold A inneholder rødt kjøtt nesten hver dag.\nKosthold B følger et middelhavsinspirert mønster med mer belgfrukter, grønnsaker og moderate mengder kjøtt.\nHvilket kosthold forventes generelt å kreve mindre jordbruksareal?",
       "explanation": "Produksjon av animalske matvarer krever generelt mer areal enn produksjon av plantebaserte matvarer. Middelhavsinspirerte kosthold blir ofte sett på som mindre arealkrevende, samtidig som de sikrer tilstrekkelig næringsinntak.",
       "options": {
         "A": "Kosthold A, fordi kjøtt inneholder mye næringsstoffer",
@@ -1106,7 +1106,7 @@
     "Q1.2.2": {
       "title": "Ukentlig proteinmiks",
       "question": "Hvilken ukentlig proteinstrategi samsvarer best med WHOs anbefalinger?",
-      "explanation": "WHO legger vekt på kostholdsmangfold og et bredere utvalg av proteinkilder",
+      "explanation": "WHO legger vekt på kostholdsmangfold og et bredere utvalg av proteinkilder som en lovende tilnærming for både helse og bærekraft.",
       "options": {
         "A": "Oksekjøtt hver dag",
         "B": "En blanding av belgfrukter, fisk, egg og litt kjøtt innimellom",
@@ -1304,7 +1304,7 @@
     "Q2.2.5": {
       "title": "Vannsmarte måltider",
       "question": "Hvilket måltid kan man generelt forvente at har det laveste vannavtrykket?",
-      "explanation": "Plantebaserte måltider krever generelt mindre vann",
+      "explanation": "Plantebaserte måltider krever generelt mindre vann enn måltider med kjøtt fra drøvtyggere i sentrum.",
       "options": {
         "A": "Kikerter- og grønnsakscurry",
         "B": "Lasagne med oksekjøtt",
@@ -1392,7 +1392,7 @@
     "Q2.4.3": {
       "title": "Utslipp uten nye matvarer",
       "question": "Hvilken handling bidrar til å redusere utslippene uten at du trenger å endre hva slags matvarer du kjøper?",
-      "explanation": "Matsvinn fører til betydelige utslipp av klimagasser, fordi alt det",
+      "explanation": "Matsvinn fører til betydelige utslipp av klimagasser, fordi alle ressursene som ble brukt til å produsere maten, går tapt når den kastes.",
       "options": {
         "A": "Mindre matsvinn",
         "B": "Handle sjeldnere",
@@ -1479,7 +1479,7 @@
     },
     "Q3.1.1": {
       "title": "Foredling og bærekraft",
-      "question": "Du sammenligner to proteinrike måltider: Bønnestuing laget av enkle ingredienser og plantebaserte kjøttbiter. Hvilken konklusjon støttes best av bevisene?",
+      "question": "Du sammenligner to proteinrike måltider:\nBønnestuing laget av enkle ingredienser\nPlantebaserte kjøttbiter\nHvilken konklusjon støttes best av bevisene?",
       "explanation": "Matforedling kan øke energiforbruket, men det kan også forlenge holdbarheten og redusere matsvinn. Bærekraft avhenger av hele livssyklusen, ikke bare av selve foredlingsfasen.",
       "options": {
         "A": "Bønnestuen er sunnere og mer bærekraftig",
@@ -1589,7 +1589,7 @@
     },
     "Q3.3.1": {
       "title": "Integrert skadedyrbekjempelse",
-      "question": "Du skal velge mellom to epleprodukter: Produkt A: «Produsert ved hjelp av integrert skadedyrbekjempelse (IPM)» Produkt B: Ingen opplysninger om dyrkingsmetoden oppgitt Hva tyder IPM-påstanden mest sannsynlig på?",
+      "question": "Du skal velge mellom to epleprodukter:\nProdukt A: «Produsert ved hjelp av integrert skadedyrbekjempelse (IPM)»\nProdukt B: Ingen opplysninger om dyrkingsmetoden oppgitt\nHva tyder IPM-påstanden mest sannsynlig på?",
       "explanation": "Integrert skadedyrbekjempelse kombinerer biologiske, fysiske, avlingsspesifikke og, når det er nødvendig, kjemiske tiltak for å redusere skadedyrsskader og samtidig minimere miljø- og helsepåvirkningene.",
       "options": {
         "A": "Gården bruker aldri plantevernmidler",
@@ -1611,7 +1611,7 @@
     },
     "Q3.3.3": {
       "title": "Skyggedyrket kaffe",
-      "question": "Du skal velge mellom to kaffeprodukter: Kaffe A: Dyrket i skyggen i et agroskogbrukssystem Kaffe B: Produsert på en monokulturplantasje Hvorfor kan det være at noen forbrukere foretrekker Kaffe A?",
+      "question": "Du skal velge mellom to kaffeprodukter:\nKaffe A: Dyrket i skyggen i et agroskogbrukssystem\nKaffe B: Produsert på en monokulturplantasje\nHvorfor kan det være at noen forbrukere foretrekker Kaffe A?",
       "explanation": "Agroforestry kombinerer trær med jordbruksproduksjon. Slike systemer kan forbedre jordens helse, biologisk mangfold og karbonbinding.",
       "options": {
         "A": "Det smaker alltid bedre",
@@ -1633,7 +1633,7 @@
     },
     "Q3.3.5": {
       "title": "Klimasmart jordbruk",
-      "question": "Du skal velge mellom to risprodukter: Produkt A: Produsert ved hjelp av klimasmart jordbruk Produkt B: Ingen opplysninger om dyrkingsmetoden oppgitt Hva er hovedmålet med klimasmart jordbruk?",
+      "question": "Du skal velge mellom to risprodukter:\nProdukt A: Produsert ved hjelp av klimasmart jordbruk\nProdukt B: Ingen opplysninger om dyrkingsmetoden oppgitt\nHva er hovedmålet med klimasmart jordbruk?",
       "explanation": "Klimasmart landbruk har som mål å øke produktiviteten, styrke motstandsdyktigheten mot klimaendringer og redusere utslippene av klimagasser.",
       "options": {
         "A": "Maksimere avlingene uavhengig av miljøpåvirkningen",
@@ -1667,7 +1667,7 @@
     "Q3.4.3": {
       "title": "Bærekraftig fiskefôr",
       "question": "Du skal velge mellom to fiskeprodukter. Det ene kommer fra et oppdrettsselskap som delvis erstatter fiskefôr laget av villfisk med insektmel og algeoljer. Hva er den viktigste bærekraftsbegrunnelsen bak dette valget?",
-      "explanation": "Akvakulturen tar i stadig større grad i bruk alternative fôringredienser som insektmel, algeoljer og encellede proteiner for å redusere avhengigheten av villfanget fisk som",
+      "explanation": "Akvakulturen tar i stadig større grad i bruk alternative fôringredienser som insektmel, algeoljer og encellede proteiner for å redusere avhengigheten av villfanget fisk som ressurs.",
       "options": {
         "A": "Det garanterer lavere priser",
         "B": "Det bidrar til å redusere presset på villfiskbestander som brukes til fiskefôr",
@@ -1699,7 +1699,7 @@
     },
     "Q3.5.1": {
       "title": "Fairtrade-merket",
-      "question": "Du skal velge mellom to sjokoladebarer med tilnærmet samme næringsinnhold og miljøinformasjon. Den ene er merket med Fairtrade-merket. Hvilket ytterligere aspekt ved bærekraft er Fairtrade-merket først og fremst ment å fremheve?",
+      "question": "Du skal velge mellom to sjokoladebarer med tilnærmet samme næringsinnhold og miljøinformasjon. Den ene er merket med Fairtrade-merket.\nHvilket ytterligere aspekt ved bærekraft er Fairtrade-merket først og fremst ment å fremheve?",
       "explanation": "Fairtrade har som mål å forbedre levekårene gjennom rettferdige priser, arbeidsrettslig beskyttelse, samfunnsutvikling og bedre handelsvilkår for produsenter og arbeidere.",
       "options": {
         "A": "Lavere utslipp av klimagasser",
@@ -1721,7 +1721,7 @@
     },
     "Q3.5.3": {
       "title": "Sertifisert sjømat",
-      "question": "Du skal kjøpe sjømat og legger merke til at én vare kommer fra et sertifisert fiskeri som overvåker arbeidsforholdene, mens en annen ikke gir noen opplysninger om dette. Hvorfor kan det være at noen forbrukere foretrekker den sertifiserte varen?",
+      "question": "Du skal kjøpe sjømat og legger merke til at én vare kommer fra et sertifisert fiskeri som overvåker arbeidsforholdene, mens en annen ikke gir noen opplysninger om dette.\nHvorfor kan det være at noen forbrukere foretrekker den sertifiserte varen?",
       "explanation": "Fiskerinæringen regnes som en sektor med høy risiko for utnyttelse av arbeidskraft. Sertifiseringsordninger omfatter i stadig større grad overvåking av arbeids- og menneskerettighetsforholdene.",
       "options": {
         "A": "Sertifisert sjømat er sunnere",
@@ -1733,7 +1733,7 @@
     "Q3.5.4": {
       "title": "Støtte til småbønder",
       "question": "En kaffepakke fremhever støtten til småbønder. Hvorfor er denne informasjonen relevant for bærekraft?",
-      "explanation": "Sosial bærekraft omfatter rettferdig tilgang til markeder, re",
+      "explanation": "Sosial bærekraft omfatter rettferdig tilgang til markeder, ressurser og økonomiske muligheter for produsenter, inkludert småbønder.",
       "options": {
         "A": "Småbrukere har alltid mindre miljøpåvirkning",
         "B": "Bærekraftige matsystemer innebærer en rettferdig fordeling av økonomiske fordeler",
@@ -1799,7 +1799,7 @@
     "Q4.1.5": {
       "title": "EUs emballasjehierarki",
       "question": "En supermarkedskjede ønsker å forbedre bærekraften i emballasjen uten at det går ut over matvarenes kvalitet. Hvilken strategi er mest i tråd med EUs emballasjehierarki?",
-      "explanation": "EU-hierarkiet for emballasje legger først vekt på å redusere unødvendig emballasje, deretter på å gjenbruke emballasjen når det er mulig, og til slutt på å resirkulere materialene. Målet er å beskytte produktene samtidig som man minimerer re",
+      "explanation": "EU-hierarkiet for emballasje legger først vekt på å redusere unødvendig emballasje, deretter på å gjenbruke emballasjen når det er mulig, og til slutt på å resirkulere materialene. Målet er å beskytte produktene samtidig som man minimerer ressursbruken.",
       "options": {
         "A": "Erstatt all emballasje med komposterbare engangsmaterialer",
         "B": "Først må man redusere unødvendig emballasje, deretter fremme gjenbruk og gjenvinning",
@@ -1809,7 +1809,7 @@
     },
     "Q4.2.1": {
       "title": "Gjenbrukbare takeawaybeholdere",
-      "question": "Du har to alternativer for takeaway: Alternativ A: En engangsbeholder som kan resirkuleres. Alternativ B: En gjenbrukbar beholder som må leveres tilbake til restauranten. Hvilken faktor er viktigst for å avgjøre om alternativ B faktisk er mer bærekraftig?",
+      "question": "Du har to alternativer for takeaway:\nAlternativ A: En engangsbeholder som kan resirkuleres.\nAlternativ B: En gjenbrukbar beholder som må leveres tilbake til restauranten.\nHvilken faktor er viktigst for å avgjøre om alternativ B faktisk er mer bærekraftig?",
       "explanation": "Gjenbrukbar emballasje blir først miljømessig fordelaktig etter at den har nådd sitt miljømessige break-even-punkt (e-BEP), noe som betyr at den må gjenbrukes tilstrekkelig mange ganger for å oppveie de opprinnelige miljøpåvirkningene fra produksjonen.",
       "options": {
         "A": "Avstanden kundene må reise for å levere tilbake containeren",
@@ -1831,7 +1831,7 @@
     },
     "Q4.2.3": {
       "title": "Emballasje ved matlevering",
-      "question": "Du sammenligner to matleveringstjenester: Tjeneste A bruker engangsemballasje som resirkuleres. Tjeneste B bruker gjenbrukbare beholdere som hentes inn, rengjøres og brukes på nytt. Hvilket utsagn er mest korrekt?",
+      "question": "Du sammenligner to matleveringstjenester:\nTjeneste A bruker engangsemballasje som resirkuleres.\nTjeneste B bruker gjenbrukbare beholdere som hentes inn, rengjøres og brukes på nytt.\nHvilket utsagn er mest korrekt?",
       "explanation": "Gjenbrukbare systemer kan gi bedre resultater enn engangssystemer, men ytelsen avhenger av faktorer som returrate, transport, rengjøring og antall gjenbrukssykluser.",
       "options": {
         "A": "Tjeneste B er alltid det beste valget",
@@ -2095,7 +2095,7 @@
     },
     "Q6.1.2": {
       "title": "Sammenlign proteinrike lunsjer",
-      "question": "To lunsjer inneholder omtrent like mye protein: Lins- og quinoasalat, Smørbrød med bearbeidet kjøtt. Hvilket utsagn er mest korrekt?",
+      "question": "To lunsjer inneholder omtrent like mye protein:\nLins- og quinoasalat\nSmørbrød med bearbeidet kjøtt\nHvilket utsagn er mest korrekt?",
       "explanation": "Proteinrike matvarer varierer når det gjelder de næringsstoffene de inneholder, som for eksempel kostfiber, natrium, mettet fett, vitaminer og mineraler. Det er den samlede næringssammensetningen som teller.",
       "options": {
         "A": "De er ernæringsmessig identiske, siden proteininnholdet er likt",
@@ -2117,7 +2117,7 @@
     },
     "Q6.1.4": {
       "title": "Påstander om protein",
-      "question": "Du sammenligner to matvarer: Produkt A: «Proteinkilde» Produkt B: «Høyt proteininnhold» Hva kan du konkludere med?",
+      "question": "Du sammenligner to matvarer:\nProdukt A: «Proteinkilde»\nProdukt B: «Høyt proteininnhold»\nHva kan du konkludere med?",
       "options": {
         "A": "Produkt B inneholder nødvendigvis dobbelt så mye protein",
         "B": "Produkt A er mindre sunt",
@@ -2150,8 +2150,8 @@
     },
     "Q6.2.2": {
       "title": "Fettsammensetning i lunsjer",
-      "question": "Du sammenligner to lunsjer som inneholder omtrent like mye protein: Lins- og valnøttsalat, Smørbrød med bearbeidet kjøtt. Hvilken påstand er mest korrekt?",
-      "explanation": "Plantebasert protein",
+      "question": "Du sammenligner to lunsjer som inneholder omtrent like mye protein:\nLins- og valnøttsalat\nSmørbrød med bearbeidet kjøtt\nHvilken påstand er mest korrekt?",
+      "explanation": "Plantebaserte proteinkilder inneholder ofte mer umettet fett og mindre mettet fett enn mange produkter av rødt og bearbeidet kjøtt. De er også generelt forbundet med lavere miljøpåvirkning.",
       "options": {
         "A": "Begge måltidene har samme næringsinnhold, siden de inneholder protein",
         "B": "Smørbrødet med bearbeidet kjøtt er sunnere fordi det inneholder animalsk protein",
@@ -2216,7 +2216,7 @@
     },
     "Q6.3.3": {
       "title": "Påstanden «Uten tilsatt sukker»",
-      "question": "Du sammenligner to produkter: Produkt A: «Uten tilsatt sukker» Produkt B: Vanlig versjon Hva kan du konkludere ut fra påstanden på produkt A?",
+      "question": "Du sammenligner to produkter:\nProdukt A: «Uten tilsatt sukker»\nProdukt B: Vanlig versjon\nHva kan du konkludere ut fra påstanden på produkt A?",
       "explanation": "Produkter merket med «uten tilsatt sukker» kan likevel inneholde naturlig forekommende sukker. EU-lovgivningen krever at det på produktene skal stå «inneholder naturlig forekommende sukker» når dette er relevant.",
       "options": {
         "A": "Den inneholder ikke sukker",
@@ -2305,7 +2305,7 @@
     "Q6.5.1": {
       "title": "Fiberrik frokost",
       "question": "Du ønsker å øke fiberinntaket ditt. Hvilken frokost vil mest sannsynlig bidra til dette?",
-      "explanation": "Havre, frukt og nøtter er alle viktige",
+      "explanation": "Havre, frukt og nøtter er alle viktige kilder til kostfiber. Å kombinere ulike fiberrike matvarer bidrar til å øke fiberinntaket og gir samtidig vitaminer, mineraler og andre gunstige næringsstoffer.",
       "options": {
         "A": "Hvit toast med sjokoladepålegg",
         "B": "Havregrøt med frukt og nøtter på toppen",
@@ -2316,7 +2316,7 @@
     "Q6.5.2": {
       "title": "Fiber i pasta",
       "question": "Du skal velge mellom to pastaprodukter. Hvilket av dem inneholder mest sannsynlig mest fiber?",
-      "explanation": "Fullkornsprodukter beholder mer av kornets naturlige fiber enn raffinerte kornprodukter. Fullkornspasta er generelt et bedre",
+      "explanation": "Fullkornsprodukter beholder mer av kornets naturlige fiber enn raffinerte kornprodukter. Fullkornspasta er generelt en bedre kilde til kostfiber enn raffinert hvit pasta.",
       "options": {
         "A": "Raffinert hvit pasta",
         "B": "Fullkornspasta",
@@ -2371,7 +2371,7 @@
     "Q6.6.2": {
       "title": "Vitamin D fra maten",
       "question": "En person ønsker å opprettholde et tilstrekkelig vitamin D-nivå gjennom kosten. Hvilket måltid vil mest sannsynlig bidra til dette?",
-      "explanation": "Naturlig mat",
+      "explanation": "Naturlige matkilder til vitamin D er relativt begrensede. Fet fisk som laks, melk og enkelte typer sopp er blant matkildene som kan bidra til inntaket av vitamin D.",
       "options": {
         "A": "Hvit ris med grønnsaker",
         "B": "Laks med sopp og melk",
@@ -2403,7 +2403,7 @@
     },
     "Q6.6.5": {
       "title": "Tilberedning og vitaminer",
-      "question": "Du velger mellom to tilbehør: Dampede grønnsaker Grønnsaker som har blitt kokt i svært lang tid ved høy temperatur Hvilket alternativ vil mest sannsynlig bevare vitaminene?",
+      "question": "Du velger mellom to tilbehør:\nDampede grønnsaker\nGrønnsaker som har blitt kokt i svært lang tid ved høy temperatur\nHvilket alternativ vil mest sannsynlig bevare vitaminene?",
       "explanation": "For lang tilberedningstid kan redusere innholdet av enkelte vitaminer. WHO anbefaler å unngå å koke frukt og grønnsaker for lenge for å bevare viktige næringsstoffer.",
       "options": {
         "A": "Dampede grønnsaker",
@@ -2506,7 +2506,7 @@
     },
     "M.A2.3": {
       "title": "Kunde med flere kjøp",
-      "goal": "For minst tre kjøpsbeslutninger bør du vurdere to ulike miljøaspekter før du velger et produkt. Eksempler: Arealbruk + karbonavtrykk, karbonavtrykk + transportavstand, vannforbruk + produksjonsmetode",
+      "goal": "For minst tre kjøpsbeslutninger bør du vurdere to ulike miljøaspekter før du velger et produkt. Eksempler:\nArealbruk + karbonavtrykk\nKarbonavtrykk + transportavstand\nVannforbruk + produksjonsmetode",
       "whyItMatters": "Bærekraftig mat er et flerdimensjonalt tema."
     },
     "M.A2.4": {
@@ -2516,7 +2516,7 @@
     },
     "M.A2.5": {
       "title": "Bevisst kjøpsatferd",
-      "goal": "Før du kjøper et matprodukt, bør du vurdere minst tre av følgende aspekter: Opprinnelsesland, produksjonsmetode, sertifisering, sesongmessighet og transportavstand. Bruk denne fremgangsmåten på minst fire matvarer du skal velge mellom.",
+      "goal": "Før du kjøper et matprodukt, bør du vurdere minst tre av følgende aspekter:\nOpprinnelsesland\nProduksjonsmetode\nSertifisering\nSesongmessighet\nTransportavstand\nBruk denne fremgangsmåten på minst fire matvarer du skal velge mellom.",
       "whyItMatters": "Ingen enkelt miljøindikator er i seg selv tilstrekkelig til å vurdere bærekraften."
     },
     "M.A3.1": {
@@ -2691,7 +2691,7 @@
     },
     "M.B3.5": {
       "title": "Første behandling av bytte",
-      "goal": "Noter ned to byttinger knyttet til bearbeidede matvarer. Godkjente byttinger: Sukkerholdig drikke → Vann Sukkerholdig snack → Frukt eller nøtter Sukkerholdig frokostblanding → Havre/frukt Ferdigmat → Hjemmelaget måltid Bearbeidet kjøtt → Belgfrukter",
+      "goal": "Noter ned to byttinger knyttet til bearbeidede matvarer. Godkjente byttinger:\nSukkerholdig drikke → Vann\nSukkerholdig snack → Frukt eller nøtter\nSukkerholdig frokostblanding → Havre/frukt\nFerdigmat → Hjemmelaget måltid\nBearbeidet kjøtt → Belgfrukter",
       "whyItMatters": "Små endringer kan redusere avhengigheten av høyt bearbeidede matvarer, samtidig som næringsverdien forbedres og miljøpåvirkningen reduseres."
     },
     "M.B4.1": {
@@ -2776,7 +2776,7 @@
     },
     "M.I1.2": {
       "title": "Klatre opp på proteinstigen",
-      "goal": "Registrer minst én bytte fra hvert miljøpåvirkningsnivå: Oksekjøtt → Svinekjøtt eller Oksekjøtt → Kylling; Oksekjøtt → Belgfrukter; Svinekjøtt → Belgfrukter eller Kylling → Belgfrukter. Erstatt gradvis proteiner med høyere miljøpåvirkning med alternativer med lavere miljøpåvirkning.",
+      "goal": "Registrer minst ett bytte fra hvert miljøpåvirkningsnivå:\nOksekjøtt → Svinekjøtt eller Oksekjøtt → Kylling\nOksekjøtt → Belgfrukter\nSvinekjøtt → Belgfrukter eller Kylling → Belgfrukter\nErstatt gradvis proteiner med høyere miljøpåvirkning med alternativer med lavere miljøpåvirkning.",
       "whyItMatters": "Ikke alle erstatninger av proteinkilder gir samme miljøgevinst. Å bytte fra oksekjøtt til belgfrukter gir generelt større miljøbesparelser enn å bytte fra oksekjøtt til svinekjøtt."
     },
     "M.I1.3": {
@@ -2830,7 +2830,7 @@
     },
     "M.I3.3": {
       "title": "Uke med færre prosesseringsoppgaver",
-      "goal": "Logg 4 byttinger knyttet til matvalg. Aktive valg: Sukkerholdig drikke → Vann, Sukkerholdig snack → Frukt eller nøtter, Sukkerholdig frokostblanding → Havre/frukt, Ferdigmat → Hjemmelaget måltid, Bearbeidet kjøtt → Belgfrukter",
+      "goal": "Logg 4 byttinger knyttet til bearbeiding. Godkjente byttinger:\nSukkerholdig drikke → Vann\nSukkerholdig snack → Frukt eller nøtter\nSukkerholdig frokostblanding → Havre/frukt\nFerdigmat → Hjemmelaget måltid\nBearbeidet kjøtt → Belgfrukter",
       "whyItMatters": "Bevissthet får betydning når den omsettes i konkrete valg av mat."
     },
     "M.I3.4": {

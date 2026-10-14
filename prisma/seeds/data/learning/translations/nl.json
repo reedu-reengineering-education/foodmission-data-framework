@@ -1062,7 +1062,7 @@
     },
     "Q1.1.3": {
       "title": "Voedingspatronen en landgebruik",
-      "question": "Je kunt kiezen uit twee wekelijkse voedingspatronen: Dieet A bevat bijna elke dag rood vlees. Dieet B volgt een mediterraan voedingspatroon met meer peulvruchten, groenten en matige hoeveelheden vlees. Van welk dieet wordt over het algemeen verwacht dat het minder landbouwgrond vereist?",
+      "question": "Je kunt kiezen uit twee wekelijkse voedingspatronen:\nDieet A bevat bijna elke dag rood vlees.\nDieet B volgt een mediterraan voedingspatroon met meer peulvruchten, groenten en matige hoeveelheden vlees.\nVan welk dieet wordt over het algemeen verwacht dat het minder landbouwgrond vereist?",
       "explanation": "Voor de productie van dierlijke voedingsmiddelen is doorgaans meer land nodig dan voor de productie van plantaardige voedingsmiddelen. Een mediterraan dieet wordt vaak in verband gebracht met een lager landgebruik, terwijl het toch voldoende voedingsstoffen biedt.",
       "options": {
         "A": "Dieet A, omdat vlees veel voedingsstoffen bevat",
@@ -1106,7 +1106,7 @@
     "Q1.2.2": {
       "title": "Je eiwitmix voor de week",
       "question": "Welke wekelijkse eiwitstrategie sluit het beste aan bij de aanbevelingen van de WHO?",
-      "explanation": "De WHO benadrukt het belang van voedingsdiversiteit en een bredere variatie aan eiwitten",
+      "explanation": "De WHO benadrukt dat voedingsdiversiteit en een bredere variatie aan eiwitbronnen een veelbelovende aanpak zijn voor zowel gezondheid als duurzaamheid.",
       "options": {
         "A": "Elke dag rundvlees",
         "B": "Een combinatie van peulvruchten, vis, eieren en af en toe vlees",
@@ -1304,7 +1304,7 @@
     "Q2.2.5": {
       "title": "Waterbewuste maaltijden",
       "question": "Van welke maaltijd zou men over het algemeen verwachten dat deze de laagste watervoetafdruk heeft?",
-      "explanation": "Plantaardige maaltijden vergen over het algemeen minder water",
+      "explanation": "Plantaardige maaltijden vergen over het algemeen minder water dan maaltijden waarin vlees van herkauwers centraal staat.",
       "options": {
         "A": "Curry met kikkererwten en groenten",
         "B": "Lasagne met rundvlees",
@@ -1392,7 +1392,7 @@
     "Q2.4.3": {
       "title": "Minder uitstoot zonder nieuwe producten",
       "question": "Welke maatregel zorgt ervoor dat de uitstoot daalt zonder dat je andere voedingsmiddelen hoeft te kopen?",
-      "explanation": "Voedselverspilling leidt tot aanzienlijke uitstoot van broeikasgassen, omdat alle resten",
+      "explanation": "Voedselverspilling leidt tot aanzienlijke uitstoot van broeikasgassen, omdat alle hulpbronnen die voor de productie van het voedsel zijn gebruikt verloren gaan wanneer het wordt weggegooid.",
       "options": {
         "A": "Minder voedsel verspillen",
         "B": "Minder vaak winkelen",
@@ -1479,7 +1479,7 @@
     },
     "Q3.1.1": {
       "title": "Verwerking en duurzaamheid",
-      "question": "Je vergelijkt twee eiwitrijke maaltijden: een bonenstoofpotje gemaakt van eenvoudige ingrediënten en plantaardige vleesnuggets. Welke conclusie wordt het best door de feiten ondersteund?",
+      "question": "Je vergelijkt twee eiwitrijke maaltijden:\nBonenstoofpotje gemaakt van eenvoudige ingrediënten\nPlantaardige vleesnuggets\nWelke conclusie wordt het best door de feiten ondersteund?",
       "explanation": "Voedselverwerking kan het energieverbruik doen toenemen, maar kan ook de houdbaarheid verlengen en voedselverspilling tegengaan. Duurzaamheid hangt af van de gehele levenscyclus en niet alleen van het verwerkingsniveau.",
       "options": {
         "A": "De bonenstoofpot is gezonder en duurzamer",
@@ -1589,7 +1589,7 @@
     },
     "Q3.3.1": {
       "title": "Geïntegreerde plaagbestrijding",
-      "question": "Je kiest tussen twee appelproducten: Product A: „Geproduceerd met behulp van geïntegreerde plaagbestrijding (IPM)“ Product B: Er is geen informatie over de teelt verstrekt. Wat wijst de vermelding „IPM“ hoogstwaarschijnlijk aan?",
+      "question": "Je kiest tussen twee appelproducten:\nProduct A: „Geproduceerd met behulp van geïntegreerde plaagbestrijding (IPM)“\nProduct B: Er is geen informatie over de teelt verstrekt\nWat wijst de vermelding „IPM“ hoogstwaarschijnlijk aan?",
       "explanation": "Geïntegreerde plaagbestrijding combineert biologische, fysische, gewasspecifieke en, indien nodig, chemische methoden om schade door plagen te beperken en tegelijkertijd de gevolgen voor het milieu en de gezondheid tot een minimum te beperken.",
       "options": {
         "A": "Op de boerderij worden nooit bestrijdingsmiddelen gebruikt",
@@ -1611,7 +1611,7 @@
     },
     "Q3.3.3": {
       "title": "Koffie uit de schaduw",
-      "question": "Je kunt kiezen uit twee koffieproducten: Koffie A: geteeld in de schaduw binnen een agroforestry-systeem; Koffie B: geproduceerd op een monocultuurplantage. Waarom zouden sommige consumenten de voorkeur geven aan Koffie A?",
+      "question": "Je kunt kiezen uit twee koffieproducten:\nKoffie A: geteeld in de schaduw binnen een agroforestry-systeem\nKoffie B: geproduceerd op een monocultuurplantage\nWaarom zouden sommige consumenten de voorkeur geven aan Koffie A?",
       "explanation": "Agrobosbouw combineert bomen met landbouwproductie. Deze systemen kunnen de bodemgezondheid, de biodiversiteit en de koolstofopslag verbeteren.",
       "options": {
         "A": "Het smaakt altijd lekkerder",
@@ -1633,7 +1633,7 @@
     },
     "Q3.3.5": {
       "title": "Klimaatslimme landbouw",
-      "question": "Je kunt kiezen uit twee rijstproducten: Product A: Geproduceerd met behulp van klimaatslimme landbouw Product B: Er is geen informatie over de teelt beschikbaar Wat is het belangrijkste doel van klimaatslimme landbouw?",
+      "question": "Je kunt kiezen uit twee rijstproducten:\nProduct A: Geproduceerd met behulp van klimaatslimme landbouw\nProduct B: Er is geen informatie over de teelt beschikbaar\nWat is het belangrijkste doel van klimaatslimme landbouw?",
       "explanation": "Klimaatvriendelijke landbouw heeft tot doel de productiviteit te verhogen, de veerkracht tegen klimaatverandering te versterken en de uitstoot van broeikasgassen te verminderen.",
       "options": {
         "A": "Het maximaliseren van de opbrengsten, ongeacht de gevolgen voor het milieu",
@@ -1667,7 +1667,7 @@
     "Q3.4.3": {
       "title": "Duurzaam visvoer",
       "question": "Je moet kiezen tussen twee visproducten. Het ene product is afkomstig van een aquacultuurbedrijf dat visvoer op basis van in het wild gevangen vis gedeeltelijk vervangt door insectenmeel en algenolie. Wat is de belangrijkste duurzaamheidsreden achter deze keuze?",
-      "explanation": "In de aquacultuur wordt steeds vaker gebruikgemaakt van alternatieve voederingrediënten, zoals insectenmeel, algenolie en eencellige eiwitten, om de afhankelijkheid van in het wild gevangen vis te verminderen.",
+      "explanation": "In de aquacultuur wordt steeds vaker gebruikgemaakt van alternatieve voederingrediënten, zoals insectenmeel, algenolie en eencellige eiwitten, om de afhankelijkheid van wilde visbestanden te verminderen.",
       "options": {
         "A": "Het garandeert lagere prijzen",
         "B": "Het draagt bij aan het verminderen van de druk op de wilde visbestanden die als visvoer worden gebruikt",
@@ -1699,7 +1699,7 @@
     },
     "Q3.5.1": {
       "title": "Het Fairtrade-keurmerk",
-      "question": "Je moet kiezen tussen twee chocoladerepen met vergelijkbare voedingswaarden en milieugegevens. Eén ervan is voorzien van een Fairtrade-keurmerk. Op welk aanvullend aspect van duurzaamheid is het Fairtrade-keurmerk in de eerste plaats gericht?",
+      "question": "Je moet kiezen tussen twee chocoladerepen met vergelijkbare voedingswaarden en milieugegevens. Eén ervan is voorzien van een Fairtrade-keurmerk.\nOp welk aanvullend aspect van duurzaamheid is het Fairtrade-keurmerk in de eerste plaats gericht?",
       "explanation": "Fairtrade streeft ernaar de levensomstandigheden te verbeteren door middel van eerlijke prijzen, arbeidsbescherming, gemeenschapsontwikkeling en betere handelsvoorwaarden voor producenten en werknemers.",
       "options": {
         "A": "Lagere uitstoot van broeikasgassen",
@@ -1721,7 +1721,7 @@
     },
     "Q3.5.3": {
       "title": "Gecertificeerde vis en zeevruchten",
-      "question": "Je koopt vis, schaal- en schelpdieren en merkt dat het ene product afkomstig is van een gecertificeerde visserij die toezicht houdt op de arbeidsomstandigheden, terwijl er over het andere product geen informatie wordt verstrekt. Waarom zouden sommige consumenten de voorkeur geven aan het gecertificeerde product?",
+      "question": "Je koopt vis, schaal- en schelpdieren en merkt dat het ene product afkomstig is van een gecertificeerde visserij die toezicht houdt op de arbeidsomstandigheden, terwijl er over het andere product geen informatie wordt verstrekt.\nWaarom zouden sommige consumenten de voorkeur geven aan het gecertificeerde product?",
       "explanation": "De visserij wordt beschouwd als een sector met een hoog risico op arbeidsuitbuiting. Certificeringsprogramma’s omvatten steeds vaker toezicht op de arbeidsomstandigheden en de naleving van de mensenrechten.",
       "options": {
         "A": "Gecertificeerde vis, schaal- en schelpdieren zijn gezonder",
@@ -1733,7 +1733,7 @@
     "Q3.5.4": {
       "title": "Steun aan kleine boeren",
       "question": "Op een koffieverpakking wordt de steun aan kleine boeren benadrukt. Waarom is deze informatie relevant voor duurzaamheid?",
-      "explanation": "Sociale duurzaamheid omvat onder meer eerlijke toegang tot markten, re",
+      "explanation": "Sociale duurzaamheid omvat onder meer eerlijke toegang tot markten, hulpbronnen en economische kansen voor producenten, waaronder kleinschalige boeren.",
       "options": {
         "A": "Kleine boeren hebben altijd een kleinere impact op het milieu",
         "B": "Duurzame voedselsystemen omvatten een eerlijke verdeling van de economische voordelen",
@@ -1799,7 +1799,7 @@
     "Q4.1.5": {
       "title": "De EU-verpakkingshiërarchie",
       "question": "Een supermarkt wil de duurzaamheid van zijn verpakkingen verbeteren zonder dat dit ten koste gaat van de voedselkwaliteit. Welke strategie sluit het beste aan bij de EU-verpakkingshiërarchie?",
-      "explanation": "De EU-verpakkingshiërarchie stelt als prioriteit om eerst onnodige verpakkingen te verminderen, vervolgens verpakkingen waar mogelijk te hergebruiken en ten slotte materialen te recyclen. Het doel is om producten te beschermen en tegelijkertijd het afval tot een minimum te beperken.",
+      "explanation": "De EU-verpakkingshiërarchie stelt als prioriteit om eerst onnodige verpakkingen te verminderen, vervolgens verpakkingen waar mogelijk te hergebruiken en ten slotte materialen te recyclen. Het doel is om producten te beschermen en tegelijkertijd het gebruik van hulpbronnen tot een minimum te beperken.",
       "options": {
         "A": "Vervang alle verpakkingen door composteerbare materialen voor eenmalig gebruik",
         "B": "Beperk eerst onnodige verpakkingen en stimuleer vervolgens hergebruik en recycling",
@@ -1809,7 +1809,7 @@
     },
     "Q4.2.1": {
       "title": "Herbruikbare afhaalbakjes",
-      "question": "Je hebt twee opties voor afhaalmaaltijden: Optie A: een wegwerpverpakking die gerecycled kan worden. Optie B: een herbruikbare verpakking die naar het restaurant moet worden teruggebracht. Welke factor is het belangrijkst om te bepalen of optie B daadwerkelijk duurzamer is?",
+      "question": "Je hebt twee opties voor afhaalmaaltijden:\nOptie A: een wegwerpverpakking die gerecycled kan worden.\nOptie B: een herbruikbare verpakking die naar het restaurant moet worden teruggebracht.\nWelke factor is het belangrijkst om te bepalen of optie B daadwerkelijk duurzamer is?",
       "explanation": "Herbruikbare verpakkingen zijn pas milieuvriendelijker zodra ze hun ecologische break-evenpunt (e-BEP) hebben bereikt; dit betekent dat ze vaak genoeg moeten worden hergebruikt om de milieueffecten van de initiële productie te compenseren.",
       "options": {
         "A": "De afstand die klanten moeten afleggen om de container terug te brengen",
@@ -1831,7 +1831,7 @@
     },
     "Q4.2.3": {
       "title": "Verpakkingen bij maaltijdbezorging",
-      "question": "Je vergelijkt twee maaltijdbezorgdiensten: Dienst A maakt gebruik van wegwerpverpakkingen die worden gerecycled. Dienst B maakt gebruik van herbruikbare bakjes die worden opgehaald, schoongemaakt en opnieuw gebruikt. Welke bewering klopt het beste?",
+      "question": "Je vergelijkt twee maaltijdbezorgdiensten:\nDienst A maakt gebruik van wegwerpverpakkingen die worden gerecycled.\nDienst B maakt gebruik van herbruikbare bakjes die worden opgehaald, schoongemaakt en opnieuw gebruikt.\nWelke bewering klopt het beste?",
       "explanation": "Herbruikbare systemen kunnen beter presteren dan systemen voor eenmalig gebruik, maar hun prestaties zijn afhankelijk van factoren zoals het terugstuurpercentage, het transport, de reiniging en het aantal hergebruikscycli.",
       "options": {
         "A": "Service B is altijd de betere keuze",
@@ -2095,7 +2095,7 @@
     },
     "Q6.1.2": {
       "title": "Eiwitrijke lunches vergelijken",
-      "question": "Twee lunches bevatten ongeveer evenveel eiwitten: Salade met linzen en quinoa Broodje met vleeswaren Welke bewering klopt het beste?",
+      "question": "Twee lunches bevatten ongeveer evenveel eiwitten:\nSalade met linzen en quinoa\nBroodje met vleeswaren\nWelke bewering klopt het beste?",
       "explanation": "Eiwitrijke voedingsmiddelen verschillen qua de voedingsstoffen die ze bevatten, zoals vezels, natrium, verzadigde vetten, vitamines en mineralen. Het totale eiwitprofiel is van belang.",
       "options": {
         "A": "Ze zijn qua voedingswaarde identiek, omdat het eiwitgehalte vergelijkbaar is",
@@ -2117,7 +2117,7 @@
     },
     "Q6.1.4": {
       "title": "Eiwitclaims",
-      "question": "Je vergelijkt twee voedingsmiddelen: Product A: „Bron van eiwitten“ Product B: „Eiwitrijk“ Wat kun je hieruit concluderen?",
+      "question": "Je vergelijkt twee voedingsmiddelen:\nProduct A: „Bron van eiwitten“\nProduct B: „Eiwitrijk“\nWat kun je hieruit concluderen?",
       "options": {
         "A": "Product B bevat per definitie twee keer zoveel eiwit",
         "B": "Product A is minder gezond",
@@ -2150,8 +2150,8 @@
     },
     "Q6.2.2": {
       "title": "Vetprofiel van lunches",
-      "question": "Je vergelijkt twee lunches die ongeveer evenveel eiwitten bevatten: Salade met linzen en walnoten Broodje met vleeswaren Welke bewering klopt het beste?",
-      "explanation": "Plantaardige eiwitten",
+      "question": "Je vergelijkt twee lunches die ongeveer evenveel eiwitten bevatten:\nSalade met linzen en walnoten\nBroodje met vleeswaren\nWelke bewering klopt het beste?",
+      "explanation": "Plantaardige eiwitbronnen bevatten doorgaans meer onverzadigde vetten en minder verzadigd vet dan veel producten van rood en bewerkt vlees. Ze worden over het algemeen ook in verband gebracht met een lagere milieu-impact.",
       "options": {
         "A": "Beide maaltijden zijn qua voedingswaarde gelijkwaardig, omdat ze eiwitten bevatten",
         "B": "Het broodje met vleesverwerking is gezonder omdat het dierlijke eiwitten bevat",
@@ -2216,7 +2216,7 @@
     },
     "Q6.3.3": {
       "title": "De claim „Zonder toegevoegde suikers“",
-      "question": "Je vergelijkt twee producten: Product A: „Zonder toegevoegde suikers“ Product B: Standaardversie Wat kun je concluderen uit de claim op Product A?",
+      "question": "Je vergelijkt twee producten:\nProduct A: „Zonder toegevoegde suikers“\nProduct B: Standaardversie\nWat kun je concluderen uit de claim op Product A?",
       "explanation": "Producten met het label „zonder toegevoegde suikers” kunnen toch van nature voorkomende suikers bevatten. Volgens de EU-wetgeving moet op producten, indien van toepassing, de vermelding „bevat van nature voorkomende suikers” worden aangebracht.",
       "options": {
         "A": "Het bevat geen suiker",
@@ -2305,7 +2305,7 @@
     "Q6.5.1": {
       "title": "Vezelrijk ontbijt",
       "question": "Je wilt meer vezels binnenkrijgen. Welk ontbijt helpt je daarbij het beste?",
-      "explanation": "Haver, fruit en noten zijn allemaal belangrijk",
+      "explanation": "Haver, fruit en noten zijn allemaal belangrijke bronnen van voedingsvezels. Door verschillende vezelrijke voedingsmiddelen te combineren, verhoog je je vezelinname en krijg je tegelijkertijd vitamines, mineralen en andere gezonde voedingsstoffen binnen.",
       "options": {
         "A": "Witte toast met chocoladepasta",
         "B": "Havermout met fruit en noten",
@@ -2316,7 +2316,7 @@
     "Q6.5.2": {
       "title": "Vezels in pasta",
       "question": "Je moet kiezen tussen twee pastaproducten. Welke optie bevat waarschijnlijk de meeste vezels?",
-      "explanation": "Volkorenproducten bevatten meer van de natuurlijke vezels van het graan dan geraffineerde graanproducten. Volkorenpasta is over het algemeen een betere",
+      "explanation": "Volkorenproducten bevatten meer van de natuurlijke vezels van het graan dan geraffineerde graanproducten. Volkorenpasta is over het algemeen een betere bron van voedingsvezels dan geraffineerde witte pasta.",
       "options": {
         "A": "Geraffineerde witte pasta",
         "B": "Volkorenpasta",
@@ -2371,7 +2371,7 @@
     "Q6.6.2": {
       "title": "Vitamine D uit voeding",
       "question": "Iemand wil via de voeding een voldoende vitamine D-gehalte op peil houden. Welke maaltijd draagt daar waarschijnlijk het meest aan bij?",
-      "explanation": "Natuurlijke voeding",
+      "explanation": "Natuurlijke voedingsbronnen van vitamine D zijn relatief beperkt. Vette vis zoals zalm, melk en sommige paddenstoelen behoren tot de voedingsbronnen die kunnen bijdragen aan de inname van vitamine D.",
       "options": {
         "A": "Witte rijst met groenten",
         "B": "Zalm met champignons en melk",
@@ -2403,7 +2403,7 @@
     },
     "Q6.6.5": {
       "title": "Koken en vitamines",
-      "question": "Je kunt kiezen uit twee bijgerechten: gestoomde groenten of groenten die heel lang op hoge temperatuur zijn gekookt. Bij welke optie blijven de vitamines waarschijnlijk beter behouden?",
+      "question": "Je kunt kiezen uit twee bijgerechten:\nGestoomde groenten\nGroenten die heel lang op hoge temperatuur zijn gekookt\nBij welke optie blijven de vitamines waarschijnlijk beter behouden?",
       "explanation": "Te lang koken kan het gehalte aan bepaalde vitamines verminderen. De WHO raadt aan om fruit en groenten niet te lang te koken, zodat belangrijke voedingsstoffen behouden blijven.",
       "options": {
         "A": "Gestoomde groenten",
@@ -2506,7 +2506,7 @@
     },
     "M.A2.3": {
       "title": "Shopper met meerdere invloeden",
-      "goal": "Houd bij ten minste drie aankoopbeslissingen rekening met twee verschillende milieuaspecten voordat je een product kiest. Voorbeelden: Landgebruik + CO₂-voetafdruk; CO₂-voetafdruk + transportafstand; Waterverbruik + productiemethode",
+      "goal": "Houd bij ten minste drie aankoopbeslissingen rekening met twee verschillende milieuaspecten voordat je een product kiest. Voorbeelden:\nLandgebruik + CO₂-voetafdruk\nCO₂-voetafdruk + transportafstand\nWaterverbruik + productiemethode",
       "whyItMatters": "Duurzaamheid op het gebied van voedsel is veelzijdig."
     },
     "M.A2.4": {
@@ -2516,7 +2516,7 @@
     },
     "M.A2.5": {
       "title": "Bewust koopgedrag",
-      "goal": "Houd, voordat je een voedingsproduct koopt, rekening met ten minste drie van de volgende aspecten: land van herkomst, productiemethode, certificering, seizoensgebondenheid en transportafstand. Pas deze werkwijze toe op ten minste vier voedingskeuzes.",
+      "goal": "Houd, voordat je een voedingsproduct koopt, rekening met ten minste drie van de volgende aspecten:\nLand van herkomst\nProductiemethode\nCertificering\nSeizoensgebondenheid\nTransportafstand\nPas deze werkwijze toe op ten minste vier voedingskeuzes.",
       "whyItMatters": "Geen enkele milieu-indicator op zich is voldoende om de duurzaamheid te bepalen."
     },
     "M.A3.1": {
@@ -2691,7 +2691,7 @@
     },
     "M.B3.5": {
       "title": "Eerste verwerking van de swap",
-      "goal": "Noteer 2 vervangingen met betrekking tot bewerkte voedingsmiddelen. Toegestane vervangingen: Suikerhoudende drank → Water Suikerhoudende snack → Fruit of noten Suikerhoudende ontbijtgranen → Haver/fruit Kant-en-klaarmaaltijd → Zelfgemaakte maaltijd Bewerkt vlees → Peulvruchten",
+      "goal": "Noteer 2 vervangingen met betrekking tot bewerkte voedingsmiddelen. Toegestane vervangingen:\nSuikerhoudende drank → Water\nSuikerhoudende snack → Fruit of noten\nSuikerhoudende ontbijtgranen → Haver/fruit\nKant-en-klaarmaaltijd → Zelfgemaakte maaltijd\nBewerkt vlees → Peulvruchten",
       "whyItMatters": "Kleine aanpassingen kunnen de afhankelijkheid van sterk bewerkte voedingsmiddelen verminderen, terwijl de voedingswaarde wordt verbeterd en de milieueffecten worden verminderd."
     },
     "M.B4.1": {
@@ -2776,7 +2776,7 @@
     },
     "M.I1.2": {
       "title": "Beklim de eiwitladder",
-      "goal": "Noteer ten minste één vervanging uit elk impactniveau: rundvlees → varkensvlees of rundvlees → kip; rundvlees → peulvruchten; varkensvlees → peulvruchten of kip → peulvruchten. Vervang eiwitten met een hogere impact geleidelijk door opties met een lagere impact.",
+      "goal": "Noteer ten minste één vervanging uit elk impactniveau:\nRundvlees → varkensvlees of rundvlees → kip\nRundvlees → peulvruchten\nVarkensvlees → peulvruchten of kip → peulvruchten\nVervang eiwitten met een hogere impact geleidelijk door opties met een lagere impact.",
       "whyItMatters": "Niet alle vervangingen van eiwitten leveren hetzelfde milieuvoordeel op. De overstap van rundvlees naar peulvruchten levert over het algemeen een grotere milieubesparing op dan de overstap van rundvlees naar varkensvlees."
     },
     "M.I1.3": {
@@ -2830,7 +2830,7 @@
     },
     "M.I3.3": {
       "title": "Week van de acties met minder rekenkracht",
-      "goal": "Log 4 vervangingen in verband met de verwerking. Toegestane vervangingen: Suikerhoudende drank → Water; Suikerhoudende snack → Fruit of noten; Suikerhoudende ontbijtgranen → Haver/fruit; Kant-en-klaarmaaltijd → Zelfgemaakte maaltijd; Bewerkt vlees → Peulvruchten",
+      "goal": "Log 4 vervangingen in verband met de verwerking. Toegestane vervangingen:\nSuikerhoudende drank → Water\nSuikerhoudende snack → Fruit of noten\nSuikerhoudende ontbijtgranen → Haver/fruit\nKant-en-klaarmaaltijd → Zelfgemaakte maaltijd\nBewerkt vlees → Peulvruchten",
       "whyItMatters": "Bewustwording krijgt pas betekenis wanneer deze wordt omgezet in concrete voedingskeuzes."
     },
     "M.I3.4": {
