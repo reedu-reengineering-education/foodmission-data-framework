@@ -115,11 +115,10 @@ export class QuestItemStatusDto extends ContentItemProgressDto {
     format: 'date-time',
     nullable: true,
     description:
-      'Missions/challenges: when the user started it. null means not ' +
-      'started yet: selecting a quest starts nothing, start it with ' +
-      'POST /missions/by-code/{code}/progress/start (or ' +
-      '/challenges/by-code/{code}/progress/start). Always null for ' +
-      'quizzes and food facts.',
+      'Missions/challenges: when it was started. For a mission, null means ' +
+      'the user has not started it yet; start it with ' +
+      'POST /missions/by-code/{code}/progress/start. Challenges start ' +
+      'when the quest is selected. Always null for quizzes and food facts.',
   })
   startedAt!: Date | null;
 

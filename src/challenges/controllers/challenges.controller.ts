@@ -235,43 +235,6 @@ export class ChallengesController {
     );
   }
 
-  @Post('by-code/:code/progress/start')
-  @Roles('user', 'admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({
-    summary: 'Start a challenge by code',
-    description:
-      'Starts a challenge of the current quest: creates its progress at 0 with ' +
-      'a start time, so its rule window runs from now. Selecting a quest ' +
-      'does not start its challenges, and only started challenges get progress. ' +
-      'Starting an already started challenge returns it unchanged. Returns 400 ' +
-      'when the challenge is not part of the current quest.',
-  })
-  @ApiParam({
-    name: 'code',
-    type: 'string',
-    description: 'Challenge code',
-    example: 'CH.A1.1',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Challenge started (or already started)',
-    type: ChallengeProgressResponseDto,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'The challenge is not part of the current quest',
-  })
-  @ApiResponse({ status: 404, description: 'Challenge not found' })
-  @ApiCrudErrorResponses()
-  async startProgressByCode(
-    @Param('code') code: string,
-    @CurrentUser('id') userId: string,
-    @Query() query: LearningLangQueryDto,
-  ): Promise<ChallengeProgressResponseDto> {
-    return this.challengeProgressService.start(code, userId, query.lang);
-  }
-
   @Post('by-code/:code/progress/restart')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

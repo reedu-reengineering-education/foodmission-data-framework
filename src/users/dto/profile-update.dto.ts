@@ -153,10 +153,9 @@ export class ProfileUpdateDto {
   @ApiProperty({
     description:
       'Id of the quest to make current. Pass null to clear. Selecting a ' +
-      'quest starts none of its missions or challenges; start each with ' +
-      'POST /missions/by-code/{code}/progress/start or ' +
-      '/challenges/by-code/{code}/progress/start. Switching quests removes ' +
-      'unfinished progress of the old quest.',
+      'quest starts its challenges, but none of its missions; start each ' +
+      'mission with POST /missions/by-code/{code}/progress/start. Switching ' +
+      'quests removes unfinished progress of the old quest.',
     required: false,
     nullable: true,
     example: 'seed-quest-dev-user',

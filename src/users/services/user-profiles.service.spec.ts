@@ -341,7 +341,7 @@ describe('UserProfilesService updateProfile gamification', () => {
     );
   });
 
-  it('removes old non-completed rows on quest change and starts nothing in the new quest', async () => {
+  it("starts the new quest's challenges (not its missions) and removes old non-completed rows on quest change", async () => {
     (userRepository.findByKeycloakId as jest.Mock).mockResolvedValue({
       ...mockUser,
       currentQuestId: 'quest-old',
@@ -366,9 +366,9 @@ describe('UserProfilesService updateProfile gamification', () => {
     (prisma.mission.findMany as jest.Mock).mockResolvedValueOnce([
       { id: 'mission-old-1' },
     ]);
-    (prisma.challenge.findMany as jest.Mock).mockResolvedValueOnce([
-      { id: 'challenge-old-1' },
-    ]);
+    (prisma.challenge.findMany as jest.Mock)
+      .mockResolvedValueOnce([{ id: 'challenge-old-1' }])
+      .mockResolvedValueOnce([{ id: 'challenge-new-1' }]);
 
     (prisma.user.update as jest.Mock).mockResolvedValueOnce({
       ...mockUser,
@@ -392,9 +392,22 @@ describe('UserProfilesService updateProfile gamification', () => {
       },
     });
 
-    // The user starts each mission and challenge of the new quest themselves.
+    // Missions of the new quest wait for the user to start them.
     expect(prisma.missionProgress.createMany).not.toHaveBeenCalled();
-    expect(prisma.challengeProgress.createMany).not.toHaveBeenCalled();
+    expect(prisma.challengeProgress.createMany).toHaveBeenCalledWith({
+      data: [
+        {
+          userId: 'user-1',
+          challengeId: 'challenge-new-1',
+          progress: 0,
+          completed: false,
+          status: 'NOT_STARTED',
+          state: {},
+          startedAt: expect.any(Date),
+        },
+      ],
+      skipDuplicates: true,
+    });
   });
 
   describe('dimensionLevels', () => {

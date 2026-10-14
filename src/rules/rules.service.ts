@@ -157,11 +157,11 @@ export class RulesService implements OnModuleInit {
   }
 
   /**
-   * Re-scores every rule-backed mission and challenge the user has started in
-   * their current quest. Called on each behavioural event, and by the
-   * deadline scheduler so an item whose window ended fails even when the user
-   * records nothing. Items not started yet (no progress row) are left alone;
-   * COMPLETED and FAILED items are final and skipped.
+   * Re-scores the rule-backed items of the user's current quest: every
+   * challenge, and the missions the user has started (missions without a
+   * progress row are left alone). Called on each behavioural event, and by
+   * the deadline scheduler so an item whose window ended fails even when the
+   * user records nothing. COMPLETED and FAILED items are final and skipped.
    */
   async evaluateUser(
     userId: string,
@@ -193,11 +193,11 @@ export class RulesService implements OnModuleInit {
       activeScope,
     );
 
-    const hasOpenItem = [
-      ...missionProgress.values(),
-      ...challengeProgress.values(),
-    ].some((row) => !isResolved(row.status));
-    if (!hasOpenItem) {
+    // Challenges are always scored; missions only once started.
+    const hasOpenMission = [...missionProgress.values()].some(
+      (row) => !isResolved(row.status),
+    );
+    if (!hasOpenMission && activeScope.challengeCodes.size === 0) {
       return;
     }
 
@@ -275,8 +275,7 @@ export class RulesService implements OnModuleInit {
       if (!catalogItem || !entry.rule) {
         continue;
       }
-      const row = challengeProgress.get(catalogItem.id);
-      if (!row || isResolved(row.status)) {
+      if (isResolved(challengeProgress.get(catalogItem.id)?.status)) {
         continue;
       }
       const completion = await this.syncProgress(
@@ -531,9 +530,10 @@ export class RulesService implements OnModuleInit {
             },
           });
 
-    // Only items the user started have a progress row; the engine never
-    // starts one itself.
-    if (!previous) {
+    // A mission only counts once the user started it, which creates its row;
+    // the engine never starts one. Challenges of the current quest are scored
+    // without a start and get a row when they first move.
+    if (kind === 'mission' && !previous) {
       return null;
     }
 
@@ -542,7 +542,7 @@ export class RulesService implements OnModuleInit {
       entry.rule as RuleDefinition,
       events,
       new Date(),
-      previous.startedAt,
+      previous?.startedAt,
     );
     const ruleHash = hashRule(entry.rule);
     const status = completed
@@ -553,19 +553,22 @@ export class RulesService implements OnModuleInit {
           ? ProgressStatus.IN_PROGRESS
           : ProgressStatus.NOT_STARTED;
 
-    const previousCompleted = previous.completed;
-    const previousProgress = previous.progress;
+    // Nothing to record for a challenge the user hasn't touched.
+    if (!previous && progress <= 0 && !completed) {
+      return null;
+    }
+
+    const previousCompleted = previous?.completed ?? false;
+    const previousProgress = previous?.progress ?? 0;
     const started =
-      previousProgress === 0 &&
-      !previousCompleted &&
+      (previous == null || (previousProgress === 0 && !previousCompleted)) &&
       (progress > 0 || completed);
     const updated =
-      previousProgress !== progress || previousCompleted !== completed;
+      previous != null &&
+      (previousProgress !== progress || previousCompleted !== completed);
     const firstCompletion = completed && !previousCompleted;
-    // Rows from before start times were tracked have none; they get one on
-    // their first progress.
     const startedAt =
-      previous.startedAt ?? (progress > 0 || completed ? new Date() : null);
+      previous?.startedAt ?? (progress > 0 || completed ? new Date() : null);
 
     const data = {
       progress,
@@ -576,19 +579,22 @@ export class RulesService implements OnModuleInit {
       ruleHash,
       evaluatedAt: new Date(),
     };
-    // The row may have been removed since it was read (e.g. a quest switch).
-    const { count } =
-      kind === 'mission'
-        ? await db.missionProgress.updateMany({
-            where: { userId, missionId: catalogItem.id },
-            data,
-          })
-        : await db.challengeProgress.updateMany({
-            where: { userId, challengeId: catalogItem.id },
-            data,
-          });
-    if (count === 0) {
-      return null;
+    if (kind === 'mission') {
+      // Never creates the row. It may have been removed since it was read
+      // (e.g. a quest switch).
+      const { count } = await db.missionProgress.updateMany({
+        where: { userId, missionId: catalogItem.id },
+        data,
+      });
+      if (count === 0) {
+        return null;
+      }
+    } else {
+      await db.challengeProgress.upsert({
+        where: { userId_challengeId: { userId, challengeId: catalogItem.id } },
+        create: { userId, challengeId: catalogItem.id, ...data },
+        update: data,
+      });
     }
 
     if (started) {

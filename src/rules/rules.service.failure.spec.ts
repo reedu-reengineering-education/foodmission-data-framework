@@ -61,12 +61,12 @@ function buildDb() {
     missionProgress: {
       findMany: jest.fn().mockResolvedValue([]),
       findUnique: jest.fn().mockResolvedValue(null),
-      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      upsert: jest.fn(),
     },
     challengeProgress: {
       findMany: jest.fn().mockResolvedValue([]),
       findUnique: jest.fn().mockResolvedValue(null),
-      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      upsert: jest.fn().mockResolvedValue({}),
     },
   };
 }
@@ -117,9 +117,9 @@ describe('RulesService failure', () => {
     await service.evaluateUser('u1');
     await service.awaitPendingAwards();
 
-    expect(prisma.challengeProgress.updateMany).toHaveBeenCalledWith(
+    expect(prisma.challengeProgress.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({
+        update: expect.objectContaining({
           status: 'FAILED',
           completed: false,
           startedAt,
@@ -162,7 +162,7 @@ describe('RulesService failure', () => {
 
       await service.evaluateUser('u1');
 
-      expect(prisma.challengeProgress.updateMany).not.toHaveBeenCalled();
+      expect(prisma.challengeProgress.upsert).not.toHaveBeenCalled();
       expect(recorder.record).not.toHaveBeenCalled();
     },
   );
