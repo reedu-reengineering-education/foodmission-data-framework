@@ -1,0 +1,1205 @@
+NEVO-code,English food name,nevo_foodex2_base,eff_foodex2_code,match_type,preferred_basis
+1,Potatoes raw,A00ZX,A00ZT,PARENT_1,RETAIL
+2,Potatoes new raw,A00ZV,A00ZT,PARENT_1,RETAIL
+3,Potatoes old raw,A00ZX,A00ZT,PARENT_1,RETAIL
+4,Pasta white raw,A007P,A007E,PARENT_2,RETAIL
+5,Rice white raw,A003D,A001C,PARENT_2,RETAIL
+10,Aubergine/eggplant raw,A00JD,A00JC,PARENT_1,RETAIL
+11,Aubergine/eggplant boiled,A00JD,A00JC,EFF_NEVO_PROXY,CONSUMED
+12,Beetroot raw,A00QG,A00QG,EXACT,RETAIL
+14,Cauliflower raw,A00FR,A00FR,EXACT,RETAIL
+15,Cauliflower boiled,A00FR,A00FR,EXACT,CONSUMED
+19,Mushroom raw,A00TQ,A00TP,PARENT_1,RETAIL
+20,Mushroom boiled,A00TQ,A00TP,EFF_NEVO_PROXY,CONSUMED
+23,Peas raw,A012J,A012G,PARENT_1,RETAIL
+24,Cabbage green raw,A00GB,A00FX,PARENT_1,RETAIL
+25,Cabbage green boiled,A00GB,A00FX,EFF_NEVO_PROXY,CONSUMED
+27,Cucumber wo skin raw,A00JM,A0DMB,PARENT_1,RETAIL
+28,Cucumber boiled,A00JM,A0DMB,PARENT_1,CONSUMED
+31,Sweet pepper green raw,A00JA,A00HZ,PARENT_1,RETAIL
+32,Sweet pepper green boiled,A00JA,A00HZ,PARENT_1,CONSUMED
+37,Leek boiled,A00SB,A00SB,EXACT,CONSUMED
+41,Cabbage red raw,A00GA,A00FX,PARENT_1,RETAIL
+42,Cabbage red boiled,A00GA,A00FX,PARENT_1,CONSUMED
+46,Lettuce butterhead raw,A00KY,A0DLB,PARENT_1,RETAIL
+47,Lettuce butterhead boiled,A00KY,A0DLB,PARENT_1,CONSUMED
+49,Beans runner raw,A00PD,A00PE,PARENT_1,RETAIL
+50,Beans French raw,A00PG,A00PE,PARENT_1,RETAIL
+51,Spinach raw,A00MJ,A00MH,PARENT_1,RETAIL
+52,Spinach boiled,A00MJ,A00MH,EFF_NEVO_PROXY,CONSUMED
+53,Cabbage oxheart raw,A00FZ,A00FX,PARENT_1,RETAIL
+54,Cabbage oxheart boiled,A00FZ,A00FX,PARENT_1,CONSUMED
+60,Tomatoes classic round raw,A00HR,A00HQ,PARENT_2,RETAIL
+61,Tomatoes classic round boiled,A00HR,A00HQ,PARENT_2,CONSUMED
+62,Beans broad raw,A012A,A011Z,PARENT_1,RETAIL
+63,Onions raw,A00HC,A00HC,EXACT,RETAIL
+64,Onions boiled,A00HC,A00HC,EXACT,CONSUMED
+69,Cabbage white raw,A00GC,A00FX,PARENT_1,RETAIL
+70,Cabbage white cooked,A00GC,A00FX,PARENT_1,CONSUMED
+71,Carrot raw av,A00QH,A00QH,EXACT,RETAIL
+72,Carrot boiled av,A00QH,A00QH,EXACT,CONSUMED
+73,Cabbage sauerkraut raw,A00ZK,A00ZK,EXACT,RETAIL
+74,Cabbage sauerkraut cooked,A00ZK,A00ZK,EXACT,CONSUMED
+84,Egg whole chicken av boiled,A032B,A032B,EXACT,CONSUMED
+86,Egg yolk chicken boiled,A032B,A032B,EXACT,CONSUMED
+108,Chicken w skin raw,A01SP,A01SP,EXACT,RETAIL
+117,Beans white/ brown dried,A012T,A012S,PARENT_1,RETAIL
+120,Lentils green and brown dried,A013Q,A0DCE,PARENT_1,RETAIL
+122,Crisps potato av,A0BYS,A011L,EFF_NEVO_PROXY,RETAIL
+131,Gherkins sour pickled,A00ZJ,A00ZJ,EXACT,RETAIL
+132,Gherkins sweet pickled,A00ZJ,A00ZJ,EXACT,RETAIL
+134,Peas medium fine tinned,A01BC,A01BC,EXACT,RETAIL
+135,Peas super fine tinned,A01BC,A01BC,EXACT,RETAIL
+136,Peas and carrots tinned,A0ETQ,A01AZ,EFF_NEVO_PROXY,RETAIL
+139,Beans French tinned,A0ESL,A01BB,EFF_NEVO_PROXY,RETAIL
+144,Silver-skin onion sweet pickled glass,A00ZJ,A00ZJ,EXACT,RETAIL
+146,Spinach frozen boiled,A00MJ,A00MH,PARENT_1,CONSUMED
+147,Apple wo skin av,A01DJ,A01DH,PARENT_1,RETAIL
+148,Strawberries,A01EA,A01DZ,EFF_NEVO_PROXY,RETAIL
+151,Banana,A01LC,A04JS,EFF_NEVO_PROXY,RETAIL
+160,Grapes w skin av,A01DX,A01DV,EFF_NEVO_PROXY,RETAIL
+165,Manderins,A01CD,A01CB,EFF_NEVO_PROXY,RETAIL
+166,Melon netted,A00KF,A00KE,PARENT_1,RETAIL
+168,Pear wo skin,A01DP,A01DN,PARENT_1,RETAIL
+169,Peach wo skin,A01GL,A01GL,EXACT,RETAIL
+170,Plums w skin,A01GQ,A01GP,EFF_NEVO_PROXY,RETAIL
+171,Orange,A0DZB,A01CP,EFF_NEVO_PROXY,RETAIL
+179,Apple sauce tinned,A01PF,A01PF,EXACT,RETAIL
+196,Peas marrowfat canned,A01BC,A01BC,EXACT,RETAIL
+198,Almonds blanched unsalted,A014F,A0DYP,PARENT_2,RETAIL
+199,Cashew nuts unsalted,A014H,A0DYK,EFF_NEVO_PROXY,RETAIL
+200,Hazelnuts unsalted,A014L,A0CFF,EFF_NEVO_PROXY,RETAIL
+201,Chestnuts raw,A014J,A0DYJ,EFF_NEVO_PROXY,RETAIL
+203,Brazil nuts unsalted,A014G,A014C,PARENT_2,RETAIL
+204,Peanuts unsalted,A015H,A0DBS,EFF_NEVO_PROXY,RETAIL
+205,Mixed nuts and raisins,A014C,A014C,EXACT,RETAIL
+206,Walnuts unsalted,A014R,A0DXJ,EFF_NEVO_PROXY,RETAIL
+207,Nuts mixed unsalted,A014C,A014C,EXACT,RETAIL
+209,Breakfast cereal Cornflakes Kellogg's,A00DD,A04QY,PARENT_1,RETAIL
+215,Corn starch,A002R,A002R,EXACT,RETAIL
+220,Flour wheat white,A003X,A003X,EXACT,RETAIL
+222,Flour wheat wholemeal,A004B,A003X,PARENT_1,RETAIL
+226,Potato starch,A011F,A011F,EXACT,RETAIL
+230,Wheat bread roll white soft,A004Y,A004X,PARENT_1,RETAIL
+233,Wheat currant bread white,A004Y,A004X,PARENT_1,RETAIL
+236,Wheat bread brown,A005E,A004X,PARENT_1,RETAIL
+238,Crackers Matzes,A006T,A006R,EFF_NEVO_PROXY,RETAIL
+241,Wheat bread white milk based,A004Y,A004X,PARENT_1,RETAIL
+242,Rye bread wholemeal,A005H,A005F,PARENT_1,RETAIL
+243,Rye wheat bread brown,A005M,A005L,PARENT_1,RETAIL
+244,Wheat raisin bread white,A004Y,A004X,PARENT_1,RETAIL
+246,Wheat bread wholemeal av fine and coarse,A005E,A004X,EFF_NEVO_PROXY,RETAIL
+248,Wheat bread white water based,A004Y,A0BY0,EFF_NEVO_PROXY,RETAIL
+249,Wheat malt bread brown,A005D,A004X,PARENT_1,RETAIL
+251,Apple pie Dutch w shortbread wo butter,A00BZ,A00BZ,EXACT,RETAIL
+252,Biscuit,A009X,A009X,EXACT,RETAIL
+254,Cake sponge Dutch Eierkoek,A00AQ,A00AQ,EXACT,RETAIL
+255,Gateau w whipped cream,A00AV,A00AV,EXACT,RETAIL
+256,Gateau w butter-cream filling,A00AV,A00AV,EXACT,RETAIL
+258,Biscuit av,A009X,A009X,EXACT,RETAIL
+260,Biscuit sponge fingers,A00AE,A00AE,EXACT,RETAIL
+261,Biscuit spiced Speculaas av,A00AD,A009X,PARENT_1,RETAIL
+262,Biscuit Dutch shortbread sprits,A009X,A009X,EXACT,RETAIL
+263,Biscuit brown/wholemeal,A00AA,A009X,PARENT_1,RETAIL
+266,Snack sausage roll puff pastry,A040D,A040D,EXACT,RETAIL
+270,Milk raw,A02LX,A04HG,PARENT_2,RETAIL
+272,Milk chocolate-flavoured full fat,A02MP,A02MP,EXACT,RETAIL
+273,Milk chocolate-flavoured low fat,A02MP,A02MP,EXACT,RETAIL
+278,Yoghurt full fat,A02NG,A02NE,EFF_NEVO_PROXY,RETAIL
+279,Milk whole,A02LY,A04HG,EFF_NEVO_PROXY,RETAIL
+284,Yoghurt low fat w fruit,A02NH,A02NE,PARENT_2,RETAIL
+286,Milk semi-skimmed,A02LZ,A04HG,PARENT_2,RETAIL
+289,Buttermilk,A02MV,A02NT,EFF_NEVO_PROXY,RETAIL
+293,Coffee creamer,A02ML,A02ML,EXACT,RETAIL
+294,Milk skimmed,A02MA,A04HG,PARENT_2,RETAIL
+299,Cream whipping unprepared,A02ML,A02ML,EXACT,RETAIL
+300,Yoghurt Bulgarian whole milk,A16GH,A02NE,PARENT_1,RETAIL
+301,Yoghurt low fat,A02NG,A02NE,PARENT_2,RETAIL
+303,Ice cream dairy av,A02QA,A02QA,EXACT,RETAIL
+305,Quark low fat,A02QK,A02QK,EXACT,RETAIL
+307,Quark full fat,A02QK,A02QK,EXACT,RETAIL
+308,Oil peanut,A037A,A036T,PARENT_1,RETAIL
+310,Butter unsalted,A039C,A039C,EXACT,RETAIL
+313,Oil soya,A036X,A036T,PARENT_1,RETAIL
+314,Lard,A037V,A037V,EXACT,RETAIL
+317,Oil sunflower seed,A037D,A037D,EXACT,RETAIL
+322,Sausage Dutch Frikandel deep-fried in liquid fat,A026A,A026A,EXACT,CONSUMED
+324,Sausage smoked cooked av,A026A,A026A,EXACT,CONSUMED
+328,Ham smoked raw,A022T,A022S,PARENT_1,RETAIL
+343,Bacon fat smoked raw,A022X,A022S,PARENT_1,RETAIL
+347,Kipper smoked,A02KG,A0EYS,PARENT_1,RETAIL
+348,Shrimps Dutch boiled,A02GB,A02GB,EXACT,CONSUMED
+349,Herring fillet in tomato sauce tinned,A0FBX,A0FBX,EXACT,RETAIL
+350,Herring salted,A0EYT,A0EYT,EXACT,RETAIL
+353,Mackerel raw,A02CT,A02CT,EXACT,RETAIL
+355,Sardines/pilchards in oil tinned,A0FBZ,A0FBZ,EXACT,RETAIL
+358,Egg white chicken raw,A031T,A0F6G,EFF_NEVO_PROXY,RETAIL
+369,Spring roll deep-fried in vegetable oil,A040F,A040F,EXACT,CONSUMED
+374,Sugar castor brown,A032N,A032H,PARENT_2,RETAIL
+375,Sugar castor white,A032K,A032H,PARENT_2,RETAIL
+377,Sugar granulated,A032J,A032H,EFF_NEVO_PROXY,RETAIL
+378,Syrup Keukenstroop,A034E,A033Z,PARENT_1,RETAIL
+381,Syrup sugar,A033Z,A033Z,EXACT,RETAIL
+383,Juice apple,A039M,A039M,EXACT,RETAIL
+389,Beer old brown,A03MK,A03MH,PARENT_1,RETAIL
+390,Beer pilsner,A03ME,A03MC,EFF_NEVO_PROXY,RETAIL
+395,Soft drink w sugar w caffeine,A03FR,A03FQ,PARENT_1,RETAIL
+396,Juice grape,A03AK,A03AK,EXACT,RETAIL
+400,Soft drink m sugar wo caffeine,A03EX,A03EX,EXACT,RETAIL
+408,Rum,A03PJ,A0CSC,EFF_NEVO_PROXY,RETAIL
+410,Juice orange pasteurized,A03AM,A03AM,EXACT,RETAIL
+413,Tomato juice,A03CJ,A03CJ,EXACT,RETAIL
+417,Juice drink w sugar,A03EA,A03EA,EXACT,RETAIL
+421,Whisky,A03PF,A03PF,EXACT,RETAIL
+422,Wine red,A03MX,A03MX,EXACT,RETAIL
+423,Wine white dry,A03MV,A03MV,EXACT,RETAIL
+425,Softdrink w milk serum and sweetener Rivella,A03FX,A03EX,PARENT_1,RETAIL
+427,Syrup apple rinse,A033Z,A033Z,EXACT,RETAIL
+431,Chocolate milk,A034J,A034J,EXACT,RETAIL
+432,Chocolate dark,A034J,A034J,EXACT,RETAIL
+434,Chocolate butter,A0C6P,A0C6P,EXACT,RETAIL
+436,Spread chocolate hazelnut,A0C6P,A0C6P,EXACT,RETAIL
+439,Gelatin,A0F5E,A0F5E,EXACT,RETAIL
+442,Coloured sprinkles fruit-flavoured,A032Q,A032H,PARENT_1,RETAIL
+443,Honey,A033J,A033J,EXACT,RETAIL
+444,Spread chocolate dark,A0C6P,A0C6P,EXACT,RETAIL
+445,Jam,A01NH,A01NH,EXACT,RETAIL
+449,Coconut bread sweetened sliced,A0EQR,A0EQR,EXACT,RETAIL
+450,Sweets boiled,A034X,A034X,EXACT,CONSUMED
+451,Mayonnaise,A044X,A0F1M,EFF_NEVO_PROXY,RETAIL
+453,Peppermint,A034X,A034X,EXACT,RETAIL
+455,Peanut butter,A01BN,A01BN,EXACT,RETAIL
+458,Salad cream 25% oil,A045K,A045K,EXACT,RETAIL
+461,Toffees,A035B,A0EQR,PARENT_1,RETAIL
+462,Ketchup tomato,A044P,A044P,EXACT,RETAIL
+465,Sauce for chips 25% oil,A045K,A045K,EXACT,RETAIL
+466,Sauce for chips 35% oil,A045K,A045K,EXACT,RETAIL
+467,Pancake homemade prepared w margarin,A00CL,A00CL,EXACT,CONSUMED
+480,Biscuit filled chocolate coated,A00AE,A00AE,EXACT,RETAIL
+481,Biscuit shortbread Bastogne,A009X,A009X,EXACT,RETAIL
+482,Sweets marshmallow type Spekkie,A035H,A035H,EXACT,RETAIL
+484,Fruit spread reduced sugar,A01NH,A01NH,EXACT,RETAIL
+485,Ice cream dairy/non dairy cornet w chocolate and nuts,A02QA,A02QA,EXACT,RETAIL
+487,Candybar Mars,A034R,A034R,EXACT,RETAIL
+511,Cheese Edam 40+,A02SV,A02SV,EXACT,RETAIL
+513,Cheese Gouda 48+ av,A02VA,A02SV,EFF_NEVO_PROXY,RETAIL
+514,Cheese 20+ Leidse w cumin/Fries clove,A02VT,A02SV,PARENT_1,RETAIL
+520,Liquorice Dutch type salted,A035J,A035J,EXACT,RETAIL
+521,Liquorice Dutch type double salted,A035J,A035J,EXACT,RETAIL
+522,Liquorice Dutch type sweet,A035J,A035J,EXACT,RETAIL
+523,Liquorice Stophoest,A034X,A034X,EXACT,RETAIL
+524,M&M's chocolate,A034J,A034J,EXACT,RETAIL
+525,Candybar Milky Way,A034R,A034R,EXACT,RETAIL
+526,Candybar Bounty,A034R,A034R,EXACT,RETAIL
+528,Candybar Snickers,A034R,A034R,EXACT,RETAIL
+541,Peanut butter w peanut pieces,A01BN,A01BN,EXACT,RETAIL
+546,Peanuts coated,A015H,A0DBS,PARENT_1,RETAIL
+562,Leek raw,A00SB,A00SB,EXACT,RETAIL
+566,Sausage frankfurter tinned,A026B,A026B,EXACT,RETAIL
+567,Sausage luncheon meat,A025N,A025N,EXACT,RETAIL
+568,Black pudding,A025S,A025N,PARENT_1,RETAIL
+570,Candybar Nuts,A034R,A034R,EXACT,RETAIL
+583,Ketchup hot chilli,A044P,A044P,EXACT,RETAIL
+584,Ketchup curry,A044P,A044P,EXACT,RETAIL
+591,Breakfast cereal All-Bran Plus Kellogg's,A00EF,A04QY,PARENT_1,RETAIL
+598,Water 0-50 mg calcium p litre,A03DL,A03DL,EXACT,CONSUMED
+599,Water 50-100 mg calcium p litre,A03DL,A03DL,EXACT,CONSUMED
+600,Water >100 mg calcium p litre,A03DL,A03DL,EXACT,CONSUMED
+601,Oil olive,A036P,A036P,EXACT,RETAIL
+602,Salmon tinned,A0FBS,A0C75,EFF_NEVO_PROXY,RETAIL
+603,Eel smoked,A0EYS,A0EYS,EXACT,RETAIL
+604,Mackerel steamed,A02CT,A02CT,EXACT,CONSUMED
+606,Oil Becel Blend Classic,A036T,A036T,EXACT,RETAIL
+607,Oil safflower,A037B,A036T,PARENT_1,RETAIL
+608,Oil corn,A036Y,A036T,PARENT_1,RETAIL
+620,Crisps potato straws av,A011L,A011L,EXACT,RETAIL
+634,Coconut flavoured cookies,A00AE,A00AE,EXACT,RETAIL
+635,Biscuit Dutch Krakeling,A00AE,A00AE,EXACT,RETAIL
+636,Biscuit muesli,A00AE,A00AE,EXACT,RETAIL
+638,Salami sausage saveloy,A024X,A024X,EXACT,RETAIL
+639,Bacon rasher streaky,A022X,A022S,PARENT_1,RETAIL
+641,Bacon,A022X,A022S,PARENT_1,RETAIL
+644,Coffee prepared,A03KC,A03KC,EXACT,CONSUMED
+645,Tea prepared,A03LC,A03LB,EFF_NEVO_PROXY,CONSUMED
+654,Cheese cottage,A02QG,A02QG,EXACT,RETAIL
+657,Yoghurt drink,A02NQ,A02NQ,EXACT,RETAIL
+658,Rice white boiled,A003D,A001C,EFF_NEVO_PROXY,CONSUMED
+659,Pasta white av boiled,A007E,A007E,EXACT,CONSUMED
+660,Beans brown canned,A01BB,A01BB,EXACT,RETAIL
+664,Juice grapefruit,A03AL,A03AL,EXACT,RETAIL
+665,Plantain ripe raw,A01LE,A04JS,PARENT_1,RETAIL
+671,Potato sweet raw,A010C,A0DPH,PARENT_1,RETAIL
+674,Antroewa raw,A0DMG,A00JC,PARENT_1,RETAIL
+677,Amaranth leaves raw,A00ML,A00MH,PARENT_1,RETAIL
+681,Bottlegourd poeng,A00KL,A00JQ,PARENT_1,RETAIL
+682,Pumpkin raw,A00KH,A0DLV,PARENT_1,RETAIL
+683,Bitter gourd pods raw,A00JY,A00JQ,PARENT_1,RETAIL
+684,Tannia leaves raw,A00NT,A00MH,PARENT_1,RETAIL
+685,Beans black eyed dried,A013N,A012S,PARENT_1,RETAIL
+689,Avocado,A01LB,A0DQP,EFF_NEVO_PROXY,RETAIL
+712,Rice brown raw,A001E,A001C,PARENT_2,RETAIL
+716,Cheese Saint Paulin/Port Salut,A02XJ,A02SV,PARENT_1,RETAIL
+717,Chocolate milk w hazelnuts,A034Q,A034Q,EXACT,RETAIL
+718,Cheese Parmesan,A02ZH,A02ZH,EXACT,RETAIL
+722,Cheese Gruyere,A02YP,A02YE,PARENT_1,RETAIL
+724,Cheese Emmenthaler,A02YM,A02YE,PARENT_1,RETAIL
+725,Cheese Cheddar,A02YK,A02YE,EFF_NEVO_PROXY,RETAIL
+727,Chocolate w liqueur,A034S,A034S,EXACT,RETAIL
+729,Mayonnaise low fat 40% oil,A044Y,A0F1M,PARENT_2,RETAIL
+750,Marshmallows,A035H,A035H,EXACT,RETAIL
+751,Liquorice allsorts,A035J,A035J,EXACT,RETAIL
+752,Wine gum/ fruit gum,A035L,A035L,EXACT,RETAIL
+757,Soup clear w vegetables and noodles,A0BZ9,A041S,PARENT_1,RETAIL
+759,Soup clear w vegetables,A0BZ9,A041S,PARENT_1,RETAIL
+761,Soup clear w meat (beef/chicken) and vegetables,A0BZC,A041V,EFF_NEVO_PROXY,RETAIL
+762,Soup clear w meat (beef/chicken) vegetables and noodles,A0BZC,A041V,PARENT_1,RETAIL
+763,Soup thickened w vegetables,A0BZ9,A041S,PARENT_1,RETAIL
+783,Sausage w smoked bacon-bits,A025N,A025N,EXACT,RETAIL
+792,Soup thickened w meat (beef/chicken) and vegetables,A0BZC,A041V,PARENT_1,RETAIL
+797,Soup vegetable based dried packet prep,A0BZ9,A041S,EFF_NEVO_PROXY,RETAIL
+800,Soup vegetable based ready-to-eat,A0BZ9,A041S,PARENT_1,RETAIL
+811,Pasta wholemeal raw,A04LC,A007E,PARENT_1,RETAIL
+812,Cream sour,A02NB,A02NB,EXACT,RETAIL
+813,Plaice raw,A02BC,A02BC,EXACT,RETAIL
+814,Fish fingers fried in sunflower oil,A02KC,A02KC,EXACT,CONSUMED
+815,Fish fingers unprepared,A02KC,A02KC,EXACT,RETAIL
+817,Plaice fried,A02BC,A02BC,EXACT,CONSUMED
+819,Cod boiled,A02BV,A02BV,EXACT,CONSUMED
+820,Cod raw,A02BV,A02BV,EXACT,RETAIL
+822,Bloater fried,A02KG,A0EYS,PARENT_1,CONSUMED
+823,Pepper black/white,A018Z,A018Y,EFF_NEVO_PROXY,RETAIL
+824,Mustard,A044G,A044G,EXACT,RETAIL
+836,Shortbread,A009X,A009X,EXACT,RETAIL
+839,Beans soya dried,A012S,A012S,EXACT,RETAIL
+841,Salt fortified w iodine,A042R,A042P,PARENT_1,RETAIL
+843,Snack sausage roll w bread dough frozen prepared in oven,A005K,A040D,MANUAL,CONSUMED
+844,Salad dressing natural wo oil,A045L,A045K,PARENT_1,RETAIL
+845,Candybar Twix,A034R,A034R,EXACT,RETAIL
+850,Vegetables mixed pickled Atjar tjampoer glass,A00ZJ,A00ZJ,EXACT,RETAIL
+851,Sweet pepper pickled glass,A00ZJ,A00ZJ,EXACT,RETAIL
+854,Gateau fatless sponge w fruit & cream,A00BA,A00BA,EXACT,RETAIL
+855,Biscuit spiced Speculaas w almond paste,A00AD,A009X,PARENT_1,RETAIL
+863,Yoghurt full fat w fruit,A02NH,A02NE,PARENT_2,RETAIL
+867,Linseeds,A015G,A0DBT,EFF_NEVO_PROXY,RETAIL
+870,Drink soya wo sugar,A03TJ,A03TJ,EXACT,RETAIL
+872,Sunflower seeds,A015L,A0DBP,EFF_NEVO_PROXY,RETAIL
+873,Biscuit w currants Liga Evergreen,A00AE,A00AE,EXACT,RETAIL
+875,Apple w skin av,A01DJ,A01DH,EFF_NEVO_PROXY,RETAIL
+876,Peanuts salted,A015H,A0DBS,PARENT_1,RETAIL
+878,Croissants canned baked,A00BM,A00BM,EXACT,CONSUMED
+879,Butter salted,A039C,A039C,EXACT,RETAIL
+880,Fat for gravy unprepared Smeltjus,A043Z,A043Z,EXACT,RETAIL
+882,Cheese Kernhem 60+,A02SV,A02SV,EXACT,RETAIL
+883,Cheese Old Amsterdam 48+,A02VA,A02SV,PARENT_1,RETAIL
+884,Sweet pepper red raw,A00JA,A00HZ,PARENT_1,RETAIL
+885,Sweet pepper red boiled,A00JA,A00HZ,PARENT_1,CONSUMED
+901,Snack sausage roll w bread dough pastry,A005K,A040D,MANUAL,RETAIL
+908,Forcemeat balls for soup canned,A03XG,A03XG,EXACT,RETAIL
+917,Quark half fat w fruit,A02QK,A02QK,EXACT,RETAIL
+918,Plaice boiled,A02BC,A02BC,EXACT,CONSUMED
+920,Broccoli boiled,A00FN,A00FN,EXACT,CONSUMED
+921,Broccoli raw,A00FN,A00FN,EXACT,RETAIL
+922,Courgettes raw,A00JR,A00JQ,PARENT_1,RETAIL
+927,Cheese 20+ low sodium,A02SV,A02SV,EXACT,RETAIL
+928,Cheese 40+ low sodium,A02SV,A02SV,EXACT,RETAIL
+929,Chocolate milk sugar-free,A034J,A034J,EXACT,RETAIL
+930,Wine medicinal pleegzusterbloedwijn,A03MX,A03MX,EXACT,RETAIL
+931,Quark low fat w fruit,A02QK,A02QK,EXACT,RETAIL
+950,Yeast fresh,A049A,A048Z,PARENT_1,RETAIL
+951,Beans French boiled,A00PG,A00PE,MANUAL,CONSUMED
+953,Peas frozen boiled,A012J,A012G,PARENT_1,CONSUMED
+954,Beans French frozen boiled,A00PG,A00PE,PARENT_1,CONSUMED
+958,Beetroot boiled,A00QG,A00QG,EXACT,CONSUMED
+961,Beans runner boiled,A00PD,A00PE,EFF_NEVO_PROXY,CONSUMED
+962,Beans broad boiled,A012A,A011Z,EFF_NEVO_PROXY,CONSUMED
+963,Peas fresh boiled,A012J,A012G,EFF_NEVO_PROXY,CONSUMED
+966,Courgettes boiled,A00JR,A00JQ,EFF_NEVO_PROXY,CONSUMED
+970,Lentils green and brown boiled,A013Q,A0DCE,EFF_NEVO_PROXY,CONSUMED
+971,Beans soya boiled,A012S,A012S,EXACT,CONSUMED
+982,Potatoes wo skin boiled av,A00ZT,A00ZT,EXACT,CONSUMED
+995,Soup vegetable based low sodium prepared,A0BZ9,A041S,PARENT_1,CONSUMED
+1011,Rye bread wholemeal low sodium,A005H,A005F,PARENT_1,RETAIL
+1014,Rice brown boiled,A001E,A001C,PARENT_2,CONSUMED
+1017,Wheat rye bread wholemeal,A005P,A005L,PARENT_2,RETAIL
+1020,Flour wheat self-raising,A003Y,A003X,PARENT_1,RETAIL
+1025,Yeast dried,A049A,A048Z,EFF_NEVO_PROXY,RETAIL
+1056,Kiwi fruit green,A0DRF,A0DRG,PARENT_2,RETAIL
+1076,Kefir,A02NV,A02NT,PARENT_1,RETAIL
+1094,Pate vegetarian based on nutritional yeast,A03TE,A03TE,EXACT,RETAIL
+1095,Peas chick boiled,A013M,A01BE,EFF_NEVO_PROXY,CONSUMED
+1096,Salmon smoked,A02KF,A02KF,EXACT,RETAIL
+1100,Herring pickled (sweet)sour,A0F0P,A0F0P,EXACT,RETAIL
+1105,Melon water,A00KJ,A0DLQ,EFF_NEVO_PROXY,RETAIL
+1106,Melon honeydew,A00KF,A00KE,PARENT_1,RETAIL
+1112,Cheese raw milk 48+,A02SV,A02SV,EXACT,RETAIL
+1113,Cheese 48+ low sodium,A02SV,A02SV,EXACT,RETAIL
+1119,Peas extra fine low sodium tinned,A01BC,A01BC,EXACT,RETAIL
+1127,Juice lemon fresh,A03AH,A03AH,EXACT,RETAIL
+1143,Beans runner frozen unprepared,A00PD,A00PE,PARENT_1,RETAIL
+1146,Spinach cut frozen unprepared,A00MJ,A00MH,PARENT_1,RETAIL
+1148,Beans broad frozen unprepared,A012A,A011Z,PARENT_1,RETAIL
+1150,Potatoes slices/parts frozen unprepared,A011Q,A011Q,EXACT,RETAIL
+1152,Sausage salami,A024X,A024X,EXACT,RETAIL
+1157,Gherkins sweet pickled low sodium,A00ZJ,A00ZJ,EXACT,RETAIL
+1158,Onion silver-skin sweet pickled low sodium glass,A00ZJ,A00ZJ,EXACT,RETAIL
+1159,Onion silverskin sweet pickled wo sugar glass,A00ZJ,A00ZJ,EXACT,RETAIL
+1160,Gherkins pickled wo sugar,A00ZJ,A00ZJ,EXACT,RETAIL
+1161,Cucumber sliced pickled glass,A00ZJ,A00ZJ,EXACT,RETAIL
+1162,Sausage cooked,A025N,A025N,EXACT,CONSUMED
+1182,Apple sauce wo sugar tinned,A01PF,A01PF,EXACT,RETAIL
+1212,Salt low sodium LoSalt,A042Q,A042P,PARENT_1,RETAIL
+1213,Soy sauce salt Ketjap,A044R,A044R,EXACT,RETAIL
+1214,Soy sauce sweet low sodium Ketjap,A044R,A044R,EXACT,RETAIL
+1215,Soy sauce sweet Ketjap,A044R,A044R,EXACT,RETAIL
+1227,Mustard low sodium,A044G,A044G,EXACT,RETAIL
+1232,Pepper red hot paste,A0EZD,A0EZD,EXACT,RETAIL
+1233,Pepper red hot paste low sodium,A0EZD,A0EZD,EXACT,RETAIL
+1234,Pepper red hot fried paste,A0EZD,A0EZD,EXACT,CONSUMED
+1256,Marzipan,A034Y,A0EQR,PARENT_1,RETAIL
+1260,Mayonnaise product w yoghurt,A044Y,A0F1M,PARENT_2,RETAIL
+1294,Fruit drink w dairy Taksi w sugar,A03EV,A03EA,PARENT_1,RETAIL
+1297,Bacon fat smoked prepared,A022X,A022S,PARENT_1,CONSUMED
+1305,Chicken wo skin raw,A01SP,A01SP,EXACT,RETAIL
+1306,Chicken for soup w skin raw,A01SP,A01SP,EXACT,RETAIL
+1310,Plaice fillet fried/simmered,A02BC,A02BC,EXACT,CONSUMED
+1314,Egg whole chicken fried in margarine,A032C,A032C,EXACT,CONSUMED
+1315,Cod fillet fried/simmered,A02BV,A02BV,EXACT,CONSUMED
+1317,Chicken wo skin grilled,A01SP,A01SP,EXACT,CONSUMED
+1321,Biscuit Liga Haverkick,A00AE,A00AE,EXACT,RETAIL
+1326,Minced beef/pork shallow fried,A04GP,A04GP,EXACT,CONSUMED
+1356,Biscuit Liga Evergreen assortment,A00AE,A00AE,EXACT,RETAIL
+1361,Wheat bread white Turkish,A004Y,A004X,PARENT_1,RETAIL
+1368,Sausage salam Turkish,A025N,A025N,EXACT,RETAIL
+1371,Vegetables pickled Turkish Tursu,A00ZJ,A00ZJ,EXACT,RETAIL
+1375,Minced beef kofte Turkish prepared,A03XG,A03XG,EXACT,CONSUMED
+1376,Minced mutton prepared Kofte Turkish,A03XG,A03XG,EXACT,CONSUMED
+1380,Dessert soya fortified w calcium and vitamins,A03TQ,A03TV,EFF_NEVO_PROXY,RETAIL
+1381,Drink soya w sugar fortified w calcium and vitamins,A03TJ,A03TJ,EXACT,RETAIL
+1382,Cheese 30+ av,A02SV,A02SV,EXACT,RETAIL
+1389,Liquorice Dutch type av,A035J,A035J,EXACT,RETAIL
+1390,Minced beef ball prepared w egg/crumbs,A03XG,A03XG,EXACT,CONSUMED
+1391,Bacon lean prepared,A01RG,A01RG,EXACT,CONSUMED
+1392,Chicken fillet prepared,A01SP,A01SP,EXACT,CONSUMED
+1393,Onions fried in vegetable oil,A00HC,A00HC,EXACT,CONSUMED
+1395,Rye bread wholemeal/rye wheat bread brown av,A0BY0,A0BY0,EXACT,RETAIL
+1397,Tomatoes stewed w vegetable oil,A0DMX,A00HQ,PARENT_1,CONSUMED
+1399,Lettuce iceberg raw,A00KZ,A0DLB,PARENT_1,RETAIL
+1400,Beef rump steak raw,A01QX,A01QV,PARENT_1,RETAIL
+1401,Beef tenderloin steak raw,A01QX,A01QV,PARENT_1,RETAIL
+1402,Beef prime rib raw,A01QX,A01QV,PARENT_1,RETAIL
+1404,Beef frying steak raw,A01QX,A01QV,PARENT_1,RETAIL
+1405,Minced beef raw,A049S,A049S,EXACT,RETAIL
+1406,Beef rib raw,A01QX,A01QV,PARENT_1,RETAIL
+1408,Beef stewing meat raw,A01QX,A01QV,PARENT_1,RETAIL
+1409,Beef sirloin rolled raw,A01QX,A01QV,PARENT_1,RETAIL
+1410,Beef roast raw,A01QX,A01QV,PARENT_1,RETAIL
+1411,Beef shank raw,A01QX,A01QV,PARENT_1,RETAIL
+1412,Beef rib steak raw,A01QX,A01QV,PARENT_1,RETAIL
+1413,Beef streaked/marbled raw,A01QX,A01QV,PARENT_1,RETAIL
+1414,Beef stewing steak raw,A01QX,A01QV,PARENT_1,RETAIL
+1415,Beef steak tartare raw,A049S,A049S,EXACT,RETAIL
+1418,Pork fillet raw,A01RG,A01RG,EXACT,RETAIL
+1419,Pork fricandeau part of leg raw,A01RG,A01RG,EXACT,RETAIL
+1420,Pork chop raw,A01RG,A01RG,EXACT,RETAIL
+1421,Minced pork raw,A04AC,A01RG,PARENT_1,RETAIL
+1422,Pork tenderloin raw,A01RG,A01RG,EXACT,RETAIL
+1423,Pork gammon steak raw,A01RG,A01RG,EXACT,RETAIL
+1424,Pork loin chop raw,A01RG,A01RG,EXACT,RETAIL
+1425,Pork shoulder chop raw,A01RG,A01RG,EXACT,RETAIL
+1427,Pork spare rib raw,A01RG,A01RG,EXACT,RETAIL
+1429,Pork tenderloin medaillon raw,A01RG,A01RG,EXACT,RETAIL
+1430,Pork shoulder raw,A01RG,A01RG,EXACT,RETAIL
+1432,Bacon rasher raw,A01RG,A01RG,EXACT,RETAIL
+1434,Minced beef/pork raw,A04GP,A04GP,EXACT,RETAIL
+1436,Veal prime rib raw,A01QY,A01QV,PARENT_1,RETAIL
+1438,Veal fricandeau raw,A01QY,A01QV,PARENT_1,RETAIL
+1440,Veal shank raw,A01QY,A01QV,PARENT_1,RETAIL
+1450,Chocolate dark sugar-free,A034G,A034G,EXACT,RETAIL
+1451,Chocolate milk w hazelnuts wo sugar,A034Q,A034Q,EXACT,RETAIL
+1454,Beetroot pickled glass,A00ZJ,A00ZJ,EXACT,RETAIL
+1456,Chips pre-fried frozen unprepared,A0BYV,A011N,PARENT_1,CONSUMED
+1457,Potatoes fried,A011Q,A011Q,EXACT,CONSUMED
+1458,Seitan seasoned,A03TE,A03TE,EXACT,RETAIL
+1459,Wheat currant bread wholemeal,A005E,A004X,PARENT_1,RETAIL
+1461,Sesame paste tahin salt added,A01BM,A01BM,EXACT,RETAIL
+1462,Juice pineapple,A03AF,A03AF,EXACT,RETAIL
+1463,Fruit juice drink minimal 2 fruits,A03BL,A03BL,EXACT,RETAIL
+1464,Milk chocolate-flavoured semi-skimmed,A02MP,A02MP,EXACT,RETAIL
+1468,Beer >7 vol% alcohol,A03MD,A03MB,EFF_NEVO_PROXY,RETAIL
+1471,Biscuit w chocolate,A00AE,A00AE,EXACT,RETAIL
+1472,Butter cream,A039C,A039C,EXACT,RETAIL
+1474,Ice lolly,A036J,A036K,EFF_NEVO_PROXY,RETAIL
+1477,Biscuits sugar-free,A009X,A009X,EXACT,RETAIL
+1478,Flan fruit and crumble topping,A00BZ,A00BZ,EXACT,RETAIL
+1480,Biscuit Jaffa cakes/Cake PiM's,A00AQ,A00AQ,EXACT,RETAIL
+1489,Cheese fresh light 8% fat,A02RB,A02QK,EFF_NEVO_PROXY,RETAIL
+1492,Gravy average clear prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+1502,Yoghurt half fat,A02NG,A02NE,PARENT_2,RETAIL
+1505,Crisps potato light unflavoured,A0BYS,A011L,PARENT_1,RETAIL
+1508,Chocolates filled/Belgium chocolate,A034S,A034S,EXACT,RETAIL
+1509,Muesli bar w chocolate,A00FA,A0EQR,EFF_NEVO_PROXY,RETAIL
+1512,Schnitzel vegetarian based on soya/wheat unprepared fortified w iron and vit B12,A03TE,A03TE,EXACT,RETAIL
+1515,Sauce based on roux prepared,A0F1N,A0F1N,EXACT,CONSUMED
+1516,Saus op basis groentenat/melk bereid z vet,A0F1N,A0F1N,EXACT,RETAIL
+1517,Sauce mix packet <3% fat prepared,A0F1N,A0F1N,EXACT,CONSUMED
+1518,Sauce mix packet >3% fat prepared,A044A,A0F1N,PARENT_1,CONSUMED
+1519,"Beer alcohol free <0,1 vol%",A03MG,A03MC,PARENT_1,RETAIL
+1520,"Beer low alcohol 0,1-1,2 vol%",A03MF,A03MC,PARENT_1,RETAIL
+1521,Juice drink light,A03FV,A03EA,PARENT_1,RETAIL
+1522,Soft drink light wo caffeine,A03FX,A03EX,PARENT_1,RETAIL
+1523,Cola light soft drink w caffeine,A03FY,A03FQ,PARENT_2,RETAIL
+1524,Sauce tomato ready-to-eat jar,A044C,A044C,EXACT,RETAIL
+1530,Butter product half fat,A039C,A039C,EXACT,RETAIL
+1536,Beef rump steak prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1538,Beef prime rib prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1539,Beef frying steak prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1540,Minced beef shallow fried,A049S,A049S,EXACT,CONSUMED
+1541,Beef rib prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1543,Beef stewing meat prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1544,Beef rolled prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1545,Beef roast prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1546,Beef shank prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1547,Beef rib steak prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1548,Beef streaked/marbled prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1549,Beef stewing steak prepared,A01QX,A01QV,PARENT_1,CONSUMED
+1550,Beef steak tartare prepared,A049S,A049S,EXACT,CONSUMED
+1551,Sausage pork Braadworst prepared,A024N,A025N,EFF_NEVO_PROXY,CONSUMED
+1552,Pork fillet prepared,A01RG,A01RG,EXACT,CONSUMED
+1553,Pork fricandeau part of leg prepared,A01RG,A01RG,EXACT,CONSUMED
+1554,Pork chop prepared,A01RG,A01RG,EXACT,CONSUMED
+1555,Minced pork prepared,A04AC,A01RG,PARENT_1,CONSUMED
+1556,Pork tenderloin prepared,A01RG,A01RG,EXACT,CONSUMED
+1557,Pork gammon steak prepared,A01RG,A01RG,EXACT,CONSUMED
+1558,Pork loin chop prepared,A01RG,A01RG,EXACT,CONSUMED
+1559,Pork shoulder chop prepared,A01RG,A01RG,EXACT,CONSUMED
+1561,Pork spare rib prepared,A01RG,A01RG,EXACT,CONSUMED
+1563,Pork tenderloin medaillon prepared,A01RG,A01RG,EXACT,CONSUMED
+1564,Pork shoulder prepared,A01RG,A01RG,EXACT,CONSUMED
+1568,minced meat ball beef/pork w egg prepared,A03XG,A03XG,EXACT,CONSUMED
+1570,Veal prime rib prepared,A01QY,A01QV,PARENT_1,CONSUMED
+1572,Veal fricandeau prepared,A01QY,A01QV,PARENT_1,CONSUMED
+1574,Veal shank prepared,A01QY,A01QV,PARENT_1,CONSUMED
+1584,Squid rings deep-fried in vegetable oil,A02JH,A02JH,EXACT,CONSUMED
+1585,Halibut smoked,A0EYS,A0EYS,EXACT,RETAIL
+1586,Mackerel fillet smoked,A16EM,A0EYS,PARENT_1,RETAIL
+1587,Salmon farmed raw,A0C75,A0C75,EXACT,RETAIL
+1589,Tuna in oil tinned,A0FBT,A0FBT,EXACT,RETAIL
+1590,Tuna in water tinned,A0FBT,A0FBT,EXACT,RETAIL
+1601,Minced beef ball prepared wo egg,A03XG,A03XG,EXACT,CONSUMED
+1605,Kippers steamed,A02KG,A0EYS,PARENT_1,CONSUMED
+1607,Sprat fillet smoked,A0EYS,A0EYS,EXACT,RETAIL
+1608,Mackerel prepared in microwave oven no ingredients added,A02CT,A02CT,EXACT,CONSUMED
+1610,Salmon farmed prep in microwave oven no ingredients added,A0C75,A0C75,EXACT,RETAIL
+1611,Trout prepared in microwave oven no ingredients added,A029F,A029F,EXACT,CONSUMED
+1612,Rainbow trout prepared in microwave oven no ingredients added,A029N,A029F,PARENT_1,CONSUMED
+1613,Cod prepared in microwave oven no ingredients added,A02BV,A02BV,EXACT,CONSUMED
+1617,Plaice prepared in microwave oven no ingredients added,A02BC,A02BC,EXACT,CONSUMED
+1618,Schar/tongschar bereid in magnetron z toev,A02AS,A02AS,EXACT,RETAIL
+1619,Sole prepared in microwave oven no ingredients added,A02BF,A02BF,EXACT,CONSUMED
+1620,Flounder prepared in microwave oven no ingredients added,A02AT,A02AT,EXACT,CONSUMED
+1622,Ocean perch prepared in microwave oven no ingredients added,A027N,A027N,EXACT,CONSUMED
+1632,Squid prepared in microwave oven no ingredients added,A02HZ,A02JD,EFF_NEVO_PROXY,CONSUMED
+1633,Chicken w skin prepared,A01SP,A01SP,EXACT,CONSUMED
+1634,Chicken fillet raw,A01SP,A01SP,EXACT,RETAIL
+1635,Chicken wo skin prepared,A01SP,A01SP,EXACT,CONSUMED
+1641,Chicken rolled prepared,A01SP,A01SP,EXACT,CONSUMED
+1642,Chicken rolled raw,A01SP,A01SP,EXACT,RETAIL
+1646,Pork steak/chop prepared,A01RG,A01RG,EXACT,CONSUMED
+1647,Pork rib chop prepared,A01RG,A01RG,EXACT,CONSUMED
+1651,Syrup barley malt,A034B,A033Z,PARENT_1,RETAIL
+1652,Syrup corn,A034C,A033Z,PARENT_1,RETAIL
+1653,Syrup rice malt,A033Z,A033Z,EXACT,RETAIL
+1655,Fruit juice concentrated,A03BN,A03BN,EXACT,RETAIL
+1656,Juice carrot,A03CK,A03DB,EFF_NEVO_PROXY,RETAIL
+1663,Beef <5% fat raw av,A01QX,A01QV,PARENT_1,RETAIL
+1664,Beef >5% fat raw av,A01QX,A01QV,PARENT_1,RETAIL
+1665,Beef <10% fat prepared av,A01QX,A01QV,PARENT_1,CONSUMED
+1666,Beef >10% fat prepared av,A01QX,A01QV,PARENT_1,CONSUMED
+1667,Pork <5% fat raw av,A01RG,A01RG,EXACT,RETAIL
+1668,Pork 5-14% fat raw av,A01RG,A01RG,EXACT,RETAIL
+1669,Pork >15% fat raw av,A01RG,A01RG,EXACT,RETAIL
+1670,Pork <10% fat prepared av,A01RG,A01RG,EXACT,CONSUMED
+1671,Pork 10-19% fat prepared av,A01RG,A01RG,EXACT,CONSUMED
+1672,Pork >19% fat prepared av,A01RG,A01RG,EXACT,CONSUMED
+1673,Veal <5% fat raw av,A01QY,A01QV,PARENT_1,RETAIL
+1674,Veal >5% fat raw av,A01QY,A01QV,PARENT_1,RETAIL
+1678,Potatoes sliced frozen deep-fried in vegetable oil,A0BYV,A011N,PARENT_1,CONSUMED
+1679,Chips oven frozen prepared in oven,A0BYV,A011N,PARENT_1,CONSUMED
+1719,Milk semi-skimmed fortified w calcium,A02LZ,A04HG,PARENT_2,RETAIL
+1721,Yoghurt vanilla half fat,A02NH,A02NE,PARENT_2,RETAIL
+1723,Cheese 20+,A02SV,A02SV,EXACT,RETAIL
+1724,Cheese 50+,A02SV,A02SV,EXACT,RETAIL
+1725,Cheese Dutch in Swiss-style 45+,A02SV,A02SV,EXACT,RETAIL
+1726,Cheese 40+ Leiden w cumin/Fries clove,A02VT,A02SV,PARENT_1,RETAIL
+1773,"Brawn, pork pickled in vinegar",A025Z,A025N,PARENT_2,RETAIL
+1774,Sausage tongue,A025Y,A025N,PARENT_2,RETAIL
+1788,Pork rib chop raw,A01RG,A01RG,EXACT,RETAIL
+1789,Pork schnitzel not breaded prepared,A01RG,A01RG,EXACT,CONSUMED
+1790,Pork schnitzel not breaded raw,A01RG,A01RG,EXACT,RETAIL
+1809,Cheese 45+,A02SV,A02SV,EXACT,RETAIL
+1812,Nectarine,A01GN,A01GL,PARENT_1,RETAIL
+1832,Yoghurt drink Vifit fruit,A02NQ,A02NQ,EXACT,RETAIL
+1878,Fruit juice drink Roosvicee Multivit,A03EV,A03EA,PARENT_1,RETAIL
+1885,Water av,A03DL,A03DL,EXACT,CONSUMED
+1893,Cheese Bel Paese,A02SV,A02SV,EXACT,RETAIL
+1894,Beans kidney red dried,A012V,A012S,PARENT_2,RETAIL
+1895,Pecan nuts unroasted unsalted,A014N,A014C,PARENT_2,RETAIL
+1896,Pistachio nuts salted,A014Q,A014C,EFF_NEVO_PROXY,RETAIL
+1912,Sauce Chinese soursweet home-made,A16EY,A16EY,EXACT,RETAIL
+1914,Dough for pizza and savoury pie unprepared,A008H,A008J,EFF_NEVO_PROXY,RETAIL
+1932,Juice orange w pulp,A03AM,A03AM,EXACT,RETAIL
+1934,Juice tomato Appelsientje Zontomaat,A03CJ,A03CJ,EXACT,RETAIL
+1935,Nuts mixed salted,A014C,A014C,EXACT,RETAIL
+1945,Bun w vanilla custard,A00BL,A00BL,EXACT,RETAIL
+1953,Plant-based alternative to fruit/vanilla yoghurt based on soya sweetened fortified w calcium and vitamins,A03TV,A03TV,EXACT,RETAIL
+1955,Cheese Mozzarella made from cow's milk,A02QJ,A02QJ,EXACT,RETAIL
+1956,Low fat spread Becel pro-activ,A039H,A0F1G,PARENT_1,RETAIL
+1961,Low fat margarine prod Blue Band Goede Start,A039E,A0F1G,PARENT_1,RETAIL
+1964,Spread chocolate milk,A0C6P,A0C6P,EXACT,RETAIL
+1965,Biscuit Liga Milkbreak milkbiscuit,A00AE,A00AE,EXACT,RETAIL
+1972,Biscuits assorted w butter av,A009X,A009X,EXACT,RETAIL
+1999,Breakfast cereal Frosties Kellogg's,A00DD,A04QY,PARENT_1,RETAIL
+2004,Breakfast cereal All-Bran Fruit n Fibre Kellogg's,A00EF,A04QY,PARENT_1,RETAIL
+2005,Breakfast cereal Special K Original Kellogg's,A00EM,A04QY,PARENT_1,RETAIL
+2007,Breakfast cereal Honey pops Loops Kellogg's,A0F4Q,A04QY,PARENT_1,RETAIL
+2009,Tart fruit w shortbread base,A00BZ,A00BZ,EXACT,RETAIL
+2010,Sponge cake w fruit,A00BA,A00BA,EXACT,RETAIL
+2024,Sports food Isostar Actifood,A036H,A036H,EXACT,RETAIL
+2030,Minced meat vegetarian based on mycoprotein unprepared,A03TG,A03TG,EXACT,RETAIL
+2031,Pieces/chunks vegetarian based on mycoprotein unprepred,A03TG,A03TG,EXACT,RETAIL
+2047,Minced meat vegetarian based on soya unprepared,A03TE,A03TE,EXACT,RETAIL
+2048,Peanuts dry roasted,A015H,A0DBS,PARENT_1,CONSUMED
+2049,Rice multi-grain raw,A001G,A001C,PARENT_2,RETAIL
+2059,Low fat margarine 40% fat <17 g sat fa salted,A039E,A0F1G,PARENT_1,RETAIL
+2060,Low fat margarine prod 35% fat <10 g sat fa unsalted,A039E,A0F1G,PARENT_1,RETAIL
+2063,Margarine 80% fat >24 g sat fa salted,A039D,A0F1G,PARENT_1,RETAIL
+2066,Cooking fat liquid 97% fat <17 g sat fa salted,A039J,A039J,EXACT,RETAIL
+2067,Cooking fat solid 97% fat >17 g sat fa salted,A039J,A039J,EXACT,RETAIL
+2068,Frying fat liquid,A039J,A039J,EXACT,RETAIL
+2069,Frying fat solid,A039J,A039J,EXACT,RETAIL
+2072,Margarine product 60% fat <17 g sat fa unsalted,A039E,A0F1G,EFF_NEVO_PROXY,RETAIL
+2077,Margarine liq 80% fat <17 g sat fa salted,A039E,A0F1G,PARENT_1,RETAIL
+2081,Breakfast cereal Cornflakes,A00DD,A04QY,EFF_NEVO_PROXY,RETAIL
+2083,Mayonnaise product w olive oil,A044X,A0F1M,PARENT_1,RETAIL
+2086,Ice tea w sugar 5-<7 g CHO,A03EX,A03EX,EXACT,RETAIL
+2087,Ice tea light,A03FX,A03EX,PARENT_1,RETAIL
+2088,Ice tea w sugar and sweetener,A03EX,A03EX,EXACT,RETAIL
+2090,Chicken drumstick w skin raw,A01SP,A01SP,EXACT,RETAIL
+2106,Chips fried in solid frying fat,A0BYV,A011N,PARENT_1,CONSUMED
+2107,Chips fried in liquid frying fat,A0BYV,A011N,EFF_NEVO_PROXY,CONSUMED
+2108,Chips prepared av,A0BYV,A011N,PARENT_1,CONSUMED
+2112,Potato sweet boiled,A010C,A0DPH,EFF_NEVO_PROXY,CONSUMED
+2113,Pumpkin boiled,A00KH,A0DLV,EFF_NEVO_PROXY,CONSUMED
+2134,Juice drink Dubbelfrisss,A03EV,A03EA,EFF_NEVO_PROXY,RETAIL
+2135,Juice drink Tintelfruit w sugar,A03EV,A03EA,PARENT_1,RETAIL
+2137,Juice drink Tintelfruit light,A03FV,A03EA,PARENT_1,RETAIL
+2141,Mineral water w sweetener,A03FX,A03EX,PARENT_1,RETAIL
+2142,Wine white sweet,A03MV,A03MV,EXACT,RETAIL
+2144,Juice apple fortified w vitamin C,A039M,A039M,EXACT,RETAIL
+2157,Pasta wholemeal boiled,A04LC,A007E,PARENT_1,CONSUMED
+2162,Biscuit Cafe noir,A00AE,A00AE,EXACT,RETAIL
+2163,Crisps maize Bugles,A00FC,A00FE,EFF_NEVO_PROXY,RETAIL
+2173,Crisps based on potato dough,A0BYT,A011L,PARENT_1,RETAIL
+2176,Pine nuts,A01BV,A014C,PARENT_2,RETAIL
+2178,Pesto green,A044V,A044V,EXACT,RETAIL
+2190,Brownie w nuts,A00BG,A00BF,PARENT_1,RETAIL
+2227,Biscuit filled,A00AE,A00AE,EXACT,RETAIL
+2228,Biscuit w chocolate layer Scholiertje,A00AE,A00AE,EXACT,RETAIL
+2232,Biscuit fruit,A00AE,A00AE,EXACT,RETAIL
+2241,Yoghurt snack Breaker,A02NH,A02NE,PARENT_2,RETAIL
+2244,Yoghurt cream- w fruit,A16GH,A02NE,PARENT_1,RETAIL
+2246,Quark low fat w fruit/vanilla w sweetener,A02QK,A02QK,EXACT,RETAIL
+2248,Quark w fruit Danoontje,A02QK,A02QK,EXACT,RETAIL
+2251,Ice cream dairy w chocolate coating,A02QA,A02QA,EXACT,RETAIL
+2252,Ice cream dairy w fruitcoating,A02QA,A02QA,EXACT,RETAIL
+2254,Yoghurt drink w sweetener,A02NQ,A02NQ,EXACT,RETAIL
+2255,Yoghurt drink Fristi w sweetener,A02NQ,A02NQ,EXACT,RETAIL
+2257,Breakfast drink Goede Morgen Vifit,A02NQ,A02NQ,EXACT,RETAIL
+2261,Drink soya Groeidrink 1-3+ Alpro,A03TJ,A03TJ,EXACT,RETAIL
+2264,Cheese 10+,A02SV,A02SV,EXACT,RETAIL
+2272,Fatless sponge,A00AQ,A00AQ,EXACT,RETAIL
+2275,Cream cooking,A02ML,A02ML,EXACT,RETAIL
+2276,Cream cooking light,A02ML,A02ML,EXACT,RETAIL
+2278,Yoghurt full fat w cereal/muesli Activia,A02NH,A02NE,PARENT_2,RETAIL
+2297,Tuna raw,A02DX,A02DR,PARENT_1,RETAIL
+2298,Sole raw,A02BF,A02BF,EXACT,RETAIL
+2300,Sausage smoked lean cooked,A026A,A026A,EXACT,CONSUMED
+2301,Sausage smoked beef cooked,A026A,A026A,EXACT,CONSUMED
+2302,Sausage frankfurter lean tinned,A026B,A026B,EXACT,RETAIL
+2303,Sausage cooked lean,A025N,A025N,EXACT,CONSUMED
+2304,Salami sausage saveloy lean,A024X,A024X,EXACT,RETAIL
+2308,Yoghurt drink Becel pro-activ,A02NQ,A02NQ,EXACT,RETAIL
+2311,Breezer,A03PN,A03PN,EXACT,RETAIL
+2312,Roti Surinam pancake,A006X,A006R,PARENT_1,RETAIL
+2316,Tannia leaves prepared wo fat,A00NT,A00MH,PARENT_1,CONSUMED
+2325,Potatoes boiled w skin av,A00ZT,A00ZT,EXACT,CONSUMED
+2334,Minced meat ball beef/pork raw w egg/brcrumbs,A03XG,A03XG,EXACT,RETAIL
+2336,Beef av raw,A01QX,A01QV,EFF_NEVO_PROXY,RETAIL
+2337,Minced beef ball raw w egg and breadcrumbs,A03XG,A03XG,EXACT,RETAIL
+2340,Pork schnitzel breaded raw,A01RG,A01RG,EXACT,RETAIL
+2341,Chicken fillet breaded raw,A01SP,A01SP,EXACT,RETAIL
+2342,Chicken fillet in batter raw,A01SP,A01SP,EXACT,RETAIL
+2343,Jelly,A036H,A036H,EXACT,RETAIL
+2345,Peanuts sugar coated,A015H,A0DBS,PARENT_1,RETAIL
+2346,Lettuce av raw,A0DLB,A0DLB,EXACT,RETAIL
+2348,Wheat bread wholemeal av fine and coarse w pumpkin seeds,A005E,A004X,PARENT_1,RETAIL
+2349,Multigrain bread av white and brown w seeds w extra linseed,A005Q,A005L,PARENT_1,RETAIL
+2350,Multigrain bread av white and brown w seeds,A005Q,A005L,EFF_NEVO_PROXY,RETAIL
+2351,Wheat bread white av milk/water based,A004Y,A004X,PARENT_1,RETAIL
+2352,Wheat currant bread white w almond paste,A004Y,A004X,PARENT_1,RETAIL
+2353,Wheat muesli bread brown/wholemeal,A005E,A004X,PARENT_1,RETAIL
+2354,Wheat nut bread wholemeal,A005E,A004X,PARENT_1,RETAIL
+2355,Wheat sugar bread white,A004Y,A004X,PARENT_1,RETAIL
+2356,Wheat baguette white w cheese and onion,A004Y,A004X,PARENT_1,RETAIL
+2357,Wheat bread wholemeal av fine and coarse w sunflower seeds,A005E,A004X,PARENT_1,RETAIL
+2358,Wheat bread white av milk/water based w sunflower seeds,A004Y,A004X,PARENT_1,RETAIL
+2359,Wrap/tortilla wheat white,A006V,A006V,EXACT,RETAIL
+2362,Sausage Dutch Frikandel frozen unprep,A026A,A026A,EXACT,RETAIL
+2364,Chicken schnitzel breaded raw,A01SP,A01SP,EXACT,RETAIL
+2367,Peanut butter light,A01BN,A01BN,EXACT,RETAIL
+2370,Cocktail snacks based on corn,A00FE,A00FE,EXACT,RETAIL
+2373,After eight chocolate mints,A034Q,A034Q,EXACT,RETAIL
+2374,Chocolate milk w raisins,A034J,A034J,EXACT,RETAIL
+2375,Chocolate dark w hazelnuts,A034Q,A034Q,EXACT,RETAIL
+2376,Chocolate milk w puffed rice,A034Q,A034Q,EXACT,RETAIL
+2377,"Tomatoes dried in oil tin/glass, drained",A00ZG,A00ZB,EFF_NEVO_PROXY,RETAIL
+2380,Toffee w chocolate,A035B,A0EQR,PARENT_1,RETAIL
+2382,Wheat bread brown w sunflower seeds,A005E,A004X,PARENT_1,RETAIL
+2383,Nougat w chocolate,A035D,A0EQR,PARENT_1,RETAIL
+2384,Liquorice w peppermint,A035J,A035J,EXACT,RETAIL
+2385,Salty liquorice lolly,A035J,A035J,EXACT,RETAIL
+2386,Nougat,A035D,A0EQR,PARENT_1,RETAIL
+2391,Cake marble-,A00BJ,A00BF,PARENT_1,RETAIL
+2392,Cake apple- wo butter,A00BA,A00BA,EXACT,RETAIL
+2393,Cake raisins-,A00BA,A00BA,EXACT,RETAIL
+2396,Chocolate cake w whipped cream,A00BG,A00BF,PARENT_1,RETAIL
+2400,Croissant chocolate-,A00BN,A00BM,PARENT_1,RETAIL
+2402,Capers,A00ZJ,A00ZJ,EXACT,RETAIL
+2405,Chocolate chip cookie,A00AE,A00AE,EXACT,RETAIL
+2406,Biscuit children's av,A009X,A009X,EXACT,RETAIL
+2409,Biscuit Dutch shortbread sprits w choc,A00AE,A00AE,EXACT,RETAIL
+2410,Teacakes chocolate coated marshmallow,A035H,A035H,EXACT,RETAIL
+2412,Biscuit Dutch Kletskop,A00AE,A00AE,EXACT,RETAIL
+2416,Ice cream dairy stracciatella,A02QA,A02QA,EXACT,RETAIL
+2419,Sauce cheese- based on roux prepared,A043Y,A0F1N,EFF_NEVO_PROXY,CONSUMED
+2420,Sauce hot liquid ready-to-eat >12% fat,A044A,A0F1N,PARENT_1,RETAIL
+2422,Low fat margarine prod Becel Omega3 Plus,A039H,A0F1G,PARENT_1,RETAIL
+2427,Spice biscuit sprinkles Bolletje,A00AD,A009X,PARENT_1,RETAIL
+2428,Wafer w milk & hazelnuts Knoppers,A0BYR,A0BYR,EXACT,RETAIL
+2431,Gateau fatless sponge w marzipan,A00AV,A00AV,EXACT,RETAIL
+2433,Rice drink wo sugar  fortified w calcium and vitamines,A03TM,A03TM,EXACT,RETAIL
+2435,Soft drink w sugar and sweetener 2-<5 g CHO wo caffeine,A03EX,A03EX,EXACT,RETAIL
+2436,Juice drink w sugar and sweetener 4-6 g CHO,A03EA,A03EA,EXACT,RETAIL
+2437,Juice drink Capri-Sun Multivitamin,A03EV,A03EA,PARENT_1,RETAIL
+2441,Fruit drink conc diluted 1 to 7,A03EA,A03EA,EXACT,RETAIL
+2445,Sauce butter-,A044B,A0F1N,PARENT_1,RETAIL
+2449,Gravy 25% fat clear prep w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2450,Gravy 50% fat clear prepared w gravy instant powder,A043Z,A043Z,EXACT,CONSUMED
+2451,Gravy 25% fat thickend prep w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2452,Gravy 25% fat thickend prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2453,Gravy 50% fat thickend prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2454,Gravy 75% fat thickend prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2455,Sauce Aardappel Anders av,A0F1N,A0F1N,EXACT,RETAIL
+2456,Gravy 5% fat thickend prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2459,Gravy 50% fat clear prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2460,Gravy 75% fat clear prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2461,Gravy 50% fat thickend prep w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2462,Gravy 5% fat clear prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2466,Salad dressing vinaigrette,A045K,A045K,EXACT,RETAIL
+2467,Sauce for chips approx 13% oil,A045L,A045K,PARENT_1,RETAIL
+2468,Salad dressing honey/mustard,A045K,A045K,EXACT,RETAIL
+2470,Sauce for chips 5% oil,A045L,A045K,PARENT_1,RETAIL
+2471,Mayonnaise product approx 35% oil,A044Y,A0F1M,PARENT_2,RETAIL
+2472,Oil wok,A039J,A039J,EXACT,RETAIL
+2473,Herb paste boemboe,A045E,A045E,EXACT,RETAIL
+2476,Coffee cappuccino freshly made,A03KH,A03KG,EFF_NEVO_PROXY,CONSUMED
+2477,Coffee cappuccino instant prepared,A03KH,A03KG,PARENT_1,CONSUMED
+2487,Soup veg & meat based ready-to-eat,A0BZC,A041V,PARENT_1,RETAIL
+2488,Soup vegetable & meat based prepared pack,A0BZC,A041V,PARENT_1,CONSUMED
+2490,Fruit juice drink multivit 12 fruits nectar light,A03BL,A03BL,EXACT,RETAIL
+2491,Fruit juice drink w sweetener 5-<8 g CHO,A03BL,A03BL,EXACT,RETAIL
+2495,Milk chocolate-flavoured w s-sk milk and sweetened cocoa powder,A02MP,A02MP,EXACT,RETAIL
+2496,Dairy drink Campina Fruitmelk,A02MP,A02MP,EXACT,RETAIL
+2501,Yoghurt half fat w fruit,A02NH,A02NE,PARENT_2,RETAIL
+2503,Yoghurt Greek full fat,A16GH,A02NE,PARENT_1,RETAIL
+2504,Quark full fat w fruit,A02QK,A02QK,EXACT,RETAIL
+2507,Juice multifruit,A03AP,A03AN,EFF_NEVO_PROXY,RETAIL
+2513,Cider,A03ND,A03ND,EXACT,RETAIL
+2514,Fruit juice concentrated diluted 1 to 13,A03EA,A03EA,EXACT,RETAIL
+2515,Fruit juice drink Surango multivit nectar light,A03BL,A03BL,EXACT,RETAIL
+2518,Cheese goat hard,A02SV,A02SV,EXACT,RETAIL
+2524,Chili pepper raw,A0DMM,A00HZ,PARENT_2,RETAIL
+2525,Frying fat horeca,A039J,A039J,EXACT,RETAIL
+2529,Potato crisps oven baked,A0BYT,A011L,PARENT_1,CONSUMED
+2530,Maltesers,A034R,A034R,EXACT,RETAIL
+2532,Liquorice sugar-free,A035J,A035J,EXACT,RETAIL
+2541,Sausage luncheon meat vegetarian fortified w iron and vit B12,A03TE,A03TE,EXACT,RETAIL
+2549,Spring roll frozen unprepared,A040F,A040F,EXACT,RETAIL
+2551,Croissant ham and cheese,A00BM,A00BM,EXACT,RETAIL
+2555,Viandel unprepared Mora,A026A,A026A,EXACT,RETAIL
+2556,Biscuit LU Time Out,A00AB,A009X,PARENT_1,RETAIL
+2557,Margarine 80% fat >24 g sat fa unsalted,A039D,A0F1G,PARENT_1,RETAIL
+2558,Margarine liq 80% fat <17g sat fa unsalted,A039E,A0F1G,PARENT_1,RETAIL
+2559,Low fat margarine prod Bewust light 30% fat <10g sat fa unsalted,A039E,A0F1G,PARENT_1,RETAIL
+2562,Cooking fat liq 97% fat <17g sat fa unsalted,A039J,A039J,EXACT,RETAIL
+2563,Cooking fat sol 97% fat >17g sat fa unsalted,A039J,A039J,EXACT,RETAIL
+2565,Margarine 80% fat <24 g sat fa unsalted,A039E,A0F1G,PARENT_1,RETAIL
+2566,Low fat margarine 40% fat <17 g sat fa unsalted,A039E,A0F1G,PARENT_1,RETAIL
+2567,Low fat margarine prod AH chol reducing,A039H,A0F1G,PARENT_1,RETAIL
+2577,Cake apple made w butter,A00BA,A00BA,EXACT,RETAIL
+2580,Gravy 5% fat thickend prep w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2581,Pancake wholemeal homemade prepared w liquid margarin,A00CL,A00CL,EXACT,CONSUMED
+2582,Pancake wholemeal homemade prepared w margarin,A00CL,A00CL,EXACT,CONSUMED
+2583,Biscuit peanut,A00AE,A00AE,EXACT,RETAIL
+2588,Gravy 25% fat clear prep wo gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2595,Candybar KitKat,A034R,A034R,EXACT,RETAIL
+2605,Salad dressing olive oil-vinegar,A045K,A045K,EXACT,RETAIL
+2607,Biscuit w nuts and chocolate,A00AE,A00AE,EXACT,RETAIL
+2609,Biscuits w nuts,A00AE,A00AE,EXACT,RETAIL
+2610,Wine rose,A03MY,A03MY,EXACT,RETAIL
+2614,Salsa tomato dip,A044P,A044P,EXACT,RETAIL
+2615,Vinegar,A044L,A044L,EXACT,RETAIL
+2619,Meatball Berenklauw unprepared,A03XG,A03XG,EXACT,RETAIL
+2622,Appel pie Dutch w shortbread w butter,A00BZ,A00BZ,EXACT,RETAIL
+2633,Coffee instant powder,A03GQ,A03KE,EFF_NEVO_PROXY,RETAIL
+2634,Fruit juice drink minimal 2 fruits fortified w vit C,A03BL,A03BL,EXACT,RETAIL
+2639,Smoothie fruit,A03DF,A03DF,EXACT,RETAIL
+2640,Smoothie fruit w dairy,A03DF,A03DF,EXACT,RETAIL
+2641,Soft drink w sugar and sweetener 2-<5 CHO w caffeine,A03FR,A03FQ,PARENT_1,RETAIL
+2647,Coffee w sugar and milk vending machine,A03KG,A03KG,EXACT,CONSUMED
+2648,Coffee w milk vending machine,A03KG,A03KG,EXACT,CONSUMED
+2650,Gravy prep wo fat w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+2655,Yoghurt 0% fat w fruit Activia,A02NH,A02NE,PARENT_2,RETAIL
+2657,Spread duo w chocolate,A0C6P,A0C6P,EXACT,RETAIL
+2665,Soft drink w sugar and sweetener 5-<8 g CHO w caffeine,A03FR,A03FQ,PARENT_1,RETAIL
+2667,Salad dressing 20% oil w yoghurt,A045K,A045K,EXACT,RETAIL
+2682,Rice multi-grain boiled,A001G,A001C,PARENT_2,CONSUMED
+2683,Breakfast cereal Coco pops Chocos Kellogg's,A0F4Q,A04QY,PARENT_1,RETAIL
+2684,Breakfast cereal Spec K choc Kellogg's,A00EM,A04QY,PARENT_1,RETAIL
+2686,Apple sauce wo sugar w sweetener tinned,A01PF,A01PF,EXACT,RETAIL
+2687,Biscuit spiced small Kruidnoten w dark choc,A00AD,A009X,PARENT_1,RETAIL
+2688,Biscuit spiced small Kruidnoten w milk choc,A00AD,A009X,PARENT_1,RETAIL
+2698,Cake chocolate made wo butter,A00BG,A00BF,PARENT_1,RETAIL
+2699,Biscuit Dutch Frou frou,A00AE,A00AE,EXACT,RETAIL
+2700,Biscuit w dried fruit & yoghurt Sultana Yofruit,A00AE,A00AE,EXACT,RETAIL
+2701,Biscuit spiced small Kruidnoten w white choc,A00AD,A009X,PARENT_1,RETAIL
+2703,Wheat bread wholemeal av fine and coarse w seeds,A005E,A004X,PARENT_1,RETAIL
+2704,Wheat bread brown w seeds,A005E,A004X,PARENT_1,RETAIL
+2705,Breakfast cereal All-Bran flakes Kellogg's,A00ED,A04QY,PARENT_2,RETAIL
+2707,Wheat corn bread white w sunflower seeds,A005Q,A005L,PARENT_1,RETAIL
+2708,Lettuce red raw,A0DLB,A0DLB,EXACT,RETAIL
+2711,Margarine product Albert Heijn Balans,A039E,A0F1G,PARENT_1,RETAIL
+2712,Margarine product liquid <60% fat <17 g sat fa unsalted,A039E,A0F1G,PARENT_1,RETAIL
+2713,Margarine product liquid <60% fat <17 g sat fa salted,A039E,A0F1G,PARENT_1,RETAIL
+2714,Biscuit Liga Evergreen crunchy,A00AE,A00AE,EXACT,RETAIL
+2724,Ice tea w sugar 4-<5 g CHO,A03EX,A03EX,EXACT,RETAIL
+2728,Carrot winter raw,A00QH,A00QH,EXACT,RETAIL
+2729,Carrot winter boiled,A00QH,A00QH,EXACT,CONSUMED
+2730,Tomato vine raw,A00HR,A00HQ,PARENT_2,RETAIL
+2731,Tomato cherry raw,A00HY,A00HQ,PARENT_2,RETAIL
+2732,Tomato beef raw,A00HS,A00HQ,PARENT_2,RETAIL
+2733,Tomato beef boiled,A00HS,A00HQ,PARENT_2,CONSUMED
+2734,Tomato av raw,A0DMX,A00HQ,PARENT_1,RETAIL
+2735,Tomato av boiled,A0DMX,A00HQ,EFF_NEVO_PROXY,CONSUMED
+2739,Cucumber w skin raw,A00JM,A0DMB,EFF_NEVO_PROXY,RETAIL
+2740,Sweet pepper yellow raw,A00JA,A00HZ,PARENT_1,RETAIL
+2741,Sweet pepper yellow boiled,A00JA,A00HZ,PARENT_1,CONSUMED
+2742,Sweet pepper av raw,A00JA,A00HZ,PARENT_1,RETAIL
+2743,Sweet pepper av boiled,A00JA,A00HZ,EFF_NEVO_PROXY,CONSUMED
+2744,Potatoes Nicola wo skin boiled,A00ZT,A00ZT,EXACT,CONSUMED
+2745,Potatoes Eigenheimer wo skin boiled,A00ZT,A00ZT,EXACT,CONSUMED
+2746,Potatoes Red Baron wo skin boiled,A00ZT,A00ZT,EXACT,CONSUMED
+2747,Potatoes floury av wo skin boiled,A00ZT,A00ZT,EXACT,CONSUMED
+2748,Pear w skin,A01DP,A01DN,EFF_NEVO_PROXY,RETAIL
+2749,Grapes black w skin,A01DX,A01DV,PARENT_2,RETAIL
+2750,Grapes white w skin,A01DX,A01DV,PARENT_2,RETAIL
+2751,Apple Elstar w skin,A01DJ,A01DH,PARENT_1,RETAIL
+2752,Apple Elstar wo skin,A01DJ,A01DH,PARENT_1,RETAIL
+2753,Apple Jonagold w skin,A01DJ,A01DH,PARENT_1,RETAIL
+2754,Apple Jonagold wo skin,A01DJ,A01DH,PARENT_1,RETAIL
+2755,Juice orange freshly squeezed,A03AM,A03AM,EXACT,RETAIL
+2756,Cheese Gouda 48+ age 4-8 weeks,A02SV,A02SV,EXACT,RETAIL
+2757,Cheese Gouda 48+ age 8 wk-4 mths,A02SV,A02SV,EXACT,RETAIL
+2758,Cheese Gouda 48+ age 4-7 mths,A02SV,A02SV,EXACT,RETAIL
+2759,Cheese Gouda 48+ age 10-12 mths,A02SV,A02SV,EXACT,RETAIL
+2763,Biscuit spiced Speculaas w butter,A00AD,A009X,PARENT_1,RETAIL
+2764,Biscuit spiced Speculaas wo butter,A00AD,A009X,PARENT_1,RETAIL
+2765,Pangasius bereid in magnetron z toev,A0F8N,A027J,PARENT_1,RETAIL
+2766,Sausage smoked pork cooked,A026A,A026A,EXACT,CONSUMED
+2767,Sausage smoked pork traditional cooked,A026A,A026A,EXACT,CONSUMED
+2770,Egg whole chicken free-range boiled,A032B,A032B,EXACT,CONSUMED
+2772,Egg whole chicken organic boiled,A032B,A032B,EXACT,CONSUMED
+2774,Egg whole chicken corn-fed boiled,A032B,A032B,EXACT,CONSUMED
+2775,Biscuit brown/digestive w chocolate,A00AE,A00AE,EXACT,RETAIL
+2776,Flan apple and crumble topping,A00BZ,A00BZ,EXACT,RETAIL
+2779,Pasta white wo egg boiled,A007P,A007E,PARENT_2,CONSUMED
+2780,Pasta white w egg boiled,A007M,A007E,PARENT_2,CONSUMED
+2781,Pasta white fresh boiled,A007J,A007E,PARENT_2,CONSUMED
+2782,Wheat bread wholemeal coarse,A005E,A004X,PARENT_1,RETAIL
+2783,Multigrain bread white w seeds,A005Q,A005L,PARENT_1,RETAIL
+2784,Multigrain bread brown w seeds,A005Q,A005L,PARENT_1,RETAIL
+2785,Wheat corn bread white,A005Q,A005L,PARENT_1,RETAIL
+2786,Wheat bread av brown and wholemeal w pumpkin seeds,A005E,A004X,PARENT_1,RETAIL
+2787,Wheat bread av brown and wholemeal w sunflower seeds,A005E,A004X,PARENT_1,RETAIL
+2788,Wheat sourdough bread wholemeal,A005E,A004X,PARENT_1,RETAIL
+2789,Wheat ciabatta white no filling,A004Y,A004X,PARENT_1,RETAIL
+2790,Wheat bread white pita,A006S,A006S,EXACT,RETAIL
+2791,Stollen w almond/imitat paste wo nuts,A004Y,A004X,PARENT_1,RETAIL
+2792,Stollen w almond/imitat paste w nuts,A004Y,A004X,PARENT_1,RETAIL
+2793,Wheat baguette white,A004Y,A004X,PARENT_1,RETAIL
+2794,Wheat baguette brown,A005E,A004X,PARENT_1,RETAIL
+2795,Wheat bread roll white hard,A004Y,A004X,PARENT_1,RETAIL
+2796,Wheat bread roll brown hard,A005E,A004X,PARENT_1,RETAIL
+2797,Wheat bread roll brown soft,A005E,A004X,PARENT_1,RETAIL
+2798,Wheat bread roll wholemeal soft,A005E,A004X,PARENT_1,RETAIL
+2799,Multigrain roll brown hard,A005Q,A005L,PARENT_1,RETAIL
+2800,Multigrain roll brown soft,A005Q,A005L,PARENT_1,RETAIL
+2801,Croissant prepared w butter,A00BM,A00BM,EXACT,CONSUMED
+2802,Croissant prepared wo butter,A00BM,A00BM,EXACT,CONSUMED
+2803,Wheat currant bun white,A004Y,A00BL,EFF_NEVO_PROXY,RETAIL
+2804,Wheat muesli bun brown/wholemeal,A005E,A004X,PARENT_1,RETAIL
+2811,Wheat bread wholemeal fine,A005E,A004X,PARENT_1,RETAIL
+2812,Wheat bread currant/raisin white av w almond paste,A004Y,A004X,PARENT_1,RETAIL
+2813,Wheat bread currant/raisin white av,A004Y,A004X,PARENT_1,RETAIL
+2814,Wheat raisin bread white w almond paste,A004Y,A004X,PARENT_1,RETAIL
+2815,Wheat bread brown Tijger,A005E,A004X,PARENT_1,RETAIL
+2816,Wheat bread white Tijger,A004Y,A004X,PARENT_1,RETAIL
+2817,Stollen w almond/imitat paste av w and wo nuts,A004Y,A004X,PARENT_1,RETAIL
+2818,Croissant av,A00BM,A00BM,EXACT,RETAIL
+2819,Salt not fortified w iodine,A042P,A042P,EXACT,RETAIL
+2821,Wheat bread brown w pumpkin seeds,A005E,A004X,PARENT_1,RETAIL
+2822,Yoghurt low fat w fruit/vanilla w sweetener,A02NH,A02NE,PARENT_2,RETAIL
+2823,Yoghurt stracciatella full fat,A02NH,A02NE,PARENT_2,RETAIL
+2826,Chicken schnitzel satay breaded raw,A04DS,A01SP,PARENT_1,RETAIL
+2827,Pork schnitzel satay breaded raw,A04AC,A01RG,PARENT_1,RETAIL
+2829,Chocolate bar filled Kinder,A034Q,A034Q,EXACT,RETAIL
+2830,Croissant cheese,A00BM,A00BM,EXACT,RETAIL
+2832,Cake chocolate made w butter,A00BG,A00BF,EFF_NEVO_PROXY,RETAIL
+2834,Potato waffles/balls frozen unprepared,A0BYX,A011N,PARENT_1,RETAIL
+2836,Sausage grill w cheese,A025N,A025N,EXACT,RETAIL
+2844,Nuts macadamia unsalted,A014M,A014C,PARENT_2,RETAIL
+2846,Fruit drink w dairy Taksi w sweetener,A03FV,A03EA,PARENT_1,RETAIL
+2851,Juice multifruit mild w vit C,A03AP,A03AN,PARENT_1,RETAIL
+2858,Drink soya light fortified w calcium and vitamins Alpro,A03TJ,A03TJ,EXACT,RETAIL
+2859,Pancake w cheese homemade,A00CL,A00CL,EXACT,CONSUMED
+2862,Pancake w apple and raisin homemade,A00CL,A00CL,EXACT,CONSUMED
+2863,Pie apple-nuts,A00BZ,A00BZ,EXACT,RETAIL
+2864,Biscuit syrup w chocolate,A00AE,A00AE,EXACT,RETAIL
+2868,Pancake homemade preprared w liquid margarin,A00CL,A00CL,EXACT,CONSUMED
+2870,Candybar Lion,A034R,A034R,EXACT,RETAIL
+2875,Fruit snack Knijpfruit/Slurpfruit,A01PR,A01PR,EXACT,RETAIL
+2881,Coffee wiener melange instant prepared,A03KH,A03KG,PARENT_1,CONSUMED
+2884,Cane sugar,A032P,A032H,PARENT_2,RETAIL
+2885,Cranberry compote sweetened,A01PP,A01PR,EFF_NEVO_PROXY,RETAIL
+2886,Cashew nuts salted,A014H,A0DYK,PARENT_1,RETAIL
+2887,Almonds blanched salted,A014F,A0DYP,EFF_NEVO_PROXY,RETAIL
+2888,Plant-based alternative to yoghurt based on soya sweetened fortified w calcium and vitamins,A03TV,A03TV,EXACT,RETAIL
+2891,Biscuit Dutch Jodekoek,A009X,A009X,EXACT,RETAIL
+2892,Waffle penny-,A0BYR,A0BYR,EXACT,RETAIL
+2894,Biscuit digestive,A009X,A009X,EXACT,RETAIL
+2895,Low fat spread AH omega-3,A039H,A0F1G,PARENT_1,RETAIL
+2897,Juice drink Ocean Spray Cranberry classic,A03EA,A03EA,EXACT,RETAIL
+2902,Beef breast boneless prepared,A01QX,A01QV,PARENT_1,CONSUMED
+2904,Beef T-bone steak prepared,A01QX,A01QV,PARENT_1,CONSUMED
+2905,Beef ribeye steak prepared,A01QX,A01QV,PARENT_1,CONSUMED
+2906,Pork shoarma seasoning prepared,A01RG,A01RG,EXACT,CONSUMED
+2907,Bacon lean smoked prepared,A022X,A022S,PARENT_1,CONSUMED
+2908,Pork sparerib prepared,A01RG,A01RG,EXACT,CONSUMED
+2909,Pork stewing meat prepared,A01RG,A01RG,EXACT,CONSUMED
+2910,Veal stewing meat prepared,A01QY,A01QV,PARENT_1,CONSUMED
+2911,Veal stewing steak prepared,A01QY,A01QV,PARENT_1,CONSUMED
+2913,Veal rib steak prepared,A01QY,A01QV,PARENT_1,CONSUMED
+2914,Veal frying steak prepared,A01QY,A01QV,PARENT_1,CONSUMED
+2915,Veal tenderloin medaillon prepared,A01QY,A01QV,PARENT_1,CONSUMED
+2921,Yoghurt drink 7-9g CHO,A02NQ,A02NQ,EXACT,RETAIL
+2922,Potatoes waxy av wo skin boiled,A00ZT,A00ZT,EXACT,CONSUMED
+2923,Crisps potato unflavoured,A0BYS,A011L,PARENT_1,RETAIL
+2924,Crisps potato flavoured,A0BYS,A011L,PARENT_1,RETAIL
+2926,Crisps potato light flavoured,A0BYS,A011L,PARENT_1,RETAIL
+2927,Crisps potato straws natural,A011L,A011L,EXACT,RETAIL
+2928,Crisps potato straws flavoured,A011L,A011L,EXACT,RETAIL
+2929,Crisps potato Lays Sensations flavoured,A0BYS,A011L,PARENT_1,RETAIL
+2930,Chocolate spread white,A0C6P,A0C6P,EXACT,RETAIL
+2933,Sponge cake wholemeal/multigrain,A00AQ,A00AQ,EXACT,RETAIL
+2934,Low fat spead Becel pro-activ calorie light,A039H,A0F1G,PARENT_1,RETAIL
+2935,Yoghurt full fat plain Activia,A02NG,A02NE,PARENT_2,RETAIL
+2937,Toast Melba natural,A004Y,A004X,PARENT_1,RETAIL
+2938,Toast Melba other varieties,A005E,A004X,PARENT_1,RETAIL
+2947,Herring pickled w gherkin,A0F0P,A0F0P,EXACT,RETAIL
+2952,Biscuit spiced small Kruidnoten w chocolate av,A00AD,A009X,PARENT_1,RETAIL
+2953,Salt sea,A042X,A042P,PARENT_1,RETAIL
+2996,Sausage Chorizo,A025C,A025B,PARENT_1,RETAIL
+2997,Sausage grill,A025N,A025N,EXACT,RETAIL
+3003,Sausage beef frankfurter type tinned,A026B,A026B,EXACT,RETAIL
+3007,Wheat bread brown carbohydrate reduced,A0BY0,A0BY0,EXACT,RETAIL
+3016,Veal schnitzel not breaded raw,A01QY,A01QV,PARENT_1,RETAIL
+3017,Minced veal raw,A01QY,A01QV,PARENT_1,RETAIL
+3018,Veal tenderloin medaillon raw,A01QY,A01QV,PARENT_1,RETAIL
+3019,Veal frying steak raw,A01QY,A01QV,PARENT_1,RETAIL
+3020,Veal rib steak raw,A01QY,A01QV,PARENT_1,RETAIL
+3022,Veal stewing steak raw,A01QY,A01QV,PARENT_1,RETAIL
+3023,Veal stewing meat raw,A01QY,A01QV,PARENT_1,RETAIL
+3024,Pork stewing meat raw,A01RG,A01RG,EXACT,RETAIL
+3025,Bacon lean smoked raw,A022X,A022S,PARENT_1,RETAIL
+3026,Bacon rasher prepared in own fat,A01RG,A01RG,EXACT,CONSUMED
+3027,Pork shoarma seasoning raw,A01RG,A01RG,EXACT,RETAIL
+3028,Beef breast boneless raw,A01QX,A01QV,PARENT_1,RETAIL
+3029,Minced veal shallow fried,A01QY,A01QV,PARENT_1,CONSUMED
+3031,Pork sparerib raw,A01RG,A01RG,EXACT,RETAIL
+3032,Beef ribeye steak raw,A01QX,A01QV,PARENT_1,RETAIL
+3033,Beef T-bone steak raw,A01QX,A01QV,PARENT_1,RETAIL
+3034,Minced beef lean raw,A049S,A049S,EXACT,RETAIL
+3035,Minced beef lean shallow fried,A049S,A049S,EXACT,CONSUMED
+3036,Gravy 75% fat thickend prep w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+3037,Gravy 75% fat clear prep w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+3038,Gravy 5% fat clear prep w gravy instant powder,A043Z,A043Z,EXACT,RETAIL
+3039,Veal schnitzel not breaded prepared,A01QY,A01QV,PARENT_1,CONSUMED
+3040,Schnitzel vegetarian based on milk filled w cheese unprepared fortified w iron,A03TE,A03TE,EXACT,RETAIL
+3041,Schnitzel vegetarian based on milk filled several flavours unprepared fortified w iron,A03TE,A03TE,EXACT,RETAIL
+3043,Yoghurt Turkish 4% fat,A16GH,A02NE,PARENT_1,RETAIL
+3046,Wheat bread brown Turkish,A005E,A004X,PARENT_1,RETAIL
+3047,Yoghurt Turkish 10% fat,A16GH,A02NE,PARENT_1,RETAIL
+3048,Sweet pepper orange raw,A00JA,A00HZ,PARENT_1,RETAIL
+3049,Beans white canned,A01BB,A01BB,EXACT,RETAIL
+3051,Oil linseed,A037G,A036T,PARENT_1,RETAIL
+3056,Wheat bread brown low sodium,A005E,A004X,PARENT_1,RETAIL
+3063,Syrup maple,A033Z,A033Z,EXACT,RETAIL
+3064,Syrup apple fortified w iron,A033Z,A033Z,EXACT,RETAIL
+3067,Sweets cream hard,A034X,A034X,EXACT,RETAIL
+3070,Tuna prepared wo fat,A02DX,A02DR,PARENT_1,CONSUMED
+3073,Beans mung boiled,A013D,A012S,PARENT_1,CONSUMED
+3074,Yoghurt full fat w fruit/vanilla Activia,A02NH,A02NE,PARENT_2,RETAIL
+3134,Bitter gourd pods boiled,A00JY,A00JQ,PARENT_1,CONSUMED
+3138,Soy sauce based on Ketjap,A044R,A044R,EXACT,RETAIL
+3139,Mince chicken raw,A04DS,A01SP,PARENT_1,RETAIL
+3152,Margarine product 60% fat >17 g sat fa salted,A039E,A0F1G,PARENT_1,RETAIL
+3155,Cheese 30+ age 4-8 weeks,A02SV,A02SV,EXACT,RETAIL
+3163,Cheese 30+ age 8 wk-4 mths,A02SV,A02SV,EXACT,RETAIL
+3164,Cheese 30+ age 4-7 mths,A02SV,A02SV,EXACT,RETAIL
+3165,Cheese 30+ age 10-12 mths,A02SV,A02SV,EXACT,RETAIL
+3166,Cheeseproduct w veg fat Kees jong belegen,A02SV,A02SV,EXACT,RETAIL
+3167,Cheeseprod w veg fat Kees oud,A02SV,A02SV,EXACT,RETAIL
+3180,Drink soya wo sugar fortified w calcium and vitamins,A03TJ,A03TJ,EXACT,RETAIL
+3184,Beans kidney red canned,A01BB,A01BB,EXACT,RETAIL
+3185,Peas chick canned,A01BE,A01BE,EXACT,RETAIL
+3190,Wheat bread wholemeal fortified w vit D and fibre Vollerkoren,A005E,A004X,PARENT_1,RETAIL
+3191,Pasta fortified w fibre raw,A007P,A007E,PARENT_2,RETAIL
+3194,Multigrain bread brown w seeds fortified w iron and vitamins Vikorn Vitaminebrood,A005Q,A005L,PARENT_1,RETAIL
+3195,Multigrain bread brown w seeds fortified w iron and vitamins Vikorn Volvezel,A005Q,A005L,PARENT_1,RETAIL
+3201,Yogurt drink Ayran Turkish,A02NQ,A02NQ,EXACT,RETAIL
+3204,Minced beef from butcher raw,A049S,A049S,EXACT,RETAIL
+3209,Wheat bread wholemeal fine w seeds,A005E,A004X,PARENT_1,RETAIL
+3210,Wheat bread wholemeal fine w sunflower seeds,A005E,A004X,PARENT_1,RETAIL
+3211,Wheat bread wholemeal coarse w seeds,A005E,A004X,PARENT_1,RETAIL
+3212,Wheat bread wholemeal coarse w sunflower seeds,A005E,A004X,PARENT_1,RETAIL
+3213,Wheat bread wholemeal coarse w pumpkin seeds,A005E,A004X,PARENT_1,RETAIL
+3214,Beer white,A03MM,A03MM,EXACT,RETAIL
+3215,Vodka,A03PH,A03PH,EXACT,RETAIL
+3218,Fruit juice drink apple nectar,A03BD,A03BD,EXACT,RETAIL
+3219,Kiwi fruit yellow,A0DRE,A0DRG,PARENT_2,RETAIL
+3222,Pesto red,A044V,A044V,EXACT,RETAIL
+3223,Sausage grill chicken,A025N,A025N,EXACT,RETAIL
+3236,Wheat baguette white w herb butter ready-to-eat,A004Y,A004X,PARENT_1,RETAIL
+3238,Brownie wo filling,A00BG,A00BF,PARENT_1,RETAIL
+3240,Milk semi-skimmed lactose free,A02LZ,A04HG,PARENT_2,RETAIL
+3241,Herb butter,A039C,A039C,EXACT,RETAIL
+3242,Golden syrup pourable,A034E,A033Z,PARENT_1,RETAIL
+3243,Oil coconut,A037M,A036N,PARENT_2,RETAIL
+3244,Fudge/caramel soft,A035C,A0EQR,PARENT_1,RETAIL
+3245,Aniseed comfits crushed/pink&white/blue&white,A032Q,A032H,PARENT_1,RETAIL
+3249,Mentos cheewy dragee,A035F,A035F,EXACT,RETAIL
+3251,Pasta fortified w fibre boiled,A007P,A007E,PARENT_2,CONSUMED
+3252,Surimi,A02KE,A02KE,EXACT,RETAIL
+3256,Sardines grilled,A02DA,A02DA,EXACT,CONSUMED
+3258,Filo pastry unprepared,A16FH,A16FH,EXACT,RETAIL
+3268,Beer bock,A03MD,A03MC,PARENT_1,RETAIL
+3282,Yoghurt semi-skimmed lactose free,A02NG,A02NE,PARENT_2,RETAIL
+3320,Prawns cooked,A02GB,A02GB,EXACT,CONSUMED
+3321,Lemon sole raw,A02AS,A02AS,EXACT,RETAIL
+3322,Pangasius raw,A0F8N,A027J,PARENT_1,RETAIL
+3326,Wheat bread wholemeal fine w pumpkin seeds,A005E,A004X,PARENT_1,RETAIL
+3327,Wheat bread av brown and wholemeal,A005E,A004X,PARENT_1,RETAIL
+3328,Wheat bread av brown and wholemeal w seeds,A005E,A004X,PARENT_1,RETAIL
+3330,Low fat margarine product Vita d'Or Goed begin,A039E,A0F1G,PARENT_1,RETAIL
+3332,Lettuce romaine raw,A00LC,A0DLB,PARENT_1,RETAIL
+3333,Potato product natural precooked chilled,A00ZT,A00ZT,EXACT,RETAIL
+3334,Oil rice bran,A037L,A036N,PARENT_1,RETAIL
+3335,Frying oil,A039J,A039J,EXACT,RETAIL
+3340,Low fat margarine 40% fat <17g sat fa fortified w vit E salted,A039E,A0F1G,PARENT_1,RETAIL
+3341,Melon cantaloupe,A00KF,A00KE,EFF_NEVO_PROXY,RETAIL
+3342,Cooking fat liq Vita d'Or vlees&jus,A039J,A039J,EXACT,RETAIL
+3343,Sauce chilli,A0EZD,A0EZD,EXACT,RETAIL
+3346,Breakfast cereal Special flakes w chocolate,A00EF,A04QY,PARENT_1,RETAIL
+3349,Sauce bolognese ready-to-eat jar,A044C,A044C,EXACT,RETAIL
+3353,Cocktail snacks based on corn Organix Goodies,A00FE,A00FE,EXACT,RETAIL
+3357,Syrup ginger,A033Z,A033Z,EXACT,RETAIL
+3358,Solid foamed candy Dutch Schuimpje,A035H,A035H,EXACT,RETAIL
+3360,Syrup apple-pear,A033Z,A033Z,EXACT,RETAIL
+3364,Yoghurt drink fortified w calcium,A02NQ,A02NQ,EXACT,RETAIL
+3366,Fruit drink w dairy w sugar and sweetener,A03EV,A03EA,PARENT_1,RETAIL
+3369,Sorbet,A036K,A036K,EXACT,RETAIL
+3372,Low fat margarine product Vita d'Or Bewust light,A039E,A0F1G,PARENT_1,RETAIL
+3373,Snack roll puff pastry w Dutch sausage Frikandel,A040D,A040D,EXACT,RETAIL
+3374,Focaccia,A005K,A0BY0,PARENT_1,RETAIL
+3376,Oil sesame,A037C,A036T,PARENT_1,RETAIL
+3378,Peanuts milkchocolate coated,A015H,A034R,EFF_NEVO_PROXY,RETAIL
+3442,Breakfast cereal Tresor Kellogg's,A00EM,A04QY,PARENT_1,RETAIL
+3449,Oil rapeseed,A036V,A036T,EFF_NEVO_PROXY,RETAIL
+3451,Oil palm,A037N,A036N,PARENT_2,RETAIL
+5039,Coffee latte macchiato freshly made,A03KH,A03KG,PARENT_1,CONSUMED
+5040,Wheat bread wholemeal Tijger,A005E,A004X,PARENT_1,RETAIL
+5041,Oil vegetable av,A036N,A036N,EXACT,RETAIL
+5043,Wheat corn bread white w seeds,A005Q,A005L,PARENT_1,RETAIL
+5044,Wheat bread white av milk/water based w seeds,A004Y,A004X,PARENT_1,RETAIL
+5048,Potato product seasoned precooked chilled,A00ZT,A00ZT,EXACT,RETAIL
+5049,Almonds w skin unsalted,A014F,A0DYP,PARENT_2,RETAIL
+5050,Brazil nuts salted,A014G,A014C,PARENT_2,RETAIL
+5051,Biscuit milkbiscuit AH/Jumbo,A00AE,A00AE,EXACT,RETAIL
+5054,Tea vending machine w sugar,A03LC,A03LB,PARENT_1,CONSUMED
+5059,Coffee from vending machine w sugar,A03KC,A03KC,EXACT,CONSUMED
+5063,Biscuit Liga Belvita ontbijtbiscuits,A00AE,A00AE,EXACT,RETAIL
+5065,Juice fruit Healthy People Cranberry,A03AN,A03AN,EXACT,RETAIL
+5072,"Rice white raw w candied fruit, nuts and seeds",A003D,A001C,PARENT_2,RETAIL
+5079,Peach w skin,A01GL,A01GL,EXACT,RETAIL
+5082,Fruit juice drink juice and water,A03BL,A03BL,EXACT,RETAIL
+5088,Minced meat vegetarian based on soya unprepared fortified w iron and vitamin B12 De Vegetarische Slager,A03TF,A03TF,EXACT,RETAIL
+5089,Sugar powdered,A032R,A032H,PARENT_1,RETAIL
+5091,Chocolate filled w caramel Rolo,A034Q,A034Q,EXACT,RETAIL
+5099,Potatoes slices/parts frozen w spices unprepared,A011Q,A011Q,EXACT,RETAIL
+5100,Tapenade tomato,A045E,A045E,EXACT,RETAIL
+5101,Rice drink wo sugar,A03TM,A03TM,EXACT,RETAIL
+5110,Walnuts salted,A014R,A0DXJ,PARENT_1,RETAIL
+5111,Nuts macadamia salted,A014M,A014C,PARENT_2,RETAIL
+5112,Pistachio nuts unsalted,A014Q,A014C,PARENT_2,RETAIL
+5113,Almonds w skin salted,A014F,A0DYP,PARENT_2,RETAIL
+5120,Kiwi fruit av,A01JT,A0DRG,EFF_NEVO_PROXY,RETAIL
+5121,Guacamole,A045E,A045E,EXACT,RETAIL
+5126,Breakfast cereal cornflakes Plus/1 de Beste,A00DD,A04QY,PARENT_1,RETAIL
+5133,Breakfast cereal Honey hoops Crownfield,A0F4Q,A04QY,PARENT_1,RETAIL
+5134,Breakfast cereal Chocoschelpjes G'woon,A0F4Q,A04QY,PARENT_1,RETAIL
+5141,Tzatziki,A0FDF,A0FDF,EXACT,RETAIL
+5146,Biscuit spiced small Kruidnoten,A00AD,A009X,PARENT_1,RETAIL
+5147,Chocolate extra dark,A034G,A034G,EXACT,RETAIL
+5152,Ice cream dairy w caramel and nuts,A02QA,A02QA,EXACT,RETAIL
+5153,Sauce oyster,A044S,A0EZD,PARENT_1,RETAIL
+5158,Pecannuts oil roasted salted,A014N,A014C,PARENT_2,CONSUMED
+5160,"Rice white boiled w candied fruit, nuts and seeds",A003D,A001C,PARENT_2,CONSUMED
+5163,Minced meat ball pork raw w egg and breadcrumbs,A03XG,A03XG,EXACT,RETAIL
+5164,Breakfast cereal honey loops 1 de Beste,A0F4Q,A04QY,PARENT_1,RETAIL
+5165,Sausage dried metworst,A024X,A024X,EXACT,RETAIL
+5167,Beans black eyed canned,A01BB,A01BB,EXACT,RETAIL
+5168,Beans brown boiled,A012T,A012S,PARENT_1,CONSUMED
+5169,Lentils brown canned,A01BD,A01AZ,PARENT_1,RETAIL
+5170,Beans cannellini canned,A01BB,A01BB,EXACT,RETAIL
+5171,Beans chilli canned,A01BB,A01BB,EXACT,RETAIL
+5172,Peas marrowfat young canned,A01BC,A01BC,EXACT,RETAIL
+5173,Beans kidney red boiled,A012V,A012S,PARENT_2,CONSUMED
+5174,Lentils red boiled,A013Q,A0DCE,PARENT_1,CONSUMED
+5175,Beans white boiled,A012T,A012S,PARENT_1,CONSUMED
+5176,Beans black canned,A01BB,A01BB,EXACT,RETAIL
+5182,Meatball Berenklauw deep-fried in liquid fat,A03XG,A03XG,EXACT,CONSUMED
+5196,Oil palmkernel,A037P,A036N,PARENT_2,RETAIL
+5235,Milk semi-skimmed fortified w calcium and vit D,A02LZ,A04HG,PARENT_2,RETAIL
+5236,Apple pie Dutch w shortbread average,A00BZ,A00BZ,EXACT,RETAIL
+5239,Cake apple av,A00BA,A00BA,EXACT,RETAIL
+5242,Cake chocolate av,A00BG,A00BF,PARENT_1,RETAIL
+5244,Cheese fondue homemade,A02YP,A02YE,PARENT_1,RETAIL
+5245,Milk chocolate-flavoured semi-skimmed w sweetner,A02MP,A02MP,EXACT,RETAIL
+5247,Plant-based alternative to yoghurt based on soya unsweetened fortified with calcium and vitamins,A03TV,A03TV,EXACT,RETAIL
+5253,Vinegar Balsamic,A04JG,A044L,PARENT_1,RETAIL
+5255,Banana bread,A00BA,A00BA,EXACT,RETAIL
+5265,Tuna w vegetables and tomato sauce canned,A0FBT,A0FBT,EXACT,RETAIL
+5271,Yogurt Greek skimmed,A16GH,A02NE,PARENT_1,RETAIL
+5275,Peanut butter 100% peanuts wo salt,A01BN,A01BN,EXACT,RETAIL
+5280,Veal av raw,A01QY,A01QV,PARENT_1,RETAIL
+5286,Salt bakers w added iodin,A042R,A042P,PARENT_1,RETAIL
+5304,Chips vegetable pre-fried frozen unprepared,A011N,A011N,EXACT,CONSUMED
+5306,Milk whole lactose free,A02LY,A04HG,PARENT_2,RETAIL
+5320,Stewing pears cooked w sweetened liquid,A01DP,A01DN,PARENT_1,CONSUMED
+5328,Sauce carbonara homemade,A044A,A0F1N,PARENT_1,RETAIL
+5339,Yoghurt goatmilk full fat,A02NN,A02NE,PARENT_2,RETAIL
+5340,Ice cream chocolate,A02QA,A02QA,EXACT,RETAIL
+5345,Ice cream dairy vanilla flavoured,A02QA,A02QA,EXACT,RETAIL
+5346,Ice cream dairy w vegetal fat vanilla flavoured,A02QA,A02QA,EXACT,RETAIL
+5347,Ice cream dairy w fruit,A02QA,A02QA,EXACT,RETAIL
+5348,Ice cream dairy/non-dairy cornet w fruit,A02QA,A02QA,EXACT,RETAIL
+5355,Hamburger (with roll) vegetables and sauce homemade,A03ZL,A03ZL,EXACT,CONSUMED
+5369,Melon av,A00KF,A00KE,PARENT_1,RETAIL
+5370,Candybar av,A034R,A034R,EXACT,RETAIL
+5371,Chocolate filled w peanuts,A034Q,A034Q,EXACT,RETAIL
+5372,Candy mix,A0EQP,A034X,EFF_NEVO_PROXY,RETAIL
+5382,Pancake bacon chilled,A00CL,A00CL,EXACT,CONSUMED
+5394,French fries w sauce and onion,A011N,A011N,EXACT,RETAIL
+5395,French fries w sauces and onions,A011N,A011N,EXACT,RETAIL
+5396,"French fries w shoarma, cheese and sauce",A011N,A011N,EXACT,RETAIL
+5407,Fruit spread,A01MN,A01MN,EXACT,RETAIL
+5408,Fruit juice drink Dubbeldrank,A03BL,A03BL,EXACT,RETAIL
+5409,Margarine product 60% fat <17g sat fa salted,A039E,A0F1G,PARENT_1,RETAIL
+5410,Low fat margarine Blue Band,A039E,A0F1G,PARENT_1,RETAIL
+5416,Margarine product 45% fat <17g sat fa unsalted,A039E,A0F1G,PARENT_1,RETAIL
+5420,Juice drink w sugar and sweetener 7-9 g CHO,A03EA,A03EA,EXACT,RETAIL
+5421,Low fat margarine Albert Heijn light,A039E,A0F1G,PARENT_1,RETAIL
+5422,Low fat margarine Albert Heijn Goed Begin,A039E,A0F1G,PARENT_1,RETAIL
+5423,Low fat margarine Jumbo Goed Begin,A039E,A0F1G,PARENT_1,RETAIL
+5424,Low fat margarine Jumbo,A039E,A0F1G,PARENT_1,RETAIL
+5425,Gravy Smeltjus prepared,A043Z,A043Z,EXACT,CONSUMED
+5427,Drink oat wo sugar fortified w calcium and vitamins,A03TL,A03TL,EXACT,RETAIL
+5428,Beans brown canned/glass no salt added,A01BB,A01BB,EXACT,RETAIL
+5429,Lentils canned/glass no salt added,A01BD,A01AZ,PARENT_1,RETAIL
+5430,Peas chick canned/glass no salt added,A01BE,A01BE,EXACT,RETAIL
+5431,Beans kidney red canned/glass no salt added,A01BB,A01BB,EXACT,RETAIL
+5448,Vegetables mixed carrot-onion raw,A00QH,A00QH,EXACT,RETAIL
+5449,Vegetables mixed carrot-onion boiled,A00QH,A00QH,EXACT,CONSUMED
+5459,Onion red raw,A00HC,A00HC,EXACT,RETAIL
+5460,Cheeseburger ready-to-eat,A03ZL,A03ZL,EXACT,CONSUMED
+5461,Onion red boiled,A00HC,A00HC,EXACT,CONSUMED
+5463,Drink oat wo sugar,A03TL,A03TL,EXACT,RETAIL
+5470,Soy sauce,A044R,A044R,EXACT,RETAIL
+5471,Wok sauce teriyaki,A044T,A0EZD,PARENT_1,RETAIL
+5475,Chicken schnitzel breaded w corn flakes raw,A04DS,A01SP,PARENT_1,RETAIL
+5478,Sausage luncheon meat vegetarian,A03TE,A03TE,EXACT,RETAIL
+5479,Pate vegetarian based on soya/pea,A03TE,A03TE,EXACT,RETAIL
+5482,Wrap/tortilla wheat wholemeal,A006V,A006V,EXACT,RETAIL
+5485,Pieces/chunks vegetarian based on soya/wheat unprepared,A03TE,A03TE,EXACT,RETAIL
+5489,Margarine product Becel Romig 60% fat,A039E,A0F1G,PARENT_1,RETAIL
+5490,Low fat margarine product 20% fat <10g sat salted,A039E,A0F1G,PARENT_1,RETAIL
+5494,Nuts mixed w cranberry unsalted,A014C,A014C,EXACT,RETAIL
+5509,Wok sauce sweet and sour,A16EY,A16EY,EXACT,RETAIL
+5513,Biscuit fruit fortified w fibre,A00AE,A00AE,EXACT,RETAIL
+5514,"Biscuit multigrain several flavours fortified w fibre, vit and min",A00AA,A009X,PARENT_1,RETAIL
+5515,Vegetable balls/burgers vegetarian based on soya unprepared fortified w iron and vit B12,A03TF,A03TF,EXACT,RETAIL
+5519,Tofu unprepared,A03TT,A03TT,EXACT,RETAIL
+5524,Pork av raw,A01RG,A01RG,EXACT,RETAIL
+5530,Sauce bolognese homemade,A044C,A044C,EXACT,RETAIL
+5537,Peppers pickled canned/glass,A00ZJ,A00ZJ,EXACT,RETAIL
+5538,Quark low fat lactose-free,A02QK,A02QK,EXACT,RETAIL
+5540,Biscuit spiced with candy mix,A00AD,A009X,PARENT_1,RETAIL
+5542,Drink soya  fruit/vanilla w sugar fortified w calcium and vitamins,A03TJ,A03TJ,EXACT,RETAIL
+5546,Tofu pieces/chunks seasoned unprepared,A03TT,A03TT,EXACT,RETAIL
+5547,Falafel unprepared,A01BE,A01BE,EXACT,RETAIL
+5549,Meatballs/burgers vegetarian based on soya/wheat unprepared,A03TE,A03TE,EXACT,RETAIL
+5550,Fish fingers vegetarian based on rice/wheat unprepared,A03TE,A03TE,EXACT,RETAIL
+5551,Meatballs/burgers vegetarian based on soya/wheat unprepared fortified w iron and vit B12,A03TE,A03TE,EXACT,RETAIL
+5552,Meatballs/burgers vegetarian based on pea unprepared,A03TE,A03TE,EXACT,RETAIL
+5553,Vegetable balls/burgers vegetarian based on soya unprepared,A03TF,A03TF,EXACT,RETAIL
+5554,Pieces/chunks vegetarian based on soya/wheat unprepared fortified w iron and vit B12,A03TE,A03TE,EXACT,RETAIL
+5556,Filet americain vegetarian based on milk fortified w iron,A03TE,A03TE,EXACT,RETAIL
+5561,Minced meat vegetarian based on soya unprepared fortified w iron and vit B12,A03TF,A03TF,EXACT,RETAIL
+5562,Margarine 80% fat >24 g sat fatty acids salted for NEVO recipes,A039E,A0F1G,PARENT_1,RETAIL
+5563,Sausage roast- vegetarian based on pea unprepared,A03TE,A03TE,EXACT,RETAIL
+5564,Sausage roast- vegetarian based on soya/wheat unprepared fortified w iron and vit B12,A03TE,A03TE,EXACT,RETAIL
+5565,Schnitzel/burger vegetarian based on milk unprepared,A03TE,A03TE,EXACT,RETAIL
+5566,Burger vegetarian filled w vegetables and cheese unprepared,A03TE,A03TE,EXACT,RETAIL
+5571,Drink soya chocolate w sugar fortified w calcium and vitamins,A03TJ,A03TJ,EXACT,RETAIL
+5572,Bacon vegetarian unprepared,A03TE,A03TE,EXACT,RETAIL
+5573,Tempeh unprepared,A16RC,A03TE,PARENT_1,RETAIL
+5575,Cheese 35+,A02SV,A02SV,EXACT,RETAIL
+5579,Flour almond,A0F0N,A0F0N,EXACT,RETAIL
+5586,Flour coconut,A0F0N,A0F0N,EXACT,RETAIL
+5587,Pancake ready-to-eat plain,A00CL,A00CL,EXACT,CONSUMED
+5589,Dutch Poffertjes ready-to-eat plain,A00CL,A00CL,EXACT,CONSUMED
+5591,Wrap/tortilla wheat and carrot,A006V,A006V,EXACT,RETAIL
+5596,Pancake gluten free homemade,A00CL,A00CL,EXACT,CONSUMED
+5597,Dutch Poffertjes homemade,A00CL,A00CL,EXACT,CONSUMED
+5604,Breakfast cereal Special flakes plain,A04QY,A04QY,EXACT,RETAIL
+5609,Mushroom fried wo fat,A00TQ,A00TP,PARENT_1,CONSUMED

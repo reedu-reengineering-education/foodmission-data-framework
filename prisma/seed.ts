@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { seedGenericFoods } from '../scripts/seeds/prod/genericFoods';
 import { seedDietFlags } from '../scripts/seeds/prod/dietFlags';
 import { seedNevoLangualFoodex } from '../scripts/seeds/prod/seedNevoLangualFoodex';
+import { seedNevoEnvironment } from '../scripts/seeds/prod/nevoEnvironment';
 import { seedOpenFoodFactsFromJson } from '../scripts/seeds/dev/openfoodfacts';
 import { seedUsers } from '../scripts/seeds/dev/users';
 import { seedShoppingLists } from '../scripts/seeds/dev/shoppingList';
@@ -67,6 +68,8 @@ async function seedProduction() {
   const dietFlags = await seedDietFlags(prisma);
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
+  // EFSA EFF footprints per country, linked to NEVO foods
+  const nevoEnvironment = await seedNevoEnvironment(prisma);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
@@ -115,6 +118,10 @@ async function seedProduction() {
       value: `${dietFlags.updated} patched, ${dietFlags.skippedUnknownNevoCode} unknown nevoCode`,
     },
     {
+      label: 'nevoEnvironment',
+      value: `${nevoEnvironment.products} products, ${nevoEnvironment.footprints} footprints, ${nevoEnvironment.footprintStages} stage rows, ${nevoEnvironment.linkedFoods} foods linked (${nevoEnvironment.clearedFoods} cleared)`,
+    },
+    {
       label: 'surveys',
       value: `${surveys.surveysCreated} surveys, ${surveys.questionsCreated} questions`,
     },
@@ -161,6 +168,8 @@ async function seedDevelopment() {
   const dietFlags = await seedDietFlags(prisma);
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
+  // EFSA EFF footprints per country, linked to NEVO foods
+  const nevoEnvironment = await seedNevoEnvironment(prisma);
 
   // --- Identity & user-owned data (lists reference users; items may create FoodProduct stubs by name) ---
   const users = await seedUsers(prisma);
@@ -234,6 +243,10 @@ async function seedDevelopment() {
     {
       label: 'dietFlags',
       value: `${dietFlags.updated} patched, ${dietFlags.skippedUnknownNevoCode} unknown nevoCode`,
+    },
+    {
+      label: 'nevoEnvironment',
+      value: `${nevoEnvironment.products} products, ${nevoEnvironment.footprints} footprints, ${nevoEnvironment.footprintStages} stage rows, ${nevoEnvironment.linkedFoods} foods linked (${nevoEnvironment.clearedFoods} cleared)`,
     },
     { label: 'users', value: users.length },
     { label: 'shoppingList', value: shoppingList.length },
