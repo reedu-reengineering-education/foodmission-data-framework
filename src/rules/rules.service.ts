@@ -157,9 +157,10 @@ export class RulesService implements OnModuleInit {
   }
 
   /**
-   * Re-scores every rule-backed mission and challenge in the user's current
-   * quest. Called on each behavioural event, and by the deadline scheduler so
-   * an item whose window ended fails even when the user records nothing.
+   * Re-scores every rule-backed mission and challenge the user has started in
+   * their current quest. Called on each behavioural event, and by the
+   * deadline scheduler so an item whose window ended fails even when the user
+   * records nothing. Items not started yet (no progress row) are left alone;
    * COMPLETED and FAILED items are final and skipped.
    */
   async evaluateUser(
@@ -191,6 +192,14 @@ export class RulesService implements OnModuleInit {
       challengeCatalog,
       activeScope,
     );
+
+    const hasOpenItem = [
+      ...missionProgress.values(),
+      ...challengeProgress.values(),
+    ].some((row) => !isResolved(row.status));
+    if (!hasOpenItem) {
+      return;
+    }
 
     // Anchored windows can start before the usual lookback (a 7-day mission
     // started 9 days ago), and `before_start` counters look at the week before
@@ -242,7 +251,8 @@ export class RulesService implements OnModuleInit {
       if (!catalogItem || !entry.rule) {
         continue;
       }
-      if (isResolved(missionProgress.get(catalogItem.id)?.status)) {
+      const row = missionProgress.get(catalogItem.id);
+      if (!row || isResolved(row.status)) {
         continue;
       }
       const completion = await this.syncProgress(
@@ -265,7 +275,8 @@ export class RulesService implements OnModuleInit {
       if (!catalogItem || !entry.rule) {
         continue;
       }
-      if (isResolved(challengeProgress.get(catalogItem.id)?.status)) {
+      const row = challengeProgress.get(catalogItem.id);
+      if (!row || isResolved(row.status)) {
         continue;
       }
       const completion = await this.syncProgress(
@@ -520,12 +531,18 @@ export class RulesService implements OnModuleInit {
             },
           });
 
+    // Only items the user started have a progress row; the engine never
+    // starts one itself.
+    if (!previous) {
+      return null;
+    }
+
     // The window starts when the item was started, so its deadline is known.
     const { completed, failed, progress } = evaluateRule(
       entry.rule as RuleDefinition,
       events,
       new Date(),
-      previous?.startedAt,
+      previous.startedAt,
     );
     const ruleHash = hashRule(entry.rule);
     const status = completed
@@ -536,71 +553,42 @@ export class RulesService implements OnModuleInit {
           ? ProgressStatus.IN_PROGRESS
           : ProgressStatus.NOT_STARTED;
 
-    // Nothing to record for an item the user hasn't started or touched.
-    if (!previous && progress <= 0 && !completed) {
-      return null;
-    }
-
-    const previousCompleted = previous?.completed ?? false;
-    const previousProgress = previous?.progress ?? 0;
+    const previousCompleted = previous.completed;
+    const previousProgress = previous.progress;
     const started =
-      (previous == null || (previousProgress === 0 && !previousCompleted)) &&
+      previousProgress === 0 &&
+      !previousCompleted &&
       (progress > 0 || completed);
     const updated =
-      previous != null &&
-      (previousProgress !== progress || previousCompleted !== completed);
+      previousProgress !== progress || previousCompleted !== completed;
     const firstCompletion = completed && !previousCompleted;
+    // Rows from before start times were tracked have none; they get one on
+    // their first progress.
     const startedAt =
-      previous?.startedAt ?? (progress > 0 || completed ? new Date() : null);
+      previous.startedAt ?? (progress > 0 || completed ? new Date() : null);
 
-    if (kind === 'mission') {
-      await db.missionProgress.upsert({
-        where: { userId_missionId: { userId, missionId: catalogItem.id } },
-        create: {
-          userId,
-          missionId: catalogItem.id,
-          progress,
-          completed,
-          status,
-          state: this.buildState(entry, status, progress, completed, ruleHash),
-          startedAt,
-          ruleHash,
-          evaluatedAt: new Date(),
-        },
-        update: {
-          progress,
-          completed,
-          status,
-          state: this.buildState(entry, status, progress, completed, ruleHash),
-          startedAt,
-          ruleHash,
-          evaluatedAt: new Date(),
-        },
-      });
-    } else {
-      await db.challengeProgress.upsert({
-        where: { userId_challengeId: { userId, challengeId: catalogItem.id } },
-        create: {
-          userId,
-          challengeId: catalogItem.id,
-          progress,
-          completed,
-          status,
-          state: this.buildState(entry, status, progress, completed, ruleHash),
-          startedAt,
-          ruleHash,
-          evaluatedAt: new Date(),
-        },
-        update: {
-          progress,
-          completed,
-          status,
-          state: this.buildState(entry, status, progress, completed, ruleHash),
-          startedAt,
-          ruleHash,
-          evaluatedAt: new Date(),
-        },
-      });
+    const data = {
+      progress,
+      completed,
+      status,
+      state: this.buildState(entry, status, progress, completed, ruleHash),
+      startedAt,
+      ruleHash,
+      evaluatedAt: new Date(),
+    };
+    // The row may have been removed since it was read (e.g. a quest switch).
+    const { count } =
+      kind === 'mission'
+        ? await db.missionProgress.updateMany({
+            where: { userId, missionId: catalogItem.id },
+            data,
+          })
+        : await db.challengeProgress.updateMany({
+            where: { userId, challengeId: catalogItem.id },
+            data,
+          });
+    if (count === 0) {
+      return null;
     }
 
     if (started) {

@@ -248,6 +248,59 @@ export class MissionProgressService {
   }
 
   /**
+   * Starts a mission of the user's current quest. Selecting a quest starts
+   * nothing; the user starts each mission, which opens its rule window from
+   * now. Starting an already started mission returns it unchanged (use
+   * restart for a failed one).
+   */
+  async start(
+    codeOrId: string,
+    userId: string,
+    lang?: string,
+  ): Promise<MissionProgressResponseDto> {
+    this.logger.log(`Starting mission ${codeOrId} for user: ${userId}`);
+
+    const mission = await this.requireMission(codeOrId);
+    if (
+      !(await this.missionProgressRepository.isInCurrentQuest(
+        userId,
+        mission.code,
+      ))
+    ) {
+      throw new BadRequestException(
+        'This mission is not part of your current quest',
+      );
+    }
+
+    const { row, created } = await this.missionProgressRepository.start(
+      userId,
+      mission.id,
+    );
+
+    if (created) {
+      await this.emitProgressEvent({
+        userId,
+        eventType: EventType.MISSION_STARTED,
+        source: EventSource.MISSION,
+        metadata: {
+          missionId: mission.id,
+          missionCode: mission.code,
+          source: EventSource.API,
+        },
+        idempotencyKey: progressEventKey({
+          kind: 'mission',
+          transition: 'started',
+          userId,
+          id: mission.id,
+          startedAt: row.startedAt,
+        }),
+      });
+    }
+
+    return this.mapRowsToDtos([row], lang).then((rows) => rows[0]);
+  }
+
+  /**
    * Restarts a FAILED mission as a new attempt: progress 0, status NOT_STARTED
    * and `startedAt` now, so its rule window starts over and events from the
    * failed attempt no longer count. Only failed missions can be restarted.

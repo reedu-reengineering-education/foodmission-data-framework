@@ -39,6 +39,11 @@ const RULES = {
   ],
 } as unknown as RulesCoverageDoc;
 
+// The user started the challenge an hour ago; the engine only scores started
+// items.
+const STARTED_AT = new Date(Date.now() - 60 * 60 * 1000);
+const STARTED_ROW = { progress: 0, completed: false, startedAt: STARTED_AT };
+
 type MockDb = {
   user: { findUnique: jest.Mock };
   userEvent: { findMany: jest.Mock; create: jest.Mock };
@@ -47,12 +52,12 @@ type MockDb = {
   missionProgress: {
     findMany: jest.Mock;
     findUnique: jest.Mock;
-    upsert: jest.Mock;
+    updateMany: jest.Mock;
   };
   challengeProgress: {
     findMany: jest.Mock;
     findUnique: jest.Mock;
-    upsert: jest.Mock;
+    updateMany: jest.Mock;
   };
 };
 
@@ -88,12 +93,16 @@ function buildDb(): MockDb {
     missionProgress: {
       findMany: jest.fn().mockResolvedValue([]),
       findUnique: jest.fn().mockResolvedValue(null),
-      upsert: jest.fn().mockResolvedValue({}),
+      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
     },
     challengeProgress: {
-      findMany: jest.fn().mockResolvedValue([]),
-      findUnique: jest.fn().mockResolvedValue(null),
-      upsert: jest.fn().mockResolvedValue({}),
+      findMany: jest
+        .fn()
+        .mockResolvedValue([
+          { challengeId: 'c1', status: 'NOT_STARTED', startedAt: STARTED_AT },
+        ]),
+      findUnique: jest.fn().mockResolvedValue(STARTED_ROW),
+      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
     },
   };
 }
@@ -132,14 +141,14 @@ describe('RulesService completion rewards', () => {
     // First lookup is the pre-update read in syncProgress, second is the
     // post-write confirmation in the award drain.
     prisma.challengeProgress.findUnique
-      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(STARTED_ROW)
       .mockResolvedValue({ completed: true });
 
     await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
 
-    expect(prisma.challengeProgress.upsert).toHaveBeenCalledWith(
+    expect(prisma.challengeProgress.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        update: expect.objectContaining({ progress: 100, completed: true }),
+        data: expect.objectContaining({ progress: 100, completed: true }),
       }),
     );
     expect(completionRewardService.awardCompletion).toHaveBeenCalledTimes(1);
@@ -158,7 +167,7 @@ describe('RulesService completion rewards', () => {
   // 'CHALLENGE' where every other emitter writes 'challenge'.
   it('records derived events through the ledger writer, keyed like the API path', async () => {
     prisma.challengeProgress.findUnique
-      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(STARTED_ROW)
       .mockResolvedValue({ completed: true });
 
     await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
@@ -189,7 +198,7 @@ describe('RulesService completion rewards', () => {
 
   it('reads the reward fresh rather than from the cached catalog', async () => {
     prisma.challengeProgress.findUnique
-      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(STARTED_ROW)
       .mockResolvedValue({ completed: true });
 
     await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
@@ -210,13 +219,15 @@ describe('RulesService completion rewards', () => {
 
     await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
 
-    expect(prisma.challengeProgress.upsert).not.toHaveBeenCalled();
+    expect(prisma.challengeProgress.updateMany).not.toHaveBeenCalled();
     expect(completionRewardService.awardCompletion).not.toHaveBeenCalled();
   });
 
   it('does not award when the completion cannot be confirmed', async () => {
     // e.g. the surrounding transaction rolled back after the rule fired.
-    prisma.challengeProgress.findUnique.mockResolvedValue(null);
+    prisma.challengeProgress.findUnique
+      .mockResolvedValueOnce(STARTED_ROW)
+      .mockResolvedValue(null);
 
     await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
 
@@ -235,8 +246,8 @@ describe('RulesService completion rewards', () => {
       tx as unknown as Prisma.TransactionClient,
     );
 
-    expect(tx.challengeProgress.upsert).toHaveBeenCalled();
-    expect(prisma.challengeProgress.upsert).not.toHaveBeenCalled();
+    expect(tx.challengeProgress.updateMany).toHaveBeenCalled();
+    expect(prisma.challengeProgress.updateMany).not.toHaveBeenCalled();
     // Not paid yet: the caller's transaction is still open at this point.
     expect(completionRewardService.awardCompletion).not.toHaveBeenCalled();
 
@@ -249,9 +260,30 @@ describe('RulesService completion rewards', () => {
     expect(tx.challenge.findUnique).not.toHaveBeenCalled();
   });
 
+  it('leaves a challenge the user has not started alone', async () => {
+    prisma.challengeProgress.findMany.mockResolvedValue([]);
+    prisma.challengeProgress.findUnique.mockResolvedValue(null);
+
+    await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
+
+    expect(prisma.userEvent.findMany).not.toHaveBeenCalled();
+    expect(prisma.challengeProgress.updateMany).not.toHaveBeenCalled();
+    expect(userEventService.record).not.toHaveBeenCalled();
+    expect(completionRewardService.awardCompletion).not.toHaveBeenCalled();
+  });
+
+  it('does not start a challenge that was removed while being scored', async () => {
+    prisma.challengeProgress.updateMany.mockResolvedValue({ count: 0 });
+
+    await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
+
+    expect(userEventService.record).not.toHaveBeenCalled();
+    expect(completionRewardService.awardCompletion).not.toHaveBeenCalled();
+  });
+
   it('keeps a failing award from breaking evaluation', async () => {
     prisma.challengeProgress.findUnique
-      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(STARTED_ROW)
       .mockResolvedValue({ completed: true });
     completionRewardService.awardCompletion.mockRejectedValue(
       new Error('wallet down'),

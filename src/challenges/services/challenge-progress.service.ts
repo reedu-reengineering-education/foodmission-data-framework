@@ -248,6 +248,59 @@ export class ChallengeProgressService {
   }
 
   /**
+   * Starts a challenge of the user's current quest. Selecting a quest starts
+   * nothing; the user starts each challenge, which opens its rule window from
+   * now. Starting an already started challenge returns it unchanged (use
+   * restart for a failed one).
+   */
+  async start(
+    codeOrId: string,
+    userId: string,
+    lang?: string,
+  ): Promise<ChallengeProgressResponseDto> {
+    this.logger.log(`Starting challenge ${codeOrId} for user: ${userId}`);
+
+    const challenge = await this.requireChallenge(codeOrId);
+    if (
+      !(await this.challengeProgressRepository.isInCurrentQuest(
+        userId,
+        challenge.code,
+      ))
+    ) {
+      throw new BadRequestException(
+        'This challenge is not part of your current quest',
+      );
+    }
+
+    const { row, created } = await this.challengeProgressRepository.start(
+      userId,
+      challenge.id,
+    );
+
+    if (created) {
+      await this.emitProgressEvent({
+        userId,
+        eventType: EventType.CHALLENGE_STARTED,
+        source: EventSource.CHALLENGE,
+        metadata: {
+          challengeId: challenge.id,
+          challengeCode: challenge.code,
+          source: EventSource.API,
+        },
+        idempotencyKey: progressEventKey({
+          kind: 'challenge',
+          transition: 'started',
+          userId,
+          id: challenge.id,
+          startedAt: row.startedAt,
+        }),
+      });
+    }
+
+    return this.mapRowsToDtos([row], lang).then((rows) => rows[0]);
+  }
+
+  /**
    * Restarts a FAILED challenge as a new attempt: progress 0, status NOT_STARTED
    * and `startedAt` now, so its rule window starts over and events from the
    * failed attempt no longer count. Only failed challenges can be restarted.

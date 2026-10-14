@@ -18,6 +18,8 @@ describe('MissionProgressRepository', () => {
             },
             missionProgress: {
               findUnique: jest.fn(),
+              findUniqueOrThrow: jest.fn(),
+              createMany: jest.fn(),
               findMany: jest.fn(),
               upsert: jest.fn(),
               update: jest.fn(),
@@ -195,6 +197,50 @@ describe('MissionProgressRepository', () => {
         include: { mission: true },
       });
       expect(result).toBe(row);
+    });
+  });
+
+  describe('start', () => {
+    it('creates the row at 0 with a start time and reports it created', async () => {
+      const row = { startedAt: new Date() };
+      (prisma.missionProgress.createMany as jest.Mock).mockResolvedValue({
+        count: 1,
+      });
+      (prisma.missionProgress.findUniqueOrThrow as jest.Mock).mockResolvedValue(
+        row,
+      );
+
+      const result = await repository.start('u1', 'm1');
+
+      expect(prisma.missionProgress.createMany).toHaveBeenCalledWith({
+        data: [
+          {
+            userId: 'u1',
+            missionId: 'm1',
+            progress: 0,
+            completed: false,
+            status: 'NOT_STARTED',
+            state: { source: 'manual', mode: 'start' },
+            startedAt: expect.any(Date),
+          },
+        ],
+        skipDuplicates: true,
+      });
+      expect(result).toEqual({ row, created: true });
+    });
+
+    it('leaves an existing row untouched', async () => {
+      const row = { progress: 40, startedAt: new Date() };
+      (prisma.missionProgress.createMany as jest.Mock).mockResolvedValue({
+        count: 0,
+      });
+      (prisma.missionProgress.findUniqueOrThrow as jest.Mock).mockResolvedValue(
+        row,
+      );
+
+      const result = await repository.start('u1', 'm1');
+
+      expect(result).toEqual({ row, created: false });
     });
   });
 });

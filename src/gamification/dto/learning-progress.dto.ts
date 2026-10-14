@@ -110,6 +110,19 @@ export class QuestItemStatusDto extends ContentItemProgressDto {
   })
   progress!: number;
 
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    nullable: true,
+    description:
+      'Missions/challenges: when the user started it. null means not ' +
+      'started yet: selecting a quest starts nothing, start it with ' +
+      'POST /missions/by-code/{code}/progress/start (or ' +
+      '/challenges/by-code/{code}/progress/start). Always null for ' +
+      'quizzes and food facts.',
+  })
+  startedAt!: Date | null;
+
   @ApiProperty()
   sortOrder!: number;
 }

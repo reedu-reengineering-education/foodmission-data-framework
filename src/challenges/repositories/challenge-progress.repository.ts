@@ -4,6 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
+import { isInCurrentQuest } from '../../quests/current-quest-membership';
 
 @Injectable()
 export class ChallengeProgressRepository {
@@ -87,6 +88,38 @@ export class ChallengeProgressRepository {
       },
       include: { challenge: true },
     });
+  }
+
+  async isInCurrentQuest(userId: string, challengeCode: string) {
+    return isInCurrentQuest(this.prisma, userId, 'CHALLENGE', challengeCode);
+  }
+
+  /**
+   * Starts the challenge: creates its progress row at 0 with a start time,
+   * which opens its rule window. Leaves an existing row untouched, so a
+   * concurrent second start is a no-op. Returns the row and whether this call
+   * created it.
+   */
+  async start(userId: string, challengeId: string) {
+    const { count } = await this.prisma.challengeProgress.createMany({
+      data: [
+        {
+          userId,
+          challengeId,
+          progress: 0,
+          completed: false,
+          status: ProgressStatus.NOT_STARTED,
+          state: { source: 'manual', mode: 'start' },
+          startedAt: new Date(),
+        },
+      ],
+      skipDuplicates: true,
+    });
+    const row = await this.prisma.challengeProgress.findUniqueOrThrow({
+      where: { userId_challengeId: { userId, challengeId } },
+      include: { challenge: true },
+    });
+    return { row, created: count > 0 };
   }
 
   /**

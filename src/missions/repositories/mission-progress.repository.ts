@@ -4,6 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
+import { isInCurrentQuest } from '../../quests/current-quest-membership';
 
 @Injectable()
 export class MissionProgressRepository {
@@ -92,6 +93,38 @@ export class MissionProgressRepository {
       },
       include: { mission: true },
     });
+  }
+
+  async isInCurrentQuest(userId: string, missionCode: string) {
+    return isInCurrentQuest(this.prisma, userId, 'MISSION', missionCode);
+  }
+
+  /**
+   * Starts the mission: creates its progress row at 0 with a start time,
+   * which opens its rule window. Leaves an existing row untouched, so a
+   * concurrent second start is a no-op. Returns the row and whether this call
+   * created it.
+   */
+  async start(userId: string, missionId: string) {
+    const { count } = await this.prisma.missionProgress.createMany({
+      data: [
+        {
+          userId,
+          missionId,
+          progress: 0,
+          completed: false,
+          status: ProgressStatus.NOT_STARTED,
+          state: { source: 'manual', mode: 'start' },
+          startedAt: new Date(),
+        },
+      ],
+      skipDuplicates: true,
+    });
+    const row = await this.prisma.missionProgress.findUniqueOrThrow({
+      where: { userId_missionId: { userId, missionId } },
+      include: { mission: true },
+    });
+    return { row, created: count > 0 };
   }
 
   /**

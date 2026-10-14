@@ -238,6 +238,43 @@ export class MissionsController {
     );
   }
 
+  @Post('by-code/:code/progress/start')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Start a mission by code',
+    description:
+      'Starts a mission of the current quest: creates its progress at 0 with ' +
+      'a start time, so its rule window runs from now. Selecting a quest ' +
+      'does not start its missions, and only started missions get progress. ' +
+      'Starting an already started mission returns it unchanged. Returns 400 ' +
+      'when the mission is not part of the current quest.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Mission code',
+    example: 'M.A1.1',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Mission started (or already started)',
+    type: MissionProgressResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The mission is not part of the current quest',
+  })
+  @ApiResponse({ status: 404, description: 'Mission not found' })
+  @ApiCrudErrorResponses()
+  async startProgressByCode(
+    @Param('code') code: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<MissionProgressResponseDto> {
+    return this.missionProgressService.start(code, userId, query.lang);
+  }
+
   @Post('by-code/:code/progress/restart')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')

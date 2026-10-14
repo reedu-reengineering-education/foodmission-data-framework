@@ -35,6 +35,8 @@ describe('MissionProgressService', () => {
             findAllPaginated: jest.fn(),
             upsert: jest.fn(),
             restart: jest.fn(),
+            isInCurrentQuest: jest.fn(),
+            start: jest.fn(),
           },
         },
         {
@@ -602,6 +604,87 @@ describe('MissionProgressService', () => {
         BadRequestException,
       );
       expect(repository.restart).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('start', () => {
+    const catalogRow = { id: 'm1', code: 'M.A1.1', title: 'Test Mission' };
+    const startedAt = new Date('2026-10-14T09:00:00.000Z');
+    const startedRow = {
+      missionId: 'm1',
+      userId: 'u1',
+      completed: false,
+      progress: 0,
+      status: 'NOT_STARTED',
+      startedAt,
+      mission: { title: 'Test Mission' },
+    };
+
+    beforeEach(() => {
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(
+        catalogRow,
+      );
+      (repository.isInCurrentQuest as jest.Mock).mockResolvedValue(true);
+    });
+
+    it('starts a mission of the current quest and records MISSION_STARTED', async () => {
+      (repository.start as jest.Mock).mockResolvedValue({
+        row: startedRow,
+        created: true,
+      });
+
+      const result = await service.start('M.A1.1', 'u1');
+
+      expect(repository.isInCurrentQuest).toHaveBeenCalledWith('u1', 'M.A1.1');
+      expect(repository.start).toHaveBeenCalledWith('u1', 'm1');
+      expect(result).toEqual(
+        expect.objectContaining({
+          progress: 0,
+          status: 'NOT_STARTED',
+          startedAt,
+        }),
+      );
+      // Keyed like the rule engine's own start, so it is recorded once.
+      expect(userEventService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventType: EventType.MISSION_STARTED,
+          source: EventSource.MISSION,
+          idempotencyKey: `mission-started:u1:m1:${startedAt.getTime()}`,
+        }),
+      );
+    });
+
+    it('returns an already started mission unchanged, without an event', async () => {
+      (repository.start as jest.Mock).mockResolvedValue({
+        row: { ...startedRow, progress: 40, status: 'IN_PROGRESS' },
+        created: false,
+      });
+
+      const result = await service.start('M.A1.1', 'u1');
+
+      expect(result).toEqual(
+        expect.objectContaining({ progress: 40, status: 'IN_PROGRESS' }),
+      );
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('rejects a mission outside the current quest', async () => {
+      (repository.isInCurrentQuest as jest.Mock).mockResolvedValue(false);
+
+      await expect(service.start('M.A1.1', 'u1')).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(repository.start).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('throws NotFoundException for an unknown mission', async () => {
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(null);
+
+      await expect(service.start('M.X', 'u1')).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(repository.start).not.toHaveBeenCalled();
     });
   });
 });

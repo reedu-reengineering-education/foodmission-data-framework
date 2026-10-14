@@ -112,23 +112,28 @@ export type ContentItemStatus = {
   status: ProgressStatus;
   /** 0–100 */
   progress: number;
+  /** When the user started the mission/challenge; null if not started yet. */
+  startedAt: Date | null;
 };
 
 const NOT_STARTED: ContentItemStatus = {
   status: ProgressStatus.NOT_STARTED,
   progress: 0,
+  startedAt: null,
 };
 
 const COMPLETED: ContentItemStatus = {
   status: ProgressStatus.COMPLETED,
   progress: 100,
+  startedAt: null,
 };
 
 /**
  * Status and progress of each item, keyed like findFinishedItemKeys. COMPLETED
  * matches "finished" there; missions and challenges also report partial
- * progress and a wrongly answered quiz is FAILED. Items without a progress
- * row are NOT_STARTED.
+ * progress and a start time, and a wrongly answered quiz is FAILED. Items
+ * without a progress row are NOT_STARTED; for missions and challenges that
+ * means the user hasn't started them.
  */
 export async function findItemStatuses(
   db: Db,
@@ -149,6 +154,7 @@ export async function findItemStatuses(
                 completed: true,
                 status: true,
                 progress: true,
+                startedAt: true,
                 mission: { select: { code: true } },
               },
             })
@@ -157,6 +163,7 @@ export async function findItemStatuses(
             ...(row.completed
               ? COMPLETED
               : { status: row.status, progress: row.progress }),
+            startedAt: row.startedAt,
           }));
           break;
         case QuestContentType.CHALLENGE:
@@ -167,6 +174,7 @@ export async function findItemStatuses(
                 completed: true,
                 status: true,
                 progress: true,
+                startedAt: true,
                 challenge: { select: { code: true } },
               },
             })
@@ -175,6 +183,7 @@ export async function findItemStatuses(
             ...(row.completed
               ? COMPLETED
               : { status: row.status, progress: row.progress }),
+            startedAt: row.startedAt,
           }));
           break;
         case QuestContentType.QUIZ:
@@ -188,7 +197,11 @@ export async function findItemStatuses(
             ...(row.isCorrect === true
               ? COMPLETED
               : row.isCorrect === false
-                ? { status: ProgressStatus.FAILED, progress: 0 }
+                ? {
+                    status: ProgressStatus.FAILED,
+                    progress: 0,
+                    startedAt: null,
+                  }
                 : NOT_STARTED),
           }));
           break;
