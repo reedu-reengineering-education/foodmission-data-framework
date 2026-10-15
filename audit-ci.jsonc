@@ -2,17 +2,16 @@
   "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
   "high": true,
   "allowlist": [
-    // GHSA-ggr8-5vv4-36mx: deepmerge-ts stack exhaustion, via prisma > @prisma/config.
-    // No fixed release upstream yet (even @prisma/config@latest still pins deepmerge-ts@7.1.5).
-    // Only reachable through prisma CLI/config merging at build time, not the request path.
-    // Revisit: check if @prisma/config has bumped deepmerge-ts to >=8.0.0.
-    "GHSA-ggr8-5vv4-36mx",
+    // GHSA-vfj7-8cjw-p6xm: braces stack exhaustion on deeply nested patterns, via nestjs-i18n > chokidar@3.
+    // No patched braces version exists upstream ("Patched versions: None").
+    // chokidar only runs when i18n watch is on (disabled in production/test) and watches a fixed path.
+    // Revisit: check if nestjs-i18n moves to chokidar >=4 (which drops braces).
+    "GHSA-vfj7-8cjw-p6xm",
 
-    // GHSA-848j-6mx2-7j84: elliptic ECDSA 'k' truncation, via keycloak-connect > jwk-to-pem.
-    // No patched elliptic version exists upstream at all ("Patched versions: None").
-    // Our Keycloak realms (dev + production) use defaultSignatureAlgorithm RS256, not EC,
-    // so jwk-to-pem never exercises the vulnerable elliptic code path here.
-    // Revisit: recheck if elliptic ships a fix, or if realm signing algorithm changes to EC.
-    "GHSA-848j-6mx2-7j84"
+    // GHSA-c475-qrg2-pj4r: basic-ftp quadratic CPU DoS in Client.list(), via keycloak-connect > chromedriver > proxy-agent > get-uri.
+    // Fixed in basic-ftp 6.2.1, but get-uri@8 still pins basic-ftp ^5.
+    // We never open FTP connections; only reachable if proxy-agent is pointed at an ftp:// PAC URL.
+    // Revisit: check if get-uri / keycloak-connect bump to basic-ftp >=6.2.1.
+    "GHSA-c475-qrg2-pj4r"
   ]
 }
