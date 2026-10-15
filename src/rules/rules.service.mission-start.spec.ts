@@ -200,4 +200,23 @@ describe('RulesService missions need an explicit start', () => {
       data: expect.objectContaining({ progress: 50, completed: false }),
     });
   });
+
+  it('keeps a started mission IN_PROGRESS while it has no progress yet', async () => {
+    prisma.missionProgress.findMany.mockResolvedValue([
+      { missionId: 'm1', status: 'IN_PROGRESS', startedAt: STARTED_AT },
+    ]);
+    prisma.missionProgress.findUnique.mockResolvedValue({
+      progress: 0,
+      completed: false,
+      startedAt: STARTED_AT,
+    });
+    prisma.userEvent.findMany.mockResolvedValue([]);
+
+    await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
+
+    expect(prisma.missionProgress.updateMany).toHaveBeenCalledWith({
+      where: { userId: 'u1', missionId: 'm1' },
+      data: expect.objectContaining({ progress: 0, status: 'IN_PROGRESS' }),
+    });
+  });
 });

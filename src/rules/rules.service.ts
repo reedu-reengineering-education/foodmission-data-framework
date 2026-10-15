@@ -558,11 +558,13 @@ export class RulesService implements OnModuleInit {
       previous && 'inputs' in previous ? previous.inputs : undefined,
     );
     const ruleHash = hashRule(entry.rule);
+    // A scored mission has been started, so it runs as IN_PROGRESS even at 0;
+    // challenges need no start and count as started once they move.
     const status = completed
       ? ProgressStatus.COMPLETED
       : failed
         ? ProgressStatus.FAILED
-        : progress > 0
+        : kind === 'mission' || progress > 0
           ? ProgressStatus.IN_PROGRESS
           : ProgressStatus.NOT_STARTED;
 

@@ -59,13 +59,13 @@ export class MissionProgressRepository {
     const failed = updateDto.failed === true;
     const progress = updateDto.progress ?? 0;
     const completed = !failed && (updateDto.completed ?? false);
+    // A mission with a progress row has been started, so it is IN_PROGRESS
+    // until it resolves, even at progress 0.
     const status = failed
       ? ProgressStatus.FAILED
       : completed
         ? ProgressStatus.COMPLETED
-        : progress > 0
-          ? ProgressStatus.IN_PROGRESS
-          : ProgressStatus.NOT_STARTED;
+        : ProgressStatus.IN_PROGRESS;
 
     // Creating the progress row is starting the mission, even at progress 0
     // (clients start it that way), so it always gets a start time.
@@ -118,7 +118,7 @@ export class MissionProgressRepository {
           missionId,
           progress: 0,
           completed: false,
-          status: ProgressStatus.NOT_STARTED,
+          status: ProgressStatus.IN_PROGRESS,
           state: { source: 'manual', mode: 'start' },
           startedAt: new Date(),
           inputs: inputs ?? Prisma.DbNull,
@@ -135,8 +135,8 @@ export class MissionProgressRepository {
 
   /**
    * Resets a mission's progress row for a new attempt: progress 0, not
-   * completed, NOT_STARTED, a fresh start time, no rule state, and the
-   * attempt's own inputs (none unless given).
+   * completed, IN_PROGRESS (the attempt has started), a fresh start time, no
+   * rule state, and the attempt's own inputs (none unless given).
    */
   async restart(
     userId: string,
@@ -148,7 +148,7 @@ export class MissionProgressRepository {
       data: {
         progress: 0,
         completed: false,
-        status: ProgressStatus.NOT_STARTED,
+        status: ProgressStatus.IN_PROGRESS,
         startedAt: new Date(),
         state: { source: 'manual', mode: 'restart' },
         inputs: inputs ?? Prisma.DbNull,

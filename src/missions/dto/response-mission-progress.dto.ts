@@ -32,8 +32,10 @@ export class MissionProgressResponseDto {
     enum: ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'FAILED'],
     example: 'IN_PROGRESS',
     description:
-      'FAILED: the rule window ended without the goal, the rule failed, or ' +
-      'the user gave up. COMPLETED and FAILED are final.',
+      'NOT_STARTED: the user has not started the mission. IN_PROGRESS: ' +
+      'started and running, also at progress 0. FAILED: the rule window ' +
+      'ended without the goal, the rule failed, or the user gave up. ' +
+      'COMPLETED and FAILED are final.',
   })
   @Expose()
   status: string;

@@ -309,7 +309,7 @@ export class MissionProgressService {
   }
 
   /**
-   * Restarts a FAILED mission as a new attempt: progress 0, status NOT_STARTED
+   * Restarts a FAILED mission as a new attempt: progress 0, status IN_PROGRESS
    * and `startedAt` now, so its rule window starts over and events from the
    * failed attempt no longer count. Only failed missions can be restarted.
    */

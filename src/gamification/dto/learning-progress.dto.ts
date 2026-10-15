@@ -97,9 +97,10 @@ export class QuestItemStatusDto extends ContentItemProgressDto {
   @ApiProperty({
     enum: ProgressStatus,
     description:
-      'Missions/challenges: their progress status. Quizzes: COMPLETED when ' +
-      'answered correctly, FAILED when answered wrong. Food facts: COMPLETED ' +
-      'once read. NOT_STARTED otherwise.',
+      'Missions/challenges: their progress status; a started mission is ' +
+      'IN_PROGRESS even at progress 0. Quizzes: COMPLETED when answered ' +
+      'correctly, FAILED when answered wrong. Food facts: COMPLETED once ' +
+      'read. NOT_STARTED otherwise.',
   })
   status!: ProgressStatus;
 

@@ -294,7 +294,7 @@ export class MissionsController {
     summary: 'Restart a failed mission by code',
     description:
       'Starts a FAILED mission again as a new attempt: progress 0, status ' +
-      'NOT_STARTED and a new start time, so its rule window starts over. ' +
+      'IN_PROGRESS and a new start time, so its rule window starts over. ' +
       'Takes the same optional `inputs` as start, for the new attempt. ' +
       'Returns 400 when the mission has not failed or the inputs are invalid.',
   })

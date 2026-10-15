@@ -158,7 +158,7 @@ describe('MissionProgressRepository', () => {
       );
     });
 
-    it('sets startedAt when the mission is started at progress 0', async () => {
+    it('starts the mission at progress 0: IN_PROGRESS with a start time', async () => {
       (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue({
         startedAt: new Date(),
       });
@@ -170,7 +170,7 @@ describe('MissionProgressRepository', () => {
       expect(call.create).toEqual(
         expect.objectContaining({
           progress: 0,
-          status: 'NOT_STARTED',
+          status: 'IN_PROGRESS',
           startedAt: expect.any(Date),
         }),
       );
@@ -200,7 +200,7 @@ describe('MissionProgressRepository', () => {
         data: {
           progress: 0,
           completed: false,
-          status: 'NOT_STARTED',
+          status: 'IN_PROGRESS',
           startedAt: expect.any(Date),
           state: { source: 'manual', mode: 'restart' },
           inputs: Prisma.DbNull,
@@ -232,7 +232,7 @@ describe('MissionProgressRepository', () => {
             missionId: 'm1',
             progress: 0,
             completed: false,
-            status: 'NOT_STARTED',
+            status: 'IN_PROGRESS',
             state: { source: 'manual', mode: 'start' },
             startedAt: expect.any(Date),
             inputs: Prisma.DbNull,
