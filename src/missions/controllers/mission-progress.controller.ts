@@ -24,6 +24,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { MissionProgressService } from '../services/mission-progress.service';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
+import { StartMissionProgressDto } from '../dto/start-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
 import { LearningLangQueryDto } from '../../learning/dto/learning-lang-query.dto';
 
@@ -117,10 +118,14 @@ export class MissionProgressController {
       'Starts a mission of the current quest: creates its progress at 0 with ' +
       'a start time, so its rule window runs from now. Selecting a quest ' +
       'does not start its missions, and only started missions get progress. ' +
-      'Starting an already started mission returns it unchanged. Returns 400 ' +
-      'when the mission is not part of the current quest.',
+      'Starting an already started mission returns it unchanged. Missions ' +
+      'whose rule asks for numbers take them as `inputs` (e.g. M.B1.3: ' +
+      '{"inputs": {"previousMeatMeals": 5}}); others take no body. Returns ' +
+      '400 when the mission is not part of the current quest or the inputs ' +
+      'are invalid.',
   })
   @ApiParam({ name: 'missionId', type: 'string', format: 'uuid' })
+  @ApiBody({ type: StartMissionProgressDto, required: false })
   @ApiResponse({
     status: 201,
     description: 'Mission started (or already started)',
@@ -128,7 +133,8 @@ export class MissionProgressController {
   })
   @ApiResponse({
     status: 400,
-    description: 'The mission is not part of the current quest',
+    description:
+      'The mission is not part of the current quest, or the inputs are invalid',
   })
   @ApiResponse({ status: 404, description: 'Mission not found' })
   @ApiCrudErrorResponses()
@@ -136,8 +142,14 @@ export class MissionProgressController {
     @Param('missionId', ParseUUIDPipe) missionId: string,
     @CurrentUser('id') userId: string,
     @Query() query: LearningLangQueryDto,
+    @Body() body: StartMissionProgressDto = {},
   ): Promise<MissionProgressResponseDto> {
-    return this.missionProgressService.start(missionId, userId, query.lang);
+    return this.missionProgressService.start(
+      missionId,
+      userId,
+      query.lang,
+      body.inputs,
+    );
   }
 
   @Post('restart')
@@ -148,9 +160,11 @@ export class MissionProgressController {
     description:
       'Starts a FAILED mission again as a new attempt: progress 0, status ' +
       'NOT_STARTED and a new start time, so its rule window starts over. ' +
-      'Returns 400 when the mission has not failed.',
+      'Takes the same optional `inputs` as start, for the new attempt. ' +
+      'Returns 400 when the mission has not failed or the inputs are invalid.',
   })
   @ApiParam({ name: 'missionId', type: 'string', format: 'uuid' })
+  @ApiBody({ type: StartMissionProgressDto, required: false })
   @ApiResponse({
     status: 201,
     description: 'Mission restarted',
@@ -163,7 +177,13 @@ export class MissionProgressController {
     @Param('missionId', ParseUUIDPipe) missionId: string,
     @CurrentUser('id') userId: string,
     @Query() query: LearningLangQueryDto,
+    @Body() body: StartMissionProgressDto = {},
   ): Promise<MissionProgressResponseDto> {
-    return this.missionProgressService.restart(missionId, userId, query.lang);
+    return this.missionProgressService.restart(
+      missionId,
+      userId,
+      query.lang,
+      body.inputs,
+    );
   }
 }

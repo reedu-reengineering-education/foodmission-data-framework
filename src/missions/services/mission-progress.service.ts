@@ -19,6 +19,8 @@ import {
   RecordUserEventInput,
   UserEventService,
 } from '../../events/services/user-event.service';
+import { RulesService } from '../../rules/rules.service';
+import { isValidInputValue } from '../../rules/rule-evaluator';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
 import { MissionProgressResponseDto } from '../dto/response-mission-progress.dto';
@@ -30,6 +32,7 @@ type MissionProgressRow = {
   progress: number;
   status?: string;
   startedAt?: Date | null;
+  inputs?: unknown;
   mission?: { title?: string } | null;
 };
 
@@ -42,6 +45,7 @@ export class MissionProgressService {
     private readonly translationService: TranslationService,
     private readonly userEventService: UserEventService,
     private readonly completionRewardService: CompletionRewardService,
+    private readonly rulesService: RulesService,
   ) {}
 
   async getMissionById(
@@ -251,12 +255,14 @@ export class MissionProgressService {
    * Starts a mission of the user's current quest. Selecting a quest starts
    * nothing; the user starts each mission, which opens its rule window from
    * now. Starting an already started mission returns it unchanged (use
-   * restart for a failed one).
+   * restart for a failed one). `inputs` are the numbers the mission's rule
+   * asks for (e.g. last week's meat meals); they only apply to a new start.
    */
   async start(
     codeOrId: string,
     userId: string,
     lang?: string,
+    inputs?: Record<string, number>,
   ): Promise<MissionProgressResponseDto> {
     this.logger.log(`Starting mission ${codeOrId} for user: ${userId}`);
 
@@ -271,10 +277,12 @@ export class MissionProgressService {
         'This mission is not part of your current quest',
       );
     }
+    const validInputs = this.validateInputs(mission.code, inputs);
 
     const { row, created } = await this.missionProgressRepository.start(
       userId,
       mission.id,
+      validInputs,
     );
 
     if (created) {
@@ -309,6 +317,7 @@ export class MissionProgressService {
     codeOrId: string,
     userId: string,
     lang?: string,
+    inputs?: Record<string, number>,
   ): Promise<MissionProgressResponseDto> {
     this.logger.log(`Restarting mission ${codeOrId} for user: ${userId}`);
 
@@ -321,10 +330,12 @@ export class MissionProgressService {
     if (previous?.status !== ProgressStatus.FAILED) {
       throw new BadRequestException('Only a failed mission can be restarted');
     }
+    const validInputs = this.validateInputs(mission.code, inputs);
 
     const restarted = await this.missionProgressRepository.restart(
       userId,
       mission.id,
+      validInputs,
     );
 
     await this.emitProgressEvent({
@@ -365,6 +376,51 @@ export class MissionProgressService {
     }
   }
 
+  /**
+   * Checks the numbers sent on start against the inputs the mission's rule
+   * declares: known names, integers within bounds, and every input without a
+   * fallback present. Returns what to store, or null for none.
+   */
+  private validateInputs(
+    missionCode: string,
+    inputs: Record<string, number> | undefined,
+  ): Record<string, number> | null {
+    const definitions = this.rulesService.getMissionRuleInputs(missionCode);
+    const given = Object.entries(inputs ?? {});
+
+    if (given.length > 0 && !definitions) {
+      throw new BadRequestException('This mission takes no inputs');
+    }
+    for (const [name, value] of given) {
+      const definition = definitions?.[name];
+      if (!definition) {
+        throw new BadRequestException(
+          `Unknown input for this mission: ${name}`,
+        );
+      }
+      if (!isValidInputValue(definition, value)) {
+        throw new BadRequestException(
+          `Input ${name} must be a whole number` +
+            (definition.min != null || definition.max != null
+              ? ` from ${definition.min ?? '-∞'} to ${definition.max ?? '∞'}`
+              : ''),
+        );
+      }
+    }
+    const missing = Object.entries(definitions ?? {})
+      .filter(
+        ([name, definition]) =>
+          !definition.fallback && !(name in (inputs ?? {})),
+      )
+      .map(([name]) => name);
+    if (missing.length > 0) {
+      throw new BadRequestException(
+        `This mission needs inputs: ${missing.join(', ')}`,
+      );
+    }
+    return given.length > 0 ? Object.fromEntries(given) : null;
+  }
+
   private async requireMission(codeOrId: string) {
     const mission =
       await this.missionProgressRepository.findMissionByCodeOrId(codeOrId);
@@ -396,6 +452,16 @@ export class MissionProgressService {
       status: row.status ?? ProgressStatus.NOT_STARTED,
       missionTitle: titles[row.missionId] ?? row.mission?.title ?? '',
       startedAt: row.startedAt ?? null,
+      inputs: isNumberRecord(row.inputs) ? row.inputs : null,
     }));
   }
+}
+
+function isNumberRecord(value: unknown): value is Record<string, number> {
+  return (
+    value != null &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    Object.values(value).every((v) => typeof v === 'number')
+  );
 }

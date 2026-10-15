@@ -24,6 +24,7 @@ import { Prisma, RewardSourceType } from '@prisma/client';
 import {
   RuleDefinition,
   RuleEntry,
+  RuleInput,
   RulesCoverageDoc,
   rulesCoverageSchema,
 } from './rule-schema';
@@ -117,6 +118,15 @@ export class RulesService implements OnModuleInit {
 
   onModuleInit(): void {
     this.load();
+  }
+
+  /**
+   * The inputs a mission's rule asks for on start (e.g. last week's meat
+   * meals), or null when its rule declares none.
+   */
+  getMissionRuleInputs(code: string): Record<string, RuleInput> | null {
+    const entry = this.load().missions.find((item) => item.code === code);
+    return entry?.rule?.inputs ?? null;
   }
 
   load(): RulesCoverageDoc {
@@ -517,6 +527,7 @@ export class RulesService implements OnModuleInit {
               progress: true,
               completed: true,
               startedAt: true,
+              inputs: true,
             },
           })
         : await db.challengeProgress.findUnique({
@@ -538,11 +549,13 @@ export class RulesService implements OnModuleInit {
     }
 
     // The window starts when the item was started, so its deadline is known.
+    // Missions may carry numbers the user set on start (rule `inputs`).
     const { completed, failed, progress } = evaluateRule(
       entry.rule as RuleDefinition,
       events,
       new Date(),
       previous?.startedAt,
+      previous && 'inputs' in previous ? previous.inputs : undefined,
     );
     const ruleHash = hashRule(entry.rule);
     const status = completed

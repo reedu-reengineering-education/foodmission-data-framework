@@ -51,6 +51,16 @@ export class MissionProgressResponseDto {
   startedAt?: Date | null;
 
   @ApiPropertyOptional({
+    example: { previousMeatMeals: 5 },
+    nullable: true,
+    type: 'object',
+    additionalProperties: { type: 'integer' },
+    description: 'Numbers the user set when starting the mission; null if none',
+  })
+  @Expose()
+  inputs?: Record<string, number> | null;
+
+  @ApiPropertyOptional({
     type: MissionRewardDto,
     description:
       'Set only when this update first completed the mission and earned a reward',

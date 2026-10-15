@@ -8,12 +8,14 @@ import { UserEventService } from '../../events/services/user-event.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { RewardSourceType, WalletCurrency } from '@prisma/client';
+import { RulesService } from '../../rules/rules.service';
 
 describe('MissionProgressService', () => {
   let service: MissionProgressService;
   let repository: MissionProgressRepository;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
   let walletService: jest.Mocked<Pick<GamificationWalletService, 'award'>>;
+  let rulesService: { getMissionRuleInputs: jest.Mock };
 
   beforeEach(async () => {
     userEventService = {
@@ -51,10 +53,16 @@ describe('MissionProgressService', () => {
         // covering the actual xp/points award mechanics.
         CompletionRewardService,
         { provide: GamificationWalletService, useValue: walletService },
+        {
+          provide: RulesService,
+          // No mission asks for inputs unless a test says so.
+          useValue: { getMissionRuleInputs: jest.fn().mockReturnValue(null) },
+        },
       ],
     }).compile();
 
     service = module.get<MissionProgressService>(MissionProgressService);
+    rulesService = module.get(RulesService);
     repository = module.get<MissionProgressRepository>(
       MissionProgressRepository,
     );
@@ -90,6 +98,7 @@ describe('MissionProgressService', () => {
         status: 'NOT_STARTED',
         missionTitle: 'Test Mission',
         startedAt: new Date('2026-09-30T08:15:00.000Z'),
+        inputs: null,
       });
     });
 
@@ -154,6 +163,7 @@ describe('MissionProgressService', () => {
           status: 'NOT_STARTED',
           missionTitle: 'Test Mission 1',
           startedAt: new Date('2026-09-30T08:15:00.000Z'),
+          inputs: null,
         },
         {
           missionId: 'm2',
@@ -163,6 +173,7 @@ describe('MissionProgressService', () => {
           status: 'NOT_STARTED',
           missionTitle: 'Test Mission 2',
           startedAt: null,
+          inputs: null,
         },
       ]);
     });
@@ -203,6 +214,7 @@ describe('MissionProgressService', () => {
         status: 'NOT_STARTED',
         missionTitle: 'Test Mission',
         startedAt: null,
+        inputs: null,
         reward: null,
       });
     });
@@ -573,7 +585,7 @@ describe('MissionProgressService', () => {
 
       const result = await service.restart('M.A1.1', 'u1');
 
-      expect(repository.restart).toHaveBeenCalledWith('u1', 'm1');
+      expect(repository.restart).toHaveBeenCalledWith('u1', 'm1', null);
       expect(result).toEqual(
         expect.objectContaining({
           progress: 0,
@@ -636,7 +648,7 @@ describe('MissionProgressService', () => {
       const result = await service.start('M.A1.1', 'u1');
 
       expect(repository.isInCurrentQuest).toHaveBeenCalledWith('u1', 'M.A1.1');
-      expect(repository.start).toHaveBeenCalledWith('u1', 'm1');
+      expect(repository.start).toHaveBeenCalledWith('u1', 'm1', null);
       expect(result).toEqual(
         expect.objectContaining({
           progress: 0,
@@ -685,6 +697,138 @@ describe('MissionProgressService', () => {
         NotFoundException,
       );
       expect(repository.start).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('start inputs', () => {
+    const catalogRow = {
+      id: 'm1',
+      code: 'M.B1.3',
+      title: 'Reduce One Meat Meal',
+    };
+    const row = (inputs: unknown) => ({
+      missionId: 'm1',
+      userId: 'u1',
+      completed: false,
+      progress: 0,
+      status: 'NOT_STARTED',
+      startedAt: new Date('2026-10-15T09:00:00.000Z'),
+      inputs,
+      mission: { title: 'Reduce One Meat Meal' },
+    });
+
+    beforeEach(() => {
+      (repository.findMissionByCodeOrId as jest.Mock).mockResolvedValue(
+        catalogRow,
+      );
+      (repository.isInCurrentQuest as jest.Mock).mockResolvedValue(true);
+      rulesService.getMissionRuleInputs.mockReturnValue({
+        previousMeatMeals: {
+          type: 'integer',
+          min: 0,
+          max: 21,
+          fallback: 'loggedPreviousMeatMeals',
+        },
+      });
+    });
+
+    it('stores the inputs and returns them', async () => {
+      (repository.start as jest.Mock).mockResolvedValue({
+        row: row({ previousMeatMeals: 5 }),
+        created: true,
+      });
+
+      const result = await service.start('M.B1.3', 'u1', undefined, {
+        previousMeatMeals: 5,
+      });
+
+      expect(rulesService.getMissionRuleInputs).toHaveBeenCalledWith('M.B1.3');
+      expect(repository.start).toHaveBeenCalledWith('u1', 'm1', {
+        previousMeatMeals: 5,
+      });
+      expect(result.inputs).toEqual({ previousMeatMeals: 5 });
+    });
+
+    it('accepts 0', async () => {
+      (repository.start as jest.Mock).mockResolvedValue({
+        row: row({ previousMeatMeals: 0 }),
+        created: true,
+      });
+
+      await service.start('M.B1.3', 'u1', undefined, { previousMeatMeals: 0 });
+
+      expect(repository.start).toHaveBeenCalledWith('u1', 'm1', {
+        previousMeatMeals: 0,
+      });
+    });
+
+    it('starts without inputs when every input has a fallback', async () => {
+      (repository.start as jest.Mock).mockResolvedValue({
+        row: row(null),
+        created: true,
+      });
+
+      const result = await service.start('M.B1.3', 'u1');
+
+      expect(repository.start).toHaveBeenCalledWith('u1', 'm1', null);
+      expect(result.inputs).toBeNull();
+    });
+
+    it.each([
+      ['an unknown input', { meatMeals: 3 }],
+      ['a value above max', { previousMeatMeals: 22 }],
+      ['a negative value', { previousMeatMeals: -1 }],
+      ['a fraction', { previousMeatMeals: 2.5 }],
+      ['a string', { previousMeatMeals: '3' }],
+    ])('rejects %s', async (_label, inputs) => {
+      await expect(
+        service.start(
+          'M.B1.3',
+          'u1',
+          undefined,
+          inputs as unknown as Record<string, number>,
+        ),
+      ).rejects.toThrow(BadRequestException);
+      expect(repository.start).not.toHaveBeenCalled();
+    });
+
+    it('rejects inputs for a mission whose rule takes none', async () => {
+      rulesService.getMissionRuleInputs.mockReturnValue(null);
+
+      await expect(
+        service.start('M.B1.3', 'u1', undefined, { previousMeatMeals: 3 }),
+      ).rejects.toThrow(BadRequestException);
+      expect(repository.start).not.toHaveBeenCalled();
+    });
+
+    it('requires an input that has no fallback', async () => {
+      rulesService.getMissionRuleInputs.mockReturnValue({
+        meatMealLimit: { type: 'integer', min: 0, max: 21 },
+      });
+
+      await expect(service.start('M.B1.3', 'u1')).rejects.toThrow(
+        'This mission needs inputs: meatMealLimit',
+      );
+      expect(repository.start).not.toHaveBeenCalled();
+    });
+
+    it('takes new inputs on restart', async () => {
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+        ...row({ previousMeatMeals: 5 }),
+        status: 'FAILED',
+      });
+      (repository.restart as jest.Mock).mockResolvedValue(
+        row({ previousMeatMeals: 3 }),
+      );
+
+      const result = await service.restart('M.B1.3', 'u1', undefined, {
+        previousMeatMeals: 3,
+      });
+
+      expect(repository.restart).toHaveBeenCalledWith('u1', 'm1', {
+        previousMeatMeals: 3,
+      });
+      expect(result.inputs).toEqual({ previousMeatMeals: 3 });
     });
   });
 });

@@ -238,6 +238,80 @@ describe('rulesCoverageSchema expression identifiers', () => {
   });
 });
 
+describe('rulesCoverageSchema inputs', () => {
+  function validate(rule: Record<string, unknown>) {
+    return rulesCoverageSchema.validate(
+      {
+        ...BASE_DOC,
+        missions: [
+          {
+            code: 'M.B1.3',
+            shape: 'bounded_max_with_fail',
+            rule: {
+              window: { type: 'since_start', days: 7 },
+              counters: {
+                meals: { event: 'MEAL_MEAT_CONSUMED' },
+                loggedBefore: {
+                  event: 'MEAL_MEAT_CONSUMED',
+                  window: { type: 'before_start', days: 7 },
+                },
+              },
+              inputs: {
+                baseline: {
+                  type: 'integer',
+                  min: 0,
+                  max: 21,
+                  fallback: 'loggedBefore',
+                },
+              },
+              target: 'meals <= max(baseline - 1, 0)',
+              progress: 'meals < baseline ? 1 : 0',
+              notes: ['test'],
+              ...rule,
+            },
+          },
+        ],
+        challenges: [{ code: 'CH.B1.1', shape: 'undecided' }],
+      },
+      { abortEarly: false, allowUnknown: false },
+    );
+  }
+
+  it('accepts an input named in the formulas', () => {
+    expect(validate({}).error).toBeUndefined();
+  });
+
+  it.each([
+    [
+      'a fallback that is not a counter',
+      { baseline: { type: 'integer', fallback: 'nope' } },
+      'falls back to unknown counter nope',
+    ],
+    [
+      'an input named like a counter',
+      { meals: { type: 'integer' } },
+      'same name as a counter',
+    ],
+    [
+      'min greater than max',
+      { baseline: { type: 'integer', min: 5, max: 1 } },
+      'min greater than max',
+    ],
+    [
+      'a non-integer type',
+      { baseline: { type: 'string' } },
+      'type" must be [integer]',
+    ],
+  ])('rejects %s', (_label, inputs, message) => {
+    const { error } = validate({
+      inputs,
+      target: 'meals >= 0',
+      progress: '1',
+    });
+    expect(error?.message).toContain(message);
+  });
+});
+
 describe('rulesCoverageSchema counter.groupBy and where arrays', () => {
   function validate(counter: Record<string, unknown>) {
     return rulesCoverageSchema.validate(

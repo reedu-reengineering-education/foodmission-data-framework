@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MissionProgressRepository } from './mission-progress.repository';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 
 describe('MissionProgressRepository', () => {
@@ -177,6 +178,17 @@ describe('MissionProgressRepository', () => {
   });
 
   describe('restart', () => {
+    it("stores the new attempt's inputs", async () => {
+      (prisma.missionProgress.update as jest.Mock).mockResolvedValue({});
+
+      await repository.restart('u1', 'm1', { previousMeatMeals: 3 });
+
+      expect(
+        (prisma.missionProgress.update as jest.Mock).mock.calls[0][0].data
+          .inputs,
+      ).toEqual({ previousMeatMeals: 3 });
+    });
+
     it('resets the row for a new attempt with a fresh start time', async () => {
       const row = { startedAt: new Date() };
       (prisma.missionProgress.update as jest.Mock).mockResolvedValue(row);
@@ -191,6 +203,7 @@ describe('MissionProgressRepository', () => {
           status: 'NOT_STARTED',
           startedAt: expect.any(Date),
           state: { source: 'manual', mode: 'restart' },
+          inputs: Prisma.DbNull,
           ruleHash: null,
           evaluatedAt: null,
         },
@@ -222,11 +235,28 @@ describe('MissionProgressRepository', () => {
             status: 'NOT_STARTED',
             state: { source: 'manual', mode: 'start' },
             startedAt: expect.any(Date),
+            inputs: Prisma.DbNull,
           },
         ],
         skipDuplicates: true,
       });
       expect(result).toEqual({ row, created: true });
+    });
+
+    it('stores the inputs the user set', async () => {
+      (prisma.missionProgress.createMany as jest.Mock).mockResolvedValue({
+        count: 1,
+      });
+      (prisma.missionProgress.findUniqueOrThrow as jest.Mock).mockResolvedValue(
+        {},
+      );
+
+      await repository.start('u1', 'm1', { previousMeatMeals: 5 });
+
+      expect(
+        (prisma.missionProgress.createMany as jest.Mock).mock.calls[0][0]
+          .data[0].inputs,
+      ).toEqual({ previousMeatMeals: 5 });
     });
 
     it('leaves an existing row untouched', async () => {

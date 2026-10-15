@@ -104,6 +104,8 @@ model MissionProgress {
   startedAt   DateTime?
   status      ProgressStatus  @default(NOT_STARTED)
   state       Json            @default("{}")
+  /// Numbers the user set when starting (rule `inputs`), e.g. last week's meat meals.
+  inputs      Json?
   ruleHash    String?
   evaluatedAt DateTime?
 

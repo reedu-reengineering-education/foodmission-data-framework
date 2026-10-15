@@ -155,4 +155,49 @@ describe('RulesService missions need an explicit start', () => {
 
     expect(recorder.record).not.toHaveBeenCalled();
   });
+
+  it('scores a mission against the inputs the user set on start', async () => {
+    (service as unknown as { loadedRules: RulesCoverageDoc }).loadedRules = {
+      ...RULES,
+      missions: [
+        {
+          code: 'M.A1.1',
+          shape: 'count_at_least',
+          rule: {
+            window: { type: 'since_start', days: 7 },
+            inputs: { goal: { type: 'integer', min: 1, max: 10 } },
+            counters: { logged: { event: 'MEAL_LOGGED' } },
+            target: 'logged >= goal',
+            progress: 'min(logged / goal, 1)',
+            notes: [],
+          },
+        },
+      ],
+    } as unknown as RulesCoverageDoc;
+    prisma.missionProgress.findMany.mockResolvedValue([
+      { missionId: 'm1', status: 'NOT_STARTED', startedAt: STARTED_AT },
+    ]);
+    prisma.missionProgress.findUnique.mockResolvedValue({
+      progress: 0,
+      completed: false,
+      startedAt: STARTED_AT,
+      inputs: { goal: 2 },
+    });
+    prisma.userEvent.findMany.mockResolvedValue([
+      { eventType: 'MEAL_LOGGED', createdAt: new Date(), metadata: {} },
+    ]);
+
+    await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
+
+    expect(prisma.missionProgress.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        select: expect.objectContaining({ inputs: true }),
+      }),
+    );
+    // One of the two meals the user set as their goal.
+    expect(prisma.missionProgress.updateMany).toHaveBeenCalledWith({
+      where: { userId: 'u1', missionId: 'm1' },
+      data: expect.objectContaining({ progress: 50, completed: false }),
+    });
+  });
 });
