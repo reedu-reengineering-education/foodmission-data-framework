@@ -274,9 +274,11 @@ export class UserProfilesService {
     const oldQuestItems = previousQuestId
       ? await this.getQuestMissionChallengeItems(tx, previousQuestId)
       : [];
-    const newQuestItems = nextQuestId
-      ? await this.getQuestMissionChallengeItems(tx, nextQuestId, true)
-      : [];
+    if (nextQuestId) {
+      // Validates the quest. No progress is created here: the user starts
+      // each mission explicitly, and challenges need no start.
+      await this.getQuestMissionChallengeItems(tx, nextQuestId, true);
+    }
 
     const updatedUser = await tx.user.update({
       where: { id: user.id },
@@ -285,10 +287,6 @@ export class UserProfilesService {
 
     if (previousQuestId && previousQuestId !== nextQuestId) {
       await this.removeOldQuestProgressRows(tx, user.id, oldQuestItems);
-    }
-
-    if (nextQuestId) {
-      await this.seedQuestProgressRows(tx, user.id, newQuestItems);
     }
 
     return updatedUser;
@@ -322,43 +320,6 @@ export class UserProfilesService {
     }
 
     return quest.items;
-  }
-
-  /**
-   * Selecting a quest starts its challenges, even at progress 0, so their
-   * windows run from the selection. Missions are not started here; the user
-   * starts each one explicitly.
-   */
-  private async seedQuestProgressRows(
-    tx: Pick<PrismaService, 'challenge' | 'challengeProgress'>,
-    userId: string,
-    questItems: Array<{ contentType: string; contentCode: string }>,
-  ): Promise<void> {
-    const challengeCodes = questItems
-      .filter((item) => item.contentType === 'CHALLENGE')
-      .map((item) => item.contentCode);
-    if (challengeCodes.length === 0) {
-      return;
-    }
-
-    const challenges = await tx.challenge.findMany({
-      where: { code: { in: challengeCodes } },
-      select: { id: true },
-    });
-    if (challenges.length > 0) {
-      await tx.challengeProgress.createMany({
-        data: challenges.map((challenge) => ({
-          userId,
-          challengeId: challenge.id,
-          progress: 0,
-          completed: false,
-          status: ProgressStatus.NOT_STARTED,
-          state: {},
-          startedAt: new Date(),
-        })),
-        skipDuplicates: true,
-      });
-    }
   }
 
   private async removeOldQuestProgressRows(

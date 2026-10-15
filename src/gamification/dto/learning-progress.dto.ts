@@ -117,8 +117,9 @@ export class QuestItemStatusDto extends ContentItemProgressDto {
     description:
       'Missions/challenges: when it was started. For a mission, null means ' +
       'the user has not started it yet; start it with ' +
-      'POST /missions/by-code/{code}/progress/start. Challenges start ' +
-      'when the quest is selected. Always null for quizzes and food facts.',
+      'POST /missions/by-code/{code}/progress/start. Challenges need no ' +
+      'start; theirs is set on their first progress. Always null for ' +
+      'quizzes and food facts.',
   })
   startedAt!: Date | null;
 

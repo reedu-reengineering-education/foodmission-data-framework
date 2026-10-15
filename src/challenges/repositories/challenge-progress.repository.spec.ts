@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressRepository } from './challenge-progress.repository';
 import { PrismaService } from '../../database/prisma.service';
+import { isInCurrentQuest } from '../../quests/current-quest-membership';
+
+jest.mock('../../quests/current-quest-membership', () => ({
+  isInCurrentQuest: jest.fn().mockResolvedValue(true),
+}));
 
 describe('ChallengeProgressRepository', () => {
   let repository: ChallengeProgressRepository;
@@ -63,6 +68,20 @@ describe('ChallengeProgressRepository', () => {
         include: { reward: { select: { id: true, xp: true, points: true } } },
       });
       expect(result).toBe(mockReturn);
+    });
+  });
+
+  describe('isInCurrentQuest', () => {
+    it('checks the challenge against the current quest', async () => {
+      await expect(repository.isInCurrentQuest('u1', 'CH.A1.1')).resolves.toBe(
+        true,
+      );
+      expect(isInCurrentQuest).toHaveBeenCalledWith(
+        prisma,
+        'u1',
+        'CHALLENGE',
+        'CH.A1.1',
+      );
     });
   });
 

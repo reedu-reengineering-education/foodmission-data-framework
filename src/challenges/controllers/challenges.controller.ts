@@ -205,7 +205,9 @@ export class ChallengesController {
   @ApiOperation({
     summary: 'Update challenge progress by code',
     description:
-      'Updates the progress or completion status of a specific challenge for the authenticated user.',
+      'Updates the progress or completion status of a specific challenge for ' +
+      'the authenticated user. Challenges need no start, but only challenges ' +
+      'of the current quest can be updated; others return 400.',
   })
   @ApiParam({
     name: 'code',
@@ -218,6 +220,10 @@ export class ChallengesController {
     status: 200,
     description: 'Challenge progress updated successfully',
     type: ChallengeProgressResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The challenge is not part of the current quest',
   })
   @ApiResponse({ status: 404, description: 'Challenge not found' })
   @ApiCrudErrorResponses()

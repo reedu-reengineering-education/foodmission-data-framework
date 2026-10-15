@@ -139,9 +139,11 @@ export class UserGroupService {
     const oldQuestItems = previousQuestId
       ? await this.getQuestMissionChallengeItems(tx, previousQuestId)
       : [];
-    const newQuestItems = nextQuestId
-      ? await this.getQuestMissionChallengeItems(tx, nextQuestId, true)
-      : [];
+    if (nextQuestId) {
+      // Validates the quest. No progress is created here: each member starts
+      // missions explicitly, and challenges need no start.
+      await this.getQuestMissionChallengeItems(tx, nextQuestId, true);
+    }
 
     await tx.userGroup.update({
       where: { id: currentGroup.id },
@@ -165,10 +167,6 @@ export class UserGroupService {
 
     if (previousQuestId && previousQuestId !== nextQuestId) {
       await this.removeQuestProgressRows(tx, memberUserIds, oldQuestItems);
-    }
-
-    if (nextQuestId) {
-      await this.seedQuestProgressRows(tx, memberUserIds, newQuestItems);
     }
   }
 
@@ -200,51 +198,6 @@ export class UserGroupService {
     }
 
     return quest.items as QuestContentScopeItem[];
-  }
-
-  /**
-   * Selecting a quest starts its challenges for every member, even at
-   * progress 0, so their windows run from the selection. Missions are not
-   * started here; each member starts them explicitly.
-   */
-  private async seedQuestProgressRows(
-    tx: Prisma.TransactionClient,
-    userIds: string[],
-    questItems: QuestContentScopeItem[],
-  ): Promise<void> {
-    const challengeCodes = [
-      ...new Set(
-        questItems
-          .filter((item) => item.contentType === 'CHALLENGE')
-          .map((item) => item.contentCode),
-      ),
-    ];
-    if (challengeCodes.length === 0) {
-      return;
-    }
-
-    const startedAt = new Date();
-    const challenges = await tx.challenge.findMany({
-      where: { code: { in: challengeCodes } },
-      select: { id: true },
-    });
-    const challengeRows = userIds.flatMap((memberUserId) =>
-      challenges.map((challenge) => ({
-        userId: memberUserId,
-        challengeId: challenge.id,
-        progress: 0,
-        completed: false,
-        status: ProgressStatus.NOT_STARTED,
-        state: {},
-        startedAt,
-      })),
-    );
-    if (challengeRows.length > 0) {
-      await tx.challengeProgress.createMany({
-        data: challengeRows,
-        skipDuplicates: true,
-      });
-    }
   }
 
   private async removeQuestProgressRows(
