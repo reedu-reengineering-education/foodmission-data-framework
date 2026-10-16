@@ -36,6 +36,7 @@ import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { extractKeycloakRoles } from '../../common/utils/keycloak-roles.util';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
+import { StartMissionProgressDto } from '../dto/start-mission-progress.dto';
 
 @ApiTags('missions')
 @Controller('missions')
@@ -238,6 +239,54 @@ export class MissionsController {
     );
   }
 
+  @Post('by-code/:code/progress/start')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Start a mission by code',
+    description:
+      'Starts a mission of the current quest: creates its progress at 0 with ' +
+      'a start time, so its rule window runs from now. Selecting a quest ' +
+      'does not start its missions, and only started missions get progress. ' +
+      'Starting an already started mission returns it unchanged. Missions ' +
+      'whose rule asks for numbers take them as `inputs` (e.g. M.B1.3: ' +
+      '{"inputs": {"previousMeatMeals": 5}}); others take no body. Returns ' +
+      '400 when the mission is not part of the current quest or the inputs ' +
+      'are invalid.',
+  })
+  @ApiParam({
+    name: 'code',
+    type: 'string',
+    description: 'Mission code',
+    example: 'M.A1.1',
+  })
+  @ApiBody({ type: StartMissionProgressDto, required: false })
+  @ApiResponse({
+    status: 201,
+    description: 'Mission started (or already started)',
+    type: MissionProgressResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'The mission is not part of the current quest, or the inputs are invalid',
+  })
+  @ApiResponse({ status: 404, description: 'Mission not found' })
+  @ApiCrudErrorResponses()
+  async startProgressByCode(
+    @Param('code') code: string,
+    @CurrentUser('id') userId: string,
+    @Query() query: LearningLangQueryDto,
+    @Body() body: StartMissionProgressDto = {},
+  ): Promise<MissionProgressResponseDto> {
+    return this.missionProgressService.start(
+      code,
+      userId,
+      query.lang,
+      body.inputs,
+    );
+  }
+
   @Post('by-code/:code/progress/restart')
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
@@ -245,14 +294,16 @@ export class MissionsController {
     summary: 'Restart a failed mission by code',
     description:
       'Starts a FAILED mission again as a new attempt: progress 0, status ' +
-      'NOT_STARTED and a new start time, so its rule window starts over. ' +
-      'Returns 400 when the mission has not failed.',
+      'IN_PROGRESS and a new start time, so its rule window starts over. ' +
+      'Takes the same optional `inputs` as start, for the new attempt. ' +
+      'Returns 400 when the mission has not failed or the inputs are invalid.',
   })
   @ApiParam({
     name: 'code',
     type: 'string',
     description: 'Mission code',
   })
+  @ApiBody({ type: StartMissionProgressDto, required: false })
   @ApiResponse({
     status: 201,
     description: 'Mission restarted',
@@ -265,8 +316,14 @@ export class MissionsController {
     @Param('code') code: string,
     @CurrentUser('id') userId: string,
     @Query() query: LearningLangQueryDto,
+    @Body() body: StartMissionProgressDto = {},
   ): Promise<MissionProgressResponseDto> {
-    return this.missionProgressService.restart(code, userId, query.lang);
+    return this.missionProgressService.restart(
+      code,
+      userId,
+      query.lang,
+      body.inputs,
+    );
   }
 
   @Get(':codeOrId')

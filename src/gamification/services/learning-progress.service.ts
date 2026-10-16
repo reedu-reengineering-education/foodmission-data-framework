@@ -175,7 +175,7 @@ export class LearningProgressService {
 
     const items: QuestItemStatusDto[] = refs.map((item) => {
       const key = contentItemKey(item);
-      const { status, progress } = statuses.get(key)!;
+      const { status, progress, startedAt } = statuses.get(key)!;
       return {
         contentType: item.contentType,
         contentCode: item.contentCode,
@@ -183,6 +183,7 @@ export class LearningProgressService {
         finished: status === ProgressStatus.COMPLETED,
         status,
         progress,
+        startedAt,
         sortOrder: item.sortOrder,
       };
     });

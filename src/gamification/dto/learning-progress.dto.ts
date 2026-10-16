@@ -97,9 +97,10 @@ export class QuestItemStatusDto extends ContentItemProgressDto {
   @ApiProperty({
     enum: ProgressStatus,
     description:
-      'Missions/challenges: their progress status. Quizzes: COMPLETED when ' +
-      'answered correctly, FAILED when answered wrong. Food facts: COMPLETED ' +
-      'once read. NOT_STARTED otherwise.',
+      'Missions/challenges: their progress status; a started mission is ' +
+      'IN_PROGRESS even at progress 0. Quizzes: COMPLETED when answered ' +
+      'correctly, FAILED when answered wrong. Food facts: COMPLETED once ' +
+      'read. NOT_STARTED otherwise.',
   })
   status!: ProgressStatus;
 
@@ -109,6 +110,19 @@ export class QuestItemStatusDto extends ContentItemProgressDto {
     description: 'Partial progress for missions/challenges, else 0 or 100',
   })
   progress!: number;
+
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    nullable: true,
+    description:
+      'Missions/challenges: when it was started. For a mission, null means ' +
+      'the user has not started it yet; start it with ' +
+      'POST /missions/by-code/{code}/progress/start. Challenges need no ' +
+      'start; theirs is set on their first progress. Always null for ' +
+      'quizzes and food facts.',
+  })
+  startedAt!: Date | null;
 
   @ApiProperty()
   sortOrder!: number;

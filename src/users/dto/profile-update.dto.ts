@@ -152,8 +152,11 @@ export class ProfileUpdateDto {
 
   @ApiProperty({
     description:
-      'Opaque current quest id (string until Quest catalog exists with UUID PKs). ' +
-      'Pass null to clear. Will become UUID + FK when Quest model lands.',
+      'Id of the quest to make current. Pass null to clear. Selecting a ' +
+      'quest starts nothing: start each mission with ' +
+      'POST /missions/by-code/{code}/progress/start. Challenges need no ' +
+      'start; complete them with PATCH /challenges/by-code/{code}/progress. ' +
+      'Switching quests removes unfinished progress of the old quest.',
     required: false,
     nullable: true,
     example: 'seed-quest-dev-user',

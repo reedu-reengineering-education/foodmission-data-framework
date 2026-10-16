@@ -7,11 +7,12 @@ import {
   findUnknownIdentifiers,
   type RuleCounter,
   type RuleDefinition,
+  type RuleInput,
   type RuleWindow,
   type WindowType,
 } from './rule-evaluator';
 
-export type { RuleCounter, RuleDefinition, RuleWindow, WindowType };
+export type { RuleCounter, RuleDefinition, RuleInput, RuleWindow, WindowType };
 
 export const RULE_SHAPES = [
   'undecided',
@@ -56,7 +57,10 @@ export interface RulesCoverageDoc {
 
 const EVENT_TYPE_VALUES = Object.values(EventType);
 
-/** Joi `custom` hook: a formula may only name its own counters and builtins. */
+/**
+ * Joi `custom` hook: a formula may only name its own counters, inputs and
+ * builtins.
+ */
 export function rejectUnknownIdentifiers(rule: RuleDefinition): RuleDefinition {
   const unknown = findUnknownIdentifiers(rule);
   if (unknown.length > 0) {
@@ -64,6 +68,35 @@ export function rejectUnknownIdentifiers(rule: RuleDefinition): RuleDefinition {
   }
   return rule;
 }
+
+/**
+ * Joi `custom` hook: an input can't share a counter's name (formulas couldn't
+ * tell them apart), and its fallback must be one of the rule's counters.
+ */
+export function rejectInvalidInputs(rule: RuleDefinition): RuleDefinition {
+  for (const [name, input] of Object.entries(rule.inputs ?? {})) {
+    if (name in rule.counters) {
+      throw new Error(`input ${name} has the same name as a counter`);
+    }
+    if (input.fallback != null && !(input.fallback in rule.counters)) {
+      throw new Error(
+        `input ${name} falls back to unknown counter ${input.fallback}`,
+      );
+    }
+    if (input.min != null && input.max != null && input.min > input.max) {
+      throw new Error(`input ${name} has min greater than max`);
+    }
+  }
+  return rule;
+}
+
+/** See RuleInput in rule-evaluator.ts. */
+const inputSchema = Joi.object({
+  type: Joi.string().valid('integer').required(),
+  min: Joi.number().integer(),
+  max: Joi.number().integer(),
+  fallback: Joi.string().min(1),
+});
 
 const whereValueSchema = Joi.alternatives().try(
   Joi.string().min(1).max(256),
@@ -142,6 +175,9 @@ const ruleSchema = Joi.object({
       .required(),
     days: Joi.number().integer().positive().required(),
   }).required(),
+  inputs: Joi.object()
+    .pattern(Joi.string().pattern(/^[A-Za-z_]\w*$/), inputSchema)
+    .min(1),
   counters: Joi.object().pattern(Joi.string().min(1), counterSchema).required(),
   target: Joi.string().min(1).required(),
   progress: Joi.string().min(1).required(),
@@ -149,6 +185,7 @@ const ruleSchema = Joi.object({
   resolveAt: Joi.string().valid(...RESOLVE_AT),
   notes: Joi.array().items(Joi.string().min(1)).default([]),
 })
+  .custom(rejectInvalidInputs)
   .custom(rejectUnknownIdentifiers)
   .required();
 

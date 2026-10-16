@@ -112,6 +112,17 @@ export class ChallengeProgressService {
     this.logger.log(`Updating challenge ${codeOrId} for user: ${userId}`);
 
     const challenge = await this.requireChallenge(codeOrId);
+    // Challenges need no start, but only count within the current quest.
+    if (
+      !(await this.challengeProgressRepository.isInCurrentQuest(
+        userId,
+        challenge.code,
+      ))
+    ) {
+      throw new BadRequestException(
+        'This challenge is not part of your current quest',
+      );
+    }
 
     const previous =
       await this.challengeProgressRepository.findByUserIdAndChallengeId(

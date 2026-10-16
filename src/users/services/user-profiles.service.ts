@@ -274,9 +274,11 @@ export class UserProfilesService {
     const oldQuestItems = previousQuestId
       ? await this.getQuestMissionChallengeItems(tx, previousQuestId)
       : [];
-    const newQuestItems = nextQuestId
-      ? await this.getQuestMissionChallengeItems(tx, nextQuestId, true)
-      : [];
+    if (nextQuestId) {
+      // Validates the quest. No progress is created here: the user starts
+      // each mission explicitly, and challenges need no start.
+      await this.getQuestMissionChallengeItems(tx, nextQuestId, true);
+    }
 
     const updatedUser = await tx.user.update({
       where: { id: user.id },
@@ -285,10 +287,6 @@ export class UserProfilesService {
 
     if (previousQuestId && previousQuestId !== nextQuestId) {
       await this.removeOldQuestProgressRows(tx, user.id, oldQuestItems);
-    }
-
-    if (nextQuestId) {
-      await this.seedQuestProgressRows(tx, user.id, newQuestItems);
     }
 
     return updatedUser;
@@ -322,69 +320,6 @@ export class UserProfilesService {
     }
 
     return quest.items;
-  }
-
-  private async seedQuestProgressRows(
-    tx: Pick<
-      PrismaService,
-      'mission' | 'challenge' | 'missionProgress' | 'challengeProgress'
-    >,
-    userId: string,
-    questItems: Array<{ contentType: string; contentCode: string }>,
-  ): Promise<void> {
-    const missionCodes = questItems
-      .filter((item) => item.contentType === 'MISSION')
-      .map((item) => item.contentCode);
-    const challengeCodes = questItems
-      .filter((item) => item.contentType === 'CHALLENGE')
-      .map((item) => item.contentCode);
-    // Selecting the quest starts its missions and challenges, even at
-    // progress 0.
-    const startedAt = new Date();
-
-    if (missionCodes.length > 0) {
-      const missions = await tx.mission.findMany({
-        where: { code: { in: missionCodes } },
-        select: { id: true },
-      });
-
-      if (missions.length > 0) {
-        await tx.missionProgress.createMany({
-          data: missions.map((mission) => ({
-            userId,
-            missionId: mission.id,
-            progress: 0,
-            completed: false,
-            status: ProgressStatus.NOT_STARTED,
-            state: {},
-            startedAt,
-          })),
-          skipDuplicates: true,
-        });
-      }
-    }
-
-    if (challengeCodes.length > 0) {
-      const challenges = await tx.challenge.findMany({
-        where: { code: { in: challengeCodes } },
-        select: { id: true },
-      });
-
-      if (challenges.length > 0) {
-        await tx.challengeProgress.createMany({
-          data: challenges.map((challenge) => ({
-            userId,
-            challengeId: challenge.id,
-            progress: 0,
-            completed: false,
-            status: ProgressStatus.NOT_STARTED,
-            state: {},
-            startedAt,
-          })),
-          skipDuplicates: true,
-        });
-      }
-    }
   }
 
   private async removeOldQuestProgressRows(

@@ -4,6 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
+import { isInCurrentQuest } from '../../quests/current-quest-membership';
 
 @Injectable()
 export class ChallengeProgressRepository {
@@ -14,6 +15,10 @@ export class ChallengeProgressRepository {
       where: codeOrIdWhere(codeOrId),
       include: { reward: { select: { id: true, xp: true, points: true } } },
     });
+  }
+
+  async isInCurrentQuest(userId: string, challengeCode: string) {
+    return isInCurrentQuest(this.prisma, userId, 'CHALLENGE', challengeCode);
   }
 
   async findByUserIdAndChallengeId(userId: string, challengeId: string) {

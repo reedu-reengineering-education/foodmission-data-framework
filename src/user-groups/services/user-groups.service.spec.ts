@@ -225,7 +225,7 @@ describe('UserGroupsService', () => {
       expect(result.name).toBe(updateDto.name);
     });
 
-    it('should seed new quest rows and remove old non-completed rows for registered members', async () => {
+    it('should remove old non-completed rows for registered members and start nothing in the new quest', async () => {
       const oldQuestId = 'quest-old';
       const newQuestId = 'quest-new';
       const updateWithQuest = { ...updateDto, currentQuestId: newQuestId };
@@ -273,16 +273,12 @@ describe('UserGroupsService', () => {
             ]),
         },
         mission: {
-          findMany: jest
-            .fn()
-            .mockResolvedValueOnce([{ id: 'mission-old-id' }])
-            .mockResolvedValueOnce([{ id: 'mission-new-id' }]),
+          findMany: jest.fn().mockResolvedValueOnce([{ id: 'mission-old-id' }]),
         },
         challenge: {
           findMany: jest
             .fn()
-            .mockResolvedValueOnce([{ id: 'challenge-old-id' }])
-            .mockResolvedValueOnce([{ id: 'challenge-new-id' }]),
+            .mockResolvedValueOnce([{ id: 'challenge-old-id' }]),
         },
         missionProgress: {
           deleteMany: jest.fn().mockResolvedValue({ count: 2 }),
@@ -309,14 +305,9 @@ describe('UserGroupsService', () => {
       expect(prismaService.$transaction).toHaveBeenCalledTimes(1);
       expect(tx.missionProgress.deleteMany).toHaveBeenCalled();
       expect(tx.challengeProgress.deleteMany).toHaveBeenCalled();
-      expect(tx.missionProgress.createMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.arrayContaining([
-            expect.objectContaining({ startedAt: expect.any(Date) }),
-          ]),
-        }),
-      );
-      expect(tx.challengeProgress.createMany).toHaveBeenCalled();
+      // Each member starts the new quest's missions and challenges themselves.
+      expect(tx.missionProgress.createMany).not.toHaveBeenCalled();
+      expect(tx.challengeProgress.createMany).not.toHaveBeenCalled();
     });
 
     it('should throw GroupAdminRequiredException when user is not admin', async () => {

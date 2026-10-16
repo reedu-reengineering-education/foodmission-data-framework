@@ -599,11 +599,17 @@ missions:
       window:
         type: since_start
         days: 7
+      inputs:
+        previousMeatMeals:
+          type: integer
+          min: 0
+          max: 21
+          fallback: loggedPreviousMeatMeals
       counters:
         currentMeatMeals:
           event: MEAL_MEAT_CONSUMED
           distinctBy: metadata.mealLogId
-        previousMeatMeals:
+        loggedPreviousMeatMeals:
           event: MEAL_MEAT_CONSUMED
           distinctBy: metadata.mealLogId
           window:
@@ -612,15 +618,16 @@ missions:
         loggedDays:
           event: MEAL_LOGGED
           distinctBy: metadata.mealDayBucket
-      target: 'previousMeatMeals >= 1 && currentMeatMeals <= previousMeatMeals - 1'
-      fail: 'previousMeatMeals >= 1 && currentMeatMeals >= previousMeatMeals'
+      target: 'currentMeatMeals <= max(previousMeatMeals - 1, 0)'
+      fail: 'currentMeatMeals > max(previousMeatMeals - 1, 0)'
       resolveAt: window_end
-      progress: 'previousMeatMeals >= 1 && currentMeatMeals < previousMeatMeals ? min(loggedDays / 7, 1) : 0'
+      progress: 'currentMeatMeals <= max(previousMeatMeals - 1, 0) ? min(loggedDays / 7, 1) : 0'
       notes:
-        - 'Progress is days with a logged meal / 7 while below last week''s count; 0 when there is no previous-week baseline'
-        - 'Compares the meat meals in the 7 days after starting against the 7 days before starting (before_start counter window)'
-        - 'Fails at once when the current week reaches the previous week''s count; completes at the end of the week'
-        - 'A user with no meat meals in the previous week cannot eat one fewer, so the mission fails at the deadline'
+        - 'previousMeatMeals is last week''s meat meals, set by the user on start (POST /missions/by-code/M.B1.3/progress/start with {"inputs": {"previousMeatMeals": 5}}); fixed for the attempt, a restart may set a new one'
+        - 'Without it, the baseline is the meat meals logged in the 7 days before starting (loggedPreviousMeatMeals, a before_start counter)'
+        - 'Goal is one fewer than the baseline: at most previousMeatMeals - 1 meat meals in the 7 days after starting; fails at once on reaching the baseline; completes at the end of the week'
+        - 'A baseline of 0 means no meat meals this week: fails on the first one, completes at the end of a meat-free week'
+        - 'Progress is days with a logged meal / 7 while under the limit'
         - 'Counts meal logs (metadata.mealLogId), so a saved meal eaten twice counts twice'
   - code: M.B1.4
     shape: count_at_least

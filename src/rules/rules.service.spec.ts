@@ -122,6 +122,7 @@ describe('rule-evaluator filterEvents', () => {
       failed: false,
       deadline: null,
       counters: { currentMeatMeals: 1, previousMeatMeals: 2 },
+      inputs: {},
     });
   });
 });

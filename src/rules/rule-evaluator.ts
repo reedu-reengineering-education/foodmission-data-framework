@@ -63,8 +63,22 @@ export interface RuleCounter {
   window?: RuleWindow;
 }
 
+/**
+ * A number the user sets when starting the item, e.g. how many meat meals
+ * they ate last week. Formulas use it by name, like a counter. Without a
+ * value it takes the `fallback` counter's value (or 0).
+ */
+export interface RuleInput {
+  type: 'integer';
+  min?: number;
+  max?: number;
+  /** Counter whose value stands in when the user set none. */
+  fallback?: string;
+}
+
 export interface RuleDefinition {
   window: RuleWindow;
+  inputs?: Record<string, RuleInput>;
   counters: Record<string, RuleCounter>;
   target: string;
   progress: string;
@@ -97,6 +111,8 @@ export interface RuleOutcome {
   deadline: Date | null;
   /** Counter values behind the verdict, for the progress row's `state`. */
   counters: Record<string, number>;
+  /** Input values the formulas used (set by the user, or the fallback). */
+  inputs: Record<string, number>;
 }
 
 /** Every event type any counter in these rules can match. */
@@ -167,6 +183,7 @@ export function evaluateRule(
   events: UserEventRow[],
   evaluationAt: Date = new Date(),
   startedAt?: Date | null,
+  inputValues?: unknown,
 ): RuleOutcome {
   const anchor =
     rule.window.type === 'since_start' && startedAt ? startedAt : null;
@@ -181,16 +198,57 @@ export function evaluateRule(
     evaluationAt,
     anchor,
   );
-  const targetMet = asBoolean(evaluateExpression(rule.target, counters));
+  const inputs = resolveInputs(rule.inputs, inputValues, counters);
+  const scope = { ...counters, ...inputs };
+  const targetMet = asBoolean(evaluateExpression(rule.target, scope));
   const completed = targetMet && (!waitForWindowEnd || windowClosed);
   const failHolds =
-    rule.fail != null && asBoolean(evaluateExpression(rule.fail, counters));
+    rule.fail != null && asBoolean(evaluateExpression(rule.fail, scope));
   const failed = !completed && (failHolds || windowClosed);
   const progress = completed
     ? 100
-    : normalizeProgress(evaluateExpression(rule.progress, counters));
+    : normalizeProgress(evaluateExpression(rule.progress, scope));
 
-  return { progress, completed, failed, deadline, counters };
+  return { progress, completed, failed, deadline, counters, inputs };
+}
+
+/**
+ * Whether `value` is acceptable for `input`: an integer within its bounds.
+ * Shared with the start endpoint, which rejects anything else.
+ */
+export function isValidInputValue(input: RuleInput, value: unknown): boolean {
+  return (
+    typeof value === 'number' &&
+    Number.isInteger(value) &&
+    (input.min == null || value >= input.min) &&
+    (input.max == null || value <= input.max)
+  );
+}
+
+/**
+ * Each declared input's value: the user's, when it is valid, else the
+ * `fallback` counter's, else 0. A stored value that no longer fits the rule
+ * (bounds changed since the start) falls back too.
+ */
+export function resolveInputs(
+  definitions: Record<string, RuleInput> | undefined,
+  values: unknown,
+  counters: Record<string, number>,
+): Record<string, number> {
+  const given =
+    values != null && typeof values === 'object' && !Array.isArray(values)
+      ? (values as Record<string, unknown>)
+      : {};
+  const resolved: Record<string, number> = {};
+  for (const [name, input] of Object.entries(definitions ?? {})) {
+    const value = given[name];
+    resolved[name] = isValidInputValue(input, value)
+      ? (value as number)
+      : input.fallback
+        ? (counters[input.fallback] ?? 0)
+        : 0;
+  }
+  return resolved;
 }
 
 function addDays(date: Date, days: number): Date {
@@ -429,16 +487,18 @@ export const EXPRESSION_BUILTINS = [
 ] as const;
 
 /**
- * Names in `target`, `progress` and `fail` that are neither a counter of the
- * rule nor a builtin. This reads the text instead of running it: `&&`, `||`
+ * Names in `target`, `progress` and `fail` that are neither a counter or input
+ * of the rule nor a builtin. This reads the text instead of running it: `&&`, `||`
  * and `?:` skip operands at runtime, so with every counter at 0 a typo behind
  * a false `&&` is never reached and never throws.
  */
 export function findUnknownIdentifiers(
-  rule: Pick<RuleDefinition, 'counters' | 'target' | 'progress' | 'fail'>,
+  rule: Pick<RuleDefinition, 'counters' | 'target' | 'progress' | 'fail'> &
+    Partial<Pick<RuleDefinition, 'inputs'>>,
 ): string[] {
   const known = new Set<string>([
     ...Object.keys(rule.counters),
+    ...Object.keys(rule.inputs ?? {}),
     ...EXPRESSION_BUILTINS,
   ]);
   const unknown = new Set<string>();

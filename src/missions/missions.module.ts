@@ -6,6 +6,7 @@ import { CommonModule } from '../common/common.module';
 import { TranslationsModule } from '../translations/translations.module';
 import { EventsModule } from '../events/events.module';
 import { GamificationModule } from '../gamification/gamification.module';
+import { RulesModule } from '../rules/rules.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { MissionsController } from './controllers/missions.controller';
 import { MissionsService } from './services/missions.service';
@@ -22,6 +23,7 @@ import { MissionProgressRepository } from './repositories/mission-progress.repos
     TranslationsModule,
     EventsModule,
     GamificationModule,
+    RulesModule,
   ],
   controllers: [MissionsController, MissionProgressController],
   providers: [

@@ -84,9 +84,9 @@ describe('mission and challenge rules document', () => {
       for (const entry of decided) {
         const rule = entry.rule!;
         try {
-          const { counters } = evaluateRule(rule, []);
+          const { counters, inputs } = evaluateRule(rule, []);
           if (rule.fail) {
-            evaluateExpression(rule.fail, counters);
+            evaluateExpression(rule.fail, { ...counters, ...inputs });
           }
         } catch (error) {
           failures.push(`${entry.code}: ${(error as Error).message}`);
@@ -281,5 +281,58 @@ describe('M.A2.2 (one product with two labels)', () => {
       score([chosen('p1', ['EU_ORGANIC']), chosen('p2', ['FAIRTRADE'])]),
     ).toBe(false);
     expect(score([chosen('p1', undefined)])).toBe(false);
+  });
+});
+
+describe('M.B1.3 (one fewer meat meal than last week)', () => {
+  const entry = loadRules().missions.find((m) => m.code === 'M.B1.3');
+  const startedAt = new Date('2026-01-08T00:00:00.000Z');
+  const during = new Date('2026-01-10T00:00:00.000Z');
+  const afterWeek = new Date('2026-01-16T00:00:00.000Z');
+  let mealLog = 0;
+  const meat = (at: string): UserEventRow => ({
+    eventType: 'MEAL_MEAT_CONSUMED',
+    createdAt: new Date(at),
+    metadata: { mealLogId: `log-${++mealLog}` },
+  });
+  const meatMeals = (count: number, at = '2026-01-09T12:00:00.000Z') =>
+    Array.from({ length: count }, () => meat(at));
+  const score = (events: UserEventRow[], at: Date, inputs?: unknown) =>
+    evaluateRule(entry!.rule!, events, at, startedAt, inputs);
+
+  it('uses the number the user set: 5 last week allows at most 4', () => {
+    const inputs = { previousMeatMeals: 5 };
+    expect(score(meatMeals(4), afterWeek, inputs).completed).toBe(true);
+    // Not before the week is over: more meat meals could still come.
+    expect(score(meatMeals(4), during, inputs).completed).toBe(false);
+    expect(score(meatMeals(5), during, inputs).failed).toBe(true);
+  });
+
+  it('treats 0 as a meat-free week', () => {
+    const inputs = { previousMeatMeals: 0 };
+    expect(score([], afterWeek, inputs).completed).toBe(true);
+    expect(score(meatMeals(1), during, inputs).failed).toBe(true);
+  });
+
+  it('falls back to the meat meals logged in the week before the start', () => {
+    const lastWeek = meatMeals(3, '2026-01-05T12:00:00.000Z');
+    expect(score([...lastWeek, ...meatMeals(2)], afterWeek).completed).toBe(
+      true,
+    );
+    expect(score([...lastWeek, ...meatMeals(3)], during).failed).toBe(true);
+  });
+
+  it("prefers the user's number over the logged week", () => {
+    const lastWeek = meatMeals(6, '2026-01-05T12:00:00.000Z');
+    expect(
+      score([...lastWeek, ...meatMeals(2)], during, { previousMeatMeals: 2 })
+        .failed,
+    ).toBe(true);
+  });
+
+  it('ignores a stored number that is out of range', () => {
+    const lastWeek = meatMeals(3, '2026-01-05T12:00:00.000Z');
+    const outcome = score([...lastWeek], afterWeek, { previousMeatMeals: 30 });
+    expect(outcome.inputs).toEqual({ previousMeatMeals: 3 });
   });
 });

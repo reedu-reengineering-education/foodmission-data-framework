@@ -35,6 +35,8 @@ describe('ChallengeProgressService', () => {
             findAllPaginated: jest.fn(),
             upsert: jest.fn(),
             restart: jest.fn(),
+            // Every challenge is in the current quest unless a test says not.
+            isInCurrentQuest: jest.fn().mockResolvedValue(true),
           },
         },
         {
@@ -166,6 +168,24 @@ describe('ChallengeProgressService', () => {
   });
 
   describe('update', () => {
+    it('rejects a challenge outside the current quest', async () => {
+      (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
+        id: 'c1',
+        code: 'CH.A1.1',
+        title: 'Test Challenge',
+        reward: { id: 'r1', xp: 15, points: 20 },
+      });
+      (repository.isInCurrentQuest as jest.Mock).mockResolvedValue(false);
+
+      await expect(
+        service.update('CH.A1.1', { completed: true }, 'u1'),
+      ).rejects.toThrow(BadRequestException);
+      expect(repository.isInCurrentQuest).toHaveBeenCalledWith('u1', 'CH.A1.1');
+      expect(repository.upsert).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+      expect(walletService.award).not.toHaveBeenCalled();
+    });
+
     it('should upsert and return challenge progress', async () => {
       const updated = {
         challengeId: 'c1',

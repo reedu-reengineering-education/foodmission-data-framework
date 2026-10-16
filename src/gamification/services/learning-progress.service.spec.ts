@@ -336,6 +336,7 @@ describe('LearningProgressService.getCurrentQuest', () => {
             completed: false,
             status: ProgressStatus.IN_PROGRESS,
             progress: 40,
+            startedAt: new Date('2026-10-01T10:00:00Z'),
             mission: { code: 'M.1' },
           },
         ]),
@@ -458,6 +459,7 @@ describe('LearningProgressService.getCurrentQuest', () => {
           finished: false,
           status: ProgressStatus.IN_PROGRESS,
           progress: 40,
+          startedAt: new Date('2026-10-01T10:00:00Z'),
           sortOrder: 0,
         },
         {
@@ -467,6 +469,8 @@ describe('LearningProgressService.getCurrentQuest', () => {
           finished: false,
           status: ProgressStatus.NOT_STARTED,
           progress: 0,
+          // Not started yet: no progress row.
+          startedAt: null,
           sortOrder: 1,
         },
         {
@@ -476,6 +480,7 @@ describe('LearningProgressService.getCurrentQuest', () => {
           finished: true,
           status: ProgressStatus.COMPLETED,
           progress: 100,
+          startedAt: null,
           sortOrder: 2,
         },
         {
@@ -485,6 +490,7 @@ describe('LearningProgressService.getCurrentQuest', () => {
           finished: false,
           status: ProgressStatus.FAILED,
           progress: 0,
+          startedAt: null,
           sortOrder: 3,
         },
       ],
