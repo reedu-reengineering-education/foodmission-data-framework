@@ -57,6 +57,7 @@
     "db:translations": "ts-node scripts/seeds/seed-translations.ts",
     "db:translations:prod": "node dist/scripts/seeds/seed-translations.js",
     "db:import:nevo-translations": "ts-node scripts/seeds/import-nevo-translations.ts",
+    "db:build:eff": "ts-node scripts/seeds/build-nevo-eff.ts",
     "db:seed:test": "ts-node scripts/dev/seed-test.ts",
     "db:seed:foods": "ts-node scripts/seeds/seed-food-products-only.ts",
     "db:seed:meal-logs": "ts-node scripts/seeds/dev/seed-meal-logs.ts",

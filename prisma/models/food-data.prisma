@@ -2,6 +2,33 @@
 // Food Data - Food products, shelf life
 // ============================================================
 
+/// How a NEVO food was matched to an EFF (Environmental Footprint of Food) product
+enum EffMatchType {
+  EXACT // NEVO FoodEx2 base term equals the EFF product code
+  EFF_NEVO_PROXY // EFF lists this NEVO food as its modelling proxy
+  PARENT_1 // EFF product is the FoodEx2 parent term
+  PARENT_2 // EFF product is the FoodEx2 grandparent term
+  MANUAL // set by manual review
+}
+
+/// Reference unit of an environmental footprint value
+enum FootprintBasis {
+  RETAIL // per kg bought at the supermarket
+  CONSUMED // per kg as eaten (incl. preparation, household losses, raw-to-cooked)
+}
+
+/// Life-cycle stage of an EFF footprint (EFF contribution analysis)
+enum EffStage {
+  ANIMAL_PRODUCTION             // on-farm livestock emissions (enteric fermentation, manure)
+  CROP_AND_PROCESSING_LOGISTICS // cultivation of raw materials and their transport via market mixes
+  PROCESSING                    // processing crops into ingredients and ingredients into food
+  PACKAGING                     // packaging material production and transport
+  DISTRIBUTION                  // factory -> distribution centre -> retail, incl. DC storage
+  SUPERMARKET                   // storage energy and food waste at the supermarket
+  CONSUMPTION                   // consumed basis only: transport home, storage, preparation, unavoidable losses
+  END_OF_LIFE                   // consumed basis only: avoidable food losses and packaging waste
+}
+
 model FoodProduct {
   id          String   @id @default(uuid())
   name        String
@@ -282,6 +309,13 @@ model GenericFood {
   // --- Other ---
   fattyAcidsUnidentified Float? // Unknown/unidentified fatty acids (g)
 
+  // --- Environmental footprint link (EFSA EFF database) ---
+  // Values live per country and basis in EffFootprint; ~half of NEVO foods have a match.
+  effProductId      String?
+  effProduct        EffProduct?     @relation(fields: [effProductId], references: [id], onDelete: SetNull)
+  effMatchType      EffMatchType?
+  effPreferredBasis FootprintBasis? // basis that fits this NEVO food (raw vs cooked/prepared)
+
   // --- Shelf life link ---
   shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
   shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])
@@ -297,7 +331,87 @@ model GenericFood {
   @@index([foodName])
   @@index([nevoCode])
   @@index([shelfLifeId])
+  @@index([effProductId])
   @@map("generic_foods")
+}
+
+/// Product of the EFSA Environmental Footprint of Food (EFF) database
+/// (Zenodo 17899564, CC BY 4.0), keyed by FoodEx2 code.
+model EffProduct {
+  id          String   @id @default(uuid())
+  foodex2Code String   @unique // e.g. "A01QV"
+  name        String // e.g. "Bovine fresh meat"
+  category    String? // EFF food category, e.g. "Meat"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  footprints   EffFootprint[]
+  genericFoods GenericFood[]
+
+  @@map("eff_products")
+}
+
+/// EF 3.x impact totals for 1 kg of an EFF product in one country, as published.
+/// Retail = per kg bought at the supermarket. Consumed = per kg as eaten
+/// (incl. preparation energy, household losses and raw-to-cooked).
+model EffFootprint {
+  id           String         @id @default(uuid())
+  effProductId String
+  effProduct   EffProduct     @relation(fields: [effProductId], references: [id], onDelete: Cascade)
+  country      String // ISO 3166-1 alpha-2 (e.g. "DE"; Greece is "GR") or "EU_27"
+  basis        FootprintBasis
+  stages       EffFootprintStage[]
+
+  climateChange               Float // kg CO2 eq
+  landUse                     Float // Pt (soil quality index, not m²a)
+  waterUse                    Float // m³ world eq. deprived
+  acidification               Float // mol H+ eq
+  particulateMatter           Float // disease incidence
+  eutrophicationMarine        Float // kg N eq
+  eutrophicationFreshwater    Float // kg P eq
+  eutrophicationTerrestrial   Float // mol N eq
+  humanToxicityCancer         Float // CTUh
+  humanToxicityNonCancer      Float // CTUh
+  ionisingRadiation           Float // kBq U-235 eq
+  ozoneDepletion              Float // kg CFC-11 eq
+  photochemicalOzoneFormation Float // kg NMVOC eq
+  resourceUseFossils          Float // MJ
+  resourceUseMineralsMetals   Float // kg Sb eq
+  ecotoxicityFreshwater       Float // CTUe
+
+  @@unique([effProductId, country, basis])
+  @@index([country, basis])
+  @@map("eff_footprints")
+}
+
+/// Contribution of one life-cycle stage to an EffFootprint, as published. Stages
+/// sum to the footprint total (within EFF rounding); values can be negative
+/// (e.g. recycling credits at end of life).
+model EffFootprintStage {
+  id          String       @id @default(uuid())
+  footprintId String
+  footprint   EffFootprint @relation(fields: [footprintId], references: [id], onDelete: Cascade)
+  stage       EffStage
+
+  climateChange               Float // kg CO2 eq
+  landUse                     Float // Pt
+  waterUse                    Float // m³ world eq. deprived
+  acidification               Float // mol H+ eq
+  particulateMatter           Float // disease incidence
+  eutrophicationMarine        Float // kg N eq
+  eutrophicationFreshwater    Float // kg P eq
+  eutrophicationTerrestrial   Float // mol N eq
+  humanToxicityCancer         Float // CTUh
+  humanToxicityNonCancer      Float // CTUh
+  ionisingRadiation           Float // kBq U-235 eq
+  ozoneDepletion              Float // kg CFC-11 eq
+  photochemicalOzoneFormation Float // kg NMVOC eq
+  resourceUseFossils          Float // MJ
+  resourceUseMineralsMetals   Float // kg Sb eq
+  ecotoxicityFreshwater       Float // CTUe
+
+  @@unique([footprintId, stage])
+  @@map("eff_footprint_stages")
 }
 
 model FoodShelfLife {
