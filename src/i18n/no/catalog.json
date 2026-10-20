@@ -81,10 +81,11 @@
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Ikke noe spesifikt svar",
+    "ME": "Helt meg",
     "MOSTLY_ME": "Stort sett meg",
     "SHARED_EQUALLY": "Delt likt",
     "MOSTLY_SOMEONE_ELSE": "Stort sett noen andre",
-    "SOMEONE_ELSE": "Noen andre"
+    "SOMEONE_ELSE": "Helt noen andre"
   },
   "weeklyMeatRanges": {
     "ZERO_TO_FOUR": "0–4",

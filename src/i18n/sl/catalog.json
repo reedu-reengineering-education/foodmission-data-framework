@@ -81,10 +81,11 @@
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Brez posebnega odgovora",
+    "ME": "Povsem jaz",
     "MOSTLY_ME": "Večinoma jaz",
     "SHARED_EQUALLY": "Porazdeljeno na pol",
     "MOSTLY_SOMEONE_ELSE": "Večinoma nekdo drug",
-    "SOMEONE_ELSE": "Nekdo drug"
+    "SOMEONE_ELSE": "Povsem nekdo drug"
   },
   "weeklyMeatRanges": {
     "ZERO_TO_FOUR": "0–4",
