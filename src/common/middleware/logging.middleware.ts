@@ -12,7 +12,11 @@ export interface RequestWithLogging extends Request {
   startTime?: number;
   traceId?: string;
   requestId?: string;
+  /** Unverified JWT `sub`, for log attribution only. */
+  userId?: string;
 }
+
+const SLOW_REQUEST_MS = 5000;
 
 @Injectable()
 export class LoggingMiddleware implements NestMiddleware {
@@ -20,6 +24,8 @@ export class LoggingMiddleware implements NestMiddleware {
 
   use(req: RequestWithLogging, res: Response, next: NextFunction): void {
     const requestUrl = getRequestUrl(req);
+    // Query strings can hold search terms and other user input; never log them.
+    const requestPath = requestUrl.split('?')[0];
     const skipObservabilityLogging = shouldSkipObservabilityRoute(
       requestUrl,
       req.headers['user-agent'] || '',
@@ -45,7 +51,7 @@ export class LoggingMiddleware implements NestMiddleware {
     this.loggingService.setRequestContext({
       requestId,
       method: req.method,
-      url: requestUrl,
+      url: requestPath,
       userAgent: req.headers['user-agent'],
       ip: req.ip || req.connection?.remoteAddress,
     });
@@ -58,15 +64,11 @@ export class LoggingMiddleware implements NestMiddleware {
       return;
     }
 
-    // Log incoming request
-    this.logIncomingRequest(req, requestUrl);
-
     // Override res.end to log response
     const originalEnd = res.end;
     res.end = ((chunk?: any, encoding?: any, cb?: any) => {
-      // Log outgoing response
       const responseTime = Date.now() - (req.startTime || Date.now());
-      this.logOutgoingResponse(req, res, responseTime, requestUrl);
+      this.logResponse(req, res, responseTime, requestPath);
 
       // Call original end method
       return originalEnd.call(res, chunk, encoding, cb);
@@ -96,6 +98,7 @@ export class LoggingMiddleware implements NestMiddleware {
         const payload = this.decodeJwtPayload(token);
 
         if (payload && payload.sub) {
+          req.userId = payload.sub;
           this.loggingService.setUserContext(payload.sub);
         }
       }
@@ -117,106 +120,40 @@ export class LoggingMiddleware implements NestMiddleware {
     }
   }
 
-  private logIncomingRequest(
-    req: RequestWithLogging,
-    requestUrl: string,
-  ): void {
-    const message = `Incoming ${req.method} ${requestUrl}`;
-
-    this.loggingService.http(message, {
-      type: 'request',
-      method: req.method,
-      url: requestUrl,
-      query: req.query,
-      headers: this.sanitizeHeaders(req.headers),
-      body: this.sanitizeBody(req.body),
-      traceId: req.traceId,
-      requestId: req.requestId,
-    });
-  }
-
-  private logOutgoingResponse(
+  /**
+   * One line per request. Headers, body and query string are deliberately
+   * left out: they can carry credentials and user-entered text.
+   */
+  private logResponse(
     req: RequestWithLogging,
     res: Response,
     responseTime: number,
-    requestUrl: string,
+    path: string,
   ): void {
-    const message = `Outgoing ${req.method} ${requestUrl} ${res.statusCode} - ${responseTime}ms`;
+    const status = res.statusCode;
+    const level = status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info';
 
-    this.loggingService.http(message, {
-      type: 'response',
-      method: req.method,
-      url: requestUrl,
-      statusCode: res.statusCode,
-      responseTime,
-      contentLength: res.get('content-length'),
-      traceId: req.traceId,
-      requestId: req.requestId,
-    });
+    this.loggingService.logWithMeta(
+      level,
+      `${req.method} ${path} ${status} ${responseTime}ms`,
+      {
+        log_type: 'http',
+        method: req.method,
+        url: path,
+        statusCode: status,
+        responseTime,
+        contentLength: res.get('content-length'),
+        traceId: req.traceId,
+        requestId: req.requestId,
+        ...(req.userId && { userId: req.userId }),
+      },
+    );
 
-    // Log slow requests as warnings
-    if (responseTime > 5000) {
+    if (responseTime > SLOW_REQUEST_MS) {
       this.loggingService.warn(
-        `Slow request detected: ${req.method} ${requestUrl} took ${responseTime}ms`,
+        `Slow request: ${req.method} ${path} took ${responseTime}ms`,
         'LoggingMiddleware',
       );
     }
-
-    // Log errors as warnings
-    if (res.statusCode >= 400) {
-      const level = res.statusCode >= 500 ? 'error' : 'warn';
-      this.loggingService.logWithMeta(level, `HTTP ${res.statusCode} error`, {
-        method: req.method,
-        url: requestUrl,
-        statusCode: res.statusCode,
-        responseTime,
-        traceId: req.traceId,
-      });
-    }
-  }
-
-  private sanitizeHeaders(headers: any): any {
-    const sanitized = { ...headers };
-
-    // Remove sensitive headers
-    const sensitiveHeaders = [
-      'authorization',
-      'cookie',
-      'x-api-key',
-      'x-auth-token',
-    ];
-
-    sensitiveHeaders.forEach((header) => {
-      if (sanitized[header]) {
-        sanitized[header] = '[REDACTED]';
-      }
-    });
-
-    return sanitized;
-  }
-
-  private sanitizeBody(body: any): any {
-    if (!body || typeof body !== 'object') {
-      return body;
-    }
-
-    const sanitized = { ...body };
-
-    // Remove sensitive fields
-    const sensitiveFields = [
-      'password',
-      'token',
-      'secret',
-      'key',
-      'authorization',
-    ];
-
-    sensitiveFields.forEach((field) => {
-      if (sanitized[field]) {
-        sanitized[field] = '[REDACTED]';
-      }
-    });
-
-    return sanitized;
   }
 }
