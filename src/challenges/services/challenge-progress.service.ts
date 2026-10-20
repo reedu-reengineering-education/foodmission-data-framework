@@ -49,7 +49,7 @@ export class ChallengeProgressService {
     userId: string,
     lang?: string,
   ): Promise<ChallengeProgressResponseDto> {
-    this.logger.log(`Getting challenge ${codeOrId} for user: ${userId}`);
+    this.logger.debug(`Getting challenge ${codeOrId} for user: ${userId}`);
 
     const challenge = await this.requireChallenge(codeOrId);
 
@@ -84,7 +84,7 @@ export class ChallengeProgressService {
     userId: string,
     lang?: string,
   ): Promise<ChallengeProgressResponseDto[]> {
-    this.logger.log(`Getting all challenges for user: ${userId}`);
+    this.logger.debug(`Getting all challenges for user: ${userId}`);
 
     const progresses =
       await this.challengeProgressRepository.findAllByUserId(userId);
@@ -109,7 +109,7 @@ export class ChallengeProgressService {
     userId: string,
     lang?: string,
   ): Promise<ChallengeProgressResponseDto> {
-    this.logger.log(`Updating challenge ${codeOrId} for user: ${userId}`);
+    this.logger.debug(`Updating challenge ${codeOrId} for user: ${userId}`);
 
     const challenge = await this.requireChallenge(codeOrId);
     // Challenges need no start, but only count within the current quest.

@@ -59,7 +59,7 @@ export class MissionsService {
     codeOrId: string,
     lang?: string,
   ): Promise<MissionsResponseDto> {
-    this.logger.log(`Getting mission ${codeOrId}`);
+    this.logger.debug(`Getting mission ${codeOrId}`);
 
     const mission = await this.missionRepository.findByCodeOrId(codeOrId);
 
@@ -75,7 +75,7 @@ export class MissionsService {
     options: { isAdmin?: boolean; userId?: string } = {},
   ): Promise<MissionsResponseDto[]> {
     const { isAdmin = false, userId } = options;
-    this.logger.log(`Getting All missions`);
+    this.logger.debug(`Getting All missions`);
 
     const available =
       isAdmin && query.available !== undefined ? query.available : true;

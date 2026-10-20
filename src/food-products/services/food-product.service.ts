@@ -57,7 +57,7 @@ export class FoodProductService {
   async findAll(
     query: FoodProductQueryDto,
   ): Promise<PaginatedFoodProductResponseDto> {
-    this.logger.log(
+    this.logger.debug(
       `Finding foods page=${query.page ?? 1} limit=${query.limit ?? 10} lang=${query.lang ?? DEFAULT_LOCALE}`,
     );
 
@@ -124,7 +124,7 @@ export class FoodProductService {
     includeOpenFoodFacts: boolean = false,
     lang?: string,
   ): Promise<FoodProductResponseDto> {
-    this.logger.log(`Finding food by id: ${id}`);
+    this.logger.debug(`Finding food by id: ${id}`);
 
     const food = await this.foodProductRepository.findById(id);
     if (!food) {
@@ -150,7 +150,7 @@ export class FoodProductService {
     barcode: string,
     lang?: string,
   ): Promise<FoodProductResponseDto> {
-    this.logger.log(`Finding food by barcode: ${barcode}`);
+    this.logger.debug(`Finding food by barcode: ${barcode}`);
 
     const locale = this.translationService.resolveLocale(lang);
     const offProduct = await this.openFoodFactsService.getProductByBarcode(
@@ -205,7 +205,7 @@ export class FoodProductService {
   }
 
   async searchOpenFoodFacts(searchDto: FoodProductSearchDto): Promise<any> {
-    this.logger.log(
+    this.logger.debug(
       `Searching OpenFoodFacts page=${searchDto.page ?? 1} lang=${searchDto.lang ?? DEFAULT_LOCALE}`,
     );
 

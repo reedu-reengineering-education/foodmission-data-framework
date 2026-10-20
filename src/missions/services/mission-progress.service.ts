@@ -53,7 +53,7 @@ export class MissionProgressService {
     userId: string,
     lang?: string,
   ): Promise<MissionProgressResponseDto> {
-    this.logger.log(`Getting mission ${codeOrId} for user: ${userId}`);
+    this.logger.debug(`Getting mission ${codeOrId} for user: ${userId}`);
 
     const mission = await this.requireMission(codeOrId);
 
@@ -88,7 +88,7 @@ export class MissionProgressService {
     userId: string,
     lang?: string,
   ): Promise<MissionProgressResponseDto[]> {
-    this.logger.log(`Getting all missions for user: ${userId}`);
+    this.logger.debug(`Getting all missions for user: ${userId}`);
 
     const progresses =
       await this.missionProgressRepository.findAllByUserId(userId);
@@ -113,7 +113,7 @@ export class MissionProgressService {
     userId: string,
     lang?: string,
   ): Promise<MissionProgressResponseDto> {
-    this.logger.log(`Updating mission ${codeOrId} for user: ${userId}`);
+    this.logger.debug(`Updating mission ${codeOrId} for user: ${userId}`);
 
     const mission = await this.requireMission(codeOrId);
 

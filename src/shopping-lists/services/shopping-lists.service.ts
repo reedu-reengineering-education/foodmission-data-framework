@@ -103,7 +103,7 @@ export class ShoppingListService {
   }
 
   async findAll(userId: string): Promise<MultipleShoppingListResponseDto> {
-    this.logger.log(`Finding all shopping lists for user ${userId}`);
+    this.logger.debug(`Finding all shopping lists for user ${userId}`);
 
     const shoppingList = await this.shoppingListRepository.findAll({
       where: { userId },
@@ -124,7 +124,7 @@ export class ShoppingListService {
     id: string,
     userId?: string,
   ): Promise<ShoppingListResponseDto> {
-    this.logger.log(`Finding shopping list with the id:` + id);
+    this.logger.debug(`Finding shopping list ${id}`);
 
     const shoppingList = await this.shoppingListRepository.findById(id);
 

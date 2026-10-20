@@ -79,7 +79,7 @@ export class UserGroupService {
     groupId: string,
     userId: string,
   ): Promise<UserGroupResponseDto> {
-    this.logger.log(`Getting group ${groupId} for user: ${userId}`);
+    this.logger.debug(`Getting group ${groupId} for user: ${userId}`);
 
     const group = await this.getGroupOrThrow(groupId);
 
@@ -95,7 +95,7 @@ export class UserGroupService {
   }
 
   async findAllByUserId(userId: string): Promise<UserGroupResponseDto[]> {
-    this.logger.log(`Getting all groups for user: ${userId}`);
+    this.logger.debug(`Getting all groups for user: ${userId}`);
 
     const groups = await this.userGroupRepository.findAllByUserId(userId);
     return groups.map((group) => this.transformToGroupDto(group));
@@ -354,7 +354,7 @@ export class UserGroupService {
     groupId: string,
     userId: string,
   ): Promise<{ inviteCode: string }> {
-    this.logger.log(`Getting invite code for group ${groupId}`);
+    this.logger.debug(`Getting invite code for group ${groupId}`);
 
     await this.requireAdmin(userId, groupId);
 
@@ -367,7 +367,7 @@ export class UserGroupService {
     groupId: string,
     userId: string,
   ): Promise<MemberResponseDto[]> {
-    this.logger.log(`Getting members for group ${groupId}`);
+    this.logger.debug(`Getting members for group ${groupId}`);
 
     await this.requireMember(userId, groupId);
 
