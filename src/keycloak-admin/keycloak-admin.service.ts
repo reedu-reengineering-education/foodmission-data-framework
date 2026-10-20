@@ -2,6 +2,7 @@ import { Injectable, Logger, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { AxiosResponse } from 'axios';
+import { describeError } from '../common/utils/error.utils';
 
 /**
  * Service for Keycloak Admin API operations.
@@ -135,8 +136,7 @@ export class KeycloakAdminService {
         ),
       );
       this.logger.debug(
-        'Keycloak create response',
-        createResp?.data || createResp,
+        `Keycloak create response: HTTP ${createResp?.status} id=${createResp?.data?.id ?? 'none'}`,
       );
 
       // Keycloak may return the created representation in the body, or may return 201 with a
@@ -153,8 +153,7 @@ export class KeycloakAdminService {
           if (possibleId) {
             createdUser = { id: possibleId } as any;
             this.logger.debug(
-              'Extracted Keycloak user id from Location header',
-              possibleId,
+              `Extracted Keycloak user id ${possibleId} from Location header`,
             );
           }
         }
@@ -175,14 +174,12 @@ export class KeycloakAdminService {
           if (found && found.id) {
             createdUser = found;
             this.logger.debug(
-              'Found Keycloak user by username after create',
-              found.id,
+              `Found Keycloak user ${found.id} by username after create`,
             );
           }
         } catch (e: any) {
           this.logger.warn(
-            'Failed to fetch Keycloak user after create attempt',
-            e?.response?.data || e?.message || e,
+            `Failed to fetch Keycloak user after create attempt: ${describeError(e)}`,
           );
         }
       }

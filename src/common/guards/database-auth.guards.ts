@@ -38,7 +38,6 @@ export class DataBaseAuthGuard implements CanActivate {
     }
 
     const keycloakId = request.user.sub;
-    console.log(`Authenticating user with Keycloak ID: ${keycloakId}`);
 
     if (this.userCache.has(keycloakId)) {
       const cachedUser = this.userCache.get(keycloakId)!;

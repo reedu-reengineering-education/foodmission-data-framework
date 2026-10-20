@@ -23,6 +23,7 @@ import { UserEventService } from '../events/services/user-event.service';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { userRegisteredIdempotencyKey } from './auth.constants';
+import { describeError } from '../common/utils/error.utils';
 
 /** One USER_LOGGED_IN fact per user per UTC calendar day. */
 export function userLoggedInIdempotencyKey(
@@ -102,8 +103,8 @@ export class AuthService {
       });
     } catch (repoErr: any) {
       this.logger.error(
-        'Local user persistence error',
-        repoErr?.response?.data || repoErr?.message || repoErr,
+        `Local user persistence error: ${describeError(repoErr)}`,
+        repoErr instanceof Error ? repoErr.stack : undefined,
       );
 
       // Best-effort cleanup of created Keycloak user
@@ -112,8 +113,7 @@ export class AuthService {
           await this.keycloakAdminService.deleteUser(createdUser.id);
         } catch (cleanupErr: any) {
           this.logger.warn(
-            'Failed to cleanup Keycloak user after DB error',
-            cleanupErr?.response?.data || cleanupErr,
+            `Failed to cleanup Keycloak user ${createdUser.id} after DB error: ${describeError(cleanupErr)}`,
           );
         }
       }
@@ -205,7 +205,9 @@ export class AuthService {
         );
         return true;
       } catch (error) {
-        this.logger.warn(`Failed to send reset email for ${email}: `, error);
+        this.logger.warn(
+          `Failed to send reset email for user ${user.id}: ${describeError(error)}`,
+        );
         return false;
       }
     }
@@ -282,10 +284,7 @@ export class AuthService {
       // Keycloak returns 200 on success (empty body)
       return { revoked: resp.status === 200 };
     } catch (err: any) {
-      this.logger.warn(
-        'Keycloak token revoke error',
-        err?.response?.data || err?.message || err,
-      );
+      this.logger.warn(`Keycloak token revoke error: ${describeError(err)}`);
       return { revoked: false };
     }
   }
@@ -406,8 +405,7 @@ export class AuthService {
       });
     } catch (error) {
       this.logger.warn(
-        `Failed to record login side effects for user ${profile.id}`,
-        error instanceof Error ? error.message : error,
+        `Failed to record login side effects for user ${profile.id}: ${describeError(error)}`,
       );
     }
 

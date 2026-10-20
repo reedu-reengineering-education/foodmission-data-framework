@@ -22,6 +22,7 @@ import {
   RecordUserEventInput,
   UserEventRecorder,
 } from '../user-event-recorder.types';
+import { describeError } from '../../common/utils/error.utils';
 
 // Re-exported so existing importers keep working; the canonical home is now the
 // leaf types module, which RulesService can import without closing a cycle.
@@ -103,8 +104,7 @@ export class UserEventService implements UserEventRecorder {
     } catch (error) {
       userEventsRecordFailuresTotal.inc({ event_type: input.eventType });
       this.logger.warn(
-        `Failed to record ${input.eventType} for user ${input.userId}`,
-        error instanceof Error ? error.message : error,
+        `Failed to record ${input.eventType} for user ${input.userId}: ${describeError(error)}`,
       );
     }
   }

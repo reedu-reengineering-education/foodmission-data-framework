@@ -52,9 +52,10 @@ async function bootstrap() {
   registerOpenApi(app);
 
   await app.listen(process.env.PORT ?? 3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
-  console.log(
-    `Swagger documentation available at: ${await app.getUrl()}/${OPENAPI_DOCS_PATH}`,
+  const appUrl = await app.getUrl();
+  Logger.log(
+    `Listening on ${appUrl}, API docs at ${appUrl}/${OPENAPI_DOCS_PATH}`,
+    'Bootstrap',
   );
   if (process.env.NODE_ENV === 'development') {
     Logger.log(

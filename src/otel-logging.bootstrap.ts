@@ -112,42 +112,41 @@ if (config.enabled) {
 
     sdk.start();
     console.log(
-      `✓ OpenTelemetry SDK initialized successfully\n` +
-        `  Service: ${config.serviceName} (v${config.serviceVersion})\n` +
-        `  Environment: ${config.environment}\n` +
-        `  Endpoint: ${config.endpoint}`,
+      `OpenTelemetry initialized service=${config.serviceName} version=${config.serviceVersion} env=${config.environment} endpoint=${config.endpoint}`,
     );
 
     // Graceful shutdown on SIGTERM
     process.on('SIGTERM', () => {
-      console.log('SIGTERM received, shutting down OpenTelemetry SDK...');
+      console.log('SIGTERM received, shutting down OpenTelemetry');
       sdk
         .shutdown()
-        .then(() => console.log('✓ OpenTelemetry SDK shut down successfully'))
+        .then(() => console.log('OpenTelemetry shut down'))
         .catch((error) =>
-          console.error('✗ Error shutting down OpenTelemetry SDK:', error),
+          console.error(
+            `OpenTelemetry shutdown failed: ${error instanceof Error ? error.message : String(error)}`,
+          ),
         )
         .finally(() => process.exit(0));
     });
 
     // Graceful shutdown on SIGINT (Ctrl+C)
     process.on('SIGINT', () => {
-      console.log('\nSIGINT received, shutting down OpenTelemetry SDK...');
+      console.log('SIGINT received, shutting down OpenTelemetry');
       sdk
         .shutdown()
-        .then(() => console.log('✓ OpenTelemetry SDK shut down successfully'))
+        .then(() => console.log('OpenTelemetry shut down'))
         .catch((error) =>
-          console.error('✗ Error shutting down OpenTelemetry SDK:', error),
+          console.error(
+            `OpenTelemetry shutdown failed: ${error instanceof Error ? error.message : String(error)}`,
+          ),
         )
         .finally(() => process.exit(0));
     });
   } catch (error) {
-    console.error(
-      '✗ Failed to initialize OpenTelemetry SDK:',
-      error instanceof Error ? error.message : 'Unknown error',
-    );
     // Don't crash the application if OpenTelemetry fails to initialize
-    console.warn('⚠ Application will continue without OpenTelemetry logging');
+    console.error(
+      `OpenTelemetry initialization failed, continuing without it: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
   }
 } else {
   console.log('OpenTelemetry logging is disabled (OTEL_LOGS_ENABLED=false)');

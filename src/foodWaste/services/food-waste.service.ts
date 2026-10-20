@@ -683,7 +683,7 @@ export class FoodWasteService {
     );
 
     if (errors.length > 0) {
-      this.logger.warn('Failed items:', errors);
+      this.logger.warn(`Batch create failed items: ${JSON.stringify(errors)}`);
     }
 
     return plainToInstance(

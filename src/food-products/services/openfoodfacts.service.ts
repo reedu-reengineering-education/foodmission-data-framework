@@ -15,6 +15,7 @@ import {
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { pickLocalizedString } from '../utils/off-locale';
 import { parseOffDietFlags } from '../utils/off-diet-flags';
+import { describeError } from '../../common/utils/error.utils';
 
 @Injectable()
 export class OpenFoodFactsService {
@@ -59,8 +60,7 @@ export class OpenFoodFactsService {
         return null;
       } catch (error) {
         this.logger.warn(
-          `Local OFF database lookup failed for barcode ${barcode}, falling back to HTTP API`,
-          error as Error,
+          `Local OFF database lookup failed for barcode ${barcode}, falling back to HTTP API: ${describeError(error)}`,
         );
       }
     }
@@ -134,8 +134,7 @@ export class OpenFoodFactsService {
         };
       } catch (error) {
         this.logger.warn(
-          'Local OFF database search failed, falling back to HTTP API',
-          error as Error,
+          `Local OFF database search failed, falling back to HTTP API: ${describeError(error)}`,
         );
       }
     }
@@ -144,7 +143,9 @@ export class OpenFoodFactsService {
   }
 
   private async searchProductsHttp(options: OpenFoodFactsSearchOptions) {
-    this.logger.log(`Searching products with options:`, options);
+    this.logger.log(
+      `Searching OFF HTTP API page=${options.page ?? 1} pageSize=${options.pageSize ?? 20} lang=${options.lang ?? DEFAULT_LOCALE}`,
+    );
     const lang = options.lang ?? DEFAULT_LOCALE;
 
     // Build search parameters

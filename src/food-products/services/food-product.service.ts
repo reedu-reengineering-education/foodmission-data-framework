@@ -57,7 +57,9 @@ export class FoodProductService {
   async findAll(
     query: FoodProductQueryDto,
   ): Promise<PaginatedFoodProductResponseDto> {
-    this.logger.log(`Finding foods with query:`, query);
+    this.logger.log(
+      `Finding foods page=${query.page ?? 1} limit=${query.limit ?? 10} lang=${query.lang ?? DEFAULT_LOCALE}`,
+    );
 
     const {
       page = 1,
@@ -203,7 +205,9 @@ export class FoodProductService {
   }
 
   async searchOpenFoodFacts(searchDto: FoodProductSearchDto): Promise<any> {
-    this.logger.log(`Searching OpenFoodFacts with:`, searchDto);
+    this.logger.log(
+      `Searching OpenFoodFacts page=${searchDto.page ?? 1} lang=${searchDto.lang ?? DEFAULT_LOCALE}`,
+    );
 
     const searchOptions = {
       query: searchDto.query,
