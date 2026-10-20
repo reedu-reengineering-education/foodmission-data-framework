@@ -41,7 +41,7 @@ export class ShoppingListService {
     createShoppingListDto: CreateShoppingListDto,
     userId: string,
   ): Promise<ShoppingListResponseDto> {
-    this.logger.log(`Creating a shopping list: ${createShoppingListDto.title}`);
+    this.logger.log(`Creating shopping list for user ${userId}`);
 
     try {
       // The list and its SHOPPING_LIST_CREATED event commit together: a list

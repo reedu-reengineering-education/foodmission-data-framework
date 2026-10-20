@@ -36,7 +36,7 @@ export class FoodProductService {
     createFoodDto: CreateFoodProductDto,
     userId: string,
   ): Promise<FoodProductResponseDto> {
-    this.logger.log(`Creating food: ${createFoodDto.name}`);
+    this.logger.log(`Creating food for user ${userId}`);
 
     if (createFoodDto.barcode) {
       const existingFood = await this.foodProductRepository.findByBarcode(
