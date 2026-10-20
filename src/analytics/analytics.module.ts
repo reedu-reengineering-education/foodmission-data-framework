@@ -9,9 +9,13 @@ import { ShoppingListAnalyticsController } from './shopping-list/controllers/sho
 import { ShoppingListAnalyticsService } from './shopping-list/services/shopping-list-analytics.service';
 import { ShoppingListAnalyticsAggregator } from './shopping-list/services/shopping-list-analytics-aggregator.service';
 import { ShoppingListAnalyticsRepository } from './shopping-list/repositories/shopping-list-analytics.repository';
-import { UsageAnalyticsController } from './usage/controllers/usage-analytics.controller';
-import { UsageAnalyticsService } from './usage/services/usage-analytics.service';
-import { UsageAnalyticsRepository } from './usage/repositories/usage-analytics.repository';
+import { AdminUsageController } from './insights/usage/admin-usage.controller';
+import { AdminLearningController } from './insights/learning/admin-learning.controller';
+import {
+  AnalyticsCatalogController,
+  AnalyticsCatalogService,
+} from './insights/catalog.controller';
+import { InsightRunner } from './shared/insight-runner.service';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service';
 
@@ -21,7 +25,9 @@ import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service
     AnalyticsController,
     MealLogAnalyticsController,
     ShoppingListAnalyticsController,
-    UsageAnalyticsController,
+    AdminUsageController,
+    AdminLearningController,
+    AnalyticsCatalogController,
   ],
   providers: [
     MealLogAnalyticsService,
@@ -30,8 +36,8 @@ import { AnalyticsBatchCoordinator } from './analytics-batch-coordinator.service
     ShoppingListAnalyticsService,
     ShoppingListAnalyticsAggregator,
     ShoppingListAnalyticsRepository,
-    UsageAnalyticsService,
-    UsageAnalyticsRepository,
+    InsightRunner,
+    AnalyticsCatalogService,
     UsersRepository,
     AnalyticsBatchCoordinator,
   ],
