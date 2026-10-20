@@ -9,6 +9,7 @@ import { Injectable, LoggerService } from '@nestjs/common';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { trace, context } from '@opentelemetry/api';
 import cls from 'cls-hooked';
+import { minSeverity } from './log-level';
 
 export interface LogContext {
   traceId?: string;
@@ -25,6 +26,7 @@ export interface LogContext {
 export class LoggingService implements LoggerService {
   private readonly logger = logs.getLogger('foodmission-api', '1.0.0');
   private readonly namespace = cls.createNamespace('logging');
+  private readonly minSeverity = minSeverity();
 
   /**
    * Set trace ID for the current request context
@@ -115,6 +117,10 @@ export class LoggingService implements LoggerService {
     message: string,
     attributes: Record<string, any> = {},
   ): void {
+    if (severity < this.minSeverity) {
+      return;
+    }
+
     // Get current trace context from OpenTelemetry
     const span = trace.getSpan(context.active());
     const spanContext = span?.spanContext();
