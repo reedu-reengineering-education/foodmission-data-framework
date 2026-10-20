@@ -1,0 +1,71 @@
+-- The region catalog now lists Norway's current counties (2024 reform) and
+-- only the top-level regions of Italy and Greece. Move stored region codes onto
+-- those: old Norwegian counties to the county that absorbed them, Italian
+-- provinces and Greek prefectures (abolished 2011) to their region.
+UPDATE "users" AS u
+SET "region" = m.new_code
+FROM (VALUES
+    ('NO-01', 'NO-31'), ('NO-02', 'NO-32'), ('NO-04', 'NO-34'), ('NO-05', 'NO-34'),
+    ('NO-06', 'NO-33'), ('NO-07', 'NO-39'), ('NO-08', 'NO-40'), ('NO-09', 'NO-42'),
+    ('NO-10', 'NO-42'), ('NO-12', 'NO-46'), ('NO-14', 'NO-46'), ('NO-16', 'NO-50'),
+    ('NO-17', 'NO-50'), ('NO-19', 'NO-55'), ('NO-20', 'NO-56'),
+    -- 2020-2023 merged counties, split again in 2024: map to the largest part.
+    ('NO-30', 'NO-32'), ('NO-38', 'NO-39'), ('NO-54', 'NO-55'),
+
+    ('IT-AL', 'IT-21'), ('IT-AT', 'IT-21'), ('IT-BI', 'IT-21'), ('IT-CN', 'IT-21'),
+    ('IT-NO', 'IT-21'), ('IT-TO', 'IT-21'), ('IT-VB', 'IT-21'), ('IT-VC', 'IT-21'),
+    ('IT-AO', 'IT-23'),
+    ('IT-BG', 'IT-25'), ('IT-BS', 'IT-25'), ('IT-CO', 'IT-25'), ('IT-CR', 'IT-25'),
+    ('IT-LC', 'IT-25'), ('IT-LO', 'IT-25'), ('IT-MB', 'IT-25'), ('IT-MI', 'IT-25'),
+    ('IT-MN', 'IT-25'), ('IT-PV', 'IT-25'), ('IT-SO', 'IT-25'), ('IT-VA', 'IT-25'),
+    ('IT-BZ', 'IT-32'), ('IT-TN', 'IT-32'),
+    ('IT-BL', 'IT-34'), ('IT-PD', 'IT-34'), ('IT-RO', 'IT-34'), ('IT-TV', 'IT-34'),
+    ('IT-VE', 'IT-34'), ('IT-VI', 'IT-34'), ('IT-VR', 'IT-34'),
+    ('IT-GO', 'IT-36'), ('IT-PN', 'IT-36'), ('IT-TS', 'IT-36'), ('IT-UD', 'IT-36'),
+    ('IT-GE', 'IT-42'), ('IT-IM', 'IT-42'), ('IT-SP', 'IT-42'), ('IT-SV', 'IT-42'),
+    ('IT-BO', 'IT-45'), ('IT-FC', 'IT-45'), ('IT-FE', 'IT-45'), ('IT-MO', 'IT-45'),
+    ('IT-PC', 'IT-45'), ('IT-PR', 'IT-45'), ('IT-RA', 'IT-45'), ('IT-RE', 'IT-45'),
+    ('IT-RN', 'IT-45'),
+    ('IT-AR', 'IT-52'), ('IT-FI', 'IT-52'), ('IT-GR', 'IT-52'), ('IT-LI', 'IT-52'),
+    ('IT-LU', 'IT-52'), ('IT-MS', 'IT-52'), ('IT-PI', 'IT-52'), ('IT-PO', 'IT-52'),
+    ('IT-PT', 'IT-52'), ('IT-SI', 'IT-52'),
+    ('IT-PG', 'IT-55'), ('IT-TR', 'IT-55'),
+    ('IT-AN', 'IT-57'), ('IT-AP', 'IT-57'), ('IT-FM', 'IT-57'), ('IT-MC', 'IT-57'),
+    ('IT-PU', 'IT-57'),
+    ('IT-FR', 'IT-62'), ('IT-LT', 'IT-62'), ('IT-RI', 'IT-62'), ('IT-RM', 'IT-62'),
+    ('IT-VT', 'IT-62'),
+    ('IT-AQ', 'IT-65'), ('IT-CH', 'IT-65'), ('IT-PE', 'IT-65'), ('IT-TE', 'IT-65'),
+    ('IT-CB', 'IT-67'), ('IT-IS', 'IT-67'),
+    ('IT-AV', 'IT-72'), ('IT-BN', 'IT-72'), ('IT-CE', 'IT-72'), ('IT-NA', 'IT-72'),
+    ('IT-SA', 'IT-72'),
+    ('IT-BA', 'IT-75'), ('IT-BR', 'IT-75'), ('IT-BT', 'IT-75'), ('IT-FG', 'IT-75'),
+    ('IT-LE', 'IT-75'), ('IT-TA', 'IT-75'),
+    ('IT-MT', 'IT-77'), ('IT-PZ', 'IT-77'),
+    ('IT-CS', 'IT-78'), ('IT-CZ', 'IT-78'), ('IT-KR', 'IT-78'), ('IT-RC', 'IT-78'),
+    ('IT-VV', 'IT-78'),
+    ('IT-AG', 'IT-82'), ('IT-CL', 'IT-82'), ('IT-CT', 'IT-82'), ('IT-EN', 'IT-82'),
+    ('IT-ME', 'IT-82'), ('IT-PA', 'IT-82'), ('IT-RG', 'IT-82'), ('IT-SR', 'IT-82'),
+    ('IT-TP', 'IT-82'),
+    ('IT-CA', 'IT-88'), ('IT-CI', 'IT-88'), ('IT-NU', 'IT-88'), ('IT-OG', 'IT-88'),
+    ('IT-OR', 'IT-88'), ('IT-OT', 'IT-88'), ('IT-SS', 'IT-88'), ('IT-VS', 'IT-88'),
+    ('IT-SU', 'IT-88'),
+
+    ('GR-52', 'GR-A'), ('GR-55', 'GR-A'), ('GR-71', 'GR-A'), ('GR-72', 'GR-A'),
+    ('GR-73', 'GR-A'),
+    ('GR-53', 'GR-B'), ('GR-54', 'GR-B'), ('GR-57', 'GR-B'), ('GR-59', 'GR-B'),
+    ('GR-61', 'GR-B'), ('GR-62', 'GR-B'), ('GR-64', 'GR-B'),
+    ('GR-51', 'GR-C'), ('GR-56', 'GR-C'), ('GR-58', 'GR-C'), ('GR-63', 'GR-C'),
+    ('GR-31', 'GR-D'), ('GR-32', 'GR-D'), ('GR-33', 'GR-D'), ('GR-34', 'GR-D'),
+    ('GR-41', 'GR-E'), ('GR-42', 'GR-E'), ('GR-43', 'GR-E'), ('GR-44', 'GR-E'),
+    ('GR-21', 'GR-F'), ('GR-22', 'GR-F'), ('GR-23', 'GR-F'), ('GR-24', 'GR-F'),
+    ('GR-01', 'GR-G'), ('GR-13', 'GR-G'), ('GR-14', 'GR-G'),
+    ('GR-03', 'GR-H'), ('GR-04', 'GR-H'), ('GR-05', 'GR-H'), ('GR-06', 'GR-H'),
+    ('GR-07', 'GR-H'),
+    ('GR-A1', 'GR-I'),
+    ('GR-11', 'GR-J'), ('GR-12', 'GR-J'), ('GR-15', 'GR-J'), ('GR-16', 'GR-J'),
+    ('GR-17', 'GR-J'),
+    ('GR-83', 'GR-K'), ('GR-84', 'GR-K'), ('GR-85', 'GR-K'),
+    ('GR-81', 'GR-L'), ('GR-82', 'GR-L'),
+    ('GR-91', 'GR-M'), ('GR-92', 'GR-M'), ('GR-93', 'GR-M'), ('GR-94', 'GR-M')
+) AS m(old_code, new_code)
+WHERE u."region" = m.old_code;

@@ -45,6 +45,7 @@ import {
   DEFAULT_INCOME_CURRENCY,
   INCOME_COUNTRY_BY_LOCALE,
   INCOME_CURRENCY_BY_COUNTRY,
+  REGION_OVERRIDES,
   SHOPPING_RESPONSIBILITY_ENTRIES,
 } from '../catalog.constants';
 import { CatalogValueDto } from '../dto/catalog-value.dto';
@@ -259,6 +260,14 @@ export class CatalogService implements OnModuleInit {
     >;
     const list: CatalogValueDto[] = [];
     for (const [countryCode, subs] of Object.entries(byCountry)) {
+      const overrides = REGION_OVERRIDES[countryCode];
+      if (overrides) {
+        for (const { code, name } of overrides) {
+          list.push({ code, label: name, meta: { countryCode } });
+        }
+        continue;
+      }
+
       const subMap =
         (subs as any)?.sub && typeof (subs as any).sub === 'object'
           ? ((subs as any).sub as Record<
