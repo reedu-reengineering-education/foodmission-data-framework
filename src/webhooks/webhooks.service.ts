@@ -122,43 +122,4 @@ export class WebhooksService {
 
     await this.userProfilesService.deleteUserByKeycloakId(keycloakUserId);
   }
-
-  // =====================================================================
-  // UNUSED EVENT HANDLERS (uncomment and implement as needed)
-  // =====================================================================
-
-  // private async handleUserLogin(event: KeycloakUserEventDto): Promise<void> {
-  //   const userId = event.authDetails?.userId;
-  //   const ipAddress = event.authDetails?.ipAddress;
-  //   this.logger.debug(`User login: ${userId} from ${ipAddress}`);
-  //   // TODO: Implement login tracking logic (e.g., update last login timestamp)
-  // }
-
-  // private async handleUserLogout(event: KeycloakUserEventDto): Promise<void> {
-  //   const userId = event.authDetails?.userId;
-  //   this.logger.debug(`User logout: ${userId}`);
-  //   // TODO: Implement logout logic if needed
-  // }
-
-  // private async handleUserRegister(event: KeycloakUserEventDto): Promise<void> {
-  //   const userId = event.authDetails?.userId;
-  //   this.logger.debug(`User registered: ${userId}`);
-  //   // TODO: Implement post-registration logic (e.g., send welcome email, create profile)
-  // }
-
-  // private async handleUserProfileUpdate(event: KeycloakUserEventDto): Promise<void> {
-  //   const userId = event.authDetails?.userId;
-  //   this.logger.debug(`User profile updated: ${userId}`);
-  //   // TODO: Sync profile changes from Keycloak to local database
-  // }
-
-  // private async handleAdminUserCreate(event: KeycloakAdminEventDto): Promise<void> {
-  //   this.logger.debug(`Admin created user at: ${event.resourcePath}`);
-  //   // TODO: Handle user creation via admin console
-  // }
-
-  // private async handleAdminUserUpdate(event: KeycloakAdminEventDto): Promise<void> {
-  //   this.logger.debug(`Admin updated user at: ${event.resourcePath}`);
-  //   // TODO: Sync user changes from admin operations
-  // }
 }

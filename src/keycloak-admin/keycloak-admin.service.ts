@@ -57,8 +57,7 @@ export class KeycloakAdminService {
         error_description: 'Failed to send reset password email',
       };
       this.logger.error(
-        `Failed to send reset password email to Keycloak user ${keycloakId}`,
-        JSON.stringify(data),
+        `Failed to send reset password email to Keycloak user ${keycloakId}: ${describeError(err)}`,
       );
       throw new HttpException(data, status);
     }
