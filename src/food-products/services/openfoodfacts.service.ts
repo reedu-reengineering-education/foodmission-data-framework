@@ -54,7 +54,7 @@ export class OpenFoodFactsService {
           );
           return productInfo;
         }
-        this.logger.warn(
+        this.logger.debug(
           `Product not found in local OFF database for barcode: ${barcode}`,
         );
         return null;

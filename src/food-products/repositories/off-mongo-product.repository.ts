@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
 import { OffProduct, Prisma } from '.prisma/off-mongo-client';
 import { OpenFoodFactsSearchOptions } from '../interfaces/openfoodfacts.interface';
+import { describeError } from '../../common/utils/error.utils';
 
 /** The OFF tags meal-flag derivation reads (see `derive-meal-flags.ts`). */
 export interface OffMealFacts {
@@ -21,6 +22,8 @@ export interface OffMongoSearchResult {
 
 @Injectable()
 export class OffMongoProductRepository {
+  private readonly logger = new Logger(OffMongoProductRepository.name);
+
   constructor(private readonly prisma: OffMongoPrismaService) {}
 
   get isAvailable(): boolean {
@@ -89,7 +92,10 @@ export class OffMongoProductRepository {
           ingredientsAnalysisTags: toStringArray(doc.ingredients_analysis_tags),
         });
       }
-    } catch {
+    } catch (error) {
+      this.logger.warn(
+        `OFF Mongo meal-facts lookup failed for ${barcodes.length} barcode(s), deriving meal flags without OFF data: ${describeError(error)}`,
+      );
       return new Map();
     } finally {
       clearTimeout(timer);

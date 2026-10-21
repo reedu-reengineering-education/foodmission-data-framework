@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { RulesService } from './rules.service';
+import { describeError } from '../common/utils/error.utils';
 
 /**
  * Fails missions and challenges whose rule window ended without the target.
@@ -17,7 +18,16 @@ export class RulesDeadlineScheduler {
 
   @Cron(CronExpression.EVERY_HOUR)
   async resolveExpiredItems(now: Date = new Date()): Promise<void> {
-    const userIds = await this.rulesService.findUsersWithExpiredItems(now);
+    let userIds: string[];
+    try {
+      userIds = await this.rulesService.findUsersWithExpiredItems(now);
+    } catch (error) {
+      this.logger.error(
+        `Deadline re-evaluation failed: could not load users with expired items: ${describeError(error)}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+      return;
+    }
 
     for (const userId of userIds) {
       try {

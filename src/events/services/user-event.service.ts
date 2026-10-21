@@ -56,6 +56,11 @@ export class UserEventService implements UserEventRecorder {
         );
       } catch {
         this.questRecomputer = null;
+        // Expected in lean test apps; in the full app this means quest
+        // progress is never recomputed, so say so once.
+        this.logger.warn(
+          'Quest progress recomputer not available; quest progress will not be recomputed from events',
+        );
       }
     }
     return this.questRecomputer;
@@ -71,6 +76,9 @@ export class UserEventService implements UserEventRecorder {
         );
       } catch {
         this.badgeEvaluator = null;
+        this.logger.warn(
+          'Badge rule evaluator not available; badges will not be awarded from events',
+        );
       }
     }
     return this.badgeEvaluator;

@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
 import { OffMongoProductRepository } from './off-mongo-product.repository';
 
@@ -55,10 +56,17 @@ describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
     expect(findRaw).not.toHaveBeenCalled();
   });
 
-  it('returns no facts when the query fails', async () => {
+  it('returns no facts, and warns, when the query fails', async () => {
     findRaw.mockRejectedValue(new Error('mongo down'));
+    const warn = jest
+      .spyOn(Logger.prototype, 'warn')
+      .mockImplementation(() => undefined);
 
     expect((await build().findMealFactsByBarcodes(['111'])).size).toBe(0);
+    expect(warn).toHaveBeenCalledWith(
+      'OFF Mongo meal-facts lookup failed for 1 barcode(s), deriving meal flags without OFF data: mongo down',
+    );
+    warn.mockRestore();
   });
 
   it('returns no facts when the query times out', async () => {
