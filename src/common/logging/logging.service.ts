@@ -15,6 +15,7 @@ import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { trace, context as otelContext } from '@opentelemetry/api';
 import cls from 'cls-hooked';
 import { nestLogLevels } from './log-level';
+import { redact } from './redact';
 
 export interface LogContext {
   traceId?: string;
@@ -138,6 +139,8 @@ export class LoggingService extends ConsoleLogger {
     writeStreamType?: 'stdout' | 'stderr',
     errorStack?: unknown,
   ): void {
+    // Objects passed to a logger (e.g. by libraries) may carry tokens or passwords
+    messages = messages.map(redact);
     super.printMessages(
       messages,
       context,
@@ -185,7 +188,7 @@ export class LoggingService extends ConsoleLogger {
     }
     this.emit(SEVERITY_BY_LEVEL[level], message, {
       ...(context && { context }),
-      ...attributes,
+      ...(redact(attributes) as Record<string, any>),
     });
   }
 

@@ -60,8 +60,6 @@ export class SecurityMiddleware implements NestMiddleware {
         userAgent,
         url,
         method: req.method,
-        body: req.body,
-        query: req.query,
         headers: this.sanitizeHeaders(req.headers),
       });
     }

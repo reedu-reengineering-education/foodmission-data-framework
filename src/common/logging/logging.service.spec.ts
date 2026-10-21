@@ -62,6 +62,20 @@ describe('LoggingService', () => {
     expect(emitted()[0].body).toBe('{"id":1}');
   });
 
+  it('redacts credentials in object messages before printing and emitting', () => {
+    service.warn('A jwt token was retrieved but failed validation.', {
+      jwt: 'eyJhbGciOi.secret.payload',
+    });
+
+    const printed = stdout.mock.calls.map((c) => String(c[0])).join('');
+    expect(printed).not.toContain('eyJhbGciOi');
+    expect(printed).toContain('[REDACTED]');
+    expect(emitted().map((r) => r.body)).toEqual([
+      'A jwt token was retrieved but failed validation.',
+      '{"jwt":"[REDACTED]"}',
+    ]);
+  });
+
   it('drops levels below LOG_LEVEL', () => {
     service.debug('noise', 'SomeService');
     service.logWithMeta('debug', 'noise', {});
