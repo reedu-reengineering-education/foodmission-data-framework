@@ -15,5 +15,7 @@ model EntityTranslation {
   @@unique([entityType, entityId, locale, field])
   @@index([entityType, locale, field])
   @@index([entityType, entityId])
+  // Trigram index (pg_trgm) for searching translated names
+  @@index([value(ops: raw("gin_trgm_ops"))], type: Gin, map: "entity_translations_value_trgm_idx")
   @@map("entity_translations")
 }

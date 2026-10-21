@@ -297,6 +297,9 @@ model GenericFood {
   @@index([foodName])
   @@index([nevoCode])
   @@index([shelfLifeId])
+  // Trigram indexes (pg_trgm) for typo-tolerant / substring name search
+  @@index([foodName(ops: raw("gin_trgm_ops"))], type: Gin, map: "generic_foods_food_name_trgm_idx")
+  @@index([synonym(ops: raw("gin_trgm_ops"))], type: Gin, map: "generic_foods_synonym_trgm_idx")
   @@map("generic_foods")
 }
 
