@@ -137,6 +137,7 @@ export class LoggingMiddleware implements NestMiddleware {
       level,
       `${req.method} ${path} ${status} ${responseTime}ms`,
       {
+        context: 'HTTP',
         log_type: 'http',
         method: req.method,
         url: path,

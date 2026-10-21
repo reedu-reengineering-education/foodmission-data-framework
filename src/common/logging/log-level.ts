@@ -1,5 +1,4 @@
 import { LogLevel } from '@nestjs/common';
-import { SeverityNumber } from '@opentelemetry/api-logs';
 
 /** Values accepted by LOG_LEVEL (see environment.validation.ts). */
 export const APP_LOG_LEVELS = [
@@ -35,19 +34,4 @@ const NEST_LEVELS: Record<AppLogLevel, LogLevel[]> = {
 /** Levels Nest's built-in logger should print for the given LOG_LEVEL. */
 export function nestLogLevels(level: AppLogLevel = resolveLogLevel()) {
   return NEST_LEVELS[level];
-}
-
-const MIN_SEVERITY: Record<AppLogLevel, SeverityNumber> = {
-  error: SeverityNumber.ERROR,
-  warn: SeverityNumber.WARN,
-  info: SeverityNumber.INFO,
-  debug: SeverityNumber.DEBUG,
-  verbose: SeverityNumber.TRACE,
-};
-
-/** Lowest OpenTelemetry severity LoggingService should emit. */
-export function minSeverity(
-  level: AppLogLevel = resolveLogLevel(),
-): SeverityNumber {
-  return MIN_SEVERITY[level];
 }

@@ -6,7 +6,6 @@ import { SecurityService } from './security/security.service';
 import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe';
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { LoggingService } from './common/logging/logging.service';
-import { nestLogLevels } from './common/logging/log-level';
 import {
   OPENAPI_DOCS_PATH,
   OPENAPI_GLOBAL_PREFIX,
@@ -16,8 +15,12 @@ import {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // Enable raw body for webhook signature verification
-    logger: nestLogLevels(),
+    bufferLogs: true, // Hold startup logs until LoggingService takes over
   });
+
+  // Single app logger: every Nest Logger call goes to stdout and OpenTelemetry
+  const loggingService = app.get(LoggingService);
+  app.useLogger(loggingService);
 
   // Get security service for configuration
   const securityService = app.get(SecurityService);
@@ -29,7 +32,6 @@ async function bootstrap() {
   app.enableCors(securityService.getCorsConfiguration());
 
   // Apply global exception filters for better error formatting
-  const loggingService = app.get(LoggingService);
   app.useGlobalFilters(new ValidationExceptionFilter(loggingService));
 
   // Enable validation pipes globally with input sanitization

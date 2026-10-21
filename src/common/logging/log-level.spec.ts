@@ -1,5 +1,4 @@
-import { SeverityNumber } from '@opentelemetry/api-logs';
-import { minSeverity, nestLogLevels, resolveLogLevel } from './log-level';
+import { nestLogLevels, resolveLogLevel } from './log-level';
 
 describe('log-level', () => {
   describe('resolveLogLevel', () => {
@@ -25,14 +24,6 @@ describe('log-level', () => {
 
     it('keeps only errors at error', () => {
       expect(nestLogLevels('error')).toEqual(['fatal', 'error']);
-    });
-  });
-
-  describe('minSeverity', () => {
-    it('maps levels to OpenTelemetry severities', () => {
-      expect(minSeverity('info')).toBe(SeverityNumber.INFO);
-      expect(minSeverity('debug')).toBe(SeverityNumber.DEBUG);
-      expect(minSeverity('verbose')).toBe(SeverityNumber.TRACE);
     });
   });
 });
