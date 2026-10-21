@@ -7,10 +7,16 @@ import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe'
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { LoggingService } from './common/logging/logging.service';
 import {
+  logFatalAndExit,
+  registerProcessErrorHandlers,
+} from './common/logging/fatal';
+import {
   OPENAPI_DOCS_PATH,
   OPENAPI_GLOBAL_PREFIX,
   registerOpenApi,
 } from './docs';
+
+registerProcessErrorHandlers();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -66,4 +72,4 @@ async function bootstrap() {
     );
   }
 }
-void bootstrap();
+bootstrap().catch((error) => logFatalAndExit('Bootstrap failed', error));
