@@ -42,10 +42,8 @@ export class LoggingService extends ConsoleLogger {
   private readonly namespace = cls.createNamespace('logging');
 
   constructor() {
-    super({
-      logLevels: nestLogLevels(),
-      colors: process.env.NODE_ENV !== 'production',
-    });
+    // Colors stay on (Nest default); set NO_COLOR=1 to turn them off.
+    super({ logLevels: nestLogLevels() });
   }
 
   /**
