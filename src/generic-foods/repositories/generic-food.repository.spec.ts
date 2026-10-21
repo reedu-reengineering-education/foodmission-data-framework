@@ -73,13 +73,30 @@ describe('GenericFoodRepository', () => {
       (prisma.$queryRaw.mock.calls[0][0] as TemplateStringsArray).join('?');
     const valuesOf = () => prisma.$queryRaw.mock.calls[0].slice(1);
 
-    it('escapes LIKE wildcards in the term', async () => {
+    it('compares the normalized term against search_normalize() columns', async () => {
+      prisma.$queryRaw.mockResolvedValue([]);
+
+      await repository.findSearchCandidates('Olio d’oliva', 'en');
+
+      expect(sqlOf()).toContain('search_normalize(g."foodName")');
+      expect(valuesOf()).toContain('olio d oliva');
+      expect(valuesOf()).toContain('%olio d oliva%');
+    });
+
+    it('treats LIKE wildcards as punctuation, not wildcards', async () => {
       prisma.$queryRaw.mockResolvedValue([]);
 
       await repository.findSearchCandidates('100%_x', 'en');
 
-      expect(valuesOf()).toContain('%100\\%\\_x%');
-      expect(valuesOf()).toContain('100%_x');
+      expect(valuesOf()).toContain('%100 x%');
+      expect(valuesOf().join(' ')).not.toMatch(/100%|_x/);
+    });
+
+    it('does not query when the term is only punctuation', async () => {
+      await expect(
+        repository.findSearchCandidates(' -‘’… ', 'en'),
+      ).resolves.toEqual([]);
+      expect(prisma.$queryRaw).not.toHaveBeenCalled();
     });
 
     it('searches only English fields for en', async () => {
@@ -88,6 +105,8 @@ describe('GenericFoodRepository', () => {
       await repository.findSearchCandidates('pasta', 'en');
 
       expect(sqlOf()).not.toContain('entity_translations');
+      expect(sqlOf()).toContain('"foodGroup"');
+      expect(sqlOf()).not.toContain('ORDER BY');
     });
 
     it('also searches translated names for other locales', async () => {
@@ -96,6 +115,8 @@ describe('GenericFoodRepository', () => {
       await repository.findSearchCandidates('appel', 'nl');
 
       expect(sqlOf()).toContain('entity_translations');
+      expect(sqlOf()).toContain('ARRAY_AGG(t.value)');
+      expect(sqlOf()).toContain('search_normalize(t.value)');
       expect(valuesOf()).toContain('nl');
     });
 

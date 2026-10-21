@@ -8,6 +8,7 @@ import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { TranslationService } from '../../translations/services/translation.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { toFoodGroupSlug } from '../utils/food-group-slug.util';
+import { rankSearchCandidates } from '../utils/search-ranking';
 import type { GenericFood } from '@prisma/client';
 
 const GENERIC_FOOD_TRANSLATABLE_FIELDS = [
@@ -63,8 +64,8 @@ export class GenericFoodService {
   }
 
   /**
-   * Search ordered by relevance (pg_trgm similarity, then NEVO code) instead
-   * of A–Z. Close typos are returned only when nothing contains the term. The ranked id list is filtered by food
+   * Search ordered by relevance (see utils/search-ranking.ts) instead of A–Z.
+   * Close typos are returned only when nothing contains the term. The ranked id list is filtered by food
    * group and paged here; full rows are loaded only for the current page.
    */
   private async searchRanked(
@@ -84,9 +85,10 @@ export class GenericFoodService {
     // ("pasta" ~ "pastry"), so mixing them into a search that already has
     // real hits mostly adds noise.
     const hasSubstringMatch = candidates.some((c) => c.substringMatch);
-    let rankedIds = candidates
-      .filter((c) => !hasSubstringMatch || c.substringMatch)
-      .map((c) => c.id);
+    let rankedIds = rankSearchCandidates(
+      search,
+      candidates.filter((c) => !hasSubstringMatch || c.substringMatch),
+    ).map((c) => c.id);
 
     if (query.foodGroup) {
       const allowed = new Set(

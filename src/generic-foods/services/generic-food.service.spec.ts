@@ -142,9 +142,21 @@ describe('GenericFoodService', () => {
         nevoCode,
         foodName: `Food ${id}`,
       });
-      const candidate = (id: string, substringMatch = true) => ({
+      const candidate = (
+        id: string,
+        substringMatch = true,
+        fields: {
+          foodName?: string;
+          foodGroup?: string;
+          nevoCode?: number;
+        } = {},
+      ) => ({
         id,
-        nevoCode: 1,
+        nevoCode: fields.nevoCode ?? 1,
+        foodName: fields.foodName ?? `Food ${id}`,
+        synonym: null,
+        foodGroup: fields.foodGroup ?? 'Vegetables',
+        translatedNames: [],
         substringMatch,
         score: 1,
       });
@@ -155,24 +167,39 @@ describe('GenericFoodService', () => {
 
       it('returns the page in ranked order, not database order', async () => {
         repository.findSearchCandidates.mockResolvedValue([
-          candidate('b'),
-          candidate('a'),
-          candidate('c'),
+          candidate('crisps', true, {
+            foodName: 'Crisps potato av',
+            foodGroup: 'Savoury snacks',
+            nevoCode: 122,
+          }),
+          candidate('salad', true, {
+            foodName: 'Salad potato',
+            foodGroup: 'Mixed dishes',
+            nevoCode: 5533,
+          }),
+          candidate('raw', true, {
+            foodName: 'Potatoes raw',
+            foodGroup: 'Potatoes and tubers',
+            nevoCode: 1,
+          }),
         ]);
-        repository.findByIds.mockResolvedValue([food('a', 1), food('b', 2)]);
+        repository.findByIds.mockResolvedValue([
+          food('crisps', 122),
+          food('raw', 1),
+        ]);
 
         const result = await service.findAll({
-          search: ' pasta ',
+          search: ' potato ',
           page: 1,
           limit: 2,
         });
 
         expect(repository.findSearchCandidates).toHaveBeenCalledWith(
-          'pasta',
+          'potato',
           'en',
         );
-        expect(repository.findByIds).toHaveBeenCalledWith(['b', 'a']);
-        expect(result.items.map((item) => item.id)).toEqual(['b', 'a']);
+        expect(repository.findByIds).toHaveBeenCalledWith(['raw', 'crisps']);
+        expect(result.items.map((item) => item.id)).toEqual(['raw', 'crisps']);
         expect(result).toMatchObject({
           total: 3,
           page: 1,

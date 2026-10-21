@@ -297,9 +297,9 @@ model GenericFood {
   @@index([foodName])
   @@index([nevoCode])
   @@index([shelfLifeId])
-  // Trigram indexes (pg_trgm) for typo-tolerant / substring name search
-  @@index([foodName(ops: raw("gin_trgm_ops"))], type: Gin, map: "generic_foods_food_name_trgm_idx")
-  @@index([synonym(ops: raw("gin_trgm_ops"))], type: Gin, map: "generic_foods_synonym_trgm_idx")
+  // Name search uses expression indexes on search_normalize("foodName"/"synonym"),
+  // created in migration 20261022120000_add_search_normalize_indexes (Prisma
+  // cannot declare expression indexes).
   @@map("generic_foods")
 }
 

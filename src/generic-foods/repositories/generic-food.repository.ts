@@ -5,15 +5,15 @@ import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
+import {
+  normalizeSearchTerm,
+  RankableSearchCandidate,
+} from '../utils/search-ranking';
 
-/** A search hit, already in ranked order (see findSearchCandidates). */
-export type GenericFoodSearchCandidate = {
-  id: string;
-  nevoCode: number;
+/** A search hit with what ranking needs (see utils/search-ranking.ts). */
+export type GenericFoodSearchCandidate = RankableSearchCandidate & {
   /** The term appears literally (ILIKE) rather than only as a close typo. */
   substringMatch: boolean;
-  /** Best pg_trgm word_similarity over name, synonym and translated names. */
-  score: number;
 };
 
 /** Escape LIKE wildcards so user input is matched literally. */
@@ -114,53 +114,61 @@ export class GenericFoodRepository {
   }
 
   /**
-   * Ids of all foods matching `term`, best first. A food matches when its
+   * All foods matching `term`, unordered (ranking happens in the service). A food matches when its
    * English name/synonym — or, for other locales, its translated name/synonym —
-   * contains the term (ILIKE) or is a close typo of it (pg_trgm `<%`, i.e.
+   * contains the term — compared with punctuation as spaces (search_normalize) —
+   * or is a close typo of it (pg_trgm `<%`, i.e.
    * word_similarity >= 0.6). Uses the trigram GIN indexes.
    *
-   * Order: real substring matches before typo-only matches, then similarity,
-   * then NEVO code (older, lower codes tend to be the generic basics).
    * Callers decide whether to keep typo-only matches (see `substringMatch`).
    */
-  findSearchCandidates(
+  async findSearchCandidates(
     term: string,
     locale: string,
   ): Promise<GenericFoodSearchCandidate[]> {
-    const pattern = `%${escapeLike(term)}%`;
+    // Compare like-for-like with search_normalize() on the columns, which is
+    // what the *_norm_trgm_idx expression indexes cover.
+    const normalized = normalizeSearchTerm(term);
+    if (!normalized) return [];
+    const pattern = `%${escapeLike(normalized)}%`;
 
     if (locale === DEFAULT_LOCALE) {
       return this.prisma.$queryRaw<GenericFoodSearchCandidate[]>`
         SELECT g.id,
                g."nevoCode",
-               (g."foodName" ILIKE ${pattern}
-                 OR COALESCE(g.synonym ILIKE ${pattern}, false)) AS "substringMatch",
+               g."foodName",
+               g.synonym,
+               g."foodGroup",
+               '{}'::text[] AS "translatedNames",
+               (search_normalize(g."foodName") LIKE ${pattern}
+                 OR COALESCE(search_normalize(g.synonym) LIKE ${pattern}, false)) AS "substringMatch",
                GREATEST(
-                 word_similarity(${term}, g."foodName"),
-                 COALESCE(word_similarity(${term}, g.synonym), 0)
+                 word_similarity(${normalized}, search_normalize(g."foodName")),
+                 COALESCE(word_similarity(${normalized}, search_normalize(g.synonym)), 0)
                )::float8 AS score
         FROM generic_foods g
-        WHERE g."foodName" ILIKE ${pattern}
-           OR ${term} <% g."foodName"
-           OR g.synonym ILIKE ${pattern}
-           OR ${term} <% g.synonym
-        ORDER BY "substringMatch" DESC,
-                 score DESC,
-                 g."nevoCode" ASC`;
+        WHERE search_normalize(g."foodName") LIKE ${pattern}
+           OR ${normalized} <% search_normalize(g."foodName")
+           OR search_normalize(g.synonym) LIKE ${pattern}
+           OR ${normalized} <% search_normalize(g.synonym)`;
     }
 
     return this.prisma.$queryRaw<GenericFoodSearchCandidate[]>`
       SELECT g.id,
              g."nevoCode",
+             g."foodName",
+             g.synonym,
+             g."foodGroup",
+             ARRAY_REMOVE(ARRAY_AGG(t.value), NULL) AS "translatedNames",
              BOOL_OR(
-               g."foodName" ILIKE ${pattern}
-               OR COALESCE(g.synonym ILIKE ${pattern}, false)
-               OR COALESCE(t.value ILIKE ${pattern}, false)
+               search_normalize(g."foodName") LIKE ${pattern}
+               OR COALESCE(search_normalize(g.synonym) LIKE ${pattern}, false)
+               OR COALESCE(search_normalize(t.value) LIKE ${pattern}, false)
              ) AS "substringMatch",
              GREATEST(
-               word_similarity(${term}, g."foodName"),
-               COALESCE(word_similarity(${term}, g.synonym), 0),
-               COALESCE(MAX(word_similarity(${term}, t.value)), 0)
+               word_similarity(${normalized}, search_normalize(g."foodName")),
+               COALESCE(word_similarity(${normalized}, search_normalize(g.synonym)), 0),
+               COALESCE(MAX(word_similarity(${normalized}, search_normalize(t.value))), 0)
              )::float8 AS score
       FROM generic_foods g
       LEFT JOIN entity_translations t
@@ -168,16 +176,13 @@ export class GenericFoodRepository {
        AND t."entityId" = g.id
        AND t.locale = ${locale}
        AND t.field IN ('foodName', 'synonym')
-      WHERE g."foodName" ILIKE ${pattern}
-         OR ${term} <% g."foodName"
-         OR g.synonym ILIKE ${pattern}
-         OR ${term} <% g.synonym
-         OR t.value ILIKE ${pattern}
-         OR ${term} <% t.value
-      GROUP BY g.id
-      ORDER BY "substringMatch" DESC,
-               score DESC,
-               g."nevoCode" ASC`;
+      WHERE search_normalize(g."foodName") LIKE ${pattern}
+         OR ${normalized} <% search_normalize(g."foodName")
+         OR search_normalize(g.synonym) LIKE ${pattern}
+         OR ${normalized} <% search_normalize(g.synonym)
+         OR search_normalize(t.value) LIKE ${pattern}
+         OR ${normalized} <% search_normalize(t.value)
+      GROUP BY g.id`;
   }
 
   /** The subset of `ids` whose food group matches (English or translated). */
