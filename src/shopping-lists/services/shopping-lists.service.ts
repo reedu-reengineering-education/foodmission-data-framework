@@ -5,8 +5,12 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  HttpException,
 } from '@nestjs/common';
-import { handlePrismaError } from '../../common/utils/error.utils';
+import {
+  describeError,
+  handlePrismaError,
+} from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
@@ -191,6 +195,12 @@ export class ShoppingListService {
           );
         }
       }
+      if (!(error instanceof HttpException)) {
+        this.logger.error(
+          `Failed to update shopping list ${id}: ${describeError(error)}`,
+          error instanceof Error ? error.stack : undefined,
+        );
+      }
       throw new BadRequestException('Failed to update shopping list');
     }
   }
@@ -211,6 +221,12 @@ export class ShoppingListService {
         error instanceof ForbiddenException
       ) {
         throw error;
+      }
+      if (!(error instanceof HttpException)) {
+        this.logger.error(
+          `Failed to delete shopping list ${id}: ${describeError(error)}`,
+          error instanceof Error ? error.stack : undefined,
+        );
       }
       throw new BadRequestException('Failed to delete shopping list');
     }

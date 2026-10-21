@@ -5,6 +5,8 @@ import {
   ConflictException,
   ForbiddenException,
   UnauthorizedException,
+  HttpException,
+  Logger,
 } from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
@@ -293,6 +295,15 @@ export function handleServiceError(
     error instanceof UnauthorizedException
   ) {
     throw error;
+  }
+  // Still reported as a 400 (unchanged), but a non-HTTP error here is a server
+  // failure (DB, bug) and would otherwise leave no trace.
+  if (!(error instanceof HttpException)) {
+    Logger.error(
+      `${defaultMessage}: ${describeError(error)}`,
+      error instanceof Error ? error.stack : undefined,
+      'ServiceError',
+    );
   }
   throw new BadRequestException(defaultMessage);
 }
