@@ -91,8 +91,7 @@ export class KeycloakAdminService {
         error_description: 'Failed to obtain service account token',
       };
       this.logger.error(
-        'Failed to get service account token',
-        JSON.stringify(data),
+        `Failed to get service account token: ${describeError(err)}`,
       );
       throw new HttpException(data, status);
     }
@@ -185,10 +184,14 @@ export class KeycloakAdminService {
 
       return createdUser;
     } catch (err: any) {
-      this.logger.error(
-        'Keycloak admin user create error (raw)',
-        err?.response?.data || err?.message || err,
-      );
+      // A 4xx (e.g. 409 user exists) is the caller's problem, not an outage.
+      const createStatus = err?.response?.status;
+      const createMessage = `Keycloak user create failed: ${describeError(err)}`;
+      if (createStatus && createStatus < 500) {
+        this.logger.warn(createMessage);
+      } else {
+        this.logger.error(createMessage);
+      }
 
       const status = err?.response?.status || 502;
       const kcData = err?.response?.data;

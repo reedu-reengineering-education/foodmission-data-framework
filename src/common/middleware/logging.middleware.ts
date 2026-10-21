@@ -17,6 +17,23 @@ export interface RequestWithLogging extends Request {
 }
 
 const SLOW_REQUEST_MS = 5000;
+const MAX_REASON_LENGTH = 300;
+
+/**
+ * Exception filters call this so the single request log line can say why a
+ * request failed (e.g. "409 - User exists with same username").
+ */
+export function setErrorReason(res: Response, reason: unknown): void {
+  const text = Array.isArray(reason)
+    ? reason.join('; ')
+    : typeof reason === 'string'
+      ? reason
+      : undefined;
+  if (text) {
+    res.locals = res.locals ?? {};
+    res.locals.errorReason = text.slice(0, MAX_REASON_LENGTH);
+  }
+}
 
 @Injectable()
 export class LoggingMiddleware implements NestMiddleware {
@@ -132,10 +149,12 @@ export class LoggingMiddleware implements NestMiddleware {
   ): void {
     const status = res.statusCode;
     const level = status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info';
+    const reason: string | undefined =
+      status >= 400 ? res.locals?.errorReason : undefined;
 
     this.loggingService.logWithMeta(
       level,
-      `${req.method} ${path} ${status} ${responseTime}ms`,
+      `${req.method} ${path} ${status} ${responseTime}ms${reason ? ` - ${reason}` : ''}`,
       {
         context: 'HTTP',
         log_type: 'http',
@@ -147,6 +166,7 @@ export class LoggingMiddleware implements NestMiddleware {
         traceId: req.traceId,
         requestId: req.requestId,
         ...(req.userId && { userId: req.userId }),
+        ...(reason && { errorReason: reason }),
       },
     );
 

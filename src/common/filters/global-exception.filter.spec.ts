@@ -132,6 +132,20 @@ describe('GlobalExceptionFilter', () => {
       });
     });
 
+    it('should record the error message as the request error reason', () => {
+      filter.catch(
+        new HttpException(
+          'User exists with same username',
+          HttpStatus.CONFLICT,
+        ),
+        mockHost,
+      );
+
+      expect(mockResponse.locals.errorReason).toBe(
+        'User exists with same username',
+      );
+    });
+
     it('should handle generic errors', () => {
       const genericError = new Error('Something went wrong');
 

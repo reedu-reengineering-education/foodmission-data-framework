@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoggingService } from '../logging/logging.service';
+import { setErrorReason } from '../middleware/logging.middleware';
 import { BusinessException } from '../exceptions/business.exception';
 import {
   extractErrorInfo,
@@ -36,6 +37,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     // Log the error
     this.logError(exception, errorInfo, traceId);
+    setErrorReason(response, errorInfo.message);
 
     // Prepare response
     const errorResponse = this.buildErrorResponse(
