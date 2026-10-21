@@ -33,35 +33,25 @@ export class GenericFoodService {
 
   async findAll(query: GenericFoodQueryDto) {
     const locale = this.translationService.resolveLocale(query.lang);
-    const context: {
-      localizedSearchIds?: string[];
-      localizedFoodGroupIds?: string[];
-    } = {};
 
-    if (locale !== DEFAULT_LOCALE) {
-      if (query.search) {
-        context.localizedSearchIds =
-          await this.translationService.findEntityIdsByValue(
-            'GenericFood',
-            locale,
-            ['foodName', 'synonym'],
-            query.search,
-          );
-      }
-      if (query.foodGroup) {
-        context.localizedFoodGroupIds =
-          await this.translationService.findEntityIdsByValue(
+    const localizedFoodGroupIds =
+      locale !== DEFAULT_LOCALE && query.foodGroup
+        ? await this.translationService.findEntityIdsByValue(
             'GenericFood',
             locale,
             ['foodGroup'],
             query.foodGroup,
-          );
-      }
+          )
+        : undefined;
+
+    const search = query.search?.trim();
+    if (search) {
+      return this.searchRanked(query, search, locale, localizedFoodGroupIds);
     }
 
     const result = await this.genericFoodRepository.findAll(
       query,
-      Object.keys(context).length > 0 ? context : undefined,
+      localizedFoodGroupIds ? { localizedFoodGroupIds } : undefined,
     );
 
     const items = await this.overlayTranslations(result.items, locale);
@@ -69,6 +59,60 @@ export class GenericFoodService {
     return {
       ...result,
       items,
+    };
+  }
+
+  /**
+   * Search ordered by relevance (pg_trgm similarity, then NEVO code) instead
+   * of A–Z. Close typos are returned only when nothing contains the term. The ranked id list is filtered by food
+   * group and paged here; full rows are loaded only for the current page.
+   */
+  private async searchRanked(
+    query: GenericFoodQueryDto,
+    search: string,
+    locale: string,
+    localizedFoodGroupIds?: string[],
+  ) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+
+    const candidates = await this.genericFoodRepository.findSearchCandidates(
+      search,
+      locale,
+    );
+    // Typo matches only as a fallback: short words share many trigrams
+    // ("pasta" ~ "pastry"), so mixing them into a search that already has
+    // real hits mostly adds noise.
+    const hasSubstringMatch = candidates.some((c) => c.substringMatch);
+    let rankedIds = candidates
+      .filter((c) => !hasSubstringMatch || c.substringMatch)
+      .map((c) => c.id);
+
+    if (query.foodGroup) {
+      const allowed = new Set(
+        await this.genericFoodRepository.filterIdsByFoodGroup(
+          rankedIds,
+          query.foodGroup,
+          localizedFoodGroupIds,
+        ),
+      );
+      rankedIds = rankedIds.filter((id) => allowed.has(id));
+    }
+
+    const total = rankedIds.length;
+    const pageIds = rankedIds.slice((page - 1) * limit, page * limit);
+    const rows = await this.genericFoodRepository.findByIds(pageIds);
+    const rowsById = new Map(rows.map((row) => [row.id, row]));
+    const ordered = pageIds
+      .map((id) => rowsById.get(id))
+      .filter((row): row is GenericFood => row !== undefined);
+
+    return {
+      items: await this.overlayTranslations(ordered, locale),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     };
   }
 

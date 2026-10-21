@@ -19,6 +19,7 @@ describe('GenericFoodRepository', () => {
       delete: jest.fn(),
       count: jest.fn(),
     },
+    $queryRaw: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -64,6 +65,70 @@ describe('GenericFoodRepository', () => {
     await repository.findById('generic-123');
     expect(prisma.genericFood.findUnique).toHaveBeenCalledWith({
       where: { id: 'generic-123' },
+    });
+  });
+
+  describe('search', () => {
+    const sqlOf = () =>
+      (prisma.$queryRaw.mock.calls[0][0] as TemplateStringsArray).join('?');
+    const valuesOf = () => prisma.$queryRaw.mock.calls[0].slice(1);
+
+    it('escapes LIKE wildcards in the term', async () => {
+      prisma.$queryRaw.mockResolvedValue([]);
+
+      await repository.findSearchCandidates('100%_x', 'en');
+
+      expect(valuesOf()).toContain('%100\\%\\_x%');
+      expect(valuesOf()).toContain('100%_x');
+    });
+
+    it('searches only English fields for en', async () => {
+      prisma.$queryRaw.mockResolvedValue([]);
+
+      await repository.findSearchCandidates('pasta', 'en');
+
+      expect(sqlOf()).not.toContain('entity_translations');
+    });
+
+    it('also searches translated names for other locales', async () => {
+      prisma.$queryRaw.mockResolvedValue([]);
+
+      await repository.findSearchCandidates('appel', 'nl');
+
+      expect(sqlOf()).toContain('entity_translations');
+      expect(valuesOf()).toContain('nl');
+    });
+
+    it('skips queries for empty id lists', async () => {
+      await expect(repository.findByIds([])).resolves.toEqual([]);
+      await expect(
+        repository.filterIdsByFoodGroup([], 'Fruits'),
+      ).resolves.toEqual([]);
+      expect(prisma.genericFood.findMany).not.toHaveBeenCalled();
+    });
+
+    it('filters ids by English or translated food group', async () => {
+      prisma.genericFood.findMany.mockResolvedValue([{ id: 'b' }]);
+
+      const ids = await repository.filterIdsByFoodGroup(['a', 'b'], 'Fruit', [
+        'b',
+      ]);
+
+      expect(ids).toEqual(['b']);
+      expect(prisma.genericFood.findMany).toHaveBeenCalledWith({
+        where: {
+          AND: [
+            { id: { in: ['a', 'b'] } },
+            {
+              OR: [
+                { foodGroup: { contains: 'Fruit', mode: 'insensitive' } },
+                { id: { in: ['b'] } },
+              ],
+            },
+          ],
+        },
+        select: { id: true },
+      });
     });
   });
 });

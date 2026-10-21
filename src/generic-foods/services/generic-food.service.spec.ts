@@ -23,6 +23,9 @@ describe('GenericFoodService', () => {
     delete: jest.fn(),
     findByNevoCode: jest.fn(),
     getDistinctFoodGroups: jest.fn(),
+    findSearchCandidates: jest.fn(),
+    filterIdsByFoodGroup: jest.fn(),
+    findByIds: jest.fn(),
   };
 
   const mockTranslationMethods = {
@@ -132,42 +135,124 @@ describe('GenericFoodService', () => {
       expect(result.items[0].foodGroupSlug).toBe('vegetables');
     });
 
-    it('should search localized names when lang is set', async () => {
-      const query: GenericFoodQueryDto = {
-        search: 'tomaat',
-        lang: 'nl',
-        page: 1,
-        limit: 20,
-      };
-
-      translations.resolveLocale.mockReturnValue('nl');
-      translations.findEntityIdsByValue.mockResolvedValue(['generic-123']);
-      repository.findAll.mockResolvedValue({
-        items: [mockCategory],
-        total: 1,
-        page: 1,
-        limit: 20,
-        totalPages: 1,
+    describe('with search', () => {
+      const food = (id: string, nevoCode: number) => ({
+        ...mockCategory,
+        id,
+        nevoCode,
+        foodName: `Food ${id}`,
       });
-      translations.resolveMany.mockResolvedValue({
-        'generic-123': {
-          foodName: 'Tomaat rauw',
-          foodGroup: 'Groenten',
-          remark: null,
-          synonym: null,
-        },
+      const candidate = (id: string, substringMatch = true) => ({
+        id,
+        nevoCode: 1,
+        substringMatch,
+        score: 1,
       });
 
-      await service.findAll(query);
+      beforeEach(() => {
+        translations.resolveLocale.mockReturnValue('en');
+      });
 
-      expect(translations.findEntityIdsByValue).toHaveBeenCalledWith(
-        'GenericFood',
-        'nl',
-        ['foodName', 'synonym'],
-        'tomaat',
-      );
-      expect(repository.findAll).toHaveBeenCalledWith(query, {
-        localizedSearchIds: ['generic-123'],
+      it('returns the page in ranked order, not database order', async () => {
+        repository.findSearchCandidates.mockResolvedValue([
+          candidate('b'),
+          candidate('a'),
+          candidate('c'),
+        ]);
+        repository.findByIds.mockResolvedValue([food('a', 1), food('b', 2)]);
+
+        const result = await service.findAll({
+          search: ' pasta ',
+          page: 1,
+          limit: 2,
+        });
+
+        expect(repository.findSearchCandidates).toHaveBeenCalledWith(
+          'pasta',
+          'en',
+        );
+        expect(repository.findByIds).toHaveBeenCalledWith(['b', 'a']);
+        expect(result.items.map((item) => item.id)).toEqual(['b', 'a']);
+        expect(result).toMatchObject({
+          total: 3,
+          page: 1,
+          limit: 2,
+          totalPages: 2,
+        });
+        expect(repository.findAll).not.toHaveBeenCalled();
+      });
+
+      it('pages through the ranked ids', async () => {
+        repository.findSearchCandidates.mockResolvedValue([
+          candidate('a'),
+          candidate('b'),
+          candidate('c'),
+        ]);
+        repository.findByIds.mockResolvedValue([food('c', 3)]);
+
+        const result = await service.findAll({
+          search: 'pasta',
+          page: 2,
+          limit: 2,
+        });
+
+        expect(repository.findByIds).toHaveBeenCalledWith(['c']);
+        expect(result.items.map((item) => item.id)).toEqual(['c']);
+      });
+
+      it('drops typo-only matches when there are substring matches', async () => {
+        repository.findSearchCandidates.mockResolvedValue([
+          candidate('real'),
+          candidate('typo', false),
+        ]);
+        repository.findByIds.mockResolvedValue([food('real', 1)]);
+
+        const result = await service.findAll({ search: 'pasta' });
+
+        expect(repository.findByIds).toHaveBeenCalledWith(['real']);
+        expect(result.total).toBe(1);
+      });
+
+      it('falls back to typo matches when nothing contains the term', async () => {
+        repository.findSearchCandidates.mockResolvedValue([
+          candidate('typo', false),
+        ]);
+        repository.findByIds.mockResolvedValue([food('typo', 1)]);
+
+        const result = await service.findAll({ search: 'tomatos' });
+
+        expect(result.total).toBe(1);
+        expect(result.items[0].id).toBe('typo');
+      });
+
+      it('applies the food group filter to the ranked ids', async () => {
+        translations.resolveLocale.mockReturnValue('nl');
+        translations.findEntityIdsByValue.mockResolvedValue(['b']);
+        translations.resolveMany.mockResolvedValue({});
+        repository.findSearchCandidates.mockResolvedValue([
+          candidate('a'),
+          candidate('b'),
+        ]);
+        repository.filterIdsByFoodGroup.mockResolvedValue(['b']);
+        repository.findByIds.mockResolvedValue([food('b', 2)]);
+
+        const result = await service.findAll({
+          search: 'appel',
+          foodGroup: 'Fruit',
+          lang: 'nl',
+        });
+
+        expect(repository.findSearchCandidates).toHaveBeenCalledWith(
+          'appel',
+          'nl',
+        );
+        expect(repository.filterIdsByFoodGroup).toHaveBeenCalledWith(
+          ['a', 'b'],
+          'Fruit',
+          ['b'],
+        );
+        expect(result.items.map((item) => item.id)).toEqual(['b']);
+        expect(result.total).toBe(1);
       });
     });
 

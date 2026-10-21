@@ -97,6 +97,14 @@ describe('GenericFoods endpoints (e2e)', () => {
     },
   );
 
+  itIfDb('GET /generic-foods tolerates typos in search', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/generic-foods?search=Applle')
+      .expect(200);
+    expect(res.body.total).toBeGreaterThanOrEqual(1);
+    expect(res.body.items[0].foodName).toContain('Apple');
+  });
+
   itIfDb('GET /generic-foods supports paginated search', async () => {
     const res = await request(app.getHttpServer())
       .get('/generic-foods?search=milk&page=1&limit=20')
