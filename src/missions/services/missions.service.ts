@@ -122,15 +122,11 @@ export class MissionsService {
       ) {
         throw error;
       }
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === ERROR_CODES.PRISMA_FOREIGN_KEY_CONSTRAINT
-      ) {
-        throw new BadRequestException('Dimension or topic does not exist');
-      }
       if (error instanceof PrismaClientKnownRequestError) {
-        const businessException = handlePrismaError(error, 'update', 'mission');
-        throw businessException;
+        if (error.code === ERROR_CODES.PRISMA_FOREIGN_KEY_CONSTRAINT) {
+          throw new BadRequestException('Dimension or topic does not exist');
+        }
+        throw handlePrismaError(error, 'update', 'mission');
       }
       handleServiceError(error, 'Failed to update mission');
     }

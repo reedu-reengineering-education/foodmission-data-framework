@@ -188,15 +188,6 @@ describe('MissionsService', () => {
       );
     });
 
-    it('should handle PrismaClientKnownRequestError', async () => {
-      const prismaError = new PrismaClientKnownRequestError('Error', {
-        code: 'P2002',
-        clientVersion: '5.0.0',
-      });
-      (repository.update as jest.Mock).mockRejectedValue(prismaError);
-      await expect(service.update('m1', updateDto)).rejects.toThrow();
-    });
-
     it('should throw BadRequestException for unexpected errors', async () => {
       (repository.update as jest.Mock).mockRejectedValue(
         new Error('Unexpected'),

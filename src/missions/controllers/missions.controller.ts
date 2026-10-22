@@ -369,18 +369,11 @@ export class MissionsController {
       'Updates mission content and availability. The mission code cannot be changed. Admin only.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
-  @ApiBody({ type: UpdateMissionsDto })
   @ApiResponse({
     status: 200,
     description: 'Mission updated successfully',
     type: MissionsResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description:
-      'No fields to update, invalid values, or unknown dimension/topic',
-  })
-  @ApiResponse({ status: 403, description: 'Admin role required' })
   @ApiResponse({ status: 404, description: 'Mission not found' })
   @ApiCrudErrorResponses()
   async update(
