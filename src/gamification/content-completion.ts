@@ -61,6 +61,18 @@ export async function findFinishedItemKeys(
   return finished;
 }
 
+export async function findFoodFactReads(
+  db: Db,
+  userId: string,
+  codes: string[],
+): Promise<Map<string, Date>> {
+  const rows = await db.foodFactProgress.findMany({
+    where: { userId, foodFact: { code: { in: codes } } },
+    select: { readAt: true, foodFact: { select: { code: true } } },
+  });
+  return new Map(rows.map((row) => [row.foodFact.code, row.readAt]));
+}
+
 async function findFinishedCodes(
   db: Db,
   userId: string,
@@ -95,14 +107,8 @@ async function findFinishedCodes(
       });
       return rows.map((row) => row.quiz.code);
     }
-    case QuestContentType.FOOD_FACT: {
-      // FoodFactProgress has no `completed` column — the row is the read.
-      const rows = await db.foodFactProgress.findMany({
-        where: { userId, foodFact: { code: { in: codes } } },
-        select: { foodFact: { select: { code: true } } },
-      });
-      return rows.map((row) => row.foodFact.code);
-    }
+    case QuestContentType.FOOD_FACT:
+      return [...(await findFoodFactReads(db, userId, codes)).keys()];
     default:
       return [];
   }
@@ -206,12 +212,9 @@ export async function findItemStatuses(
           }));
           break;
         case QuestContentType.FOOD_FACT:
-          rows = (
-            await db.foodFactProgress.findMany({
-              where: { userId, foodFact: { code: { in: codes } } },
-              select: { foodFact: { select: { code: true } } },
-            })
-          ).map((row) => ({ code: row.foodFact.code, ...COMPLETED }));
+          rows = [...(await findFoodFactReads(db, userId, codes)).keys()].map(
+            (code) => ({ code, ...COMPLETED }),
+          );
           break;
       }
       for (const { code, ...rest } of rows) {

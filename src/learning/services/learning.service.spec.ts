@@ -243,14 +243,14 @@ describe('LearningService', () => {
     });
     const readAt = new Date('2026-01-01T00:00:00.000Z');
 
-    it('annotates each listed fact with the user read state', async () => {
+    it('annotates each listed fact with the user completion', async () => {
       prisma.foodFact.findMany.mockResolvedValue([
         fact('ff1', 'FF.B1.1'),
         fact('ff2', 'FF.B1.2'),
       ]);
       prisma.foodFact.count.mockResolvedValue(2);
       prisma.foodFactProgress.findMany.mockResolvedValue([
-        { foodFactId: 'ff1', readAt },
+        { foodFact: { code: 'FF.B1.1' }, readAt },
       ]);
 
       const result = await service.listFoodFactsForUser('u1', {
@@ -259,12 +259,15 @@ describe('LearningService', () => {
       });
 
       expect(prisma.foodFactProgress.findMany).toHaveBeenCalledWith({
-        where: { userId: 'u1', foodFactId: { in: ['ff1', 'ff2'] } },
-        select: { foodFactId: true, readAt: true },
+        where: {
+          userId: 'u1',
+          foodFact: { code: { in: ['FF.B1.1', 'FF.B1.2'] } },
+        },
+        select: { readAt: true, foodFact: { select: { code: true } } },
       });
       expect(result.data).toEqual([
-        expect.objectContaining({ id: 'ff1', read: true, readAt }),
-        expect.objectContaining({ id: 'ff2', read: false, readAt: null }),
+        expect.objectContaining({ id: 'ff1', completed: true, readAt }),
+        expect.objectContaining({ id: 'ff2', completed: false, readAt: null }),
       ]);
       expect(result.meta).toMatchObject({ page: 1, limit: 10, total: 2 });
     });
@@ -273,8 +276,8 @@ describe('LearningService', () => {
       [true, { some: { userId: 'u1' } }],
       [false, { none: { userId: 'u1' } }],
     ])(
-      'filters by read=%s and paginates on the filtered count',
-      async (read, progress) => {
+      'filters by completed=%s and paginates on the filtered count',
+      async (completed, progress) => {
         prisma.foodFact.findMany.mockResolvedValue([fact('ff1', 'FF.B1.1')]);
         prisma.foodFact.count.mockResolvedValue(11);
         prisma.foodFactProgress.findMany.mockResolvedValue([]);
@@ -282,7 +285,7 @@ describe('LearningService', () => {
         const result = await service.listFoodFactsForUser('u1', {
           page: 2,
           limit: 10,
-          read,
+          completed,
         });
 
         const where = { available: true, progress };
@@ -300,7 +303,7 @@ describe('LearningService', () => {
       },
     );
 
-    it('does not filter by read state when read is omitted', async () => {
+    it('does not filter by completion when completed is omitted', async () => {
       prisma.foodFact.findMany.mockResolvedValue([]);
       prisma.foodFact.count.mockResolvedValue(0);
       prisma.foodFactProgress.findMany.mockResolvedValue([]);
@@ -312,34 +315,38 @@ describe('LearningService', () => {
       });
     });
 
-    it('returns a single read fact with readAt', async () => {
+    it('returns a single completed fact with readAt', async () => {
       prisma.foodFact.findFirst.mockResolvedValue(fact('ff1', 'FF.B1.1'));
       prisma.foodFactProgress.findMany.mockResolvedValue([
-        { foodFactId: 'ff1', readAt },
+        { foodFact: { code: 'FF.B1.1' }, readAt },
       ]);
 
       const result = await service.getFoodFactForUser('u1', 'FF.B1.1', {});
 
       expect(prisma.foodFactProgress.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { userId: 'u1', foodFactId: { in: ['ff1'] } },
+          where: { userId: 'u1', foodFact: { code: { in: ['FF.B1.1'] } } },
         }),
       );
       expect(result).toMatchObject({
         id: 'ff1',
         code: 'FF.B1.1',
-        read: true,
+        completed: true,
         readAt,
       });
     });
 
-    it('returns a single unread fact with read=false', async () => {
+    it('returns a single unread fact with completed=false', async () => {
       prisma.foodFact.findFirst.mockResolvedValue(fact('ff1', 'FF.B1.1'));
       prisma.foodFactProgress.findMany.mockResolvedValue([]);
 
       const result = await service.getFoodFactForUser('u1', 'ff1', {});
 
-      expect(result).toMatchObject({ id: 'ff1', read: false, readAt: null });
+      expect(result).toMatchObject({
+        id: 'ff1',
+        completed: false,
+        readAt: null,
+      });
     });
 
     it('throws NotFound for an unknown or unavailable fact', async () => {

@@ -9,8 +9,10 @@ export function buildUserFoodFactWhere(
   userId: string,
 ): Prisma.FoodFactWhereInput {
   const where = buildFoodFactWhere(filters);
-  if (filters.read !== undefined) {
-    where.progress = filters.read ? { some: { userId } } : { none: { userId } };
+  if (filters.completed !== undefined) {
+    where.progress = filters.completed
+      ? { some: { userId } }
+      : { none: { userId } };
   }
   return where;
 }
