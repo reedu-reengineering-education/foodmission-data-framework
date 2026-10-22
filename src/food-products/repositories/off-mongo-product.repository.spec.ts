@@ -153,6 +153,30 @@ describe('OffMongoProductRepository.search', () => {
     expect(result.totalCountCapped).toBe(true);
   });
 
+  it('sorts by popularity by default, using the keywords/popularity index order', async () => {
+    findRaw.mockResolvedValue([]);
+    aggregateRaw.mockResolvedValue([]);
+
+    await repository.search({ query: 'milk' });
+
+    expect(findRaw.mock.calls[0][0].options.sort).toEqual({
+      unique_scans_n: -1,
+    });
+  });
+
+  it.each([
+    ['popularity', { unique_scans_n: -1 }],
+    ['last_modified_t', { last_modified_t: -1 }],
+    ['created_t', { created_t: -1 }],
+  ] as const)('maps sortBy %s to an indexed sort', async (sortBy, expected) => {
+    findRaw.mockResolvedValue([]);
+    aggregateRaw.mockResolvedValue([]);
+
+    await repository.search({ query: 'milk', sortBy });
+
+    expect(findRaw.mock.calls[0][0].options.sort).toEqual(expected);
+  });
+
   it('returns zero when nothing matches', async () => {
     findRaw.mockResolvedValue([]);
     aggregateRaw.mockResolvedValue([]);

@@ -130,10 +130,8 @@ export class OffMongoProductRepository {
     const findOptions: Record<string, unknown> = {
       skip: (page - 1) * pageSize,
       limit: pageSize,
+      sort,
     };
-    if (sort) {
-      findOptions.sort = sort;
-    }
 
     const [rawItems, countResult] = await Promise.all([
       this.prisma.offProduct.findRaw({
@@ -199,22 +197,22 @@ export class OffMongoProductRepository {
     return filter;
   }
 
+  /**
+   * Every option matches an index on the OFF copy, so Mongo reads results in
+   * order and stops after one page instead of sorting all matches in memory.
+   * Default is popularity (OFF's unique_scans_n, served by
+   * _keywords_1_unique_scans_n_-1): well-known products first.
+   */
   private buildRawSort(
-    sortBy?: OpenFoodFactsSearchOptions['sortBy'],
-  ): Record<string, 1 | -1> | undefined {
+    sortBy: OpenFoodFactsSearchOptions['sortBy'] = 'popularity',
+  ): Record<string, 1 | -1> {
     switch (sortBy) {
       case 'created_t':
         return { created_t: -1 };
       case 'last_modified_t':
         return { last_modified_t: -1 };
-      case 'completeness':
-        return { completeness: -1 };
       case 'popularity':
         return { unique_scans_n: -1 };
-      case 'product_name':
-        return { product_name: 1 };
-      default:
-        return undefined;
     }
   }
 }
