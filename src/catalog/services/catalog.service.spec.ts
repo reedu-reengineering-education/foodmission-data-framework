@@ -159,6 +159,27 @@ describe('CatalogService', () => {
     }
   });
 
+  it('lists only the 20 Italian regions, not their provinces', () => {
+    const it = service.listRegions({ page: 1, limit: 100, countryCode: 'IT' });
+    expect(it.total).toBe(20);
+    expect(it.data.map((r) => r.code)).toContain('IT-62');
+    expect(it.data.map((r) => r.code)).not.toContain('IT-RM');
+  });
+
+  it('lists the current Norwegian counties', () => {
+    const no = service.listRegions({ page: 1, limit: 100, countryCode: 'NO' });
+    const codes = no.data.map((r) => r.code);
+    expect(codes).toEqual(expect.arrayContaining(['NO-46', 'NO-50']));
+    expect(codes).not.toContain('NO-12');
+    expect(no.total).toBe(17);
+  });
+
+  it('lists the 13 Greek regions and Mount Athos, not the old prefectures', () => {
+    const gr = service.listRegions({ page: 1, limit: 100, countryCode: 'GR' });
+    expect(gr.total).toBe(14);
+    expect(gr.data.map((r) => r.code)).not.toContain('GR-54');
+  });
+
   it('allows regions search without countryCode (paginated)', () => {
     const res = service.listRegions({ page: 1, limit: 10, search: 'york' });
     expect(res.data.length).toBeGreaterThan(0);

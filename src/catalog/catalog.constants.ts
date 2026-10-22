@@ -111,3 +111,74 @@ export const CONTENT_TAG_ENTRIES = [
     fallback: 'Food waste',
   },
 ] as const;
+
+/**
+ * Region lists that replace the bundled iso-3166-2 data, which is outdated for
+ * these countries: Norway still has its pre-2020 counties, Italy mixes its 20
+ * regions with the provinces below them, and Greece mixes its 13 regions with
+ * the prefectures abolished in 2011. Codes and names follow current ISO 3166-2.
+ */
+export const REGION_OVERRIDES: Record<
+  string,
+  readonly { code: string; name: string }[]
+> = {
+  // 15 counties since the 2024 reform, plus the two arctic territories.
+  NO: [
+    { code: 'NO-03', name: 'Oslo' },
+    { code: 'NO-11', name: 'Rogaland' },
+    { code: 'NO-15', name: 'Møre og Romsdal' },
+    { code: 'NO-18', name: 'Nordland' },
+    { code: 'NO-31', name: 'Østfold' },
+    { code: 'NO-32', name: 'Akershus' },
+    { code: 'NO-33', name: 'Buskerud' },
+    { code: 'NO-34', name: 'Innlandet' },
+    { code: 'NO-39', name: 'Vestfold' },
+    { code: 'NO-40', name: 'Telemark' },
+    { code: 'NO-42', name: 'Agder' },
+    { code: 'NO-46', name: 'Vestland' },
+    { code: 'NO-50', name: 'Trøndelag' },
+    { code: 'NO-55', name: 'Troms' },
+    { code: 'NO-56', name: 'Finnmark' },
+    { code: 'NO-21', name: 'Svalbard' },
+    { code: 'NO-22', name: 'Jan Mayen' },
+  ],
+  IT: [
+    { code: 'IT-21', name: 'Piemonte' },
+    { code: 'IT-23', name: "Valle d'Aosta" },
+    { code: 'IT-25', name: 'Lombardia' },
+    { code: 'IT-32', name: 'Trentino-Alto Adige' },
+    { code: 'IT-34', name: 'Veneto' },
+    { code: 'IT-36', name: 'Friuli-Venezia Giulia' },
+    { code: 'IT-42', name: 'Liguria' },
+    { code: 'IT-45', name: 'Emilia-Romagna' },
+    { code: 'IT-52', name: 'Toscana' },
+    { code: 'IT-55', name: 'Umbria' },
+    { code: 'IT-57', name: 'Marche' },
+    { code: 'IT-62', name: 'Lazio' },
+    { code: 'IT-65', name: 'Abruzzo' },
+    { code: 'IT-67', name: 'Molise' },
+    { code: 'IT-72', name: 'Campania' },
+    { code: 'IT-75', name: 'Puglia' },
+    { code: 'IT-77', name: 'Basilicata' },
+    { code: 'IT-78', name: 'Calabria' },
+    { code: 'IT-82', name: 'Sicilia' },
+    { code: 'IT-88', name: 'Sardegna' },
+  ],
+  // 13 regions plus the self-governed Mount Athos.
+  GR: [
+    { code: 'GR-A', name: 'Anatolikí Makedonía kai Thráki' },
+    { code: 'GR-B', name: 'Kentrikí Makedonía' },
+    { code: 'GR-C', name: 'Dytikí Makedonía' },
+    { code: 'GR-D', name: 'Ípeiros' },
+    { code: 'GR-E', name: 'Thessalía' },
+    { code: 'GR-F', name: 'Ionía Nísia' },
+    { code: 'GR-G', name: 'Dytikí Elláda' },
+    { code: 'GR-H', name: 'Stereá Elláda' },
+    { code: 'GR-I', name: 'Attikí' },
+    { code: 'GR-J', name: 'Pelopónnisos' },
+    { code: 'GR-K', name: 'Vóreio Aigaío' },
+    { code: 'GR-L', name: 'Nótio Aigaío' },
+    { code: 'GR-M', name: 'Kríti' },
+    { code: 'GR-69', name: 'Ágion Óros' },
+  ],
+};
