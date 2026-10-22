@@ -5,8 +5,12 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  HttpException,
 } from '@nestjs/common';
-import { handlePrismaError } from '../../common/utils/error.utils';
+import {
+  describeError,
+  handlePrismaError,
+} from '../../common/utils/error.utils';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ResourceAlreadyExistsException } from '../../common/exceptions/business.exception';
 import { ShoppingListRepository } from '../repositories/shopping-lists.repository';
@@ -41,7 +45,7 @@ export class ShoppingListService {
     createShoppingListDto: CreateShoppingListDto,
     userId: string,
   ): Promise<ShoppingListResponseDto> {
-    this.logger.log(`Creating a shopping list: ${createShoppingListDto.title}`);
+    this.logger.log(`Creating shopping list for user ${userId}`);
 
     try {
       // The list and its SHOPPING_LIST_CREATED event commit together: a list
@@ -103,7 +107,7 @@ export class ShoppingListService {
   }
 
   async findAll(userId: string): Promise<MultipleShoppingListResponseDto> {
-    this.logger.log(`Finding all shopping lists for user ${userId}`);
+    this.logger.debug(`Finding all shopping lists for user ${userId}`);
 
     const shoppingList = await this.shoppingListRepository.findAll({
       where: { userId },
@@ -124,7 +128,7 @@ export class ShoppingListService {
     id: string,
     userId?: string,
   ): Promise<ShoppingListResponseDto> {
-    this.logger.log(`Finding shopping list with the id:` + id);
+    this.logger.debug(`Finding shopping list ${id}`);
 
     const shoppingList = await this.shoppingListRepository.findById(id);
 
@@ -191,6 +195,12 @@ export class ShoppingListService {
           );
         }
       }
+      if (!(error instanceof HttpException)) {
+        this.logger.error(
+          `Failed to update shopping list ${id}: ${describeError(error)}`,
+          error instanceof Error ? error.stack : undefined,
+        );
+      }
       throw new BadRequestException('Failed to update shopping list');
     }
   }
@@ -211,6 +221,12 @@ export class ShoppingListService {
         error instanceof ForbiddenException
       ) {
         throw error;
+      }
+      if (!(error instanceof HttpException)) {
+        this.logger.error(
+          `Failed to delete shopping list ${id}: ${describeError(error)}`,
+          error instanceof Error ? error.stack : undefined,
+        );
       }
       throw new BadRequestException('Failed to delete shopping list');
     }

@@ -9,6 +9,7 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { toFoodGroupSlug } from '../utils/food-group-slug.util';
 import { rankSearchCandidates } from '../utils/search-ranking';
+import { sortByFoodGroupOrder } from '../utils/food-group-order.util';
 import type { GenericFood } from '@prisma/client';
 
 const GENERIC_FOOD_TRANSLATABLE_FIELDS = [
@@ -185,7 +186,7 @@ export class GenericFoodService {
       result = result.filter((g) => g.name.toLowerCase().includes(q));
     }
 
-    return result;
+    return sortByFoodGroupOrder(result);
   }
 
   private toResponse(

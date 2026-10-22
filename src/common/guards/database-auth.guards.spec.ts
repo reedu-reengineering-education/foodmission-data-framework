@@ -1,4 +1,8 @@
-import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { META_PUBLIC } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from './database-auth.guards';
@@ -158,6 +162,76 @@ describe('DataBaseAuthGuard', () => {
       await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
         'Failed to authenticate user: Database connection failed',
       );
+    });
+
+    describe('logging', () => {
+      let warn: jest.SpyInstance;
+      let error: jest.SpyInstance;
+      let log: jest.SpyInstance;
+
+      beforeEach(() => {
+        mockReflector.getAllAndOverride.mockReturnValue(false);
+        warn = jest
+          .spyOn(Logger.prototype, 'warn')
+          .mockImplementation(() => undefined);
+        error = jest
+          .spyOn(Logger.prototype, 'error')
+          .mockImplementation(() => undefined);
+        log = jest
+          .spyOn(Logger.prototype, 'log')
+          .mockImplementation(() => undefined);
+      });
+
+      afterEach(() => jest.restoreAllMocks());
+
+      it('logs a database failure as an error with its stack', async () => {
+        mockRequest.user = { sub: 'keycloak-123' };
+        const dbError = new Error('Database connection failed');
+        mockUserRepository.findByKeycloakId.mockRejectedValue(dbError);
+
+        await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
+          UnauthorizedException,
+        );
+
+        expect(error).toHaveBeenCalledWith(
+          'Database auth failed for Keycloak user keycloak-123: Database connection failed',
+          dbError.stack,
+        );
+      });
+
+      it('warns, without an error log, when the user has no local row', async () => {
+        mockRequest.user = { sub: 'keycloak-123' };
+        mockUserRepository.findByKeycloakId.mockResolvedValue(null);
+
+        await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
+          'User not found in database',
+        );
+
+        expect(warn).toHaveBeenCalledWith(
+          'Valid token but no local user for Keycloak user keycloak-123',
+        );
+        expect(error).not.toHaveBeenCalled();
+      });
+
+      it('logs when a user is linked to a new Keycloak id by email', async () => {
+        mockRequest.user = { sub: 'keycloak-new', email: 'a@example.com' };
+        mockUserRepository.findByKeycloakId.mockResolvedValue(null);
+        mockUserRepository.findByEmail.mockResolvedValue({
+          id: 'user-1',
+          keycloakId: 'keycloak-old',
+        } as any);
+        mockUserRepository.update.mockResolvedValue({
+          id: 'user-1',
+          keycloakId: 'keycloak-new',
+        } as any);
+
+        await guard.canActivate(mockExecutionContext);
+
+        expect(log).toHaveBeenCalledWith(
+          'Linked user user-1 to Keycloak user keycloak-new by email (previous Keycloak id: keycloak-old)',
+        );
+        expect(log.mock.calls.join(' ')).not.toContain('a@example.com');
+      });
     });
   });
 });

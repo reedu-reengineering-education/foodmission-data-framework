@@ -16,7 +16,7 @@ describe('CacheInterceptor', () => {
   beforeEach(async () => {
     const mockCacheManager = {
       get: jest.fn(),
-      set: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
       del: jest.fn(),
     };
 
@@ -154,6 +154,33 @@ describe('CacheInterceptor', () => {
       );
       expect(loggingService.debug).toHaveBeenCalledWith(
         'Cached response for key: test-key:user123',
+      );
+    });
+
+    it('should log, not crash, when writing to the cache fails', async () => {
+      const context = createMockExecutionContext(
+        'GET',
+        {},
+        { id: 'user123' },
+        {},
+      );
+      const freshResult = { data: 'fresh' };
+      const next = createMockCallHandler(freshResult);
+
+      reflector.getAllAndOverride
+        .mockReturnValueOnce('test-key')
+        .mockReturnValueOnce(300);
+      cacheManager.get.mockResolvedValue(undefined);
+      cacheManager.set.mockRejectedValue(new Error('Redis down'));
+
+      const result = await interceptor.intercept(context, next);
+      const observableResult = await result.toPromise();
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(observableResult).toBe(freshResult);
+      expect(loggingService.warn).toHaveBeenCalledWith(
+        'Failed to cache response for key test-key:user123: Redis down',
+        'CacheInterceptor',
       );
     });
 

@@ -15,6 +15,7 @@ import {
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { pickLocalizedString } from '../utils/off-locale';
 import { parseOffDietFlags } from '../utils/off-diet-flags';
+import { describeError } from '../../common/utils/error.utils';
 
 @Injectable()
 export class OpenFoodFactsService {
@@ -48,19 +49,18 @@ export class OpenFoodFactsService {
             { ...doc, _id: doc.id ?? doc._id },
             lang,
           );
-          this.logger.log(
+          this.logger.debug(
             `Found product in local OFF database: ${productInfo.name}`,
           );
           return productInfo;
         }
-        this.logger.warn(
+        this.logger.debug(
           `Product not found in local OFF database for barcode: ${barcode}`,
         );
         return null;
       } catch (error) {
         this.logger.warn(
-          `Local OFF database lookup failed for barcode ${barcode}, falling back to HTTP API`,
-          error as Error,
+          `Local OFF database lookup failed for barcode ${barcode}, falling back to HTTP API: ${describeError(error)}`,
         );
       }
     }
@@ -72,7 +72,7 @@ export class OpenFoodFactsService {
     barcode: string,
     lang: string = DEFAULT_LOCALE,
   ): Promise<ProductInfo | null> {
-    this.logger.log(`Fetching product by barcode: ${barcode}`);
+    this.logger.debug(`Fetching product by barcode: ${barcode}`);
 
     const url = `${this.baseUrl}/api/v0/product/${barcode}.json`;
     const params = this.buildProductHttpParams(lang);
@@ -94,7 +94,7 @@ export class OpenFoodFactsService {
 
     const productInfo = this.transformProduct(response.product, lang);
 
-    this.logger.log(`Successfully fetched product: ${productInfo.name}`);
+    this.logger.debug(`Successfully fetched product: ${productInfo.name}`);
     return productInfo;
   }
 
@@ -121,7 +121,7 @@ export class OpenFoodFactsService {
           this.transformProduct({ ...doc, _id: doc.id }, lang),
         );
 
-        this.logger.log(
+        this.logger.debug(
           `Found ${products.length} products in local OFF database`,
         );
 
@@ -134,8 +134,7 @@ export class OpenFoodFactsService {
         };
       } catch (error) {
         this.logger.warn(
-          'Local OFF database search failed, falling back to HTTP API',
-          error as Error,
+          `Local OFF database search failed, falling back to HTTP API: ${describeError(error)}`,
         );
       }
     }
@@ -144,7 +143,9 @@ export class OpenFoodFactsService {
   }
 
   private async searchProductsHttp(options: OpenFoodFactsSearchOptions) {
-    this.logger.log(`Searching products with options:`, options);
+    this.logger.debug(
+      `Searching OFF HTTP API page=${options.page ?? 1} pageSize=${options.pageSize ?? 20} lang=${options.lang ?? DEFAULT_LOCALE}`,
+    );
     const lang = options.lang ?? DEFAULT_LOCALE;
 
     // Build search parameters
@@ -184,7 +185,7 @@ export class OpenFoodFactsService {
       totalPages: response.page_count,
     };
 
-    this.logger.log(`Found ${products.length} products`);
+    this.logger.debug(`Found ${products.length} products`);
     return result;
   }
 

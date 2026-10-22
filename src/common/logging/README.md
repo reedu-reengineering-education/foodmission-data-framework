@@ -71,7 +71,7 @@ this.logger.logExternalApiCall('OpenFoodFacts', '/api/v0/product/123', 'GET', 25
 
 ```bash
 # Logging
-LOG_LEVEL="info"                     # error, warn, info, http, debug
+LOG_LEVEL="info"                     # error, warn, info, debug, verbose (filters Nest Logger and LoggingService)
 LOG_CONSOLE="true"
 LOG_FILE="true"
 LOG_DIR="./logs"

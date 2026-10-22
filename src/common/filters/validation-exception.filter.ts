@@ -8,6 +8,7 @@ import {
 import { Request, Response } from 'express';
 import { LoggingService } from '../logging/logging.service';
 import { generateTraceId } from '../utils/error.utils';
+import { setErrorReason } from '../middleware/logging.middleware';
 
 @Injectable()
 @Catch(BadRequestException)
@@ -33,6 +34,11 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 
     // Get trace ID from various sources, consistent with GlobalExceptionFilter
     const traceId = this.getTraceId(request);
+
+    setErrorReason(
+      response,
+      `Validation failed: ${validationErrors.join('; ')}`,
+    );
 
     response.status(status).json({
       statusCode: status,

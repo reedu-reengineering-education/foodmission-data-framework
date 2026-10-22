@@ -5,6 +5,8 @@ import {
   ConflictException,
   ForbiddenException,
   UnauthorizedException,
+  HttpException,
+  Logger,
 } from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
@@ -226,6 +228,23 @@ export function formatErrorForLogging(error: any, context?: string): string {
   return `${contextStr}${errorInfo.code}: ${errorInfo.message}`;
 }
 
+/**
+ * One-line description of an error for log messages. Prefers an HTTP
+ * client's response status/body (e.g. Keycloak's error JSON) over the
+ * generic Axios message.
+ */
+export function describeError(error: unknown): string {
+  const err = error as any;
+  const data = err?.response?.data;
+  if (data !== undefined && data !== '') {
+    const body = typeof data === 'string' ? data : JSON.stringify(data);
+    const status = err?.response?.status;
+    return status ? `HTTP ${status} ${body}` : body;
+  }
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
 export function isRetryableError(error: any): boolean {
   const errorInfo = extractErrorInfo(error);
 
@@ -276,6 +295,15 @@ export function handleServiceError(
     error instanceof UnauthorizedException
   ) {
     throw error;
+  }
+  // Still reported as a 400 (unchanged), but a non-HTTP error here is a server
+  // failure (DB, bug) and would otherwise leave no trace.
+  if (!(error instanceof HttpException)) {
+    Logger.error(
+      `${defaultMessage}: ${describeError(error)}`,
+      error instanceof Error ? error.stack : undefined,
+      'ServiceError',
+    );
   }
   throw new BadRequestException(defaultMessage);
 }

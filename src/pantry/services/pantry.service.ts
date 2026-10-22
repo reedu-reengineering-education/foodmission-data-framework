@@ -15,7 +15,7 @@ export class PantryService {
   constructor(private readonly pantryRepository: PantryRepository) {}
 
   async getOrCreatePantry(userId: string): Promise<PantryResponseDto> {
-    this.logger.log(`Getting or creating pantry for user: ${userId}`);
+    this.logger.debug(`Getting or creating pantry for user: ${userId}`);
     const pantry = await this.pantryRepository.getOrCreate(userId);
     return this.transformToResponseDto(pantry);
   }

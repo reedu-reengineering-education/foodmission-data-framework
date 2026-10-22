@@ -56,9 +56,7 @@ export class MealsService {
     createMealDto: CreateMealDto,
     userId: string,
   ): Promise<MealResponseDto> {
-    this.logger.log(
-      `Creating meal ${createMealDto.name ?? '[unnamed]'} for user ${userId}`,
-    );
+    this.logger.log(`Creating meal for user ${userId}`);
 
     if (createMealDto.barcode) {
       const existing = await this.mealRepository.findByBarcode(

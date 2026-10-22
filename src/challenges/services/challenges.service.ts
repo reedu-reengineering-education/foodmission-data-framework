@@ -65,7 +65,7 @@ export class ChallengesService {
     codeOrId: string,
     lang?: string,
   ): Promise<ChallengeResponseDto> {
-    this.logger.log(`Getting challenge ${codeOrId}`);
+    this.logger.debug(`Getting challenge ${codeOrId}`);
 
     const challenge = await this.challengesRepository.findByCodeOrId(codeOrId);
 
@@ -82,7 +82,7 @@ export class ChallengesService {
     options: { isAdmin?: boolean; userId?: string } = {},
   ): Promise<ChallengeResponseDto[]> {
     const { isAdmin = false, userId } = options;
-    this.logger.log('Getting all challenges');
+    this.logger.debug('Getting all challenges');
 
     const available =
       isAdmin && query.available !== undefined ? query.available : true;

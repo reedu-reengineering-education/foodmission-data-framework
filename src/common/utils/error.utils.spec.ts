@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   UnauthorizedException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
@@ -411,6 +412,35 @@ describe('ErrorUtils', () => {
       expect(() => {
         handleServiceError(error, defaultMessage);
       }).toThrow('User not authenticated');
+    });
+
+    it('should log non-HTTP errors before wrapping them', () => {
+      const logSpy = jest
+        .spyOn(Logger, 'error')
+        .mockImplementation(() => undefined);
+      const error = new Error('connection refused');
+
+      expect(() => handleServiceError(error, 'Failed to save item')).toThrow(
+        BadRequestException,
+      );
+      expect(logSpy).toHaveBeenCalledWith(
+        'Failed to save item: connection refused',
+        error.stack,
+        'ServiceError',
+      );
+      logSpy.mockRestore();
+    });
+
+    it('should not log client errors it wraps', () => {
+      const logSpy = jest
+        .spyOn(Logger, 'error')
+        .mockImplementation(() => undefined);
+
+      expect(() =>
+        handleServiceError(new BadRequestException('bad'), 'Failed'),
+      ).toThrow(BadRequestException);
+      expect(logSpy).not.toHaveBeenCalled();
+      logSpy.mockRestore();
     });
 
     it('should wrap unknown errors in BadRequestException', () => {

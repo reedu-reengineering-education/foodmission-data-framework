@@ -58,10 +58,10 @@ describe('PantryService', () => {
       expect(repository.getOrCreate).toHaveBeenCalledWith(userId);
     });
 
-    it('should log when getting or creating pantry', async () => {
+    it('should log at debug when getting or creating pantry', async () => {
       const mockPantry = PantryTestBuilder.createPantryResponseDto();
       mockPantryRepository.getOrCreate.mockResolvedValue(mockPantry);
-      const loggerSpy = jest.spyOn(service['logger'], 'log');
+      const loggerSpy = jest.spyOn(service['logger'], 'debug');
 
       await service.getOrCreatePantry(userId);
 

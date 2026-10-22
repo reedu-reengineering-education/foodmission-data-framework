@@ -7,15 +7,26 @@ import { InputSanitizationPipe } from './security/pipes/input-sanitization.pipe'
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { LoggingService } from './common/logging/logging.service';
 import {
+  logFatalAndExit,
+  registerProcessErrorHandlers,
+} from './common/logging/fatal';
+import {
   OPENAPI_DOCS_PATH,
   OPENAPI_GLOBAL_PREFIX,
   registerOpenApi,
 } from './docs';
 
+registerProcessErrorHandlers();
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // Enable raw body for webhook signature verification
+    bufferLogs: true, // Hold startup logs until LoggingService takes over
   });
+
+  // Single app logger: every Nest Logger call goes to stdout and OpenTelemetry
+  const loggingService = app.get(LoggingService);
+  app.useLogger(loggingService);
 
   // Get security service for configuration
   const securityService = app.get(SecurityService);
@@ -27,7 +38,6 @@ async function bootstrap() {
   app.enableCors(securityService.getCorsConfiguration());
 
   // Apply global exception filters for better error formatting
-  const loggingService = app.get(LoggingService);
   app.useGlobalFilters(new ValidationExceptionFilter(loggingService));
 
   // Enable validation pipes globally with input sanitization
@@ -50,9 +60,10 @@ async function bootstrap() {
   registerOpenApi(app);
 
   await app.listen(process.env.PORT ?? 3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
-  console.log(
-    `Swagger documentation available at: ${await app.getUrl()}/${OPENAPI_DOCS_PATH}`,
+  const appUrl = await app.getUrl();
+  Logger.log(
+    `Listening on ${appUrl}, API docs at ${appUrl}/${OPENAPI_DOCS_PATH}`,
+    'Bootstrap',
   );
   if (process.env.NODE_ENV === 'development') {
     Logger.log(
@@ -61,4 +72,4 @@ async function bootstrap() {
     );
   }
 }
-void bootstrap();
+bootstrap().catch((error) => logFatalAndExit('Bootstrap failed', error));

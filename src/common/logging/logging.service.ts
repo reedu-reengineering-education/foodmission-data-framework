@@ -1,14 +1,21 @@
 /**
- * OpenTelemetry Native Logging Service
+ * The application's single logger.
  *
- * Uses native OpenTelemetry Logs API for cloud-native observability.
- * Provides structured logging with automatic trace correlation.
+ * Extends Nest's ConsoleLogger and is registered with `app.useLogger()`, so
+ * every `new Logger(Context)` call, the static `Logger` and Nest's own
+ * framework messages end up here. Each entry is printed to stdout by
+ * ConsoleLogger and also emitted as an OpenTelemetry log record (shipped to
+ * Loki when OTEL_LOGS_ENABLED=true), with trace correlation.
+ *
+ * Levels are filtered once, by LOG_LEVEL (see log-level.ts).
  */
 
-import { Injectable, LoggerService } from '@nestjs/common';
+import { ConsoleLogger, Injectable, LogLevel } from '@nestjs/common';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
-import { trace, context } from '@opentelemetry/api';
+import { trace, context as otelContext } from '@opentelemetry/api';
 import cls from 'cls-hooked';
+import { nestLogLevels } from './log-level';
+import { redact } from './redact';
 
 export interface LogContext {
   traceId?: string;
@@ -21,10 +28,24 @@ export interface LogContext {
   [key: string]: any;
 }
 
+const SEVERITY_BY_LEVEL: Record<LogLevel, SeverityNumber> = {
+  verbose: SeverityNumber.TRACE,
+  debug: SeverityNumber.DEBUG,
+  log: SeverityNumber.INFO,
+  warn: SeverityNumber.WARN,
+  error: SeverityNumber.ERROR,
+  fatal: SeverityNumber.FATAL,
+};
+
 @Injectable()
-export class LoggingService implements LoggerService {
-  private readonly logger = logs.getLogger('foodmission-api', '1.0.0');
+export class LoggingService extends ConsoleLogger {
+  private readonly otelLogger = logs.getLogger('foodmission-api', '1.0.0');
   private readonly namespace = cls.createNamespace('logging');
+
+  constructor() {
+    // Colors stay on (Nest default); set NO_COLOR=1 to turn them off.
+    super({ logLevels: nestLogLevels() });
+  }
 
   /**
    * Set trace ID for the current request context
@@ -108,7 +129,81 @@ export class LoggingService implements LoggerService {
   }
 
   /**
-   * Emit a log record with OpenTelemetry
+   * Every Nest log call (instance or static Logger) ends here once its level
+   * passed the LOG_LEVEL filter: print to stdout, then emit to OpenTelemetry.
+   */
+  protected printMessages(
+    messages: unknown[],
+    context = '',
+    logLevel: LogLevel = 'log',
+    writeStreamType?: 'stdout' | 'stderr',
+    errorStack?: unknown,
+  ): void {
+    // Objects passed to a logger (e.g. by libraries) may carry tokens or passwords
+    messages = messages.map(redact);
+    super.printMessages(
+      messages,
+      context,
+      logLevel,
+      writeStreamType,
+      errorStack,
+    );
+
+    for (const message of messages) {
+      const stack =
+        typeof errorStack === 'string'
+          ? errorStack
+          : message instanceof Error
+            ? message.stack
+            : undefined;
+      this.emit(SEVERITY_BY_LEVEL[logLevel], this.toText(message), {
+        ...(context && { context }),
+        ...(stack && { trace: stack }),
+      });
+    }
+  }
+
+  /**
+   * Print and emit one entry with structured attributes. Used by the helpers
+   * below; calls super.printMessages directly so the record isn't emitted twice.
+   */
+  private write(
+    level: LogLevel,
+    message: string,
+    attributes: Record<string, any>,
+    context?: string,
+    stack?: string,
+  ): void {
+    if (!this.isLevelEnabled(level)) {
+      return;
+    }
+    super.printMessages(
+      [message],
+      context,
+      level,
+      level === 'error' || level === 'fatal' ? 'stderr' : 'stdout',
+    );
+    if (stack) {
+      this.printStackTrace(stack);
+    }
+    this.emit(SEVERITY_BY_LEVEL[level], message, {
+      ...(context && { context }),
+      ...(redact(attributes) as Record<string, any>),
+    });
+  }
+
+  private toText(message: unknown): string {
+    if (typeof message === 'string') return message;
+    if (message instanceof Error) return message.message;
+    try {
+      return JSON.stringify(message);
+    } catch {
+      return String(message);
+    }
+  }
+
+  /**
+   * Emit a log record with OpenTelemetry (no-op when OTel logging is disabled)
    */
   private emit(
     severity: SeverityNumber,
@@ -116,7 +211,7 @@ export class LoggingService implements LoggerService {
     attributes: Record<string, any> = {},
   ): void {
     // Get current trace context from OpenTelemetry
-    const span = trace.getSpan(context.active());
+    const span = trace.getSpan(otelContext.active());
     const spanContext = span?.spanContext();
 
     // Merge context with attributes
@@ -149,23 +244,13 @@ export class LoggingService implements LoggerService {
       allAttributes['trace_flags'] = spanContext.traceFlags;
     }
 
-    // Emit log record
-    this.logger.emit({
+    this.otelLogger.emit({
       severityNumber: severity,
       severityText: this.getSeverityText(severity),
       body: message,
       attributes: allAttributes,
       timestamp: Date.now(),
     });
-
-    // Also log to console in development
-    if (process.env.NODE_ENV !== 'production') {
-      const consoleMethod = this.getConsoleMethod(severity);
-      consoleMethod(
-        `[${this.getSeverityText(severity)}] ${message}`,
-        attributes,
-      );
-    }
   }
 
   /**
@@ -194,92 +279,35 @@ export class LoggingService implements LoggerService {
     }
   }
 
-  private getConsoleMethod(severity: SeverityNumber): (...args: any[]) => void {
-    switch (severity) {
-      case SeverityNumber.ERROR:
-      case SeverityNumber.FATAL:
-        return console.error;
-      case SeverityNumber.WARN:
-        return console.warn;
-      case SeverityNumber.DEBUG:
-      case SeverityNumber.TRACE:
-        return console.debug;
-      default:
-        return console.log;
-    }
-  }
-
-  /**
-   * Log an error message
-   */
-  error(message: string, trace?: string, context?: string): void {
-    this.emit(SeverityNumber.ERROR, message, {
-      ...(context && { context }),
-      ...(trace && { trace }),
-    });
-  }
-
-  /**
-   * Log a warning message
-   */
-  warn(message: string, context?: string): void {
-    this.emit(SeverityNumber.WARN, message, {
-      ...(context && { context }),
-    });
-  }
-
-  /**
-   * Log an info message
-   */
-  log(message: string, context?: string): void {
-    this.emit(SeverityNumber.INFO, message, {
-      ...(context && { context }),
-    });
-  }
-
-  /**
-   * Log a debug message
-   */
-  debug(message: string, context?: string): void {
-    this.emit(SeverityNumber.DEBUG, message, {
-      ...(context && { context }),
-    });
-  }
-
   /**
    * Log an HTTP request
    */
   http(message: string, meta?: any): void {
-    this.emit(SeverityNumber.INFO, message, {
-      log_type: 'http',
-      ...meta,
-    });
+    this.write('log', message, { log_type: 'http', ...meta }, 'HTTP');
   }
 
   /**
    * Log with custom level and metadata
    */
   logWithMeta(level: string, message: string, meta: any): void {
-    const severity = this.levelToSeverity(level);
-    this.emit(severity, message, meta);
+    this.write(this.toNestLevel(level), message, meta ?? {}, meta?.context);
   }
 
-  private levelToSeverity(level: string): SeverityNumber {
+  private toNestLevel(level: string): LogLevel {
     switch (level.toLowerCase()) {
+      case 'fatal':
+        return 'fatal';
       case 'error':
-        return SeverityNumber.ERROR;
+        return 'error';
       case 'warn':
-        return SeverityNumber.WARN;
-      case 'info':
-        return SeverityNumber.INFO;
-      case 'http':
-        return SeverityNumber.INFO;
+        return 'warn';
       case 'debug':
-        return SeverityNumber.DEBUG;
+        return 'debug';
       case 'verbose':
-        return SeverityNumber.TRACE;
+        return 'verbose';
       default:
-        return SeverityNumber.INFO;
+        // 'info', 'http' and anything unknown
+        return 'log';
     }
   }
 
@@ -293,17 +321,22 @@ export class LoggingService implements LoggerService {
     success: boolean,
     error?: Error,
   ): void {
-    const severity = success ? SeverityNumber.DEBUG : SeverityNumber.ERROR;
     const message = `Database ${operation} on ${table} ${success ? 'completed' : 'failed'} in ${duration}ms`;
 
-    this.emit(severity, message, {
-      operation,
-      table,
-      duration,
-      success,
-      log_type: 'database',
-      ...(error && { error: error.message, stack: error.stack }),
-    });
+    this.write(
+      success ? 'debug' : 'error',
+      message,
+      {
+        operation,
+        table,
+        duration,
+        success,
+        log_type: 'database',
+        ...(error && { error: error.message, stack: error.stack }),
+      },
+      'Database',
+      error?.stack,
+    );
   }
 
   /**
@@ -315,16 +348,20 @@ export class LoggingService implements LoggerService {
     success: boolean = true,
     details?: any,
   ): void {
-    const severity = success ? SeverityNumber.INFO : SeverityNumber.WARN;
     const message = `Authentication event: ${event} ${success ? 'succeeded' : 'failed'}`;
 
-    this.emit(severity, message, {
-      event,
-      authSuccess: success,
-      log_type: 'auth',
-      ...(userId && { targetUserId: userId }),
-      ...details,
-    });
+    this.write(
+      success ? 'log' : 'warn',
+      message,
+      {
+        event,
+        authSuccess: success,
+        log_type: 'auth',
+        ...(userId && { targetUserId: userId }),
+        ...details,
+      },
+      'Auth',
+    );
   }
 
   /**
@@ -338,13 +375,18 @@ export class LoggingService implements LoggerService {
   ): void {
     const message = `Business event: ${event} for ${entityType}:${entityId}`;
 
-    this.emit(SeverityNumber.INFO, message, {
-      businessEvent: event,
-      entityType,
-      entityId,
-      log_type: 'business',
-      ...details,
-    });
+    this.write(
+      'log',
+      message,
+      {
+        businessEvent: event,
+        entityType,
+        entityId,
+        log_type: 'business',
+        ...details,
+      },
+      'Business',
+    );
   }
 
   /**
@@ -358,18 +400,22 @@ export class LoggingService implements LoggerService {
     statusCode: number,
     success: boolean,
   ): void {
-    const severity = success ? SeverityNumber.INFO : SeverityNumber.WARN;
     const message = `External API call to ${service} ${method} ${endpoint} ${success ? 'succeeded' : 'failed'} (${statusCode}) in ${duration}ms`;
 
-    this.emit(severity, message, {
-      externalService: service,
-      endpoint,
-      method,
-      duration,
-      statusCode,
-      success,
-      log_type: 'external_api',
-    });
+    this.write(
+      success ? 'log' : 'warn',
+      message,
+      {
+        externalService: service,
+        endpoint,
+        method,
+        duration,
+        statusCode,
+        success,
+        log_type: 'external_api',
+      },
+      'ExternalApi',
+    );
   }
 
   /**

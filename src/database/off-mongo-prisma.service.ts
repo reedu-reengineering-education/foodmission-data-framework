@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '.prisma/off-mongo-client';
+import { describeError } from '../common/utils/error.utils';
 
 @Injectable()
 export class OffMongoPrismaService
@@ -33,8 +34,8 @@ export class OffMongoPrismaService
       await this.$connect();
     } catch (error) {
       this.logger.error(
-        'Failed to connect to the OpenFoodFacts MongoDB clone at startup; will fall back to the HTTP API per request',
-        error as Error,
+        `Failed to connect to the OpenFoodFacts MongoDB clone at startup; will fall back to the HTTP API per request: ${describeError(error)}`,
+        error instanceof Error ? error.stack : undefined,
       );
     }
   }

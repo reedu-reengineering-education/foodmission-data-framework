@@ -18,6 +18,8 @@ export const createMockLoggingService = (
     warn: jest.fn(),
     log: jest.fn(),
     debug: jest.fn(),
+    verbose: jest.fn(),
+    fatal: jest.fn(),
     http: jest.fn(),
     logWithMeta: jest.fn(),
     logDatabaseOperation: jest.fn(),

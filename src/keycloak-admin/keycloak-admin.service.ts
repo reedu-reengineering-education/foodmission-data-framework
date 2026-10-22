@@ -2,6 +2,7 @@ import { Injectable, Logger, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { AxiosResponse } from 'axios';
+import { describeError } from '../common/utils/error.utils';
 
 /**
  * Service for Keycloak Admin API operations.
@@ -56,8 +57,7 @@ export class KeycloakAdminService {
         error_description: 'Failed to send reset password email',
       };
       this.logger.error(
-        `Failed to send reset password email to Keycloak user ${keycloakId}`,
-        JSON.stringify(data),
+        `Failed to send reset password email to Keycloak user ${keycloakId}: ${describeError(err)}`,
       );
       throw new HttpException(data, status);
     }
@@ -91,8 +91,7 @@ export class KeycloakAdminService {
         error_description: 'Failed to obtain service account token',
       };
       this.logger.error(
-        'Failed to get service account token',
-        JSON.stringify(data),
+        `Failed to get service account token: ${describeError(err)}`,
       );
       throw new HttpException(data, status);
     }
@@ -135,8 +134,7 @@ export class KeycloakAdminService {
         ),
       );
       this.logger.debug(
-        'Keycloak create response',
-        createResp?.data || createResp,
+        `Keycloak create response: HTTP ${createResp?.status} id=${createResp?.data?.id ?? 'none'}`,
       );
 
       // Keycloak may return the created representation in the body, or may return 201 with a
@@ -153,8 +151,7 @@ export class KeycloakAdminService {
           if (possibleId) {
             createdUser = { id: possibleId } as any;
             this.logger.debug(
-              'Extracted Keycloak user id from Location header',
-              possibleId,
+              `Extracted Keycloak user id ${possibleId} from Location header`,
             );
           }
         }
@@ -175,24 +172,26 @@ export class KeycloakAdminService {
           if (found && found.id) {
             createdUser = found;
             this.logger.debug(
-              'Found Keycloak user by username after create',
-              found.id,
+              `Found Keycloak user ${found.id} by username after create`,
             );
           }
         } catch (e: any) {
           this.logger.warn(
-            'Failed to fetch Keycloak user after create attempt',
-            e?.response?.data || e?.message || e,
+            `Failed to fetch Keycloak user after create attempt: ${describeError(e)}`,
           );
         }
       }
 
       return createdUser;
     } catch (err: any) {
-      this.logger.error(
-        'Keycloak admin user create error (raw)',
-        err?.response?.data || err?.message || err,
-      );
+      // A 4xx (e.g. 409 user exists) is the caller's problem, not an outage.
+      const createStatus = err?.response?.status;
+      const createMessage = `Keycloak user create failed: ${describeError(err)}`;
+      if (createStatus && createStatus < 500) {
+        this.logger.warn(createMessage);
+      } else {
+        this.logger.error(createMessage);
+      }
 
       const status = err?.response?.status || 502;
       const kcData = err?.response?.data;

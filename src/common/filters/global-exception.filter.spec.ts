@@ -107,7 +107,8 @@ describe('GlobalExceptionFilter', () => {
       filter.catch(prismaError, mockHost);
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
-      expect(loggingService.warn).toHaveBeenCalled();
+      expect(loggingService.debug).toHaveBeenCalled();
+      expect(loggingService.warn).not.toHaveBeenCalled();
     });
 
     it('should handle validation errors', () => {
@@ -129,6 +130,20 @@ describe('GlobalExceptionFilter', () => {
           errors: ['email must be a valid email', 'name should not be empty'],
         },
       });
+    });
+
+    it('should record the error message as the request error reason', () => {
+      filter.catch(
+        new HttpException(
+          'User exists with same username',
+          HttpStatus.CONFLICT,
+        ),
+        mockHost,
+      );
+
+      expect(mockResponse.locals.errorReason).toBe(
+        'User exists with same username',
+      );
     });
 
     it('should handle generic errors', () => {
@@ -196,7 +211,7 @@ describe('GlobalExceptionFilter', () => {
       );
     });
 
-    it('should log client errors as warnings', () => {
+    it('should log client errors at debug only', () => {
       const clientError = new HttpException(
         'Bad Request',
         HttpStatus.BAD_REQUEST,
@@ -204,44 +219,21 @@ describe('GlobalExceptionFilter', () => {
 
       filter.catch(clientError, mockHost);
 
-      expect(loggingService.warn).toHaveBeenCalledWith(
+      expect(loggingService.debug).toHaveBeenCalledWith(
         '[GlobalExceptionFilter] HttpException: Bad Request',
         'GlobalExceptionFilter',
       );
+      expect(loggingService.warn).not.toHaveBeenCalled();
+      expect(loggingService.error).not.toHaveBeenCalled();
     });
 
-    it('should set request context in logging service', () => {
-      const exception = new Error('Test error');
-
-      filter.catch(exception, mockHost);
+    it('should write a single log entry per exception', () => {
+      filter.catch(new Error('Test error'), mockHost);
 
       expect(loggingService.setTraceId).toHaveBeenCalledWith('test-trace-id');
-      expect(loggingService.setRequestContext).toHaveBeenCalledWith({
-        method: 'GET',
-        url: '/api/test',
-        userAgent: 'test-agent',
-        ip: '127.0.0.1',
-      });
-    });
-
-    it('should log debug information', () => {
-      const exception = new ResourceNotFoundException('User', '123');
-
-      filter.catch(exception, mockHost);
-
-      expect(loggingService.logWithMeta).toHaveBeenCalledWith(
-        'debug',
-        'Exception details',
-        {
-          exceptionType: 'ResourceNotFoundException',
-          statusCode: HttpStatus.NOT_FOUND,
-          errorCode: 'RESOURCE_NOT_FOUND',
-          requestMethod: 'GET',
-          requestUrl: '/api/test',
-          userAgent: 'test-agent',
-          traceId: 'test-trace-id',
-        },
-      );
+      expect(loggingService.error).toHaveBeenCalledTimes(1);
+      expect(loggingService.logWithMeta).not.toHaveBeenCalled();
+      expect(loggingService.setRequestContext).not.toHaveBeenCalled();
     });
 
     it('should handle missing request properties gracefully', () => {
