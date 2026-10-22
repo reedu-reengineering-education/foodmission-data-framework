@@ -1,4 +1,8 @@
 import * as Joi from 'joi';
+import {
+  APP_LOG_LEVELS,
+  DEFAULT_LOG_LEVEL,
+} from '../../common/logging/log-level';
 
 export const environmentValidationSchema = Joi.object({
   NODE_ENV: Joi.string()
@@ -43,8 +47,8 @@ export const environmentValidationSchema = Joi.object({
     .description('Comma-separated list of allowed CORS origins'),
 
   LOG_LEVEL: Joi.string()
-    .valid('error', 'warn', 'info', 'debug', 'verbose')
-    .default('info'),
+    .valid(...APP_LOG_LEVELS)
+    .default(DEFAULT_LOG_LEVEL),
 
   RATE_LIMIT_TTL: Joi.number()
     .positive()

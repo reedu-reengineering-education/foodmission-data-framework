@@ -349,15 +349,15 @@ export class MealLogAnalyticsAggregator {
     periodStart: Date,
     periodEnd: Date,
   ): Promise<AggregationResult> {
-    this.logger.log(
+    this.logger.debug(
       `Aggregating ${periodStart.toISOString()} → ${periodEnd.toISOString()}`,
     );
 
     const rawData = await this.fetchRawData(periodStart, periodEnd);
-    this.logger.log(`Fetched ${rawData.length} raw rows`);
+    this.logger.debug(`Fetched ${rawData.length} raw rows`);
 
     const meals = this.buildMealAggregates(rawData);
-    this.logger.log(`Built ${meals.length} meal aggregates`);
+    this.logger.debug(`Built ${meals.length} meal aggregates`);
 
     const suppressedGroups = { value: 0 };
 

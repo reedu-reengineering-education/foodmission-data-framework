@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import sanitizeHtml from 'sanitize-html';
+import { redact } from '../common/logging/redact';
 
 @Injectable()
 export class SecurityService {
@@ -195,10 +196,8 @@ export class SecurityService {
    * Log security event
    */
   logSecurityEvent(event: string, details: any = {}) {
-    this.logger.warn(`Security Event: ${event}`, {
-      event,
-      timestamp: new Date().toISOString(),
-      ...details,
-    });
+    this.logger.warn(
+      `Security event ${event}: ${JSON.stringify(redact(details))}`,
+    );
   }
 }

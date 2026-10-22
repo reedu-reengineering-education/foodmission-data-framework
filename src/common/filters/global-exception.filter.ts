@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoggingService } from '../logging/logging.service';
+import { setErrorReason } from '../middleware/logging.middleware';
 import { BusinessException } from '../exceptions/business.exception';
 import {
   extractErrorInfo,
@@ -35,7 +36,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const traceId = this.getTraceId(request);
 
     // Log the error
-    this.logError(exception, errorInfo, request, traceId);
+    this.logError(exception, errorInfo, traceId);
+    setErrorReason(response, errorInfo.message);
 
     // Prepare response
     const errorResponse = this.buildErrorResponse(
@@ -116,12 +118,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     );
   }
 
-  private logError(
-    exception: unknown,
-    errorInfo: any,
-    request: Request,
-    traceId: string,
-  ): void {
+  private logError(exception: unknown, errorInfo: any, traceId: string): void {
     const logMessage = formatErrorForLogging(
       exception,
       'GlobalExceptionFilter',
@@ -134,15 +131,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       // Ignore CLS context errors - they don't affect functionality
     }
 
-    // Set request context
-    this.loggingService.setRequestContext({
-      method: request.method,
-      url: request.url,
-      userAgent: request.headers['user-agent'],
-      ip: request.ip || request.connection?.remoteAddress,
-    });
-
-    // Log based on error severity
+    // Server errors get one entry with the stack. Client errors are already
+    // recorded as a warn line by LoggingMiddleware; the reason is debug only.
     if (isServerError(errorInfo.statusCode)) {
       this.loggingService.error(
         logMessage,
@@ -150,19 +140,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         'GlobalExceptionFilter',
       );
     } else {
-      this.loggingService.warn(logMessage, 'GlobalExceptionFilter');
+      this.loggingService.debug(logMessage, 'GlobalExceptionFilter');
     }
-
-    // Log additional context for debugging
-    this.loggingService.logWithMeta('debug', 'Exception details', {
-      exceptionType: exception?.constructor?.name,
-      statusCode: errorInfo.statusCode,
-      errorCode: errorInfo.code,
-      requestMethod: request.method,
-      requestUrl: request.url,
-      userAgent: request.headers['user-agent'],
-      traceId,
-    });
   }
 
   private buildErrorResponse(

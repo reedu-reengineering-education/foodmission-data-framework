@@ -59,7 +59,7 @@ export class RecipesService {
     createRecipeDto: CreateRecipeDto,
     userId: string,
   ): Promise<RecipeResponseDto> {
-    this.logger.log(`Creating recipe ${createRecipeDto.title} for ${userId}`);
+    this.logger.log(`Creating recipe for user ${userId}`);
 
     try {
       const recipe = await this.recipeRepository.create({

@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { AfterCommitQueue } from '../common/after-commit/after-commit.queue';
 import { PrismaService } from '../database/prisma.service';
@@ -205,5 +206,28 @@ describe('RulesDeadlineScheduler', () => {
 
     expect(rulesService.evaluateUser).toHaveBeenNthCalledWith(1, 'u1');
     expect(rulesService.evaluateUser).toHaveBeenNthCalledWith(2, 'u2');
+  });
+
+  it('logs and stops when the expired-users query fails', async () => {
+    const error = jest
+      .spyOn(Logger.prototype, 'error')
+      .mockImplementation(() => undefined);
+    const dbError = new Error('db down');
+    const rulesService = {
+      findUsersWithExpiredItems: jest.fn().mockRejectedValue(dbError),
+      evaluateUser: jest.fn(),
+    };
+    const scheduler = new RulesDeadlineScheduler(
+      rulesService as unknown as RulesService,
+    );
+
+    await expect(scheduler.resolveExpiredItems()).resolves.toBeUndefined();
+
+    expect(rulesService.evaluateUser).not.toHaveBeenCalled();
+    expect(error).toHaveBeenCalledWith(
+      'Deadline re-evaluation failed: could not load users with expired items: db down',
+      dbError.stack,
+    );
+    error.mockRestore();
   });
 });

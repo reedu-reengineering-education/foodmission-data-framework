@@ -8,7 +8,11 @@ export class PrismaService
 {
   constructor() {
     super({
-      log: ['query', 'info', 'warn', 'error'],
+      // Every SQL statement is printed with 'query'; keep that out of production.
+      log:
+        process.env.NODE_ENV === 'production'
+          ? ['warn', 'error']
+          : ['query', 'info', 'warn', 'error'],
     });
   }
 

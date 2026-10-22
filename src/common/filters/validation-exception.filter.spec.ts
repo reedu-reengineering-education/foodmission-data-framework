@@ -72,6 +72,20 @@ describe('ValidationExceptionFilter', () => {
       });
     });
 
+    it('should record the validation errors as the request error reason', () => {
+      const exception = new BadRequestException({
+        message: ['email must be an email', 'password is too short'],
+        error: 'Bad Request',
+        statusCode: 400,
+      });
+
+      filter.catch(exception, mockHost);
+
+      expect(mockResponse.locals.errorReason).toBe(
+        'Validation failed: email must be an email; password is too short',
+      );
+    });
+
     it('should re-throw non-validation BadRequestException with string message', () => {
       const exception = new BadRequestException('Missing foo');
 

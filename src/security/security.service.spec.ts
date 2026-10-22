@@ -310,18 +310,13 @@ describe('SecurityService', () => {
   });
 
   describe('logSecurityEvent', () => {
-    it('should log security events', () => {
+    it('should log security events as one line with their details', () => {
       const loggerSpy = jest.spyOn(service['logger'], 'warn');
 
       service.logSecurityEvent('TEST_EVENT', { detail: 'test' });
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        'Security Event: TEST_EVENT',
-        expect.objectContaining({
-          event: 'TEST_EVENT',
-          detail: 'test',
-          timestamp: expect.any(String),
-        }),
+        'Security event TEST_EVENT: {"detail":"test"}',
       );
     });
 
@@ -330,12 +325,18 @@ describe('SecurityService', () => {
 
       service.logSecurityEvent('SIMPLE_EVENT');
 
+      expect(loggerSpy).toHaveBeenCalledWith('Security event SIMPLE_EVENT: {}');
+    });
+
+    it('should redact credentials in the details', () => {
+      const loggerSpy = jest.spyOn(service['logger'], 'warn');
+
+      service.logSecurityEvent('TEST_EVENT', {
+        headers: { authorization: 'Bearer abc' },
+      });
+
       expect(loggerSpy).toHaveBeenCalledWith(
-        'Security Event: SIMPLE_EVENT',
-        expect.objectContaining({
-          event: 'SIMPLE_EVENT',
-          timestamp: expect.any(String),
-        }),
+        'Security event TEST_EVENT: {"headers":{"authorization":"[REDACTED]"}}',
       );
     });
   });
