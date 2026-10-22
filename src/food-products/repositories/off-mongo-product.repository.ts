@@ -19,6 +19,25 @@ const MEAL_FACTS_TIMEOUT_MS = 2000;
  */
 export const MAX_COUNTED_RESULTS = 100;
 
+/**
+ * Server-side limit for search queries. OpenFoodFactsService's own timeout
+ * only stops waiting; this makes Mongo abort the query instead of letting it
+ * keep running (and filling the cache) after the request has given up.
+ * Kept below that 5000 ms timeout so Mongo's own MaxTimeMSExpired error is
+ * what gets logged, not a generic "timed out".
+ */
+export const SEARCH_MAX_TIME_MS = 4500;
+
+/**
+ * Prisma's MongoDB connector parses findRaw options into the Rust driver's
+ * FindOptions, where maxTimeMS is a Duration ({ secs, nanos }); a plain number
+ * fails with "expected struct Duration". aggregateRaw takes plain milliseconds.
+ */
+const SEARCH_MAX_TIME_DURATION = {
+  secs: Math.floor(SEARCH_MAX_TIME_MS / 1000),
+  nanos: (SEARCH_MAX_TIME_MS % 1000) * 1_000_000,
+};
+
 export interface OffMongoSearchResult {
   items: OffProduct[];
   /** Exact when `totalCountCapped` is false, otherwise a lower bound. */
@@ -131,6 +150,7 @@ export class OffMongoProductRepository {
       skip: (page - 1) * pageSize,
       limit: pageSize,
       sort,
+      maxTimeMS: SEARCH_MAX_TIME_DURATION,
     };
 
     const [rawItems, countResult] = await Promise.all([
@@ -144,6 +164,7 @@ export class OffMongoProductRepository {
           { $limit: MAX_COUNTED_RESULTS },
           { $count: 'count' },
         ] as Prisma.InputJsonValue[],
+        options: { maxTimeMS: SEARCH_MAX_TIME_MS },
       }),
     ]);
 

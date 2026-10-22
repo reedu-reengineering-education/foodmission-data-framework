@@ -3,6 +3,7 @@ import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
 import {
   MAX_COUNTED_RESULTS,
   OffMongoProductRepository,
+  SEARCH_MAX_TIME_MS,
 } from './off-mongo-product.repository';
 
 describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
@@ -175,6 +176,21 @@ describe('OffMongoProductRepository.search', () => {
     await repository.search({ query: 'milk', sortBy });
 
     expect(findRaw.mock.calls[0][0].options.sort).toEqual(expected);
+  });
+
+  it('lets Mongo abort slow find and count queries', async () => {
+    findRaw.mockResolvedValue([]);
+    aggregateRaw.mockResolvedValue([]);
+
+    await repository.search({ query: 'milk' });
+
+    expect(SEARCH_MAX_TIME_MS).toBe(4500);
+    // findRaw needs a Duration shape (see SEARCH_MAX_TIME_DURATION).
+    expect(findRaw.mock.calls[0][0].options.maxTimeMS).toEqual({
+      secs: 4,
+      nanos: 500_000_000,
+    });
+    expect(aggregateRaw.mock.calls[0][0].options).toEqual({ maxTimeMS: 4500 });
   });
 
   it('returns zero when nothing matches', async () => {
