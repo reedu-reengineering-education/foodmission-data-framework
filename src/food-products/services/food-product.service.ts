@@ -21,6 +21,7 @@ import {
 import { plainToClass } from 'class-transformer';
 import { TranslationService } from '../../translations/services/translation.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { describeError } from '../../common/utils/error.utils';
 
 @Injectable()
 export class FoodProductService {
@@ -271,9 +272,9 @@ export class FoodProductService {
 
       return this.mapToOpenFoodFactsInfoDto(productInfo);
     } catch (error) {
-      this.logger.error(
-        `Error fetching OpenFoodFacts info for ${barcode}:`,
-        error,
+      // The OFF lookup already logged the failure with its stack.
+      this.logger.warn(
+        `OpenFoodFacts info unavailable for ${barcode}: ${describeError(error)}`,
       );
       return null;
     }

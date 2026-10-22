@@ -13,9 +13,18 @@ export interface OffMealFacts {
 
 const MEAL_FACTS_TIMEOUT_MS = 2000;
 
+/**
+ * Search counts stop here. An exact count of a common word ("milk") has to
+ * load every match and was the usual cause of Mongo search timeouts.
+ */
+export const MAX_COUNTED_RESULTS = 100;
+
 export interface OffMongoSearchResult {
   items: OffProduct[];
+  /** Exact when `totalCountCapped` is false, otherwise a lower bound. */
   totalCount: number;
+  /** At least MAX_COUNTED_RESULTS matches; the real total wasn't counted. */
+  totalCountCapped: boolean;
   page: number;
   pageSize: number;
 }
@@ -134,6 +143,7 @@ export class OffMongoProductRepository {
       this.prisma.offProduct.aggregateRaw({
         pipeline: [
           { $match: filter },
+          { $limit: MAX_COUNTED_RESULTS },
           { $count: 'count' },
         ] as Prisma.InputJsonValue[],
       }),
@@ -144,9 +154,12 @@ export class OffMongoProductRepository {
     );
 
     const countRows = countResult as unknown as { count: number }[];
-    const totalCount = countRows[0]?.count ?? 0;
+    const counted = countRows[0]?.count ?? 0;
+    const totalCountCapped = counted >= MAX_COUNTED_RESULTS;
+    // Paging past the cap still works: the total is at least what was shown.
+    const totalCount = Math.max(counted, (page - 1) * pageSize + items.length);
 
-    return { items, totalCount, page, pageSize };
+    return { items, totalCount, totalCountCapped, page, pageSize };
   }
 
   private buildRawFilter(

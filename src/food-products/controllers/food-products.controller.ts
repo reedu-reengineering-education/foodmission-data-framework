@@ -122,6 +122,11 @@ export class FoodProductController {
           items: { $ref: '#/components/schemas/OpenFoodFactsInfoDto' },
         },
         totalCount: { type: 'number' },
+        totalCountCapped: {
+          type: 'boolean',
+          description:
+            'true when there are at least 100 matches; totalCount and totalPages are then a lower bound',
+        },
         page: { type: 'number' },
         pageSize: { type: 'number' },
         totalPages: { type: 'number' },

@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { AxiosResponse, AxiosError } from 'axios';
 import { of, throwError } from 'rxjs';
 import { OpenFoodFactsService } from './openfoodfacts.service';
@@ -118,7 +122,8 @@ describe('OpenFoodFactsService', () => {
     jest.clearAllMocks();
   });
 
-  describe('getProductByBarcode', () => {
+  // The live-API methods are kept but not wired; test them directly.
+  describe('getProductByBarcodeHttp (not wired)', () => {
     it('should return product info for valid barcode', async () => {
       const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
         data: mockProduct,
@@ -130,7 +135,7 @@ describe('OpenFoodFactsService', () => {
 
       httpService.get.mockReturnValueOnce(of(mockResponse));
 
-      const result = await service.getProductByBarcode('3017620422003');
+      const result = await service['getProductByBarcodeHttp']('3017620422003');
 
       expect(result).toBeDefined();
       expect(result?.name).toBe('Nutella');
@@ -161,7 +166,7 @@ describe('OpenFoodFactsService', () => {
 
       httpService.get.mockReturnValueOnce(of(mockResponse));
 
-      const result = await service.getProductByBarcode('1234567890');
+      const result = await service['getProductByBarcodeHttp']('1234567890');
 
       expect(result).toBeNull();
     });
@@ -177,7 +182,7 @@ describe('OpenFoodFactsService', () => {
 
       httpService.get.mockReturnValueOnce(of(mockResponse));
 
-      const result = await service.getProductByBarcode('3017620422003');
+      const result = await service['getProductByBarcodeHttp']('3017620422003');
 
       expect(result).toBeDefined();
       expect(result?.barcode).toBe('3017620422003');
@@ -202,7 +207,7 @@ describe('OpenFoodFactsService', () => {
       httpService.get.mockReturnValueOnce(throwError(() => axiosError));
 
       await expect(
-        service.getProductByBarcode('3017620422003'),
+        service['getProductByBarcodeHttp']('3017620422003'),
       ).rejects.toThrow(HttpException);
     });
 
@@ -224,7 +229,7 @@ describe('OpenFoodFactsService', () => {
       httpService.get.mockReturnValueOnce(throwError(() => axiosError));
 
       await expect(
-        service.getProductByBarcode('3017620422003'),
+        service['getProductByBarcodeHttp']('3017620422003'),
       ).rejects.toThrow(
         new HttpException(
           'Rate limit exceeded. Please try again later.',
@@ -245,7 +250,7 @@ describe('OpenFoodFactsService', () => {
       httpService.get.mockReturnValueOnce(throwError(() => axiosError));
 
       await expect(
-        service.getProductByBarcode('3017620422003'),
+        service['getProductByBarcodeHttp']('3017620422003'),
       ).rejects.toThrow(
         new HttpException(
           'No response from OpenFoodFacts API',
@@ -255,7 +260,7 @@ describe('OpenFoodFactsService', () => {
     });
   });
 
-  describe('searchProducts', () => {
+  describe('searchProductsHttp (not wired)', () => {
     it('should search products with basic query', async () => {
       const mockResponse: AxiosResponse<OpenFoodFactsSearchResponse> = {
         data: mockSearchResponse,
@@ -272,11 +277,12 @@ describe('OpenFoodFactsService', () => {
         pageSize: 20,
       };
 
-      const result = await service.searchProducts(options);
+      const result = await service['searchProductsHttp'](options);
 
       expect(result).toBeDefined();
       expect(result.products).toHaveLength(1);
       expect(result.totalCount).toBe(100);
+      expect(result.totalCountCapped).toBe(false);
       expect(result.page).toBe(1);
       expect(result.pageSize).toBe(20);
       expect(result.totalPages).toBe(5);
@@ -310,7 +316,7 @@ describe('OpenFoodFactsService', () => {
         pageSize: 10,
       };
 
-      const result = await service.searchProducts(options);
+      const result = await service['searchProductsHttp'](options);
 
       expect(result).toBeDefined();
       expect(httpService.get).toHaveBeenCalledWith(
@@ -340,7 +346,7 @@ describe('OpenFoodFactsService', () => {
         query: 'nutella',
       };
 
-      const result = await service.searchProducts(options);
+      const result = await service['searchProductsHttp'](options);
 
       expect(result).toBeDefined();
       expect(result.products).toHaveLength(1);
@@ -368,23 +374,25 @@ describe('OpenFoodFactsService', () => {
         query: 'invalid query',
       };
 
-      await expect(service.searchProducts(options)).rejects.toThrow(
+      await expect(service['searchProductsHttp'](options)).rejects.toThrow(
         HttpException,
       );
     });
   });
 
-  describe('getNutritionalInfo', () => {
-    it('should return nutritional info for valid barcode', async () => {
-      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
-        data: mockProduct,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
+  const localDoc = (product: object = mockProduct.product) => ({
+    ...product,
+    id: '3017620422003',
+    _id: '3017620422003',
+  });
 
-      httpService.get.mockReturnValueOnce(of(mockResponse));
+  describe('getNutritionalInfo', () => {
+    beforeEach(() => {
+      mockOffMongoRepository.isAvailable = true;
+    });
+
+    it('should return nutritional info for valid barcode', async () => {
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce(localDoc());
 
       const result = await service.getNutritionalInfo('3017620422003');
 
@@ -396,23 +404,9 @@ describe('OpenFoodFactsService', () => {
     });
 
     it('should return null for product without nutritional info', async () => {
-      const productWithoutNutrition = {
-        ...mockProduct,
-        product: {
-          ...mockProduct.product,
-          nutriments: undefined,
-        },
-      };
-
-      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
-        data: productWithoutNutrition,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
-
-      httpService.get.mockReturnValueOnce(of(mockResponse));
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce(
+        localDoc({ ...mockProduct.product, nutriments: undefined }),
+      );
 
       const result = await service.getNutritionalInfo('3017620422003');
 
@@ -421,85 +415,52 @@ describe('OpenFoodFactsService', () => {
   });
 
   describe('productExists', () => {
+    beforeEach(() => {
+      mockOffMongoRepository.isAvailable = true;
+    });
+
     it('should return true for existing product', async () => {
-      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
-        data: mockProduct,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce(localDoc());
 
-      httpService.get.mockReturnValueOnce(of(mockResponse));
-
-      const result = await service.productExists('3017620422003');
-
-      expect(result).toBe(true);
+      await expect(service.productExists('3017620422003')).resolves.toBe(true);
     });
 
     it('should return false for non-existing product', async () => {
-      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
-        data: {
-          code: '1234567890',
-          product: {},
-          status: 0,
-          status_verbose: 'product not found',
-        },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce(null);
 
-      httpService.get.mockReturnValueOnce(of(mockResponse));
-
-      const result = await service.productExists('1234567890');
-
-      expect(result).toBe(false);
+      await expect(service.productExists('1234567890')).resolves.toBe(false);
     });
 
-    it('should return false on API error', async () => {
-      const axiosError: AxiosError = {
-        name: 'AxiosError',
-        message: 'API Error',
-        isAxiosError: true,
-        toJSON: () => ({}),
-      };
+    it('should return false when the local database fails', async () => {
+      mockOffMongoRepository.findByBarcode.mockRejectedValueOnce(
+        new Error('connection refused'),
+      );
 
-      httpService.get.mockReturnValueOnce(throwError(() => axiosError));
-
-      const result = await service.productExists('3017620422003');
-
-      expect(result).toBe(false);
+      await expect(service.productExists('3017620422003')).resolves.toBe(false);
+      expect(httpService.get).not.toHaveBeenCalled();
     });
   });
 
   describe('getProductSuggestions', () => {
-    it('should return product suggestions', async () => {
-      const mockResponse: AxiosResponse<OpenFoodFactsSearchResponse> = {
-        data: mockSearchResponse,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
-
-      httpService.get.mockReturnValueOnce(of(mockResponse));
+    it('should return product suggestions from the local database', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.search.mockResolvedValueOnce({
+        items: [localDoc()],
+        totalCount: 1,
+        totalCountCapped: false,
+        page: 1,
+        pageSize: 5,
+      });
 
       const result = await service.getProductSuggestions('nut', 5);
 
-      expect(result).toBeDefined();
       expect(result).toHaveLength(1);
-      expect(httpService.get).toHaveBeenCalledWith(
-        'https://world.openfoodfacts.org/cgi/search.pl',
-        expect.objectContaining({
-          params: expect.objectContaining({
-            search_terms: 'nut',
-            page_size: 5,
-            sort_by: 'popularity',
-          }),
-        }),
-      );
+      expect(mockOffMongoRepository.search).toHaveBeenCalledWith({
+        query: 'nut',
+        pageSize: 5,
+        sortBy: 'popularity',
+      });
+      expect(httpService.get).not.toHaveBeenCalled();
     });
   });
 
@@ -529,7 +490,10 @@ describe('OpenFoodFactsService', () => {
       };
       httpService.get.mockReturnValueOnce(of(mockResponse));
 
-      const result = await service.getProductByBarcode('3017620422003', 'de');
+      const result = await service['getProductByBarcodeHttp'](
+        '3017620422003',
+        'de',
+      );
 
       expect(result?.name).toBe('Nougatcreme');
       expect(result?.genericName).toBe('Haselnusscreme');
@@ -550,7 +514,10 @@ describe('OpenFoodFactsService', () => {
       };
       httpService.get.mockReturnValueOnce(of(mockResponse));
 
-      const result = await service.getProductByBarcode('3017620422003', 'de');
+      const result = await service['getProductByBarcodeHttp'](
+        '3017620422003',
+        'de',
+      );
 
       expect(result?.name).toBe('Nutella');
       expect(result?.ingredients).toBe(
@@ -579,7 +546,7 @@ describe('OpenFoodFactsService', () => {
       };
       httpService.get.mockReturnValueOnce(of(mockResponse));
 
-      const result = await service.searchProducts({
+      const result = await service['searchProductsHttp']({
         query: 'nutella',
         lang: 'de',
       });
@@ -614,7 +581,7 @@ describe('OpenFoodFactsService', () => {
     });
   });
 
-  describe('local OFF database first, HTTP fallback', () => {
+  describe('local OFF database only (no live-API fallback)', () => {
     it('returns a product from the local database without calling the HTTP API', async () => {
       mockOffMongoRepository.isAvailable = true;
       mockOffMongoRepository.findByBarcode.mockResolvedValueOnce({
@@ -633,25 +600,16 @@ describe('OpenFoodFactsService', () => {
       expect(httpService.get).not.toHaveBeenCalled();
     });
 
-    it('falls back to the HTTP API when the local database lookup errors', async () => {
+    it('returns 503, without calling the HTTP API, when the local lookup errors', async () => {
       mockOffMongoRepository.isAvailable = true;
       mockOffMongoRepository.findByBarcode.mockRejectedValueOnce(
         new Error('connection refused'),
       );
 
-      const mockResponse: AxiosResponse<OpenFoodFactsProduct> = {
-        data: mockProduct,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
-      httpService.get.mockReturnValueOnce(of(mockResponse));
-
-      const result = await service.getProductByBarcode('3017620422003');
-
-      expect(result?.name).toBe('Nutella');
-      expect(httpService.get).toHaveBeenCalledTimes(1);
+      await expect(
+        service.getProductByBarcode('3017620422003'),
+      ).rejects.toBeInstanceOf(ServiceUnavailableException);
+      expect(httpService.get).not.toHaveBeenCalled();
     });
 
     it('returns search results from the local database without calling the HTTP API', async () => {
@@ -665,6 +623,7 @@ describe('OpenFoodFactsService', () => {
           },
         ],
         totalCount: 1,
+        totalCountCapped: false,
         page: 1,
         pageSize: 20,
       });
@@ -673,28 +632,50 @@ describe('OpenFoodFactsService', () => {
 
       expect(result.products).toHaveLength(1);
       expect(result.totalCount).toBe(1);
+      expect(result.totalCountCapped).toBe(false);
       expect(httpService.get).not.toHaveBeenCalled();
     });
 
-    it('falls back to the HTTP API when the local database search errors', async () => {
+    it('passes a capped local count through', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.search.mockResolvedValueOnce({
+        items: [{ id: '1', product_name: 'Milk' }],
+        totalCount: 100,
+        totalCountCapped: true,
+        page: 1,
+        pageSize: 20,
+      });
+
+      const result = await service.searchProducts({ query: 'milk' });
+
+      expect(result.totalCount).toBe(100);
+      expect(result.totalCountCapped).toBe(true);
+      expect(result.totalPages).toBe(5);
+    });
+
+    it('returns 503, without calling the HTTP API, when the local search errors', async () => {
       mockOffMongoRepository.isAvailable = true;
       mockOffMongoRepository.search.mockRejectedValueOnce(
         new Error('connection refused'),
       );
 
-      const mockResponse: AxiosResponse<OpenFoodFactsSearchResponse> = {
-        data: mockSearchResponse,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {} as any,
-      };
-      httpService.get.mockReturnValueOnce(of(mockResponse));
+      await expect(
+        service.searchProducts({ query: 'nutella' }),
+      ).rejects.toBeInstanceOf(ServiceUnavailableException);
+      expect(httpService.get).not.toHaveBeenCalled();
+    });
 
-      const result = await service.searchProducts({ query: 'nutella' });
+    it('returns 503 when the local database is not configured', async () => {
+      mockOffMongoRepository.isAvailable = false;
 
-      expect(result.products).toHaveLength(1);
-      expect(httpService.get).toHaveBeenCalledTimes(1);
+      await expect(
+        service.searchProducts({ query: 'nutella' }),
+      ).rejects.toBeInstanceOf(ServiceUnavailableException);
+      await expect(
+        service.getProductByBarcode('3017620422003'),
+      ).rejects.toBeInstanceOf(ServiceUnavailableException);
+      expect(mockOffMongoRepository.search).not.toHaveBeenCalled();
+      expect(httpService.get).not.toHaveBeenCalled();
     });
 
     it('does not fall back to HTTP when the local database genuinely has no match', async () => {

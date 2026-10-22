@@ -1,6 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
-import { OffMongoProductRepository } from './off-mongo-product.repository';
+import {
+  MAX_COUNTED_RESULTS,
+  OffMongoProductRepository,
+} from './off-mongo-product.repository';
 
 describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
   const findRaw = jest.fn();
@@ -77,5 +80,85 @@ describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
     jest.advanceTimersByTime(2000);
 
     expect((await pending).size).toBe(0);
+  });
+});
+
+describe('OffMongoProductRepository.search', () => {
+  const findRaw = jest.fn();
+  const aggregateRaw = jest.fn();
+  const repository = new OffMongoProductRepository({
+    isConfigured: true,
+    offProduct: { findRaw, aggregateRaw },
+  } as unknown as OffMongoPrismaService);
+
+  const docs = (n: number) =>
+    Array.from({ length: n }, (_, i) => ({
+      _id: String(i),
+      product_name: `P${i}`,
+    }));
+
+  afterEach(() => jest.clearAllMocks());
+
+  it(`stops counting after ${MAX_COUNTED_RESULTS} matches`, async () => {
+    findRaw.mockResolvedValue([]);
+    aggregateRaw.mockResolvedValue([]);
+
+    await repository.search({ query: 'milk' });
+
+    const pipeline = aggregateRaw.mock.calls[0][0].pipeline;
+    expect(pipeline.map((stage: object) => Object.keys(stage)[0])).toEqual([
+      '$match',
+      '$limit',
+      '$count',
+    ]);
+    expect(pipeline[1]).toEqual({ $limit: MAX_COUNTED_RESULTS });
+  });
+
+  it('reports an exact count below the cap', async () => {
+    findRaw.mockResolvedValue(docs(3));
+    aggregateRaw.mockResolvedValue([{ count: 3 }]);
+
+    const result = await repository.search({ query: 'milk' });
+
+    expect(result).toMatchObject({ totalCount: 3, totalCountCapped: false });
+  });
+
+  it('flags the count as capped at the limit', async () => {
+    findRaw.mockResolvedValue(docs(20));
+    aggregateRaw.mockResolvedValue([{ count: MAX_COUNTED_RESULTS }]);
+
+    const result = await repository.search({ query: 'milk', pageSize: 20 });
+
+    expect(result).toMatchObject({
+      totalCount: MAX_COUNTED_RESULTS,
+      totalCountCapped: true,
+    });
+  });
+
+  it('keeps the total ahead of the current page when paging past the cap', async () => {
+    findRaw.mockResolvedValue(docs(20));
+    aggregateRaw.mockResolvedValue([{ count: MAX_COUNTED_RESULTS }]);
+
+    const result = await repository.search({
+      query: 'milk',
+      page: 6,
+      pageSize: 20,
+    });
+
+    expect(findRaw.mock.calls[0][0].options).toMatchObject({
+      skip: 100,
+      limit: 20,
+    });
+    expect(result.totalCount).toBe(120);
+    expect(result.totalCountCapped).toBe(true);
+  });
+
+  it('returns zero when nothing matches', async () => {
+    findRaw.mockResolvedValue([]);
+    aggregateRaw.mockResolvedValue([]);
+
+    const result = await repository.search({ query: 'zzz' });
+
+    expect(result).toMatchObject({ totalCount: 0, totalCountCapped: false });
   });
 });
