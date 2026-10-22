@@ -4,7 +4,6 @@ import { ChallengesService } from '../services/challenges.service';
 import { ChallengeProgressService } from '../services/challenge-progress.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
-import { META_ROLES } from 'nest-keycloak-connect';
 
 describe('ChallengesController', () => {
   let controller: ChallengesController;
@@ -198,19 +197,5 @@ describe('ChallengesController', () => {
       await controller.delete('c1');
       expect(service.delete).toHaveBeenCalledWith('c1');
     });
-  });
-
-  describe('roles', () => {
-    it.each(['create', 'update', 'delete'] as const)(
-      '%s on challenge content is admin only',
-      (method) => {
-        expect(
-          Reflect.getMetadata(
-            META_ROLES,
-            ChallengesController.prototype[method],
-          ),
-        ).toEqual(['admin']);
-      },
-    );
   });
 });

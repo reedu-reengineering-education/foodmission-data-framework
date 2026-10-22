@@ -373,7 +373,6 @@ export class MissionsController {
     description: 'Mission updated successfully',
     type: MissionsResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Mission not found' })
   @ApiCrudErrorResponses()
   async update(
     @Param('id', ParseUUIDPipe) id: string,

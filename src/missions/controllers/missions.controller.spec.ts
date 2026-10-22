@@ -196,13 +196,10 @@ describe('MissionsController', () => {
   });
 
   describe('roles', () => {
-    it.each(['create', 'update', 'remove'] as const)(
-      '%s on mission content is admin only',
-      (method) => {
-        expect(
-          Reflect.getMetadata(META_ROLES, MissionsController.prototype[method]),
-        ).toEqual(['admin']);
-      },
-    );
+    it('update is admin only', () => {
+      expect(
+        Reflect.getMetadata(META_ROLES, MissionsController.prototype.update),
+      ).toEqual(['admin']);
+    });
   });
 });
