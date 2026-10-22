@@ -28,10 +28,10 @@
     "EXPIRED_FOOD": "Alimenti scaduti (acquisti eccessivi o scarsa pianificazione)",
     "OVERCONSUMPTION": "Consumo eccessivo",
     "PROTEIN": "Proteine",
-    "FAT": "Grasso",
-    "SUGAR": "Zucchero",
+    "FAT": "Grassi",
+    "SUGAR": "Zuccheri",
     "SALT": "Sale",
-    "FIBER": "Fibra",
+    "FIBER": "Fibre",
     "VITAMINS": "Vitamine",
     "ENERGY_VALUE_CALORIES": "Valore energetico/Calorie"
   },
