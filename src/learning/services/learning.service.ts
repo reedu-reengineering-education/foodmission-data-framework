@@ -22,6 +22,7 @@ import {
   buildFoodFactWhere,
   buildMicroLearningWhere,
   buildQuizWhere,
+  buildUserFoodFactWhere,
 } from '../utils/learning-filters';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
@@ -29,10 +30,14 @@ import {
   LearningContentFiltersDto,
   LearningPaginatedQueryDto,
   LearningQuestListQueryDto,
+  UserFoodFactListQueryDto,
 } from '../dto/learning-list-query.dto';
 import { CreateQuestDto } from '../dto/create-quest.dto';
 import { DimensionResponseDto } from '../dto/dimension-response.dto';
-import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
+import {
+  FoodFactResponseDto,
+  UserFoodFactResponseDto,
+} from '../dto/food-fact-response.dto';
 import { QuizOptionPublicDto, QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
@@ -52,6 +57,7 @@ import {
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { findFoodFactReads } from '../../gamification/content-completion';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -200,10 +206,37 @@ export class LearningService {
   async listFoodFacts(
     query: LearningPaginatedQueryDto,
   ): Promise<PaginatedResponseDto<FoodFactResponseDto>> {
+    return this.pageFoodFacts(buildFoodFactWhere(query), query);
+  }
+
+  async listFoodFactsForUser(
+    userId: string,
+    query: UserFoodFactListQueryDto,
+  ): Promise<PaginatedResponseDto<UserFoodFactResponseDto>> {
+    const { data, meta } = await this.pageFoodFacts(
+      buildUserFoodFactWhere(query, userId),
+      query,
+    );
+    return { data: await this.withCompletion(userId, data), meta };
+  }
+
+  async getFoodFactForUser(
+    userId: string,
+    codeOrId: string,
+    query: LearningLangQueryDto,
+  ): Promise<UserFoodFactResponseDto> {
+    const fact = await this.getFoodFact(codeOrId, query);
+    const [mapped] = await this.withCompletion(userId, [fact]);
+    return mapped;
+  }
+
+  private async pageFoodFacts(
+    where: Prisma.FoodFactWhereInput,
+    query: LearningPaginatedQueryDto,
+  ): Promise<PaginatedResponseDto<FoodFactResponseDto>> {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
     const { skip, take } = pageLimitToSkipTake({ page, limit });
-    const where = buildFoodFactWhere(query);
 
     const [rows, total] = await Promise.all([
       this.prisma.foodFact.findMany({
@@ -231,6 +264,23 @@ export class LearningService {
     }
     const [mapped] = await this.mapFoodFacts([row], query.lang);
     return mapped;
+  }
+
+  private async withCompletion(
+    userId: string,
+    facts: FoodFactResponseDto[],
+  ): Promise<UserFoodFactResponseDto[]> {
+    const readAtByCode = await findFoodFactReads(
+      this.prisma,
+      userId,
+      facts.map((f) => f.code),
+    );
+
+    return facts.map((f) => ({
+      ...f,
+      completed: readAtByCode.has(f.code),
+      readAt: readAtByCode.get(f.code) ?? null,
+    }));
   }
 
   async markFoodFactRead(

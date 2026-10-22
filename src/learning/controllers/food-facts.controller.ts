@@ -14,8 +14,14 @@ import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
-import { LearningPaginatedQueryDto } from '../dto/learning-list-query.dto';
-import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
+import {
+  LearningPaginatedQueryDto,
+  UserFoodFactListQueryDto,
+} from '../dto/learning-list-query.dto';
+import {
+  FoodFactResponseDto,
+  UserFoodFactResponseDto,
+} from '../dto/food-fact-response.dto';
 import { FoodFactProgressResponseDto } from '../dto/food-fact-progress.dto';
 
 @ApiTags('food-facts')
@@ -34,6 +40,44 @@ export class FoodFactsController {
     @Query() query: LearningPaginatedQueryDto,
   ): Promise<PaginatedResponseDto<FoodFactResponseDto>> {
     return this.learningService.listFoodFacts(query);
+  }
+
+  @Get('me')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List food facts with the current user’s completion (paginated)',
+    description:
+      'Same catalog and filters as GET /food-facts, annotated with `completed` and `readAt`. Use `completed=true|false` to list only read or unread facts.',
+  })
+  @ApiResponse({ status: 200, description: 'Paginated food facts' })
+  @ApiCrudErrorResponses()
+  async listMine(
+    @CurrentUser('id') userId: string,
+    @Query() query: UserFoodFactListQueryDto,
+  ): Promise<PaginatedResponseDto<UserFoodFactResponseDto>> {
+    return this.learningService.listFoodFactsForUser(userId, query);
+  }
+
+  @Get('me/:codeOrId')
+  @Roles('user', 'admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get a food fact with the current user’s completion',
+  })
+  @ApiParam({
+    name: 'codeOrId',
+    description: 'Food fact UUID or code (e.g. FF1.1.1)',
+    example: 'FF1.1.1',
+  })
+  @ApiResponse({ status: 200, type: UserFoodFactResponseDto })
+  @ApiCrudErrorResponses()
+  async getMine(
+    @CurrentUser('id') userId: string,
+    @Param('codeOrId') codeOrId: string,
+    @Query() query: LearningLangQueryDto,
+  ): Promise<UserFoodFactResponseDto> {
+    return this.learningService.getFoodFactForUser(userId, codeOrId, query);
   }
 
   @Get('by-code/:code')
