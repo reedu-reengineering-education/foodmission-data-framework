@@ -73,6 +73,11 @@ export const SHOPPING_RESPONSIBILITY_ENTRIES = [
     fallback: 'No specific answer',
   },
   {
+    code: 'ME',
+    key: 'shoppingResponsibilities.ME',
+    fallback: 'Completely me',
+  },
+  {
     code: 'MOSTLY_ME',
     key: 'shoppingResponsibilities.MOSTLY_ME',
     fallback: 'Mostly me',
@@ -90,7 +95,7 @@ export const SHOPPING_RESPONSIBILITY_ENTRIES = [
   {
     code: 'SOMEONE_ELSE',
     key: 'shoppingResponsibilities.SOMEONE_ELSE',
-    fallback: 'Someone else',
+    fallback: 'Completely someone else',
   },
 ] as const;
 

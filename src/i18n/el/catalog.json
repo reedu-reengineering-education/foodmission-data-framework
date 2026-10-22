@@ -81,10 +81,11 @@
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Δεν υπάρχει συγκεκριμένη απάντηση",
+    "ME": "Αποκλειστικά εγώ",
     "MOSTLY_ME": "Κυρίως εγώ",
     "SHARED_EQUALLY": "Μοιρασμένη εξίσου",
     "MOSTLY_SOMEONE_ELSE": "Κυρίως κάποιος άλλος",
-    "SOMEONE_ELSE": "Κάποιος άλλος"
+    "SOMEONE_ELSE": "Αποκλειστικά κάποιος άλλος"
   },
   "weeklyMeatRanges": {
     "ZERO_TO_FOUR": "0–4",

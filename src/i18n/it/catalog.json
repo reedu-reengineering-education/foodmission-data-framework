@@ -81,10 +81,11 @@
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Nessuna risposta specifica",
+    "ME": "Completamente io",
     "MOSTLY_ME": "Principalmente io",
     "SHARED_EQUALLY": "Diviso equamente",
     "MOSTLY_SOMEONE_ELSE": "Principalmente qualcun altro",
-    "SOMEONE_ELSE": "Qualcun altro"
+    "SOMEONE_ELSE": "Completamente qualcun altro"
   },
   "weeklyMeatRanges": {
     "ZERO_TO_FOUR": "0–4",

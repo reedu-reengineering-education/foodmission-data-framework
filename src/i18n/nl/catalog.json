@@ -81,10 +81,11 @@
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Geen specifiek antwoord",
+    "ME": "Helemaal ik",
     "MOSTLY_ME": "Meestal ik",
     "SHARED_EQUALLY": "Gelijkmatig verdeeld",
     "MOSTLY_SOMEONE_ELSE": "Meestal iemand anders",
-    "SOMEONE_ELSE": "Iemand anders"
+    "SOMEONE_ELSE": "Helemaal iemand anders"
   },
   "weeklyMeatRanges": {
     "ZERO_TO_FOUR": "0–4",
