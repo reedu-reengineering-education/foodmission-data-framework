@@ -1,13 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsBoolean } from 'class-validator';
+import { IsOptionalNotNull } from '../../common/decorators/optional-not-null.decorator';
 
 export class UpdateChallengeDto {
   @ApiPropertyOptional({
     description: 'Updated if the challenge is available',
     example: true,
   })
-  @IsOptional()
-  @Type(() => Boolean)
+  @IsOptionalNotNull()
+  @IsBoolean()
   available?: boolean;
 }
