@@ -297,6 +297,9 @@ model GenericFood {
   @@index([foodName])
   @@index([nevoCode])
   @@index([shelfLifeId])
+  // Name search uses expression indexes on search_normalize("foodName"/"synonym"),
+  // created in migration 20261022120000_add_search_normalize_indexes (Prisma
+  // cannot declare expression indexes).
   @@map("generic_foods")
 }
 

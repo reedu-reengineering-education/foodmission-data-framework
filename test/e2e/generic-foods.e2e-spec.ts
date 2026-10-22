@@ -97,6 +97,35 @@ describe('GenericFoods endpoints (e2e)', () => {
     },
   );
 
+  itIfDb(
+    'GET /generic-foods ranks names starting with the term first',
+    async () => {
+      const res = await request(app.getHttpServer())
+        .get('/generic-foods?search=Apple')
+        .expect(200);
+      expect(res.body.items[0].foodName.toLowerCase()).toMatch(/^apple/);
+    },
+  );
+
+  itIfDb('GET /generic-foods ignores punctuation in search', async () => {
+    const plain = await request(app.getHttpServer())
+      .get('/generic-foods?search=Apple')
+      .expect(200);
+    const punctuated = await request(app.getHttpServer())
+      .get(`/generic-foods?search=${encodeURIComponent('Apple,')}`)
+      .expect(200);
+    expect(punctuated.body.total).toBe(plain.body.total);
+    expect(punctuated.body.items[0].id).toBe(plain.body.items[0].id);
+  });
+
+  itIfDb('GET /generic-foods tolerates typos in search', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/generic-foods?search=Applle')
+      .expect(200);
+    expect(res.body.total).toBeGreaterThanOrEqual(1);
+    expect(res.body.items[0].foodName).toContain('Apple');
+  });
+
   itIfDb('GET /generic-foods supports paginated search', async () => {
     const res = await request(app.getHttpServer())
       .get('/generic-foods?search=milk&page=1&limit=20')
