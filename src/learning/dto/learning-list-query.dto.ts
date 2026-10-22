@@ -87,7 +87,7 @@ export class UserFoodFactListQueryDto extends LearningPaginatedQueryDto {
   @IsOptional()
   @IsBoolean()
   @TransformBooleanString()
-  read?: boolean;
+  completed?: boolean;
 }
 
 export class LearningQuestListQueryDto extends IntersectionType(

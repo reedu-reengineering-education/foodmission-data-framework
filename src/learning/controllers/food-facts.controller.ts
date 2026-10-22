@@ -46,9 +46,9 @@ export class FoodFactsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'List food facts with the current user’s read state (paginated)',
+    summary: 'List food facts with the current user’s completion (paginated)',
     description:
-      'Same catalog and filters as GET /food-facts, annotated with `read` and `readAt`. Use `read=true|false` to list only read or unread facts.',
+      'Same catalog and filters as GET /food-facts, annotated with `completed` and `readAt`. Use `completed=true|false` to list only read or unread facts.',
   })
   @ApiResponse({ status: 200, description: 'Paginated food facts' })
   @ApiCrudErrorResponses()
@@ -63,7 +63,7 @@ export class FoodFactsController {
   @Roles('user', 'admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Get a food fact with the current user’s read state',
+    summary: 'Get a food fact with the current user’s completion',
   })
   @ApiParam({
     name: 'codeOrId',

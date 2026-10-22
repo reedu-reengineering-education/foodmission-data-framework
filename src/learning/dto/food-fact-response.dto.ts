@@ -57,7 +57,7 @@ export class UserFoodFactResponseDto extends FoodFactResponseDto {
     description: 'Whether the current user has read this food fact',
   })
   @Expose()
-  read: boolean;
+  completed: boolean;
 
   @ApiProperty({
     example: '2024-01-01T00:00:00.000Z',

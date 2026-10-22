@@ -57,6 +57,7 @@ import {
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { findFoodFactReads } from '../../gamification/content-completion';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -216,7 +217,7 @@ export class LearningService {
       buildUserFoodFactWhere(query, userId),
       query,
     );
-    return { data: await this.withReadState(userId, data), meta };
+    return { data: await this.withCompletion(userId, data), meta };
   }
 
   async getFoodFactForUser(
@@ -225,7 +226,7 @@ export class LearningService {
     query: LearningLangQueryDto,
   ): Promise<UserFoodFactResponseDto> {
     const fact = await this.getFoodFact(codeOrId, query);
-    const [mapped] = await this.withReadState(userId, [fact]);
+    const [mapped] = await this.withCompletion(userId, [fact]);
     return mapped;
   }
 
@@ -265,20 +266,20 @@ export class LearningService {
     return mapped;
   }
 
-  private async withReadState(
+  private async withCompletion(
     userId: string,
     facts: FoodFactResponseDto[],
   ): Promise<UserFoodFactResponseDto[]> {
-    const progress = await this.prisma.foodFactProgress.findMany({
-      where: { userId, foodFactId: { in: facts.map((f) => f.id) } },
-      select: { foodFactId: true, readAt: true },
-    });
-    const readAtById = new Map(progress.map((p) => [p.foodFactId, p.readAt]));
+    const readAtByCode = await findFoodFactReads(
+      this.prisma,
+      userId,
+      facts.map((f) => f.code),
+    );
 
     return facts.map((f) => ({
       ...f,
-      read: readAtById.has(f.id),
-      readAt: readAtById.get(f.id) ?? null,
+      completed: readAtByCode.has(f.code),
+      readAt: readAtByCode.get(f.code) ?? null,
     }));
   }
 
