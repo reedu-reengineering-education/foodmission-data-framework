@@ -79,6 +79,17 @@ export class LearningPaginatedQueryDto extends IntersectionType(
   LearningContentFiltersDto,
 ) {}
 
+export class UserFoodFactListQueryDto extends LearningPaginatedQueryDto {
+  @ApiPropertyOptional({
+    description: 'Filter by whether the current user has read the food fact',
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @TransformBooleanString()
+  read?: boolean;
+}
+
 export class LearningQuestListQueryDto extends IntersectionType(
   LearningLangQueryDto,
 ) {

@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ContentLevel } from '@prisma/client';
 import { LearningService } from './learning.service';
@@ -18,6 +19,7 @@ describe('LearningService', () => {
       findUnique: jest.Mock;
     };
     foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
+    foodFactProgress: { findMany: jest.Mock };
     quiz: { findFirst: jest.Mock; findMany: jest.Mock; count: jest.Mock };
     quizProgress: {
       upsert: jest.Mock;
@@ -76,6 +78,7 @@ describe('LearningService', () => {
         count: jest.fn(),
         findFirst: jest.fn(),
       },
+      foodFactProgress: { findMany: jest.fn() },
       quiz: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
@@ -221,6 +224,131 @@ describe('LearningService', () => {
       totalPages: 1,
       hasNext: false,
       hasPrevious: false,
+    });
+  });
+
+  describe('food facts for the current user', () => {
+    const fact = (id: string, code: string) => ({
+      id,
+      code,
+      topicId: 't1',
+      title: `Title ${code}`,
+      body: `Body ${code}`,
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
+    });
+    const readAt = new Date('2026-01-01T00:00:00.000Z');
+
+    it('annotates each listed fact with the user read state', async () => {
+      prisma.foodFact.findMany.mockResolvedValue([
+        fact('ff1', 'FF.B1.1'),
+        fact('ff2', 'FF.B1.2'),
+      ]);
+      prisma.foodFact.count.mockResolvedValue(2);
+      prisma.foodFactProgress.findMany.mockResolvedValue([
+        { foodFactId: 'ff1', readAt },
+      ]);
+
+      const result = await service.listFoodFactsForUser('u1', {
+        page: 1,
+        limit: 10,
+      });
+
+      expect(prisma.foodFactProgress.findMany).toHaveBeenCalledWith({
+        where: { userId: 'u1', foodFactId: { in: ['ff1', 'ff2'] } },
+        select: { foodFactId: true, readAt: true },
+      });
+      expect(result.data).toEqual([
+        expect.objectContaining({ id: 'ff1', read: true, readAt }),
+        expect.objectContaining({ id: 'ff2', read: false, readAt: null }),
+      ]);
+      expect(result.meta).toMatchObject({ page: 1, limit: 10, total: 2 });
+    });
+
+    it.each([
+      [true, { some: { userId: 'u1' } }],
+      [false, { none: { userId: 'u1' } }],
+    ])(
+      'filters by read=%s and paginates on the filtered count',
+      async (read, progress) => {
+        prisma.foodFact.findMany.mockResolvedValue([fact('ff1', 'FF.B1.1')]);
+        prisma.foodFact.count.mockResolvedValue(11);
+        prisma.foodFactProgress.findMany.mockResolvedValue([]);
+
+        const result = await service.listFoodFactsForUser('u1', {
+          page: 2,
+          limit: 10,
+          read,
+        });
+
+        const where = { available: true, progress };
+        expect(prisma.foodFact.findMany).toHaveBeenCalledWith(
+          expect.objectContaining({ where, skip: 10, take: 10 }),
+        );
+        expect(prisma.foodFact.count).toHaveBeenCalledWith({ where });
+        expect(result.meta).toMatchObject({
+          page: 2,
+          total: 11,
+          totalPages: 2,
+          hasNext: false,
+          hasPrevious: true,
+        });
+      },
+    );
+
+    it('does not filter by read state when read is omitted', async () => {
+      prisma.foodFact.findMany.mockResolvedValue([]);
+      prisma.foodFact.count.mockResolvedValue(0);
+      prisma.foodFactProgress.findMany.mockResolvedValue([]);
+
+      await service.listFoodFactsForUser('u1', { page: 1, limit: 10 });
+
+      expect(prisma.foodFact.count).toHaveBeenCalledWith({
+        where: { available: true },
+      });
+    });
+
+    it('returns a single read fact with readAt', async () => {
+      prisma.foodFact.findFirst.mockResolvedValue(fact('ff1', 'FF.B1.1'));
+      prisma.foodFactProgress.findMany.mockResolvedValue([
+        { foodFactId: 'ff1', readAt },
+      ]);
+
+      const result = await service.getFoodFactForUser('u1', 'FF.B1.1', {});
+
+      expect(prisma.foodFactProgress.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { userId: 'u1', foodFactId: { in: ['ff1'] } },
+        }),
+      );
+      expect(result).toMatchObject({
+        id: 'ff1',
+        code: 'FF.B1.1',
+        read: true,
+        readAt,
+      });
+    });
+
+    it('returns a single unread fact with read=false', async () => {
+      prisma.foodFact.findFirst.mockResolvedValue(fact('ff1', 'FF.B1.1'));
+      prisma.foodFactProgress.findMany.mockResolvedValue([]);
+
+      const result = await service.getFoodFactForUser('u1', 'ff1', {});
+
+      expect(result).toMatchObject({ id: 'ff1', read: false, readAt: null });
+    });
+
+    it('throws NotFound for an unknown or unavailable fact', async () => {
+      prisma.foodFact.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.getFoodFactForUser('u1', 'FF.X', {}),
+      ).rejects.toBeInstanceOf(NotFoundException);
+      expect(prisma.foodFactProgress.findMany).not.toHaveBeenCalled();
     });
   });
 

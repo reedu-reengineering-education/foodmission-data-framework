@@ -50,3 +50,21 @@ export class FoodFactResponseDto {
   @Expose()
   available: boolean;
 }
+
+export class UserFoodFactResponseDto extends FoodFactResponseDto {
+  @ApiProperty({
+    example: true,
+    description: 'Whether the current user has read this food fact',
+  })
+  @Expose()
+  read: boolean;
+
+  @ApiProperty({
+    example: '2024-01-01T00:00:00.000Z',
+    type: Date,
+    nullable: true,
+    description: 'When the current user last read it; null while unread',
+  })
+  @Expose()
+  readAt: Date | null;
+}
