@@ -185,6 +185,15 @@ describe('MissionsController', () => {
       expect(service.update).toHaveBeenCalledWith('m1', dto);
       expect(result).toBe(mockResult);
     });
+
+    it('should be restricted to the admin role', () => {
+      const roles = Reflect.getMetadata(
+        META_ROLES,
+        MissionsController.prototype.update,
+      );
+      expect(roles).toEqual(['admin']);
+      expect(roles).not.toContain('user');
+    });
   });
 
   describe('remove', () => {
@@ -192,14 +201,6 @@ describe('MissionsController', () => {
       (service.remove as jest.Mock).mockResolvedValue(undefined);
       await controller.remove('m1');
       expect(service.remove).toHaveBeenCalledWith('m1');
-    });
-  });
-
-  describe('roles', () => {
-    it('update is admin only', () => {
-      expect(
-        Reflect.getMetadata(META_ROLES, MissionsController.prototype.update),
-      ).toEqual(['admin']);
     });
   });
 });
