@@ -312,6 +312,23 @@ describe('GenericFoodService', () => {
       expect(result).toEqual([{ slug: 'vegetables', name: 'Groenten' }]);
     });
 
+    it('should return groups in curated order', async () => {
+      translations.resolveLocale.mockReturnValue('en');
+      repository.getDistinctFoodGroups.mockResolvedValue([
+        { foodGroup: 'Alcoholic beverages', sampleId: 'sample-1' },
+        { foodGroup: 'Fruits', sampleId: 'sample-2' },
+        { foodGroup: 'Vegetables', sampleId: 'sample-3' },
+      ]);
+
+      const result = await service.getAllFoodGroups();
+
+      expect(result.map((g) => g.slug)).toEqual([
+        'vegetables',
+        'fruits',
+        'alcoholic-beverages',
+      ]);
+    });
+
     it('should filter by localized name when search is provided', async () => {
       translations.resolveLocale.mockReturnValue('nl');
       repository.getDistinctFoodGroups.mockResolvedValue([
