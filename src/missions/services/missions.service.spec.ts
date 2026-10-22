@@ -205,6 +205,46 @@ describe('MissionsService', () => {
         BadRequestException,
       );
     });
+
+    it('should pass content fields and a cleared topic to the repository', async () => {
+      (repository.update as jest.Mock).mockResolvedValue(mockMission);
+      const contentDto = {
+        title: 'New title',
+        level: ContentLevel.ADVANCED,
+        topicId: null,
+      };
+
+      await service.update('m1', contentDto);
+
+      expect(repository.update).toHaveBeenCalledWith('m1', contentDto);
+    });
+
+    it.each([{}, { title: undefined }])(
+      'should reject %p without calling the repository',
+      async (emptyDto) => {
+        await expect(service.update('m1', emptyDto)).rejects.toThrow(
+          BadRequestException,
+        );
+        expect(repository.update).not.toHaveBeenCalled();
+      },
+    );
+
+    it.each([
+      ['P2025', 404],
+      ['P2003', 400],
+      ['P2002', 409],
+    ])('should map Prisma %s to HTTP %i', async (code, status) => {
+      (repository.update as jest.Mock).mockRejectedValue(
+        new PrismaClientKnownRequestError('Error', {
+          code,
+          clientVersion: '5.0.0',
+        }),
+      );
+
+      await expect(service.update('m1', updateDto)).rejects.toMatchObject({
+        status,
+      });
+    });
   });
 
   describe('remove', () => {

@@ -4,6 +4,7 @@ import { MissionsService } from '../services/missions.service';
 import { MissionProgressService } from '../services/mission-progress.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { META_ROLES } from 'nest-keycloak-connect';
 
 describe('MissionsController', () => {
   let controller: MissionsController;
@@ -192,5 +193,16 @@ describe('MissionsController', () => {
       await controller.remove('m1');
       expect(service.remove).toHaveBeenCalledWith('m1');
     });
+  });
+
+  describe('roles', () => {
+    it.each(['create', 'update', 'remove'] as const)(
+      '%s on mission content is admin only',
+      (method) => {
+        expect(
+          Reflect.getMetadata(META_ROLES, MissionsController.prototype[method]),
+        ).toEqual(['admin']);
+      },
+    );
   });
 });

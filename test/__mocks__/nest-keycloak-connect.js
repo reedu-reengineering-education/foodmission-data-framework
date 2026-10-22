@@ -4,9 +4,14 @@
 // compiles the full AppModule.
 class KeycloakConnectModule {}
 
+const { SetMetadata } = require('@nestjs/common');
+
+const META_ROLES = 'roles';
+
 module.exports = {
+  META_ROLES,
   Public: () => () => {},
-  Roles: () => () => {},
+  Roles: (...roles) => SetMetadata(META_ROLES, roles),
   AuthGuard: jest.fn().mockImplementation(() => ({
     canActivate: jest.fn(() => true),
   })),
