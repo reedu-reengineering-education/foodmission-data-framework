@@ -365,8 +365,7 @@ export class MissionsController {
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update mission',
-    description:
-      'Updates mission content and availability. The mission code cannot be changed. Admin only.',
+    description: 'Updates mission availability. Admin only.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({

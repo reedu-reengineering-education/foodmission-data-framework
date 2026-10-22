@@ -1,7 +1,13 @@
-import { OmitType, PartialType } from '@nestjs/swagger';
-import { CreateMissionsDto } from './create-missions.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean } from 'class-validator';
+import { IsOptionalNotNull } from '../../common/decorators/optional-not-null.decorator';
 
-export class UpdateMissionsDto extends PartialType(
-  OmitType(CreateMissionsDto, ['code'] as const),
-  { skipNullProperties: false },
-) {}
+export class UpdateMissionsDto {
+  @ApiPropertyOptional({
+    description: 'Updated if the mission is available',
+    example: true,
+  })
+  @IsOptionalNotNull()
+  @IsBoolean()
+  available?: boolean;
+}

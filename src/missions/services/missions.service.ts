@@ -7,7 +7,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import {
-  ERROR_CODES,
   handlePrismaError,
   handleServiceError,
 } from '../../common/utils/error.utils';
@@ -100,13 +99,6 @@ export class MissionsService {
     missionId: string,
     updateMissionDto: UpdateMissionsDto,
   ): Promise<MissionsResponseDto> {
-    const hasChanges = Object.values(updateMissionDto).some(
-      (value) => value !== undefined,
-    );
-    if (!hasChanges) {
-      throw new BadRequestException('Provide at least one field to update');
-    }
-
     try {
       const updatedMission = await this.missionRepository.update(
         missionId,
@@ -123,10 +115,8 @@ export class MissionsService {
         throw error;
       }
       if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === ERROR_CODES.PRISMA_FOREIGN_KEY_CONSTRAINT) {
-          throw new BadRequestException('Dimension or topic does not exist');
-        }
-        throw handlePrismaError(error, 'update', 'mission');
+        const businessException = handlePrismaError(error, 'update', 'mission');
+        throw businessException;
       }
       handleServiceError(error, 'Failed to update mission');
     }

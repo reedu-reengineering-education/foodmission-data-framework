@@ -6,7 +6,7 @@ import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 export interface CreateMissionData {
   code: string;
   dimensionId: string;
-  topicId?: string | null;
+  topicId?: string;
   level: ContentLevel;
   title: string;
   duration: string;

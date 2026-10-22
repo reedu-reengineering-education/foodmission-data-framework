@@ -9,7 +9,6 @@ import {
   IsUUID,
   MaxLength,
 } from 'class-validator';
-import { IsOptionalNotNull } from '../../common/decorators/optional-not-null.decorator';
 
 export class CreateMissionsDto {
   @ApiProperty({
@@ -32,14 +31,13 @@ export class CreateMissionsDto {
   dimensionId: string;
 
   @ApiPropertyOptional({
-    description: 'Optional topic id, or null for no topic',
+    description: 'Optional topic id',
     example: 'uuid-topic-id',
     format: 'uuid',
-    nullable: true,
   })
   @IsOptional()
   @IsUUID()
-  topicId?: string | null;
+  topicId?: string;
 
   @ApiProperty({
     description: 'Content difficulty level',
@@ -90,7 +88,7 @@ export class CreateMissionsDto {
     example: false,
     default: false,
   })
-  @IsOptionalNotNull()
+  @IsOptional()
   @IsBoolean()
   health?: boolean;
 
@@ -99,7 +97,7 @@ export class CreateMissionsDto {
     example: true,
     default: false,
   })
-  @IsOptionalNotNull()
+  @IsOptional()
   @IsBoolean()
   foodChoice?: boolean;
 
@@ -108,7 +106,7 @@ export class CreateMissionsDto {
     example: false,
     default: false,
   })
-  @IsOptionalNotNull()
+  @IsOptional()
   @IsBoolean()
   foodWaste?: boolean;
 
