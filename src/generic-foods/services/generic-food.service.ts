@@ -89,6 +89,7 @@ export class GenericFoodService {
     let rankedIds = rankSearchCandidates(
       search,
       candidates.filter((c) => !hasSubstringMatch || c.substringMatch),
+      locale,
     ).map((c) => c.id);
 
     if (query.foodGroup) {

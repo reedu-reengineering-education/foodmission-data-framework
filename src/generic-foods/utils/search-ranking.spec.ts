@@ -1,4 +1,5 @@
 import {
+  foodex2FacetCount,
   foodGroupTier,
   isBaseForm,
   matchQuality,
@@ -20,6 +21,7 @@ const candidate = (
   foodName,
   synonym: null,
   foodGroup,
+  foodex2Codes: [],
   translatedNames: [],
   score: 1,
   ...extra,
@@ -75,6 +77,19 @@ describe('search ranking', () => {
     ])('%s in %s', (term, text, expected) => {
       expect(matchQuality(term, text)).toBe(expected);
     });
+
+    it.each([
+      ['milch', 'Vollmilch', MatchQuality.NAME_PREFIX],
+      ['milch', 'Vollmilch, getrocknet', MatchQuality.NAME_PREFIX],
+      ['milch', 'Käse aus Rohmilch', MatchQuality.INSIDE_WORD],
+      ['ei', 'Brei', MatchQuality.INSIDE_WORD],
+      ['schokolade', 'Schokoladeneis', MatchQuality.WORD_PREFIX],
+      ['schokolade', 'Schokoladen-Blancmanger', MatchQuality.WORD_PREFIX],
+      ['schokolade', 'Schokolade extra dunkel', MatchQuality.NAME_PREFIX],
+      ['kartoffel', 'Kartoffeln, roh', MatchQuality.NAME_PREFIX],
+    ])('compound head: %s in %s', (term, text, expected) => {
+      expect(matchQuality(term, text, { compoundHeads: true })).toBe(expected);
+    });
   });
 
   describe('foodGroupTier', () => {
@@ -87,6 +102,14 @@ describe('search ranking', () => {
     it('treats unknown groups as the middle tier', () => {
       expect(foodGroupTier('Something new')).toBe(1);
       expect(foodGroupTier(null)).toBe(1);
+    });
+  });
+
+  describe('foodex2FacetCount', () => {
+    it('counts facets except the F28 process facet', () => {
+      expect(foodex2FacetCount(['A02LY'])).toBe(0);
+      expect(foodex2FacetCount(['A02LX', 'F28.A07HS'])).toBe(0);
+      expect(foodex2FacetCount(['A02MP', 'F04.A0EQS', 'F10.A077A'])).toBe(2);
     });
   });
 
@@ -180,6 +203,76 @@ describe('search ranking', () => {
         'Tomatoes classic round raw',
         'Tomatoes stewed w vegetable oil',
       ]);
+    });
+
+    it('treats translated compound heads like a prefix', () => {
+      const ranked = rankSearchCandidates(
+        'milch',
+        [
+          candidate(862, 'Milkshake w fresh fruit', 'Milk and milk products', {
+            translatedNames: ['Milchshake mit frischen Früchten'],
+          }),
+          candidate(279, 'Milk whole', 'Milk and milk products', {
+            translatedNames: ['Vollmilch'],
+          }),
+        ],
+        'de',
+      );
+
+      expect(namesOf(ranked)).toEqual([
+        'Milk whole',
+        'Milkshake w fresh fruit',
+      ]);
+    });
+
+    it('uses compound heads only for compounding locales', () => {
+      const candidates = [
+        candidate(1, 'Mozzarella', 'Cheese', {
+          translatedNames: ['Mozzarella di latte'],
+        }),
+        candidate(2, 'Coffee w milk', 'Non-alcoholic beverages', {
+          translatedNames: ['Caffelatte'],
+        }),
+      ];
+
+      expect(namesOf(rankSearchCandidates('latte', candidates, 'it'))).toEqual([
+        'Mozzarella',
+        'Coffee w milk',
+      ]);
+      expect(namesOf(rankSearchCandidates('latte', candidates, 'de'))).toEqual([
+        'Coffee w milk',
+        'Mozzarella',
+      ]);
+    });
+
+    it('puts foods with fewer FoodEx2 facets first', () => {
+      const ranked = rankSearchCandidates('milk', [
+        candidate(
+          272,
+          'Milk chocolate-flavoured full fat',
+          'Milk and milk products',
+          {
+            foodex2Codes: ['A02MP', 'F04.A0EQS', 'F10.A077A'],
+          },
+        ),
+        candidate(279, 'Milk whole', 'Milk and milk products', {
+          foodex2Codes: ['A02LY'],
+        }),
+      ]);
+
+      expect(namesOf(ranked)).toEqual([
+        'Milk whole',
+        'Milk chocolate-flavoured full fat',
+      ]);
+    });
+
+    it('does not use compound heads for English names', () => {
+      const ranked = rankSearchCandidates('apple', [
+        candidate(1, 'Pineapple raw', 'Fruits'),
+        candidate(2, 'Apple sauce tinned', 'Fruits'),
+      ]);
+
+      expect(namesOf(ranked)).toEqual(['Apple sauce tinned', 'Pineapple raw']);
     });
 
     it('is deterministic on full ties and does not modify the input', () => {

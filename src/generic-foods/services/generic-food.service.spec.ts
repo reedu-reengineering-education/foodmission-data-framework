@@ -157,6 +157,7 @@ describe('GenericFoodService', () => {
         synonym: null,
         foodGroup: fields.foodGroup ?? 'Vegetables',
         translatedNames: [],
+        foodex2Codes: [],
         substringMatch,
         score: 1,
       });
