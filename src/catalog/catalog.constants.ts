@@ -16,8 +16,7 @@ export const CONSENT_FORM_LANGUAGES = {
   it: ['en', 'it'],
   nl: ['en', 'nl'],
   no: ['en', 'no'],
-  // No updated CCIS-CAFE form yet: still the earlier English-only version.
-  si: ['en'],
+  si: ['en', 'sl'],
 } as const satisfies Record<string, readonly string[]>;
 
 export type ConsentFormCountryCode = keyof typeof CONSENT_FORM_LANGUAGES;
