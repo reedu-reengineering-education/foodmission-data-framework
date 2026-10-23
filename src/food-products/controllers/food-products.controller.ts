@@ -56,11 +56,11 @@ export class FoodProductController {
 
   @Post()
   @CacheEvict(['food-products:list', 'food-products:count'])
-  @Roles('admin', 'user')
+  @Roles('admin')
   @ApiOperation({
     summary: 'Create a new food product',
     description:
-      'Creates a new food product in the database. Requires admin or user role.',
+      'Creates a new food product in the database. Requires admin role.',
   })
   @ApiBody({ type: CreateFoodProductDto })
   @ApiResponse({
