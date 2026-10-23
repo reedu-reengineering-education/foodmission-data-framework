@@ -188,12 +188,12 @@ export interface OpenFoodFactsSearchOptions {
   countries?: string[];
   page?: number;
   pageSize?: number;
-  sortBy?:
-    | 'product_name'
-    | 'created_t'
-    | 'last_modified_t'
-    | 'completeness'
-    | 'popularity';
+  /**
+   * Only orders backed by an index on the OFF copy (default: popularity).
+   * Name/completeness sorting was removed: unindexed, it sorted every match
+   * in memory.
+   */
+  sortBy?: 'popularity' | 'last_modified_t' | 'created_t';
   fields?: string[];
   /** Resolved locale for name / ingredients / genericName (e.g. de, nl). */
   lang?: string;

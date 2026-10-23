@@ -241,7 +241,8 @@ export function describeError(error: unknown): string {
     const status = err?.response?.status;
     return status ? `HTTP ${status} ${body}` : body;
   }
-  if (error instanceof Error) return error.message;
+  // Prisma messages start with a newline; keep the reason on the log line.
+  if (error instanceof Error) return error.message.trim();
   return String(error);
 }
 

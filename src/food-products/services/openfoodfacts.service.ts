@@ -1,4 +1,10 @@
-import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  HttpException,
+  HttpStatus,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Observable, throwError } from 'rxjs';
@@ -31,42 +37,46 @@ export class OpenFoodFactsService {
   ) {}
 
   /**
-   * Get product information by barcode.
-   * Tries the local OpenFoodFacts MongoDB clone first, falling back to the
-   * live HTTP API if the clone is unconfigured, unreachable, or errors.
+   * Get product information by barcode from the local OpenFoodFacts MongoDB
+   * clone. There is no live-API fallback: if the clone is unconfigured or
+   * fails, this throws 503 (see getProductByBarcodeHttp, kept but unused).
    */
   async getProductByBarcode(
     barcode: string,
     lang: string = DEFAULT_LOCALE,
   ): Promise<ProductInfo | null> {
-    if (this.offMongoRepository.isAvailable) {
-      try {
-        const doc = await this.withMongoTimeout(
-          this.offMongoRepository.findByBarcode(barcode),
-        );
-        if (doc) {
-          const productInfo = this.transformProduct(
-            { ...doc, _id: doc.id ?? doc._id },
-            lang,
-          );
-          this.logger.debug(
-            `Found product in local OFF database: ${productInfo.name}`,
-          );
-          return productInfo;
-        }
-        this.logger.debug(
-          `Product not found in local OFF database for barcode: ${barcode}`,
-        );
-        return null;
-      } catch (error) {
-        this.logger.warn(
-          `Local OFF database lookup failed for barcode ${barcode}, falling back to HTTP API: ${describeError(error)}`,
-        );
-      }
+    this.assertLocalDatabaseConfigured(`barcode lookup ${barcode}`);
+
+    let doc: Awaited<ReturnType<OffMongoProductRepository['findByBarcode']>>;
+    try {
+      doc = await this.withMongoTimeout(
+        this.offMongoRepository.findByBarcode(barcode),
+      );
+    } catch (error) {
+      throw this.localDatabaseFailure(`lookup for barcode ${barcode}`, error);
     }
 
-    return this.getProductByBarcodeHttp(barcode, lang);
+    if (!doc) {
+      this.logger.debug(
+        `Product not found in local OFF database for barcode: ${barcode}`,
+      );
+      return null;
+    }
+
+    const productInfo = this.transformProduct(
+      { ...doc, _id: doc.id ?? doc._id },
+      lang,
+    );
+    this.logger.debug(
+      `Found product in local OFF database: ${productInfo.name}`,
+    );
+    return productInfo;
   }
+
+  /**
+   * Live OpenFoodFacts API lookup. Not wired: the API is rate-limited and
+   * slow, so lookups use the local clone only. Kept for a possible opt-in.
+   */
 
   private async getProductByBarcodeHttp(
     barcode: string,
@@ -99,48 +109,87 @@ export class OpenFoodFactsService {
   }
 
   /**
-   * Search products by name or other criteria.
-   * Tries the local OpenFoodFacts MongoDB clone first, falling back to the
-   * live HTTP API if the clone is unconfigured, unreachable, or errors.
+   * Search products by name or other criteria in the local OpenFoodFacts
+   * MongoDB clone. There is no live-API fallback: if the clone is
+   * unconfigured or fails, this throws 503 (see searchProductsHttp, kept but
+   * unused).
    */
   async searchProducts(options: OpenFoodFactsSearchOptions): Promise<{
     products: ProductInfo[];
+    /** Lower bound when hasMore is true (local search doesn't count). */
     totalCount: number;
+    /** Same as hasMore: totalCount/totalPages are lower bounds. */
+    totalCountCapped: boolean;
+    /** Another page exists. */
+    hasMore: boolean;
     page: number;
     pageSize: number;
     totalPages: number;
   }> {
     const lang = options.lang ?? DEFAULT_LOCALE;
+    this.assertLocalDatabaseConfigured('search');
 
-    if (this.offMongoRepository.isAvailable) {
-      try {
-        const { items, totalCount, page, pageSize } =
-          await this.withMongoTimeout(this.offMongoRepository.search(options));
-
-        const products = items.map((doc) =>
-          this.transformProduct({ ...doc, _id: doc.id }, lang),
-        );
-
-        this.logger.debug(
-          `Found ${products.length} products in local OFF database`,
-        );
-
-        return {
-          products,
-          totalCount,
-          page,
-          pageSize,
-          totalPages: Math.max(1, Math.ceil(totalCount / pageSize)),
-        };
-      } catch (error) {
-        this.logger.warn(
-          `Local OFF database search failed, falling back to HTTP API: ${describeError(error)}`,
-        );
-      }
+    let result: Awaited<ReturnType<OffMongoProductRepository['search']>>;
+    try {
+      result = await this.withMongoTimeout(
+        this.offMongoRepository.search(options),
+      );
+    } catch (error) {
+      throw this.localDatabaseFailure('search', error);
     }
 
-    return this.searchProductsHttp(options);
+    const { items, hasMore, page, pageSize } = result;
+    const products = items.map((doc) =>
+      this.transformProduct({ ...doc, _id: doc.id }, lang),
+    );
+
+    this.logger.debug(
+      `Found ${products.length} products in local OFF database`,
+    );
+
+    // No total is counted; report what's known so page-based clients can
+    // keep paging one page at a time while hasMore is true.
+    const extra = hasMore ? 1 : 0;
+    return {
+      products,
+      totalCount: (page - 1) * pageSize + products.length + extra,
+      totalCountCapped: hasMore,
+      hasMore,
+      page,
+      pageSize,
+      totalPages: page + extra,
+    };
   }
+
+  private assertLocalDatabaseConfigured(operation: string): void {
+    if (!this.offMongoRepository.isAvailable) {
+      this.logger.error(
+        `OFF ${operation} unavailable: local OpenFoodFacts database is not configured (MONGODB_OFF_URL)`,
+      );
+      throw new ServiceUnavailableException(
+        'OpenFoodFacts data is currently unavailable',
+      );
+    }
+  }
+
+  private localDatabaseFailure(
+    operation: string,
+    error: unknown,
+  ): ServiceUnavailableException {
+    this.logger.error(
+      `Local OFF database ${operation} failed: ${describeError(error)}`,
+      error instanceof Error ? error.stack : undefined,
+    );
+    return new ServiceUnavailableException(
+      'OpenFoodFacts data is currently unavailable',
+    );
+  }
+
+  /**
+   * Live OpenFoodFacts API search. Not wired: the API is rate-limited (about
+   * 10 searches/min per IP) and slow, so search uses the local clone only.
+   * Kept for a possible opt-in.
+   */
 
   private async searchProductsHttp(options: OpenFoodFactsSearchOptions) {
     this.logger.debug(
@@ -180,6 +229,9 @@ export class OpenFoodFactsService {
     const result = {
       products,
       totalCount: response.count,
+      // OFF's API reports an exact count.
+      totalCountCapped: false,
+      hasMore: response.page < response.page_count,
       page: response.page,
       pageSize: response.page_size,
       totalPages: response.page_count,

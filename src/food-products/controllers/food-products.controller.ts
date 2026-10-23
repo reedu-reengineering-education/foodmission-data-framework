@@ -122,6 +122,16 @@ export class FoodProductController {
           items: { $ref: '#/components/schemas/OpenFoodFactsInfoDto' },
         },
         totalCount: { type: 'number' },
+        totalCountCapped: {
+          type: 'boolean',
+          description:
+            'Same as hasMore: totalCount and totalPages are then a lower bound',
+        },
+        hasMore: {
+          type: 'boolean',
+          description:
+            'Another page exists. Matches are not counted; page while this is true',
+        },
         page: { type: 'number' },
         pageSize: { type: 'number' },
         totalPages: { type: 'number' },

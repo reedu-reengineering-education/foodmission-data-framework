@@ -1,6 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
-import { OffMongoProductRepository } from './off-mongo-product.repository';
+import {
+  OffMongoProductRepository,
+  SEARCH_MAX_TIME_MS,
+} from './off-mongo-product.repository';
 
 describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
   const findRaw = jest.fn();
@@ -77,5 +80,153 @@ describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
     jest.advanceTimersByTime(2000);
 
     expect((await pending).size).toBe(0);
+  });
+});
+
+describe('OffMongoProductRepository.search', () => {
+  const findRaw = jest.fn();
+  const runCommandRaw = jest.fn();
+  const repository = new OffMongoProductRepository({
+    isConfigured: true,
+    offProduct: { findRaw },
+    $runCommandRaw: runCommandRaw,
+  } as unknown as OffMongoPrismaService);
+
+  const docs = (n: number) =>
+    Array.from({ length: n }, (_, i) => ({
+      _id: String(i),
+      product_name: `P${i}`,
+    }));
+  const findArgs = () => findRaw.mock.calls[0][0];
+  /** Index-only keyword counts, by word. */
+  const keywordCounts = (counts: Record<string, number>) =>
+    runCommandRaw.mockImplementation((cmd: { query: { _keywords: string } }) =>
+      Promise.resolve({ n: counts[cmd.query._keywords] ?? 0, ok: 1 }),
+    );
+
+  beforeEach(() => findRaw.mockResolvedValue([]));
+  afterEach(() => jest.resetAllMocks());
+
+  it('fetches one extra item instead of counting', async () => {
+    await repository.search({ query: 'milk', page: 3, pageSize: 20 });
+
+    expect(findArgs().options).toMatchObject({ skip: 40, limit: 21 });
+    expect(runCommandRaw).not.toHaveBeenCalled();
+  });
+
+  it('reports hasMore and drops the extra item', async () => {
+    findRaw.mockResolvedValue(docs(21));
+
+    const result = await repository.search({ query: 'milk', pageSize: 20 });
+
+    expect(result.items).toHaveLength(20);
+    expect(result.hasMore).toBe(true);
+  });
+
+  it('reports no more pages when the page is not full', async () => {
+    findRaw.mockResolvedValue(docs(3));
+
+    const result = await repository.search({ query: 'milk', pageSize: 20 });
+
+    expect(result).toMatchObject({ hasMore: false, page: 1, pageSize: 20 });
+    expect(result.items).toHaveLength(3);
+  });
+
+  it('hints the keyword index and filters on a single word directly', async () => {
+    await repository.search({ query: 'Milk' });
+
+    expect(findArgs().filter._keywords).toBe('milk');
+    expect(findArgs().filter.$expr).toBeUndefined();
+    expect(findArgs().options.hint).toBe('_keywords_1_unique_scans_n_-1');
+  });
+
+  it('anchors multi-word searches on the rarest word and checks the rest via $expr', async () => {
+    keywordCounts({ mercadona: 900, avena: 4000, bebida: 20000 });
+
+    await repository.search({ query: 'avena mercadona bebida' });
+
+    expect(findArgs().filter._keywords).toBe('mercadona');
+    expect(findArgs().filter.$expr).toEqual({
+      $setIsSubset: [['avena', 'bebida'], '$_keywords'],
+    });
+    expect(findArgs().options.hint).toBe('_keywords_1_unique_scans_n_-1');
+    expect(runCommandRaw).toHaveBeenCalledWith(
+      expect.objectContaining({
+        count: 'products',
+        query: { _keywords: 'avena' },
+        hint: '_keywords_1_unique_scans_n_-1',
+        maxTimeMS: SEARCH_MAX_TIME_MS,
+      }),
+    );
+  });
+
+  it('returns nothing without querying products when a word matches no product', async () => {
+    keywordCounts({ avena: 4000, zzzz: 0 });
+
+    const result = await repository.search({ query: 'avena zzzz' });
+
+    expect(result).toEqual({
+      items: [],
+      hasMore: false,
+      page: 1,
+      pageSize: 20,
+    });
+    expect(findRaw).not.toHaveBeenCalled();
+  });
+
+  it('reads 64-bit counts', async () => {
+    runCommandRaw.mockImplementation((cmd: { query: { _keywords: string } }) =>
+      Promise.resolve({
+        n: cmd.query._keywords === 'a' ? { $numberLong: '5' } : 9,
+      }),
+    );
+
+    await repository.search({ query: 'a b' });
+
+    expect(findArgs().filter._keywords).toBe('a');
+  });
+
+  it('ignores repeated words', async () => {
+    await repository.search({ query: 'milk  milk' });
+
+    expect(findArgs().filter._keywords).toBe('milk');
+    expect(runCommandRaw).not.toHaveBeenCalled();
+  });
+
+  it('does not hint a keyword index when there are no search words', async () => {
+    await repository.search({ categories: ['en:breads'] });
+
+    expect(findArgs().filter._keywords).toBeUndefined();
+    expect(findArgs().options.hint).toBeUndefined();
+  });
+
+  it('hints the matching keyword index for each sort', async () => {
+    await repository.search({ query: 'milk', sortBy: 'last_modified_t' });
+    expect(findArgs().options).toMatchObject({
+      sort: { last_modified_t: -1 },
+      hint: '_keywords_1_last_modified_t_-1',
+    });
+
+    findRaw.mockClear();
+    await repository.search({ query: 'milk', sortBy: 'created_t' });
+    expect(findArgs().options.sort).toEqual({ created_t: -1 });
+    expect(findArgs().options.hint).toBeUndefined();
+  });
+
+  it('sorts by popularity by default', async () => {
+    await repository.search({ query: 'milk' });
+
+    expect(findArgs().options.sort).toEqual({ unique_scans_n: -1 });
+  });
+
+  it('lets Mongo abort slow queries', async () => {
+    await repository.search({ query: 'milk' });
+
+    expect(SEARCH_MAX_TIME_MS).toBe(4500);
+    // findRaw needs a Duration shape (see SEARCH_MAX_TIME_DURATION).
+    expect(findArgs().options.maxTimeMS).toEqual({
+      secs: 4,
+      nanos: 500_000_000,
+    });
   });
 });
