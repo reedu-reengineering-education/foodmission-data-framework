@@ -63,6 +63,25 @@ function normalizeJoinedPath(...parts: string[]): string {
   return `/${cleaned.join('/')}`;
 }
 
+/**
+ * Names of route handler candidates on a controller instance, including ones
+ * inherited from base classes (e.g. the analytics batch routes defined in
+ * BaseAnalyticsAdminController). The most-derived definition wins.
+ */
+function routeHandlerNames(instance: object): string[] {
+  const names = new Set<string>();
+  for (
+    let proto = Object.getPrototypeOf(instance) as object | null;
+    proto && proto !== Object.prototype;
+    proto = Object.getPrototypeOf(proto) as object | null
+  ) {
+    for (const name of Object.getOwnPropertyNames(proto)) {
+      if (name !== 'constructor') names.add(name);
+    }
+  }
+  return [...names];
+}
+
 function isAdminOnly(roles: string[] | undefined): boolean {
   if (!roles || roles.length !== 1) {
     return false;
@@ -128,14 +147,10 @@ function annotateAdminOnlyOperations(
         controllerClass,
       ) as string[] | undefined;
 
-      const prototype = Object.getPrototypeOf(instance) as Record<
-        string,
-        unknown
-      >;
-      for (const methodName of Object.getOwnPropertyNames(prototype)) {
-        if (methodName === 'constructor') continue;
-
-        const handler = prototype[methodName];
+      for (const methodName of routeHandlerNames(instance)) {
+        // Property lookup follows the prototype chain, so this is the
+        // most-derived definition, matching routeHandlerNames.
+        const handler = (instance as Record<string, unknown>)[methodName];
         if (typeof handler !== 'function') continue;
 
         const requestMethod = Reflect.getMetadata(METHOD_METADATA, handler) as
