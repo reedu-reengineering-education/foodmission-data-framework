@@ -87,6 +87,10 @@ describe('search ranking', () => {
       ['schokolade', 'Schokoladen-Blancmanger', MatchQuality.WORD_PREFIX],
       ['schokolade', 'Schokolade extra dunkel', MatchQuality.NAME_PREFIX],
       ['kartoffel', 'Kartoffeln, roh', MatchQuality.NAME_PREFIX],
+      ['melk', 'Volle melk', MatchQuality.NAME_PREFIX],
+      ['melk', 'Chocolademelk uit de automaat', MatchQuality.NAME_PREFIX],
+      ['ei', 'Ei, roh', MatchQuality.NAME_PREFIX],
+      ['ei', 'Eisbergsalat', MatchQuality.WORD_PREFIX],
     ])('compound head: %s in %s', (term, text, expected) => {
       expect(matchQuality(term, text, { compoundHeads: true })).toBe(expected);
     });
@@ -243,6 +247,23 @@ describe('search ranking', () => {
         'Coffee w milk',
         'Mozzarella',
       ]);
+    });
+
+    it('puts translated matches before English-only ones', () => {
+      const ranked = rankSearchCandidates(
+        'ost',
+        [
+          candidate(1, 'Ostrich meat raw', 'Meat and poultry', {
+            translatedNames: ['Strutsekjøtt, rått'],
+          }),
+          candidate(2, 'Cheese 30+', 'Cheese', {
+            translatedNames: ['Ost, lett (30+)'],
+          }),
+        ],
+        'no',
+      );
+
+      expect(namesOf(ranked)).toEqual(['Cheese 30+', 'Ostrich meat raw']);
     });
 
     it('puts foods with fewer FoodEx2 facets first', () => {

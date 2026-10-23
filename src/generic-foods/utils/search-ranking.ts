@@ -110,24 +110,33 @@ export function wordsOf(text: string): string[] {
     .filter((word) => word.length > 0);
 }
 
-/**
- * The first word of a compound-language name, with hyphenated parts joined:
- * "Schokoladen-Blancmanger, ..." -> "schokoladenblancmanger".
- */
-function firstCompound(text: string): string {
-  return normalizeForSearch(text.trim().split(/[\s,]+/u)[0] ?? '').replace(
-    / /g,
-    '',
-  );
+/** One word with hyphenated parts joined: "Schokoladen-Blancmanger" -> "schokoladenblancmanger". */
+function joinedWord(word: string): string {
+  return normalizeForSearch(word).replace(/ /g, '');
 }
 
 /**
- * `compoundHeads`: judge the first word as a compound. In German, Dutch and
+ * Words of a compound-language name that can name the food: the first word,
+ * plus the second when the name starts with two words before any comma
+ * ("Volle melk", "Rode kool, gekookt").
+ */
+function headCandidates(text: string): { first: string; second?: string } {
+  const lead = (text.split(',')[0] ?? '').trim().split(/\s+/u);
+  return {
+    first: joinedWord(lead[0] ?? ''),
+    second: lead.length === 2 ? joinedWord(lead[1]) : undefined,
+  };
+}
+
+/**
+ * `compoundHeads`: judge the leading words as compounds. In German, Dutch and
  * Norwegian the last part names the food: "Vollmilch" is milk, "Milchshake" is
- * a shake. So a first word ending in the term (or the term plus a short
- * plural ending) counts like a name prefix, and one only starting with it like
- * a word prefix. Only the first word, so "Käse aus Rohmilch" stays cheese. Off
- * for English ("Pineapple").
+ * a shake. So a head word equal to the term, ending in it, or the term plus a
+ * short plural ending counts like a name prefix; a first word that only starts
+ * with it ("Eisbergsalat" for "ei") like a word prefix. Ending/plural need
+ * MIN_COMPOUND_HEAD_LENGTH so "ei" matches neither "Brei" nor "Eis". Only the
+ * leading words, so "Käse aus Rohmilch" stays cheese. Off for English
+ * ("Pineapple").
  */
 export function matchQuality(
   term: string,
@@ -140,14 +149,19 @@ export function matchQuality(
   if (!needle) return MatchQuality.NONE;
 
   if (haystack === needle) return MatchQuality.EXACT;
-  if (compoundHeads && needle.length >= MIN_COMPOUND_HEAD_LENGTH) {
-    const first = firstCompound(text);
-    if (first.endsWith(needle)) return MatchQuality.NAME_PREFIX;
-    if (first.startsWith(needle)) {
-      return first.length - needle.length <= MAX_INFLECTION_LENGTH
-        ? MatchQuality.NAME_PREFIX
-        : MatchQuality.WORD_PREFIX;
+  if (compoundHeads) {
+    const long = needle.length >= MIN_COMPOUND_HEAD_LENGTH;
+    const isHead = (word: string) =>
+      word === needle ||
+      (long &&
+        (word.endsWith(needle) ||
+          (word.startsWith(needle) &&
+            word.length - needle.length <= MAX_INFLECTION_LENGTH)));
+    const { first, second } = headCandidates(text);
+    if (isHead(first) || (second !== undefined && isHead(second))) {
+      return MatchQuality.NAME_PREFIX;
     }
+    if (first.startsWith(needle)) return MatchQuality.WORD_PREFIX;
   }
   if (haystack.startsWith(needle)) return MatchQuality.NAME_PREFIX;
   const words = wordsOf(text);
@@ -182,20 +196,30 @@ export function rankSearchCandidates<T extends RankableSearchCandidate>(
   locale = 'en',
 ): T[] {
   const compoundHeads = COMPOUNDING_LOCALES.has(locale);
-  const keyed = candidates.map((candidate) => ({
-    candidate,
-    quality: Math.max(
+  const keyed = candidates.map((candidate) => {
+    const english = Math.max(
       ...[candidate.foodName, candidate.synonym].map((text) =>
         matchQuality(term, text),
       ),
+    );
+    const translated = Math.max(
+      MatchQuality.NONE,
       ...candidate.translatedNames.map((text) =>
         matchQuality(term, text, { compoundHeads }),
       ),
-    ),
-    tier: foodGroupTier(candidate.foodGroup),
-    baseForm: isBaseForm(candidate.foodName) ? 0 : 1,
-    facets: foodex2FacetCount(candidate.foodex2Codes ?? []),
-  }));
+    );
+    return {
+      candidate,
+      quality: Math.max(english, translated),
+      // Outside English, a match only in the English name ("Ostrich" for
+      // Norwegian "ost") goes after equally good translated matches.
+      englishOnly:
+        candidate.translatedNames.length > 0 && english > translated ? 1 : 0,
+      tier: foodGroupTier(candidate.foodGroup),
+      baseForm: isBaseForm(candidate.foodName) ? 0 : 1,
+      facets: foodex2FacetCount(candidate.foodex2Codes ?? []),
+    };
+  });
 
   keyed.sort(
     (a, b) =>
@@ -205,6 +229,7 @@ export function rankSearchCandidates<T extends RankableSearchCandidate>(
       (a.quality === MatchQuality.NONE
         ? b.candidate.score - a.candidate.score
         : 0) ||
+      a.englishOnly - b.englishOnly ||
       a.tier - b.tier ||
       a.baseForm - b.baseForm ||
       a.facets - b.facets ||
