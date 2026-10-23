@@ -4,6 +4,7 @@ import { MissionsService } from '../services/missions.service';
 import { MissionProgressService } from '../services/mission-progress.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
+import { META_ROLES } from 'nest-keycloak-connect';
 
 describe('MissionsController', () => {
   let controller: MissionsController;
@@ -183,6 +184,15 @@ describe('MissionsController', () => {
       const result = await controller.update('m1', dto);
       expect(service.update).toHaveBeenCalledWith('m1', dto);
       expect(result).toBe(mockResult);
+    });
+
+    it('should be restricted to the admin role', () => {
+      const roles = Reflect.getMetadata(
+        META_ROLES,
+        MissionsController.prototype.update,
+      );
+      expect(roles).toEqual(['admin']);
+      expect(roles).not.toContain('user');
     });
   });
 

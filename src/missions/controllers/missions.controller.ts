@@ -361,21 +361,17 @@ export class MissionsController {
   }
 
   @Patch(':id')
-  @Roles('user', 'admin')
+  @Roles('admin')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Update mission',
-    description: 'Updates the mission progress.',
+    description: 'Updates mission availability. Admin only.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   @ApiResponse({
     status: 200,
     description: 'Mission updated successfully',
     type: MissionsResponseDto,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'No permission - user does not own this mission',
   })
   @ApiCrudErrorResponses()
   async update(
