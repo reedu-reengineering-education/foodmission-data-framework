@@ -125,7 +125,12 @@ export class FoodProductController {
         totalCountCapped: {
           type: 'boolean',
           description:
-            'true when there are at least 100 matches; totalCount and totalPages are then a lower bound',
+            'Same as hasMore: totalCount and totalPages are then a lower bound',
+        },
+        hasMore: {
+          type: 'boolean',
+          description:
+            'Another page exists. Matches are not counted; page while this is true',
         },
         page: { type: 'number' },
         pageSize: { type: 'number' },

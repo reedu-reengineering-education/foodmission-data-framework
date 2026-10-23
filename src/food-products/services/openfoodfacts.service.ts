@@ -116,9 +116,12 @@ export class OpenFoodFactsService {
    */
   async searchProducts(options: OpenFoodFactsSearchOptions): Promise<{
     products: ProductInfo[];
+    /** Lower bound when hasMore is true (local search doesn't count). */
     totalCount: number;
-    /** totalCount is a lower bound (local search counts at most 100). */
+    /** Same as hasMore: totalCount/totalPages are lower bounds. */
     totalCountCapped: boolean;
+    /** Another page exists. */
+    hasMore: boolean;
     page: number;
     pageSize: number;
     totalPages: number;
@@ -135,7 +138,7 @@ export class OpenFoodFactsService {
       throw this.localDatabaseFailure('search', error);
     }
 
-    const { items, totalCount, totalCountCapped, page, pageSize } = result;
+    const { items, hasMore, page, pageSize } = result;
     const products = items.map((doc) =>
       this.transformProduct({ ...doc, _id: doc.id }, lang),
     );
@@ -144,13 +147,17 @@ export class OpenFoodFactsService {
       `Found ${products.length} products in local OFF database`,
     );
 
+    // No total is counted; report what's known so page-based clients can
+    // keep paging one page at a time while hasMore is true.
+    const extra = hasMore ? 1 : 0;
     return {
       products,
-      totalCount,
-      totalCountCapped,
+      totalCount: (page - 1) * pageSize + products.length + extra,
+      totalCountCapped: hasMore,
+      hasMore,
       page,
       pageSize,
-      totalPages: Math.max(1, Math.ceil(totalCount / pageSize)),
+      totalPages: page + extra,
     };
   }
 
@@ -224,6 +231,7 @@ export class OpenFoodFactsService {
       totalCount: response.count,
       // OFF's API reports an exact count.
       totalCountCapped: false,
+      hasMore: response.page < response.page_count,
       page: response.page,
       pageSize: response.page_size,
       totalPages: response.page_count,

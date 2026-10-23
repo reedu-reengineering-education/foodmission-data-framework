@@ -14,12 +14,6 @@ export interface OffMealFacts {
 const MEAL_FACTS_TIMEOUT_MS = 2000;
 
 /**
- * Search counts stop here. An exact count of a common word ("milk") has to
- * load every match and was the usual cause of Mongo search timeouts.
- */
-export const MAX_COUNTED_RESULTS = 100;
-
-/**
  * Server-side limit for search queries. OpenFoodFactsService's own timeout
  * only stops waiting; this makes Mongo abort the query instead of letting it
  * keep running (and filling the cache) after the request has given up.
@@ -38,15 +32,29 @@ const SEARCH_MAX_TIME_DURATION = {
   nanos: (SEARCH_MAX_TIME_MS % 1000) * 1_000_000,
 };
 
+/** _keywords-prefixed indexes on the OFF copy, by search order. */
+const KEYWORD_INDEX_BY_SORT: Record<
+  NonNullable<OpenFoodFactsSearchOptions['sortBy']>,
+  string | undefined
+> = {
+  popularity: '_keywords_1_unique_scans_n_-1',
+  last_modified_t: '_keywords_1_last_modified_t_-1',
+  created_t: undefined,
+};
+
 export interface OffMongoSearchResult {
   items: OffProduct[];
-  /** Exact when `totalCountCapped` is false, otherwise a lower bound. */
-  totalCount: number;
-  /** At least MAX_COUNTED_RESULTS matches; the real total wasn't counted. */
-  totalCountCapped: boolean;
+  /** At least one more page exists (no total is counted). */
+  hasMore: boolean;
   page: number;
   pageSize: number;
 }
+
+/**
+ * How the search words are matched: `anchor` is the word the index scan is
+ * bounded on (the rarest one), `others` are checked on each fetched product.
+ */
+type KeywordMatch = { anchor: string; others: string[] };
 
 @Injectable()
 export class OffMongoProductRepository {
@@ -138,63 +146,104 @@ export class OffMongoProductRepository {
   // _keywords index (falls back to a full IXSCAN on _id / collection scan).
   // Raw commands send a plain filter document, which lets Mongo use the
   // existing _keywords_1_* indexes.
+  /**
+   * One page of matches, plus whether there is another page. There is no
+   * separate count query: we fetch pageSize + 1 and look at the extra item.
+   *
+   * Multi-word searches avoid Mongo's multi-planner: `$all: [a, b]` gives it
+   * one candidate plan per word, and when few products contain all words no
+   * candidate finishes its trial before maxTimeMS (seen in prod for
+   * "mercadona avena"). Instead the scan is bounded on the rarest word (cheap
+   * index-only counts pick it), the other words are checked via `$expr`, which
+   * the planner cannot turn into index bounds, and the index is hinted. That
+   * leaves exactly one plan.
+   */
   async search(
     options: OpenFoodFactsSearchOptions,
   ): Promise<OffMongoSearchResult> {
-    const filter = this.buildRawFilter(options);
     const page = options.page || 1;
     const pageSize = options.pageSize || 20;
-    const sort = this.buildRawSort(options.sortBy);
+    const sortBy = options.sortBy ?? 'popularity';
 
+    const keywords = await this.resolveKeywordMatch(options.query);
+    if (keywords === 'no-match') {
+      return { items: [], hasMore: false, page, pageSize };
+    }
+
+    const filter = this.buildRawFilter(options, keywords);
     const findOptions: Record<string, unknown> = {
       skip: (page - 1) * pageSize,
-      limit: pageSize,
-      sort,
+      limit: pageSize + 1,
+      sort: this.buildRawSort(sortBy),
       maxTimeMS: SEARCH_MAX_TIME_DURATION,
     };
+    const hint = keywords ? KEYWORD_INDEX_BY_SORT[sortBy] : undefined;
+    if (hint) {
+      findOptions.hint = hint;
+    }
 
-    const [rawItems, countResult] = await Promise.all([
-      this.prisma.offProduct.findRaw({
-        filter: filter as Prisma.InputJsonValue,
-        options: findOptions as Prisma.InputJsonValue,
-      }),
-      this.prisma.offProduct.aggregateRaw({
-        pipeline: [
-          { $match: filter },
-          { $limit: MAX_COUNTED_RESULTS },
-          { $count: 'count' },
-        ] as Prisma.InputJsonValue[],
-        options: { maxTimeMS: SEARCH_MAX_TIME_MS },
-      }),
-    ]);
+    const rawItems = (await this.prisma.offProduct.findRaw({
+      filter: filter as Prisma.InputJsonValue,
+      options: findOptions as Prisma.InputJsonValue,
+    })) as unknown as Record<string, unknown>[];
 
-    const items = (rawItems as unknown as Record<string, unknown>[]).map(
-      (doc) => ({ ...doc, id: doc._id }) as unknown as OffProduct,
+    const hasMore = rawItems.length > pageSize;
+    const items = rawItems
+      .slice(0, pageSize)
+      .map((doc) => ({ ...doc, id: doc._id }) as unknown as OffProduct);
+
+    return { items, hasMore, page, pageSize };
+  }
+
+  /**
+   * null: no search words. 'no-match': some word appears in no product, so
+   * nothing can match all words. Otherwise the rarest word anchors the scan.
+   */
+  private async resolveKeywordMatch(
+    query: string | undefined,
+  ): Promise<KeywordMatch | 'no-match' | null> {
+    const words = [
+      ...new Set(
+        (query ?? '')
+          .toLowerCase()
+          .split(/\s+/)
+          .filter((word) => word.length > 0),
+      ),
+    ];
+    if (words.length === 0) return null;
+    if (words.length === 1) return { anchor: words[0], others: [] };
+
+    const counts = await Promise.all(
+      words.map((word) => this.countKeyword(word)),
     );
+    if (counts.some((count) => count === 0)) return 'no-match';
 
-    const countRows = countResult as unknown as { count: number }[];
-    const counted = countRows[0]?.count ?? 0;
-    const totalCountCapped = counted >= MAX_COUNTED_RESULTS;
-    // Paging past the cap still works: the total is at least what was shown.
-    const totalCount = Math.max(counted, (page - 1) * pageSize + items.length);
+    const rarest = counts.indexOf(Math.min(...counts));
+    return {
+      anchor: words[rarest],
+      others: words.filter((_, index) => index !== rarest),
+    };
+  }
 
-    return { items, totalCount, totalCountCapped, page, pageSize };
+  /** Index-only count of products with this keyword (reads no documents). */
+  private async countKeyword(word: string): Promise<number> {
+    const result = (await this.prisma.$runCommandRaw({
+      count: 'products',
+      query: { _keywords: word },
+      hint: KEYWORD_INDEX_BY_SORT.popularity,
+      maxTimeMS: SEARCH_MAX_TIME_MS,
+    })) as { n?: number | { $numberLong: string } };
+    const n = result.n;
+    return typeof n === 'object' && n !== null
+      ? Number(n.$numberLong)
+      : (n ?? 0);
   }
 
   private buildRawFilter(
     options: OpenFoodFactsSearchOptions,
+    keywords: KeywordMatch | null,
   ): Record<string, unknown> {
     const and: Record<string, unknown>[] = [];
-
-    if (options.query) {
-      const words = options.query
-        .toLowerCase()
-        .split(/\s+/)
-        .filter((word) => word.length > 0);
-      if (words.length > 0) {
-        and.push({ _keywords: { $all: words } });
-      }
-    }
 
     if (options.categories && options.categories.length > 0) {
       and.push({ categories_tags: { $in: options.categories } });
@@ -211,6 +260,12 @@ export class OffMongoProductRepository {
     const filter: Record<string, unknown> = {
       product_name: { $exists: true, $nin: [null, ''] },
     };
+    if (keywords) {
+      filter._keywords = keywords.anchor;
+      if (keywords.others.length > 0) {
+        filter.$expr = { $setIsSubset: [keywords.others, '$_keywords'] };
+      }
+    }
     if (and.length > 0) {
       filter.$and = and;
     }

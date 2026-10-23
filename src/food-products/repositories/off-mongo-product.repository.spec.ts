@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
 import {
-  MAX_COUNTED_RESULTS,
   OffMongoProductRepository,
   SEARCH_MAX_TIME_MS,
 } from './off-mongo-product.repository';
@@ -86,10 +85,11 @@ describe('OffMongoProductRepository.findMealFactsByBarcodes', () => {
 
 describe('OffMongoProductRepository.search', () => {
   const findRaw = jest.fn();
-  const aggregateRaw = jest.fn();
+  const runCommandRaw = jest.fn();
   const repository = new OffMongoProductRepository({
     isConfigured: true,
-    offProduct: { findRaw, aggregateRaw },
+    offProduct: { findRaw },
+    $runCommandRaw: runCommandRaw,
   } as unknown as OffMongoPrismaService);
 
   const docs = (n: number) =>
@@ -97,108 +97,136 @@ describe('OffMongoProductRepository.search', () => {
       _id: String(i),
       product_name: `P${i}`,
     }));
+  const findArgs = () => findRaw.mock.calls[0][0];
+  /** Index-only keyword counts, by word. */
+  const keywordCounts = (counts: Record<string, number>) =>
+    runCommandRaw.mockImplementation((cmd: { query: { _keywords: string } }) =>
+      Promise.resolve({ n: counts[cmd.query._keywords] ?? 0, ok: 1 }),
+    );
 
-  afterEach(() => jest.clearAllMocks());
+  beforeEach(() => findRaw.mockResolvedValue([]));
+  afterEach(() => jest.resetAllMocks());
 
-  it(`stops counting after ${MAX_COUNTED_RESULTS} matches`, async () => {
-    findRaw.mockResolvedValue([]);
-    aggregateRaw.mockResolvedValue([]);
+  it('fetches one extra item instead of counting', async () => {
+    await repository.search({ query: 'milk', page: 3, pageSize: 20 });
 
-    await repository.search({ query: 'milk' });
-
-    const pipeline = aggregateRaw.mock.calls[0][0].pipeline;
-    expect(pipeline.map((stage: object) => Object.keys(stage)[0])).toEqual([
-      '$match',
-      '$limit',
-      '$count',
-    ]);
-    expect(pipeline[1]).toEqual({ $limit: MAX_COUNTED_RESULTS });
+    expect(findArgs().options).toMatchObject({ skip: 40, limit: 21 });
+    expect(runCommandRaw).not.toHaveBeenCalled();
   });
 
-  it('reports an exact count below the cap', async () => {
-    findRaw.mockResolvedValue(docs(3));
-    aggregateRaw.mockResolvedValue([{ count: 3 }]);
-
-    const result = await repository.search({ query: 'milk' });
-
-    expect(result).toMatchObject({ totalCount: 3, totalCountCapped: false });
-  });
-
-  it('flags the count as capped at the limit', async () => {
-    findRaw.mockResolvedValue(docs(20));
-    aggregateRaw.mockResolvedValue([{ count: MAX_COUNTED_RESULTS }]);
+  it('reports hasMore and drops the extra item', async () => {
+    findRaw.mockResolvedValue(docs(21));
 
     const result = await repository.search({ query: 'milk', pageSize: 20 });
 
-    expect(result).toMatchObject({
-      totalCount: MAX_COUNTED_RESULTS,
-      totalCountCapped: true,
-    });
+    expect(result.items).toHaveLength(20);
+    expect(result.hasMore).toBe(true);
   });
 
-  it('keeps the total ahead of the current page when paging past the cap', async () => {
-    findRaw.mockResolvedValue(docs(20));
-    aggregateRaw.mockResolvedValue([{ count: MAX_COUNTED_RESULTS }]);
+  it('reports no more pages when the page is not full', async () => {
+    findRaw.mockResolvedValue(docs(3));
 
-    const result = await repository.search({
-      query: 'milk',
-      page: 6,
+    const result = await repository.search({ query: 'milk', pageSize: 20 });
+
+    expect(result).toMatchObject({ hasMore: false, page: 1, pageSize: 20 });
+    expect(result.items).toHaveLength(3);
+  });
+
+  it('hints the keyword index and filters on a single word directly', async () => {
+    await repository.search({ query: 'Milk' });
+
+    expect(findArgs().filter._keywords).toBe('milk');
+    expect(findArgs().filter.$expr).toBeUndefined();
+    expect(findArgs().options.hint).toBe('_keywords_1_unique_scans_n_-1');
+  });
+
+  it('anchors multi-word searches on the rarest word and checks the rest via $expr', async () => {
+    keywordCounts({ mercadona: 900, avena: 4000, bebida: 20000 });
+
+    await repository.search({ query: 'avena mercadona bebida' });
+
+    expect(findArgs().filter._keywords).toBe('mercadona');
+    expect(findArgs().filter.$expr).toEqual({
+      $setIsSubset: [['avena', 'bebida'], '$_keywords'],
+    });
+    expect(findArgs().options.hint).toBe('_keywords_1_unique_scans_n_-1');
+    expect(runCommandRaw).toHaveBeenCalledWith(
+      expect.objectContaining({
+        count: 'products',
+        query: { _keywords: 'avena' },
+        hint: '_keywords_1_unique_scans_n_-1',
+        maxTimeMS: SEARCH_MAX_TIME_MS,
+      }),
+    );
+  });
+
+  it('returns nothing without querying products when a word matches no product', async () => {
+    keywordCounts({ avena: 4000, zzzz: 0 });
+
+    const result = await repository.search({ query: 'avena zzzz' });
+
+    expect(result).toEqual({
+      items: [],
+      hasMore: false,
+      page: 1,
       pageSize: 20,
     });
-
-    expect(findRaw.mock.calls[0][0].options).toMatchObject({
-      skip: 100,
-      limit: 20,
-    });
-    expect(result.totalCount).toBe(120);
-    expect(result.totalCountCapped).toBe(true);
+    expect(findRaw).not.toHaveBeenCalled();
   });
 
-  it('sorts by popularity by default, using the keywords/popularity index order', async () => {
-    findRaw.mockResolvedValue([]);
-    aggregateRaw.mockResolvedValue([]);
+  it('reads 64-bit counts', async () => {
+    runCommandRaw.mockImplementation((cmd: { query: { _keywords: string } }) =>
+      Promise.resolve({
+        n: cmd.query._keywords === 'a' ? { $numberLong: '5' } : 9,
+      }),
+    );
 
+    await repository.search({ query: 'a b' });
+
+    expect(findArgs().filter._keywords).toBe('a');
+  });
+
+  it('ignores repeated words', async () => {
+    await repository.search({ query: 'milk  milk' });
+
+    expect(findArgs().filter._keywords).toBe('milk');
+    expect(runCommandRaw).not.toHaveBeenCalled();
+  });
+
+  it('does not hint a keyword index when there are no search words', async () => {
+    await repository.search({ categories: ['en:breads'] });
+
+    expect(findArgs().filter._keywords).toBeUndefined();
+    expect(findArgs().options.hint).toBeUndefined();
+  });
+
+  it('hints the matching keyword index for each sort', async () => {
+    await repository.search({ query: 'milk', sortBy: 'last_modified_t' });
+    expect(findArgs().options).toMatchObject({
+      sort: { last_modified_t: -1 },
+      hint: '_keywords_1_last_modified_t_-1',
+    });
+
+    findRaw.mockClear();
+    await repository.search({ query: 'milk', sortBy: 'created_t' });
+    expect(findArgs().options.sort).toEqual({ created_t: -1 });
+    expect(findArgs().options.hint).toBeUndefined();
+  });
+
+  it('sorts by popularity by default', async () => {
     await repository.search({ query: 'milk' });
 
-    expect(findRaw.mock.calls[0][0].options.sort).toEqual({
-      unique_scans_n: -1,
-    });
+    expect(findArgs().options.sort).toEqual({ unique_scans_n: -1 });
   });
 
-  it.each([
-    ['popularity', { unique_scans_n: -1 }],
-    ['last_modified_t', { last_modified_t: -1 }],
-    ['created_t', { created_t: -1 }],
-  ] as const)('maps sortBy %s to an indexed sort', async (sortBy, expected) => {
-    findRaw.mockResolvedValue([]);
-    aggregateRaw.mockResolvedValue([]);
-
-    await repository.search({ query: 'milk', sortBy });
-
-    expect(findRaw.mock.calls[0][0].options.sort).toEqual(expected);
-  });
-
-  it('lets Mongo abort slow find and count queries', async () => {
-    findRaw.mockResolvedValue([]);
-    aggregateRaw.mockResolvedValue([]);
-
+  it('lets Mongo abort slow queries', async () => {
     await repository.search({ query: 'milk' });
 
     expect(SEARCH_MAX_TIME_MS).toBe(4500);
     // findRaw needs a Duration shape (see SEARCH_MAX_TIME_DURATION).
-    expect(findRaw.mock.calls[0][0].options.maxTimeMS).toEqual({
+    expect(findArgs().options.maxTimeMS).toEqual({
       secs: 4,
       nanos: 500_000_000,
     });
-    expect(aggregateRaw.mock.calls[0][0].options).toEqual({ maxTimeMS: 4500 });
-  });
-
-  it('returns zero when nothing matches', async () => {
-    findRaw.mockResolvedValue([]);
-    aggregateRaw.mockResolvedValue([]);
-
-    const result = await repository.search({ query: 'zzz' });
-
-    expect(result).toMatchObject({ totalCount: 0, totalCountCapped: false });
   });
 });

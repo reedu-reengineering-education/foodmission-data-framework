@@ -283,6 +283,7 @@ describe('OpenFoodFactsService', () => {
       expect(result.products).toHaveLength(1);
       expect(result.totalCount).toBe(100);
       expect(result.totalCountCapped).toBe(false);
+      expect(result.hasMore).toBe(true);
       expect(result.page).toBe(1);
       expect(result.pageSize).toBe(20);
       expect(result.totalPages).toBe(5);
@@ -446,8 +447,7 @@ describe('OpenFoodFactsService', () => {
       mockOffMongoRepository.isAvailable = true;
       mockOffMongoRepository.search.mockResolvedValueOnce({
         items: [localDoc()],
-        totalCount: 1,
-        totalCountCapped: false,
+        hasMore: false,
         page: 1,
         pageSize: 5,
       });
@@ -622,8 +622,7 @@ describe('OpenFoodFactsService', () => {
             brands: 'Ferrero',
           },
         ],
-        totalCount: 1,
-        totalCountCapped: false,
+        hasMore: false,
         page: 1,
         pageSize: 20,
       });
@@ -631,26 +630,55 @@ describe('OpenFoodFactsService', () => {
       const result = await service.searchProducts({ query: 'nutella' });
 
       expect(result.products).toHaveLength(1);
-      expect(result.totalCount).toBe(1);
-      expect(result.totalCountCapped).toBe(false);
+      expect(result).toMatchObject({
+        totalCount: 1,
+        totalCountCapped: false,
+        hasMore: false,
+        totalPages: 1,
+      });
       expect(httpService.get).not.toHaveBeenCalled();
     });
 
-    it('passes a capped local count through', async () => {
+    it('reports lower-bound totals while more pages exist', async () => {
       mockOffMongoRepository.isAvailable = true;
       mockOffMongoRepository.search.mockResolvedValueOnce({
-        items: [{ id: '1', product_name: 'Milk' }],
-        totalCount: 100,
-        totalCountCapped: true,
-        page: 1,
+        items: Array.from({ length: 20 }, (_, i) => ({
+          id: String(i),
+          product_name: `Milk ${i}`,
+        })),
+        hasMore: true,
+        page: 3,
         pageSize: 20,
       });
 
-      const result = await service.searchProducts({ query: 'milk' });
+      const result = await service.searchProducts({ query: 'milk', page: 3 });
 
-      expect(result.totalCount).toBe(100);
-      expect(result.totalCountCapped).toBe(true);
-      expect(result.totalPages).toBe(5);
+      expect(result).toMatchObject({
+        totalCount: 61, // 40 before this page + 20 shown + at least 1 more
+        totalCountCapped: true,
+        hasMore: true,
+        page: 3,
+        totalPages: 4,
+      });
+    });
+
+    it('reports the exact total on the last page', async () => {
+      mockOffMongoRepository.isAvailable = true;
+      mockOffMongoRepository.search.mockResolvedValueOnce({
+        items: [{ id: '1', product_name: 'Milk' }],
+        hasMore: false,
+        page: 3,
+        pageSize: 20,
+      });
+
+      const result = await service.searchProducts({ query: 'milk', page: 3 });
+
+      expect(result).toMatchObject({
+        totalCount: 41,
+        totalCountCapped: false,
+        hasMore: false,
+        totalPages: 3,
+      });
     });
 
     it('returns 503, without calling the HTTP API, when the local search errors', async () => {
