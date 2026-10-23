@@ -139,6 +139,7 @@ export class GenericFoodRepository {
                g."foodName",
                g.synonym,
                g."foodGroup",
+               g."foodex2Codes",
                '{}'::text[] AS "translatedNames",
                (search_normalize(g."foodName") LIKE ${pattern}
                  OR COALESCE(search_normalize(g.synonym) LIKE ${pattern}, false)) AS "substringMatch",
@@ -159,6 +160,7 @@ export class GenericFoodRepository {
              g."foodName",
              g.synonym,
              g."foodGroup",
+             g."foodex2Codes",
              ARRAY_REMOVE(ARRAY_AGG(t.value), NULL) AS "translatedNames",
              BOOL_OR(
                search_normalize(g."foodName") LIKE ${pattern}
