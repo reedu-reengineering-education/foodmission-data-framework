@@ -5,6 +5,7 @@ import {
   Recipe,
   RecipeOrigin,
   RecipeRating,
+  Unit,
 } from '@prisma/client';
 import { RecipeWithIngredients } from '../interfaces/recommendation-score.interface';
 import {
@@ -14,6 +15,7 @@ import {
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
+import { parseQuantityUnit } from '../../common/utils/measure-parser';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
@@ -23,6 +25,8 @@ import {
 export interface CreateRecipeIngredientData {
   name: string;
   measure?: string;
+  quantity?: number;
+  unit?: Unit;
   order?: number;
   foodProductId?: string;
   genericFoodId?: string;
@@ -67,6 +71,26 @@ export interface UpdateRecipeData extends Partial<
   rating?: number;
   ratingCount?: number;
   ingredients?: CreateRecipeIngredientData[];
+}
+
+function toIngredientCreateInput(
+  ing: CreateRecipeIngredientData,
+  index: number,
+): Prisma.RecipeIngredientUncheckedCreateWithoutRecipeInput {
+  const parsed =
+    ing.quantity === undefined && ing.unit === undefined && ing.measure
+      ? parseQuantityUnit(ing.measure, ing.name)
+      : null;
+  return {
+    name: ing.name,
+    measure: ing.measure ?? null,
+    quantity: parsed?.quantity ?? ing.quantity ?? null,
+    unit: parsed?.unit ?? ing.unit ?? null,
+    order: ing.order ?? index,
+    itemType: ing.foodProductId ? 'food_product' : 'generic_food',
+    foodProductId: ing.foodProductId ?? null,
+    genericFoodId: ing.genericFoodId ?? null,
+  };
 }
 
 @Injectable()
@@ -142,14 +166,7 @@ export class RecipesRepository implements BaseRepository<
         ...recipeData,
         ingredients: ingredients?.length
           ? {
-              create: ingredients.map((ing, index) => ({
-                name: ing.name,
-                measure: ing.measure ?? null,
-                order: ing.order ?? index,
-                itemType: ing.foodProductId ? 'food_product' : 'generic_food',
-                foodProductId: ing.foodProductId ?? null,
-                genericFoodId: ing.genericFoodId ?? null,
-              })),
+              create: ingredients.map(toIngredientCreateInput),
             }
           : undefined,
       },
@@ -173,16 +190,7 @@ export class RecipesRepository implements BaseRepository<
             ...recipeData,
             ingredients: ingredients?.length
               ? {
-                  create: ingredients.map((ing, index) => ({
-                    name: ing.name,
-                    measure: ing.measure ?? null,
-                    order: ing.order ?? index,
-                    itemType: ing.foodProductId
-                      ? 'food_product'
-                      : 'generic_food',
-                    foodProductId: ing.foodProductId ?? null,
-                    genericFoodId: ing.genericFoodId ?? null,
-                  })),
+                  create: ingredients.map(toIngredientCreateInput),
                 }
               : undefined,
           },

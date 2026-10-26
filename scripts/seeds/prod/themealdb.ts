@@ -1,6 +1,7 @@
 import { Allergens, Prisma, PrismaClient, RecipeOrigin } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
+import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
@@ -286,6 +287,9 @@ export async function seedRecipes(
               recipeId: createdRecipe.id,
               name: ing.name,
               measure: ing.measure?.trim() ?? null,
+              ...(ing.measure
+                ? parseQuantityUnit(ing.measure, ing.name)
+                : null),
               order: ing.order,
               itemType: 'generic_food',
               genericFoodId: ing.genericFoodId ?? null,

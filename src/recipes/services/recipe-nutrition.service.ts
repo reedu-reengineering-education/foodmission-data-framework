@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { parseMeasure } from '../../common/utils/measure-parser';
+import {
+  parseMeasure,
+  quantityToGrams,
+} from '../../common/utils/measure-parser';
 import { NutritionalInfo } from '../interfaces/nutrition.interface';
 
 /**
@@ -146,10 +149,15 @@ export class RecipeNutritionService {
       }
 
       // Parse measure to grams
-      const parsed = parseMeasure(
-        ingredient.measure || '100g',
-        ingredient.name,
-      );
+      const parsed =
+        !ingredient.measure &&
+        ingredient.quantity != null &&
+        ingredient.unit != null
+          ? quantityToGrams(
+              { quantity: ingredient.quantity, unit: ingredient.unit },
+              ingredient.name,
+            )
+          : parseMeasure(ingredient.measure || '100g', ingredient.name);
 
       // Skip if unparseable (unknown confidence = qualitative like "to taste")
       if (parsed.confidence === 'unknown') {
