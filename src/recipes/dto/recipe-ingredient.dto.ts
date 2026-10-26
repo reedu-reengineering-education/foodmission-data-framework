@@ -49,7 +49,8 @@ export class CreateRecipeIngredientDto {
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Measurement/amount',
+    description:
+      'Free-text amount as written in the recipe, kept for display. Parsed into quantity/unit when those are omitted',
     example: '500g',
   })
   @IsString()
@@ -119,7 +120,8 @@ export class UpdateRecipeIngredientDto {
   name?: string;
 
   @ApiPropertyOptional({
-    description: 'Measurement/amount',
+    description:
+      'Free-text amount as written in the recipe, kept for display. Parsed into quantity/unit when those are omitted',
     example: '600g',
   })
   @IsString()
@@ -189,18 +191,28 @@ export class RecipeIngredientResponseDto {
   @Expose()
   name: string;
 
-  @ApiPropertyOptional({ description: 'Measurement/amount' })
+  @ApiPropertyOptional({
+    description: 'Free-text amount as written in the recipe',
+    example: '2 tbsp',
+  })
   @Expose()
   measure?: string;
 
-  @ApiPropertyOptional({ description: 'Amount in unit', nullable: true })
+  @ApiPropertyOptional({
+    description: 'Amount in unit; null when measure could not be parsed',
+    type: Number,
+    nullable: true,
+    example: 30,
+  })
   @Expose()
   quantity?: number | null;
 
   @ApiPropertyOptional({
-    description: 'Catalog unit',
+    description:
+      'Catalog unit (see /catalog/units); null when measure could not be parsed',
     enum: Unit,
     nullable: true,
+    example: Unit.ML,
   })
   @Expose()
   unit?: Unit | null;
