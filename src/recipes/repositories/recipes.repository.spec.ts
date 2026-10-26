@@ -193,6 +193,8 @@ describe('RecipesRepository', () => {
               {
                 name: 'Chicken',
                 measure: '500g',
+                quantity: 500,
+                unit: 'G',
                 order: 0,
                 itemType: 'generic_food',
                 foodProductId: null,
@@ -201,6 +203,8 @@ describe('RecipesRepository', () => {
               {
                 name: 'Salt',
                 measure: '1 tsp',
+                quantity: 6,
+                unit: 'G',
                 order: 1,
                 itemType: 'generic_food',
                 foodProductId: null,
@@ -245,6 +249,31 @@ describe('RecipesRepository', () => {
                 foodProductId: 'food-1',
                 genericFoodId: null,
               }),
+            ],
+          },
+        }),
+        include: expect.any(Object),
+      });
+    });
+
+    it('should keep explicit quantity and unit instead of parsing measure', async () => {
+      mockPrismaService.recipe.create.mockResolvedValueOnce(mockRecipe);
+
+      await repository.create({
+        userId: 'user-1',
+        title: 'Test Recipe',
+        ingredients: [
+          { name: 'Flour', measure: '2 tbsp', quantity: 20, unit: 'G' },
+          { name: 'Salt', measure: 'to taste' },
+        ],
+      });
+
+      expect(mockPrismaService.recipe.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          ingredients: {
+            create: [
+              expect.objectContaining({ quantity: 20, unit: 'G' }),
+              expect.objectContaining({ quantity: null, unit: null }),
             ],
           },
         }),
@@ -332,6 +361,8 @@ describe('RecipesRepository', () => {
               {
                 name: 'New Ingredient',
                 measure: '200g',
+                quantity: 200,
+                unit: 'G',
                 order: 0,
                 itemType: 'generic_food',
                 foodProductId: null,

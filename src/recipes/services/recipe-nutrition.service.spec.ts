@@ -138,6 +138,29 @@ describe('RecipeNutritionService', () => {
       expect(result.confidence).toBeGreaterThan(0.6); // medium confidence for volume
     });
 
+    it('should use quantity and unit when measure is missing', async () => {
+      mockPrismaService.recipe.findUnique.mockResolvedValue({
+        id: 'recipe-1',
+        servings: null,
+        ingredients: [
+          {
+            name: 'Chicken',
+            measure: null,
+            quantity: 250,
+            unit: 'G',
+            foodProduct: null,
+            genericFood: { id: 'fc-1', energyKcal: 120, proteins: 22 },
+          },
+        ],
+      });
+
+      const result = await service.calculateNutrition('recipe-1');
+
+      expect(result.energyKcal).toBe(300);
+      expect(result.proteins).toBe(55);
+      expect(result.confidence).toBe(1);
+    });
+
     it('should handle multiple ingredients', async () => {
       mockPrismaService.recipe.findUnique.mockResolvedValue({
         id: 'recipe-1',
