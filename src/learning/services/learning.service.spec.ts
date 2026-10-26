@@ -19,7 +19,7 @@ describe('LearningService', () => {
       findUnique: jest.Mock;
     };
     foodFact: { findMany: jest.Mock; count: jest.Mock; findFirst: jest.Mock };
-    foodFactProgress: { findMany: jest.Mock };
+    foodFactProgress: { findMany: jest.Mock; count: jest.Mock };
     quiz: { findFirst: jest.Mock; findMany: jest.Mock; count: jest.Mock };
     quizProgress: {
       upsert: jest.Mock;
@@ -78,7 +78,7 @@ describe('LearningService', () => {
         count: jest.fn(),
         findFirst: jest.fn(),
       },
-      foodFactProgress: { findMany: jest.fn() },
+      foodFactProgress: { findMany: jest.fn(), count: jest.fn() },
       quiz: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
@@ -224,6 +224,52 @@ describe('LearningService', () => {
       totalPages: 1,
       hasNext: false,
       hasPrevious: false,
+    });
+  });
+
+  describe('listAllFoodFactProgressPaginated', () => {
+    it('pages progress rows of all users ordered by user and food fact', async () => {
+      const readAt = new Date('2026-01-01T00:00:00.000Z');
+      prisma.foodFactProgress.findMany.mockResolvedValue([
+        {
+          id: 'p1',
+          userId: 'u1',
+          foodFactId: 'ff1',
+          readAt,
+          foodFact: { code: 'FF.B1.1' },
+        },
+      ]);
+      prisma.foodFactProgress.count.mockResolvedValue(11);
+
+      const result = await service.listAllFoodFactProgressPaginated({
+        page: 2,
+        limit: 10,
+      });
+
+      expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+      expect(prisma.foodFactProgress.findMany).toHaveBeenCalledWith({
+        skip: 10,
+        take: 10,
+        include: { foodFact: { select: { code: true } } },
+        orderBy: [{ userId: 'asc' }, { foodFactId: 'asc' }],
+      });
+      expect(result.data).toEqual([
+        {
+          id: 'p1',
+          userId: 'u1',
+          foodFactId: 'ff1',
+          foodFactCode: 'FF.B1.1',
+          readAt,
+        },
+      ]);
+      expect(result.meta).toMatchObject({
+        page: 2,
+        limit: 10,
+        total: 11,
+        totalPages: 2,
+        hasNext: false,
+        hasPrevious: true,
+      });
     });
   });
 

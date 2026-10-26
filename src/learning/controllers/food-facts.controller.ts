@@ -11,6 +11,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { DataBaseAuthGuard } from '../../common/guards/database-auth.guards';
 import { ApiCrudErrorResponses } from '../../common/decorators/api-error-responses.decorator';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { LearningService } from '../services/learning.service';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
@@ -40,6 +41,21 @@ export class FoodFactsController {
     @Query() query: LearningPaginatedQueryDto,
   ): Promise<PaginatedResponseDto<FoodFactResponseDto>> {
     return this.learningService.listFoodFacts(query);
+  }
+
+  @Get('progress/all')
+  @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'List all food fact progress rows (paginated)',
+    description: 'Returns paginated food fact reads for all users.',
+  })
+  @ApiResponse({ status: 200, description: 'Paginated food fact progress' })
+  @ApiCrudErrorResponses()
+  async listAllProgressPaginated(
+    @Query() query: PaginationQueryDto,
+  ): Promise<PaginatedResponseDto<FoodFactProgressResponseDto>> {
+    return this.learningService.listAllFoodFactProgressPaginated(query);
   }
 
   @Get('me')

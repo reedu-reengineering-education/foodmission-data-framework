@@ -15,6 +15,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { LearningTranslationHelper } from './learning-translation.helper';
 import { codeOrIdWhere } from '../utils/code-or-id';
 import { toPaginatedResponseDto } from '../utils/paginated';
@@ -288,6 +289,31 @@ export class LearningService {
       completed: readAtByCode.has(f.code),
       readAt: readAtByCode.get(f.code) ?? null,
     }));
+  }
+
+  async listAllFoodFactProgressPaginated(
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResponseDto<FoodFactProgressResponseDto>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const { skip, take } = pageLimitToSkipTake({ page, limit });
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.foodFactProgress.findMany({
+        skip,
+        take,
+        include: { foodFact: { select: { code: true } } },
+        orderBy: [{ userId: 'asc' }, { foodFactId: 'asc' }],
+      }),
+      this.prisma.foodFactProgress.count(),
+    ]);
+    const data = rows.map((row) => ({
+      id: row.id,
+      userId: row.userId,
+      foodFactId: row.foodFactId,
+      foodFactCode: row.foodFact.code,
+      readAt: row.readAt,
+    }));
+    return toPaginatedResponseDto(data, total, page, limit);
   }
 
   async markFoodFactRead(
