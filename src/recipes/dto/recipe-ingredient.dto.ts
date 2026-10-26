@@ -1,5 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Unit } from '@prisma/client';
 import {
+  IsEnum,
+  IsNumber,
   IsString,
   IsNotEmpty,
   IsInt,
@@ -54,6 +57,26 @@ export class CreateRecipeIngredientDto {
   measure?: string;
 
   @ApiPropertyOptional({
+    description:
+      'Amount in the given unit. Derived from measure when quantity and unit are omitted',
+    example: 500,
+    minimum: 0,
+  })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  quantity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Catalog unit (see /catalog/units)',
+    enum: Unit,
+    example: Unit.G,
+  })
+  @IsEnum(Unit)
+  @IsOptional()
+  unit?: Unit;
+
+  @ApiPropertyOptional({
     description: 'Order in the recipe',
     example: 1,
     minimum: 0,
@@ -104,6 +127,26 @@ export class UpdateRecipeIngredientDto {
   measure?: string;
 
   @ApiPropertyOptional({
+    description:
+      'Amount in the given unit. Derived from measure when quantity and unit are omitted',
+    example: 600,
+    minimum: 0,
+  })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  quantity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Catalog unit (see /catalog/units)',
+    enum: Unit,
+    example: Unit.G,
+  })
+  @IsEnum(Unit)
+  @IsOptional()
+  unit?: Unit;
+
+  @ApiPropertyOptional({
     description: 'Order in the recipe',
     example: 2,
     minimum: 0,
@@ -149,6 +192,18 @@ export class RecipeIngredientResponseDto {
   @ApiPropertyOptional({ description: 'Measurement/amount' })
   @Expose()
   measure?: string;
+
+  @ApiPropertyOptional({ description: 'Amount in unit', nullable: true })
+  @Expose()
+  quantity?: number | null;
+
+  @ApiPropertyOptional({
+    description: 'Catalog unit',
+    enum: Unit,
+    nullable: true,
+  })
+  @Expose()
+  unit?: Unit | null;
 
   @ApiProperty({ description: 'Order in recipe' })
   @Expose()
