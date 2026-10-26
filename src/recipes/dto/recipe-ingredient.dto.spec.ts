@@ -30,6 +30,15 @@ describe('RecipeIngredient DTOs', () => {
       expect(errors.length).toBe(0);
     });
 
+    it('should fail validation when measure is too long', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'Salt',
+        measure: 'x'.repeat(101),
+      });
+      const errors = await validate(dto);
+      expect(errors.some((e) => e.property === 'measure')).toBe(true);
+    });
+
     it('should fail validation when name is missing', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         measure: '500g',
