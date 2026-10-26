@@ -315,6 +315,20 @@ describe('LearningService', () => {
       });
     });
 
+    it('skips the progress query when the page is empty', async () => {
+      prisma.foodFact.findMany.mockResolvedValue([]);
+      prisma.foodFact.count.mockResolvedValue(0);
+
+      const result = await service.listFoodFactsForUser('u1', {
+        page: 1,
+        limit: 10,
+        completed: true,
+      });
+
+      expect(result.data).toEqual([]);
+      expect(prisma.foodFactProgress.findMany).not.toHaveBeenCalled();
+    });
+
     it('returns a single completed fact with readAt', async () => {
       prisma.foodFact.findFirst.mockResolvedValue(fact('ff1', 'FF.B1.1'));
       prisma.foodFactProgress.findMany.mockResolvedValue([

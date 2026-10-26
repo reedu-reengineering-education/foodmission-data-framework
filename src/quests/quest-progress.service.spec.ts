@@ -196,7 +196,7 @@ describe('QuestProgressService', () => {
       // No `completed`/`isCorrect` predicate — FoodFactProgress has neither.
       expect(prisma.foodFactProgress.findMany).toHaveBeenCalledWith({
         where: { userId: 'u1', foodFact: { code: { in: ['FF.1'] } } },
-        select: { readAt: true, foodFact: { select: { code: true } } },
+        select: { foodFact: { select: { code: true } } },
       });
       expect(outcome.progress).toBe(100);
     });

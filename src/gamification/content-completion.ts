@@ -61,16 +61,11 @@ export async function findFinishedItemKeys(
   return finished;
 }
 
-export async function findFoodFactReads(
-  db: Db,
+export function foodFactReadsWhere(
   userId: string,
   codes: string[],
-): Promise<Map<string, Date>> {
-  const rows = await db.foodFactProgress.findMany({
-    where: { userId, foodFact: { code: { in: codes } } },
-    select: { readAt: true, foodFact: { select: { code: true } } },
-  });
-  return new Map(rows.map((row) => [row.foodFact.code, row.readAt]));
+): Prisma.FoodFactProgressWhereInput {
+  return { userId, foodFact: { code: { in: codes } } };
 }
 
 async function findFinishedCodes(
@@ -107,8 +102,13 @@ async function findFinishedCodes(
       });
       return rows.map((row) => row.quiz.code);
     }
-    case QuestContentType.FOOD_FACT:
-      return [...(await findFoodFactReads(db, userId, codes)).keys()];
+    case QuestContentType.FOOD_FACT: {
+      const rows = await db.foodFactProgress.findMany({
+        where: foodFactReadsWhere(userId, codes),
+        select: { foodFact: { select: { code: true } } },
+      });
+      return rows.map((row) => row.foodFact.code);
+    }
     default:
       return [];
   }
@@ -212,9 +212,12 @@ export async function findItemStatuses(
           }));
           break;
         case QuestContentType.FOOD_FACT:
-          rows = [...(await findFoodFactReads(db, userId, codes)).keys()].map(
-            (code) => ({ code, ...COMPLETED }),
-          );
+          rows = (
+            await db.foodFactProgress.findMany({
+              where: foodFactReadsWhere(userId, codes),
+              select: { foodFact: { select: { code: true } } },
+            })
+          ).map((row) => ({ code: row.foodFact.code, ...COMPLETED }));
           break;
       }
       for (const { code, ...rest } of rows) {

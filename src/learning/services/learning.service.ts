@@ -57,7 +57,7 @@ import {
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
-import { findFoodFactReads } from '../../gamification/content-completion';
+import { foodFactReadsWhere } from '../../gamification/content-completion';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -270,10 +270,17 @@ export class LearningService {
     userId: string,
     facts: FoodFactResponseDto[],
   ): Promise<UserFoodFactResponseDto[]> {
-    const readAtByCode = await findFoodFactReads(
-      this.prisma,
-      userId,
-      facts.map((f) => f.code),
+    if (facts.length === 0) return [];
+
+    const reads = await this.prisma.foodFactProgress.findMany({
+      where: foodFactReadsWhere(
+        userId,
+        facts.map((f) => f.code),
+      ),
+      select: { readAt: true, foodFact: { select: { code: true } } },
+    });
+    const readAtByCode = new Map(
+      reads.map((read) => [read.foodFact.code, read.readAt]),
     );
 
     return facts.map((f) => ({
