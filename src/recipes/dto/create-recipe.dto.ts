@@ -164,7 +164,7 @@ export class CreateRecipeDto {
     description: 'Recipe ingredients',
     type: [CreateRecipeIngredientDto],
     example: [
-      { name: 'Chicken Breast', measure: '500g', order: 1 },
+      { name: 'Chicken Breast', quantity: 500, unit: 'G', order: 1 },
       {
         name: 'Olive Oil',
         measure: '2 tbsp',
