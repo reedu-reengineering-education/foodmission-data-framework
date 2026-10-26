@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsString,
   IsNotEmpty,
+  MaxLength,
   IsInt,
   IsOptional,
   IsUUID,
@@ -16,6 +17,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { MAX_MEASURE_LENGTH } from '../../common/utils/measure-parser';
 
 /**
  * Validator: ensures 0 or 1 of foodProductId/genericFoodId is provided (not both)
@@ -54,6 +56,7 @@ export class CreateRecipeIngredientDto {
     example: '500g',
   })
   @IsString()
+  @MaxLength(MAX_MEASURE_LENGTH)
   @IsOptional()
   measure?: string;
 
@@ -125,6 +128,7 @@ export class UpdateRecipeIngredientDto {
     example: '600g',
   })
   @IsString()
+  @MaxLength(MAX_MEASURE_LENGTH)
   @IsOptional()
   measure?: string;
 
