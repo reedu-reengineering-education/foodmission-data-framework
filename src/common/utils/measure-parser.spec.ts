@@ -5,6 +5,7 @@ import {
   parseQuantityUnit,
   lookupVolumeIngredient,
   quantityToGrams,
+  MAX_MEASURE_LENGTH,
 } from './measure-parser';
 
 describe('parseMeasure', () => {
@@ -343,6 +344,45 @@ describe('parseMeasure', () => {
       expect(result.grams).toBe(1000);
       expect(result.confidence).toBe('medium');
     });
+
+    it.each([
+      ['½ cup', 75],
+      ['1 ½ tsp', 7.5],
+      ['1½ kg', 1500],
+      ['1 1/2 L', 1500],
+      ['1/2 kg chopped', 500],
+      ['2.5 tbsp', 37.5],
+      ['1-2tbsp', 22.5],
+      ['6-8 slices', 210],
+      ['2 400g cans', 400],
+      ['8-ounce sliced', 226.8],
+    ])('parses amount in %s', (measure, grams) => {
+      expect(parseMeasure(measure).grams).toBeCloseTo(grams);
+    });
+
+    it('treats measures over the length limit as unknown', () => {
+      const result = parseMeasure('1'.repeat(MAX_MEASURE_LENGTH + 1));
+      expect(result).toMatchObject({ grams: 0, confidence: 'unknown' });
+    });
+  });
+});
+
+describe('adversarial input', () => {
+  const inputs = [
+    ['spaces', '1' + ' '.repeat(MAX_MEASURE_LENGTH - 2) + 'x'],
+    ['fraction', '1' + ' '.repeat(MAX_MEASURE_LENGTH - 2) + '½'],
+    ['digits', '1'.repeat(MAX_MEASURE_LENGTH - 1) + 'x'],
+    ['spaced digits', '1 '.repeat(MAX_MEASURE_LENGTH / 2 - 1) + 'x'],
+    ['over limit', ' '.repeat(100_000) + '½'],
+  ];
+
+  it.each(inputs)('parses %s quickly', (_, measure) => {
+    const start = performance.now();
+    for (let i = 0; i < 20; i++) {
+      parseMeasure(measure, 'Salt');
+      parseQuantityUnit(measure, 'Salt');
+    }
+    expect(performance.now() - start).toBeLessThan(500);
   });
 });
 

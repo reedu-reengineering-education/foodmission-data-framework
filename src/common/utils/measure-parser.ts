@@ -12,6 +12,10 @@ export interface ParsedQuantity {
   unit: Unit;
 }
 
+export const MAX_MEASURE_LENGTH = 100;
+
+const AMOUNT = String.raw`(\d+(?:[.,]\d+)?(?:\s+\d+\/\d+|\/\d+|\s*-\s*\d+(?:[.,]\d+)?)?)`;
+
 const QUALITATIVE_MEASURE =
   /to taste|pinch|dash|splash|drizzle|bunch|garnish|handful|sprigs? of fresh/i;
 
@@ -259,55 +263,62 @@ export function parseMeasure(
   foodName?: string,
 ): ParsedMeasure {
   const original = measure;
-  const normalized = measure.toLowerCase().trim();
+  const normalized = normalizeUnicodeFractions(measure.toLowerCase().trim());
 
-  if (QUALITATIVE_MEASURE.test(normalized)) {
+  if (
+    normalized.length > MAX_MEASURE_LENGTH ||
+    QUALITATIVE_MEASURE.test(normalized)
+  ) {
     return { grams: 0, original, confidence: 'unknown', method: 'default' };
   }
 
-  const metricMatch = normalized.match(/(\d+(?:[.,]\d+)?)\s*(kg|g)\b/);
+  const metricMatch = normalized.match(new RegExp(`${AMOUNT}\\s*(kg|g)\\b`));
   if (metricMatch) {
-    const value = parseFloat(metricMatch[1].replace(',', '.'));
+    const value = parseAmount(metricMatch[1]);
     const grams = metricMatch[2] === 'kg' ? value * 1000 : value;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
 
-  const lbMatch = normalized.match(/([\d\s/.-]+)\s*(?:lb|lbs|pound|pounds)\b/);
+  const lbMatch = normalized.match(
+    new RegExp(`${AMOUNT}(?:-|\\s*)(?:lb|lbs|pound|pounds)\\b`),
+  );
   if (lbMatch) {
-    const grams = parseFraction(lbMatch[1]) * 453.6;
+    const grams = parseAmount(lbMatch[1]) * 453.6;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
-  const ozMatch = normalized.match(/([\d\s/.-]+)\s*(?:oz|ounces?)\b/);
+  const ozMatch = normalized.match(
+    new RegExp(`${AMOUNT}(?:-|\\s*)(?:oz|ounces?)\\b`),
+  );
   if (ozMatch) {
-    const grams = parseFraction(ozMatch[1]) * 28.35;
+    const grams = parseAmount(ozMatch[1]) * 28.35;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
 
-  const mlMatch = normalized.match(/(\d+(?:[.,]\d+)?)\s*ml\b/);
+  const mlMatch = normalized.match(new RegExp(`${AMOUNT}\\s*ml\\b`));
   if (mlMatch) {
-    const grams = parseFloat(mlMatch[1].replace(',', '.'));
+    const grams = parseAmount(mlMatch[1]);
     return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
-  const literMatch = normalized.match(/(\d+(?:[.,]\d+)?)\s*l\b/);
+  const literMatch = normalized.match(new RegExp(`${AMOUNT}\\s*l\\b`));
   if (literMatch) {
-    const grams = parseFloat(literMatch[1].replace(',', '.')) * 1000;
+    const grams = parseAmount(literMatch[1]) * 1000;
     return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
-  const cupMatch = normalized.match(/([\d\s/]+)\s*cups?\b/i);
+  const cupMatch = normalized.match(new RegExp(`${AMOUNT}\\s*cups?\\b`));
   if (cupMatch) {
-    const grams = parseFraction(cupMatch[1]) * 150;
+    const grams = parseAmount(cupMatch[1]) * 150;
     return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
   for (const [unit, mlPerUnit] of Object.entries(SPOON_ML)) {
-    const regex = new RegExp(`([\\d\\s/]+)\\s*${unit}\\b`, 'i');
+    const regex = new RegExp(`${AMOUNT}\\s*${unit}\\b`);
     const match = normalized.match(regex);
     if (match) {
       const gramsPerMl =
         (foodName && lookupVolumeIngredient(foodName)?.gramsPerMl) || 1;
-      const grams = parseFraction(match[1]) * mlPerUnit * gramsPerMl;
+      const grams = parseAmount(match[1]) * mlPerUnit * gramsPerMl;
       return { grams, original, confidence: 'medium', method: 'volume' };
     }
   }
@@ -329,10 +340,10 @@ export function parseMeasure(
     leaves: 0.5,
   };
   for (const [unit, gramsPerUnit] of Object.entries(countUnits)) {
-    const regex = new RegExp(`([\\d\\s/]+)\\s*${unit}\\b`, 'i');
+    const regex = new RegExp(`${AMOUNT}\\s*${unit}\\b`);
     const match = normalized.match(regex);
     if (match) {
-      const grams = parseFraction(match[1]) * gramsPerUnit;
+      const grams = parseAmount(match[1]) * gramsPerUnit;
       return { grams, original, confidence: 'medium', method: 'count' };
     }
   }
@@ -343,10 +354,10 @@ export function parseMeasure(
     large: 1.3,
   };
   const modifierMatch = normalized.match(
-    /([\d\s/]+)\s*(small|medium|large)\b/i,
+    new RegExp(`${AMOUNT}\\s*(small|medium|large)\\b`),
   );
   if (modifierMatch && foodName) {
-    const count = parseFraction(modifierMatch[1]);
+    const count = parseAmount(modifierMatch[1]);
     const modifier = sizeModifiers[modifierMatch[2].toLowerCase()] || 1;
     const avgWeight = getAverageWeight(foodName);
     return {
@@ -357,9 +368,11 @@ export function parseMeasure(
     };
   }
 
-  const bareCountMatch = normalized.match(/^([\d\s/]+)(?:\s+\w+)?$/);
+  const bareCountMatch = normalized.match(
+    new RegExp(`^${AMOUNT}(?:\\s+\\w+)?$`),
+  );
   if (bareCountMatch && foodName) {
-    const count = parseFraction(bareCountMatch[1]);
+    const count = parseAmount(bareCountMatch[1]);
     if (count > 0) {
       const avgWeight = getAverageWeight(foodName);
       return {
@@ -402,13 +415,12 @@ export function parseQuantityUnit(
   measure: string,
   foodName: string,
 ): ParsedQuantity | null {
+  if (measure.length > MAX_MEASURE_LENGTH) return null;
   const normalized = normalizeUnicodeFractions(measure.toLowerCase().trim());
 
   const fruitPart = normalized.match(FRUIT_PART);
   if (fruitPart) {
-    const amount =
-      AMOUNT_WORDS[fruitPart[1]] ??
-      parseFraction(fruitPart[1].replace(',', '.'));
+    const amount = AMOUNT_WORDS[fruitPart[1]] ?? parseAmount(fruitPart[1]);
     return { quantity: round2(amount), unit: Unit.PIECES };
   }
 
@@ -423,7 +435,7 @@ export function parseQuantityUnit(
     return null;
   }
 
-  const amount = parseFraction(match[1].replace(',', '.'));
+  const amount = parseAmount(match[1]);
   if (amount <= 0) return null;
 
   if (!token) return { quantity: round2(amount), unit: Unit.PIECES };
@@ -526,11 +538,17 @@ export function lookupVolumeIngredient(
 }
 
 function normalizeUnicodeFractions(text: string): string {
-  return text.replace(/(\d?)\s*([½¼¾⅓⅔⅛])/g, (_, whole: string, frac) =>
-    whole
-      ? `${whole} ${UNICODE_FRACTIONS[frac as string]}`
-      : UNICODE_FRACTIONS[frac as string],
+  return text.replace(
+    /(?:(\d)\s*)?([½¼¾⅓⅔⅛])/g,
+    (_, whole: string | undefined, frac) =>
+      whole
+        ? `${whole} ${UNICODE_FRACTIONS[frac as string]}`
+        : UNICODE_FRACTIONS[frac as string],
   );
+}
+
+function parseAmount(text: string): number {
+  return parseFraction(text.replace(',', '.'));
 }
 
 function round2(value: number): number {
