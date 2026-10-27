@@ -886,4 +886,92 @@ describe('LearningService', () => {
       expect(userEventService.record).not.toHaveBeenCalled();
     });
   });
+
+  describe('upsertQuizProgress rewards', () => {
+    const quiz = {
+      id: 'q1',
+      code: 'Q.B1.1',
+      topicId: 't1',
+      title: 'Best choice',
+      question: 'Which is best?',
+      explanation: 'Because reuse',
+      source: null,
+      level: ContentLevel.BEGINNER,
+      health: false,
+      foodChoice: true,
+      foodWaste: false,
+      available: true,
+      reward: { id: 'r1', xp: 10, points: 5 },
+      options: [
+        {
+          id: 'opt-b',
+          label: 'B',
+          text: 'Right',
+          isCorrect: true,
+          sortOrder: 0,
+        },
+      ],
+    };
+    let award: jest.Mock;
+
+    const awardResult = (amount: number, replayed: boolean) => ({
+      wallet: { userId: 'u1', xp: 0, points: 0, updatedAt: new Date() },
+      entry: { id: 'we-1', amount, balanceAfter: amount },
+      event: null,
+      replayed,
+    });
+
+    beforeEach(() => {
+      award = (service as unknown as { walletService: { award: jest.Mock } })
+        .walletService.award;
+      prisma.quiz.findFirst.mockResolvedValue(quiz);
+      prisma.quizProgress.findUnique.mockResolvedValue(null);
+      prisma.quizProgress.upsert.mockResolvedValue({
+        id: 'p1',
+        userId: 'u1',
+        quizId: quiz.id,
+        selectedOptionId: 'opt-b',
+        isCorrect: true,
+        completed: true,
+        answeredAt: new Date(),
+      });
+    });
+
+    it('returns the reward when it is newly credited', async () => {
+      award
+        .mockResolvedValueOnce(awardResult(10, false))
+        .mockResolvedValueOnce(awardResult(5, false));
+
+      const result = await service.upsertQuizProgress('u1', quiz.code, {
+        selectedLabel: 'B',
+      });
+
+      expect(result.reward).toEqual({ xp: 10, points: 5 });
+    });
+
+    it('returns no reward when the award was already credited', async () => {
+      award
+        .mockResolvedValueOnce(awardResult(10, true))
+        .mockResolvedValueOnce(awardResult(5, true));
+
+      const result = await service.upsertQuizProgress('u1', quiz.code, {
+        selectedLabel: 'B',
+      });
+
+      expect(award).toHaveBeenCalledTimes(2);
+      expect(result.reward).toBeNull();
+    });
+
+    it('returns only the currency credited on a retry', async () => {
+      award
+        .mockResolvedValueOnce(awardResult(10, true))
+        .mockResolvedValueOnce(awardResult(5, false));
+
+      const result = await service.upsertQuizProgress('u1', quiz.code, {
+        selectedLabel: 'B',
+      });
+
+      expect(result.reward).toEqual({ xp: null, points: 5 });
+    });
+  });
 });
