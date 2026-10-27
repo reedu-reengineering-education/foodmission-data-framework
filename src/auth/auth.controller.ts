@@ -15,6 +15,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../common/decorators/api-error-responses.decorator';
+import { ApiErrorResponseDto } from '../common/dto/api-response.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { extractKeycloakRoles } from '../common/utils/keycloak-roles.util';
 import { Public } from 'nest-keycloak-connect';
@@ -148,6 +149,25 @@ export class AuthController {
   @Public()
   @ApiOperation({
     summary: 'Register a new user in Keycloak and create local user',
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Validation failed, e.g. password shorter than 8 characters or invalid email',
+    type: ApiErrorResponseDto,
+    example: {
+      statusCode: 400,
+      message: 'Validation failed',
+      error: 'VALIDATION_ERROR',
+      timestamp: '2026-01-15T10:30:00.000Z',
+      path: '/api/v1/auth/register',
+      traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
+      details: {
+        errors: [
+          'password: password must be longer than or equal to 8 characters',
+        ],
+      },
+    },
   })
   async register(@Body() dto: RegisterDto) {
     return await this.authService.register(dto);
