@@ -61,6 +61,13 @@ export async function findFinishedItemKeys(
   return finished;
 }
 
+export function foodFactReadsWhere(
+  userId: string,
+  codes: string[],
+): Prisma.FoodFactProgressWhereInput {
+  return { userId, foodFact: { code: { in: codes } } };
+}
+
 async function findFinishedCodes(
   db: Db,
   userId: string,
@@ -96,9 +103,8 @@ async function findFinishedCodes(
       return rows.map((row) => row.quiz.code);
     }
     case QuestContentType.FOOD_FACT: {
-      // FoodFactProgress has no `completed` column — the row is the read.
       const rows = await db.foodFactProgress.findMany({
-        where: { userId, foodFact: { code: { in: codes } } },
+        where: foodFactReadsWhere(userId, codes),
         select: { foodFact: { select: { code: true } } },
       });
       return rows.map((row) => row.foodFact.code);
@@ -208,7 +214,7 @@ export async function findItemStatuses(
         case QuestContentType.FOOD_FACT:
           rows = (
             await db.foodFactProgress.findMany({
-              where: { userId, foodFact: { code: { in: codes } } },
+              where: foodFactReadsWhere(userId, codes),
               select: { foodFact: { select: { code: true } } },
             })
           ).map((row) => ({ code: row.foodFact.code, ...COMPLETED }));

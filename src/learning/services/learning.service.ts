@@ -15,6 +15,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
 import { pageLimitToSkipTake } from '../../common/utils/pagination';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { LearningTranslationHelper } from './learning-translation.helper';
 import { codeOrIdWhere } from '../utils/code-or-id';
 import { toPaginatedResponseDto } from '../utils/paginated';
@@ -22,6 +23,7 @@ import {
   buildFoodFactWhere,
   buildMicroLearningWhere,
   buildQuizWhere,
+  buildUserFoodFactWhere,
 } from '../utils/learning-filters';
 import { LearningLangQueryDto } from '../dto/learning-lang-query.dto';
 import { PaginatedLangQueryDto } from '../dto/paginated-lang-query.dto';
@@ -29,10 +31,14 @@ import {
   LearningContentFiltersDto,
   LearningPaginatedQueryDto,
   LearningQuestListQueryDto,
+  UserFoodFactListQueryDto,
 } from '../dto/learning-list-query.dto';
 import { CreateQuestDto } from '../dto/create-quest.dto';
 import { DimensionResponseDto } from '../dto/dimension-response.dto';
-import { FoodFactResponseDto } from '../dto/food-fact-response.dto';
+import {
+  FoodFactResponseDto,
+  UserFoodFactResponseDto,
+} from '../dto/food-fact-response.dto';
 import { QuizOptionPublicDto, QuizResponseDto } from '../dto/quiz-response.dto';
 import {
   QuizProgressResponseDto,
@@ -52,6 +58,7 @@ import {
 import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
+import { foodFactReadsWhere } from '../../gamification/content-completion';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -203,10 +210,37 @@ export class LearningService {
   async listFoodFacts(
     query: LearningPaginatedQueryDto,
   ): Promise<PaginatedResponseDto<FoodFactResponseDto>> {
+    return this.pageFoodFacts(buildFoodFactWhere(query), query);
+  }
+
+  async listFoodFactsForUser(
+    userId: string,
+    query: UserFoodFactListQueryDto,
+  ): Promise<PaginatedResponseDto<UserFoodFactResponseDto>> {
+    const { data, meta } = await this.pageFoodFacts(
+      buildUserFoodFactWhere(query, userId),
+      query,
+    );
+    return { data: await this.withCompletion(userId, data), meta };
+  }
+
+  async getFoodFactForUser(
+    userId: string,
+    codeOrId: string,
+    query: LearningLangQueryDto,
+  ): Promise<UserFoodFactResponseDto> {
+    const fact = await this.getFoodFact(codeOrId, query);
+    const [mapped] = await this.withCompletion(userId, [fact]);
+    return mapped;
+  }
+
+  private async pageFoodFacts(
+    where: Prisma.FoodFactWhereInput,
+    query: LearningPaginatedQueryDto,
+  ): Promise<PaginatedResponseDto<FoodFactResponseDto>> {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
     const { skip, take } = pageLimitToSkipTake({ page, limit });
-    const where = buildFoodFactWhere(query);
 
     const [rows, total] = await Promise.all([
       this.prisma.foodFact.findMany({
@@ -234,6 +268,55 @@ export class LearningService {
     }
     const [mapped] = await this.mapFoodFacts([row], query.lang);
     return mapped;
+  }
+
+  private async withCompletion(
+    userId: string,
+    facts: FoodFactResponseDto[],
+  ): Promise<UserFoodFactResponseDto[]> {
+    if (facts.length === 0) return [];
+
+    const reads = await this.prisma.foodFactProgress.findMany({
+      where: foodFactReadsWhere(
+        userId,
+        facts.map((f) => f.code),
+      ),
+      select: { readAt: true, foodFact: { select: { code: true } } },
+    });
+    const readAtByCode = new Map(
+      reads.map((read) => [read.foodFact.code, read.readAt]),
+    );
+
+    return facts.map((f) => ({
+      ...f,
+      completed: readAtByCode.has(f.code),
+      readAt: readAtByCode.get(f.code) ?? null,
+    }));
+  }
+
+  async listAllFoodFactProgressPaginated(
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResponseDto<FoodFactProgressResponseDto>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const { skip, take } = pageLimitToSkipTake({ page, limit });
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.foodFactProgress.findMany({
+        skip,
+        take,
+        include: { foodFact: { select: { code: true } } },
+        orderBy: [{ userId: 'asc' }, { foodFactId: 'asc' }],
+      }),
+      this.prisma.foodFactProgress.count(),
+    ]);
+    const data = rows.map((row) => ({
+      id: row.id,
+      userId: row.userId,
+      foodFactId: row.foodFactId,
+      foodFactCode: row.foodFact.code,
+      readAt: row.readAt,
+    }));
+    return toPaginatedResponseDto(data, total, page, limit);
   }
 
   async markFoodFactRead(

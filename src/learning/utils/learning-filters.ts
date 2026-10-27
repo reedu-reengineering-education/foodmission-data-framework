@@ -1,5 +1,21 @@
 import { Prisma } from '@prisma/client';
-import { LearningContentFiltersDto } from '../dto/learning-list-query.dto';
+import {
+  LearningContentFiltersDto,
+  UserFoodFactListQueryDto,
+} from '../dto/learning-list-query.dto';
+
+export function buildUserFoodFactWhere(
+  filters: UserFoodFactListQueryDto,
+  userId: string,
+): Prisma.FoodFactWhereInput {
+  const where = buildFoodFactWhere(filters);
+  if (filters.completed !== undefined) {
+    where.progress = filters.completed
+      ? { some: { userId } }
+      : { none: { userId } };
+  }
+  return where;
+}
 
 export function buildFoodFactWhere(
   filters: LearningContentFiltersDto,

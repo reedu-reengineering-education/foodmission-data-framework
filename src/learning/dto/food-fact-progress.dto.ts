@@ -32,7 +32,11 @@ export class FoodFactProgressResponseDto {
   @Expose()
   readAt: Date;
 
-  @ApiPropertyOptional({ type: FoodFactRewardDto, nullable: true })
+  @ApiPropertyOptional({
+    type: FoodFactRewardDto,
+    nullable: true,
+    description: 'Set only when marking the food fact as read',
+  })
   @Expose()
-  reward: FoodFactRewardDto | null;
+  reward?: FoodFactRewardDto | null;
 }
