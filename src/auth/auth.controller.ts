@@ -153,19 +153,40 @@ export class AuthController {
   @ApiResponse({
     status: 400,
     description:
-      'Validation failed, e.g. password shorter than 8 characters or invalid email',
+      'Validation failed, e.g. password shorter than 8 characters, password same as username or email, or invalid email',
     type: ApiErrorResponseDto,
-    example: {
-      statusCode: 400,
-      message: 'Validation failed',
-      error: 'VALIDATION_ERROR',
-      timestamp: '2026-01-15T10:30:00.000Z',
-      path: '/api/v1/auth/register',
-      traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
-      details: {
-        errors: [
-          'password: password must be longer than or equal to 8 characters',
-        ],
+    examples: {
+      passwordTooShort: {
+        summary: 'Password shorter than 8 characters',
+        value: {
+          statusCode: 400,
+          message: 'Validation failed',
+          error: 'VALIDATION_ERROR',
+          timestamp: '2026-01-15T10:30:00.000Z',
+          path: '/api/v1/auth/register',
+          traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
+          details: {
+            errors: [
+              'password: password must be longer than or equal to 8 characters',
+            ],
+          },
+        },
+      },
+      passwordMatchesUsernameOrEmail: {
+        summary: 'Password same as username or email',
+        value: {
+          statusCode: 400,
+          message: 'Validation failed',
+          error: 'VALIDATION_ERROR',
+          timestamp: '2026-01-15T10:30:00.000Z',
+          path: '/api/v1/auth/register',
+          traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
+          details: {
+            errors: [
+              'password: password must not be the same as the username or email',
+            ],
+          },
+        },
       },
     },
   })
