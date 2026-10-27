@@ -488,7 +488,7 @@ export class LearningService {
     lang?: string,
   ): Promise<QuizProgressResponseDto> {
     const quiz = await this.prisma.quiz.findFirst({
-      where: codeOrIdWhere(codeOrId),
+      where: { ...codeOrIdWhere(codeOrId), available: true },
       include: {
         options: { orderBy: { sortOrder: 'asc' } },
         reward: true,
@@ -854,7 +854,7 @@ export class LearningService {
     lang?: string,
   ): Promise<QuestProgressResponseDto> {
     const quest = await this.prisma.quest.findFirst({
-      where: codeOrIdWhere(codeOrId),
+      where: { ...codeOrIdWhere(codeOrId), available: true },
       include: { reward: true },
     });
     if (!quest) {

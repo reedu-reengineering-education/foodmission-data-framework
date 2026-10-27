@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { ContentLevel } from '@prisma/client';
 import { LearningService } from './learning.service';
 import { LearningTranslationHelper } from './learning-translation.helper';
@@ -580,6 +581,22 @@ describe('LearningService', () => {
       prisma.quest.findFirst.mockResolvedValue(quest);
     });
 
+    it('rejects progress for an unavailable quest', async () => {
+      prisma.quest.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.upsertQuestProgress('u1', quest.code, { completed: true }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+
+      expect(prisma.quest.findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { code: quest.code, available: true },
+        }),
+      );
+      expect(prisma.questProgress.upsert).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
     it('emits QUEST_STARTED on first active progress', async () => {
       const unlockedAt = new Date('2026-09-30T08:15:00.000Z');
       prisma.questProgress.findUnique.mockResolvedValue(null);
@@ -972,6 +989,32 @@ describe('LearningService', () => {
       });
 
       expect(result.reward).toEqual({ xp: null, points: 5 });
+    });
+
+    it('only looks up available quizzes', async () => {
+      award
+        .mockResolvedValueOnce(awardResult(10, false))
+        .mockResolvedValueOnce(awardResult(5, false));
+
+      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
+
+      expect(prisma.quiz.findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { code: quiz.code, available: true },
+        }),
+      );
+    });
+
+    it('rejects answers to an unavailable quiz without recording or rewarding', async () => {
+      prisma.quiz.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+
+      expect(prisma.quizProgress.upsert).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+      expect(award).not.toHaveBeenCalled();
     });
   });
 });
