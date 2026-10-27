@@ -137,7 +137,7 @@ export class QuestsController {
   @ApiOperation({
     summary: 'Admin override of quest progress by code',
     description:
-      'Quest progress is normally derived from item completion. This route overwrites it manually and is superseded by the next recompute.',
+      'Quest progress is normally derived from item completion. This route overwrites it manually for the user in body.userId (default: the calling admin) and is superseded by the next recompute.',
   })
   @ApiParam({
     name: 'code',
@@ -154,7 +154,7 @@ export class QuestsController {
     @Query() query: LearningLangQueryDto,
   ): Promise<QuestProgressResponseDto> {
     return this.learningService.upsertQuestProgress(
-      userId,
+      dto.userId ?? userId,
       code,
       dto,
       query.lang,
@@ -209,7 +209,7 @@ export class QuestsController {
   @ApiOperation({
     summary: 'Admin override of quest progress',
     description:
-      'Quest progress is normally derived from item completion. This route overwrites it manually and is superseded by the next recompute.',
+      'Quest progress is normally derived from item completion. This route overwrites it manually for the user in body.userId (default: the calling admin) and is superseded by the next recompute.',
   })
   @ApiParam({
     name: 'codeOrId',
@@ -226,7 +226,7 @@ export class QuestsController {
     @Query() query: LearningLangQueryDto,
   ): Promise<QuestProgressResponseDto> {
     return this.learningService.upsertQuestProgress(
-      userId,
+      dto.userId ?? userId,
       codeOrId,
       dto,
       query.lang,

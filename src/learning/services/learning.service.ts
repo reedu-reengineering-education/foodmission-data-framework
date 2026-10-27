@@ -861,6 +861,16 @@ export class LearningService {
       throw new NotFoundException('Quest not found');
     }
 
+    // The admin override can target any user, so an unknown id must be a 404
+    // rather than a foreign-key failure on the upsert below.
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     const progress = await this.prisma.$transaction(async (tx) => {
       const previous = await tx.questProgress.findUnique({
         where: { userId_questId: { userId, questId: quest.id } },

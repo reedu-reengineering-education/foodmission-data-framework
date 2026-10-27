@@ -25,6 +25,7 @@ describe('LearningService', () => {
       findUnique: jest.Mock;
       findMany: jest.Mock;
     };
+    user: { findUnique: jest.Mock };
     quest: {
       findFirst: jest.Mock;
       findMany: jest.Mock;
@@ -87,6 +88,7 @@ describe('LearningService', () => {
         findUnique: jest.fn(),
         findMany: jest.fn(),
       },
+      user: { findUnique: jest.fn().mockResolvedValue({ id: 'u1' }) },
       quest: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
@@ -592,6 +594,22 @@ describe('LearningService', () => {
         expect.objectContaining({
           where: { code: quest.code, available: true },
         }),
+      );
+      expect(prisma.questProgress.upsert).not.toHaveBeenCalled();
+      expect(userEventService.record).not.toHaveBeenCalled();
+    });
+
+    it('rejects progress for an unknown user', async () => {
+      prisma.user.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.upsertQuestProgress('missing-user', quest.code, {
+          completed: true,
+        }),
+      ).rejects.toThrow('User not found');
+
+      expect(prisma.user.findUnique).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: 'missing-user' } }),
       );
       expect(prisma.questProgress.upsert).not.toHaveBeenCalled();
       expect(userEventService.record).not.toHaveBeenCalled();
