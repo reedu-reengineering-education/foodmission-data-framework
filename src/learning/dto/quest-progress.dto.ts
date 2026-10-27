@@ -1,6 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
 import { Expose } from 'class-transformer';
 
 export class QuestRewardDto {
@@ -14,6 +21,15 @@ export class QuestRewardDto {
 }
 
 export class UpdateQuestProgressDto {
+  @ApiPropertyOptional({
+    description:
+      'User whose quest progress to overwrite. Defaults to the calling admin.',
+    example: 'uuid-user-id',
+  })
+  @IsOptional()
+  @IsUUID()
+  userId?: string;
+
   @ApiPropertyOptional({ example: false })
   @IsOptional()
   @IsBoolean()
