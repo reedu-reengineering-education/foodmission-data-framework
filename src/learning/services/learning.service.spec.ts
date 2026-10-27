@@ -1,6 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
 import { ContentLevel } from '@prisma/client';
 import { LearningService } from './learning.service';
 import { LearningTranslationHelper } from './learning-translation.helper';
@@ -27,7 +26,6 @@ describe('LearningService', () => {
       findUnique: jest.Mock;
       findMany: jest.Mock;
     };
-    user: { findUnique: jest.Mock };
     quest: {
       findFirst: jest.Mock;
       findMany: jest.Mock;
@@ -91,7 +89,6 @@ describe('LearningService', () => {
         findUnique: jest.fn(),
         findMany: jest.fn(),
       },
-      user: { findUnique: jest.fn().mockResolvedValue({ id: 'u1' }) },
       quest: {
         findFirst: jest.fn(),
         findMany: jest.fn(),
@@ -778,38 +775,6 @@ describe('LearningService', () => {
       prisma.quest.findFirst.mockResolvedValue(quest);
     });
 
-    it('rejects progress for an unavailable quest', async () => {
-      prisma.quest.findFirst.mockResolvedValue(null);
-
-      await expect(
-        service.upsertQuestProgress('u1', quest.code, { completed: true }),
-      ).rejects.toBeInstanceOf(NotFoundException);
-
-      expect(prisma.quest.findFirst).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { code: quest.code, available: true },
-        }),
-      );
-      expect(prisma.questProgress.upsert).not.toHaveBeenCalled();
-      expect(userEventService.record).not.toHaveBeenCalled();
-    });
-
-    it('rejects progress for an unknown user', async () => {
-      prisma.user.findUnique.mockResolvedValue(null);
-
-      await expect(
-        service.upsertQuestProgress('missing-user', quest.code, {
-          completed: true,
-        }),
-      ).rejects.toThrow('User not found');
-
-      expect(prisma.user.findUnique).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: 'missing-user' } }),
-      );
-      expect(prisma.questProgress.upsert).not.toHaveBeenCalled();
-      expect(userEventService.record).not.toHaveBeenCalled();
-    });
-
     it('emits QUEST_STARTED on first active progress', async () => {
       const unlockedAt = new Date('2026-09-30T08:15:00.000Z');
       prisma.questProgress.findUnique.mockResolvedValue(null);
@@ -1114,120 +1079,6 @@ describe('LearningService', () => {
       await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
 
       expect(userEventService.record).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('upsertQuizProgress rewards', () => {
-    const quiz = {
-      id: 'q1',
-      code: 'Q.B1.1',
-      topicId: 't1',
-      title: 'Best choice',
-      question: 'Which is best?',
-      explanation: 'Because reuse',
-      source: null,
-      level: ContentLevel.BEGINNER,
-      health: false,
-      foodChoice: true,
-      foodWaste: false,
-      available: true,
-      reward: { id: 'r1', xp: 10, points: 5 },
-      options: [
-        {
-          id: 'opt-b',
-          label: 'B',
-          text: 'Right',
-          isCorrect: true,
-          sortOrder: 0,
-        },
-      ],
-    };
-    let award: jest.Mock;
-
-    const awardResult = (amount: number, replayed: boolean) => ({
-      wallet: { userId: 'u1', xp: 0, points: 0, updatedAt: new Date() },
-      entry: { id: 'we-1', amount, balanceAfter: amount },
-      event: null,
-      replayed,
-    });
-
-    beforeEach(() => {
-      award = (service as unknown as { walletService: { award: jest.Mock } })
-        .walletService.award;
-      prisma.quiz.findFirst.mockResolvedValue(quiz);
-      prisma.quizProgress.findUnique.mockResolvedValue(null);
-      prisma.quizProgress.upsert.mockResolvedValue({
-        id: 'p1',
-        userId: 'u1',
-        quizId: quiz.id,
-        selectedOptionId: 'opt-b',
-        isCorrect: true,
-        completed: true,
-        answeredAt: new Date(),
-      });
-    });
-
-    it('returns the reward when it is newly credited', async () => {
-      award
-        .mockResolvedValueOnce(awardResult(10, false))
-        .mockResolvedValueOnce(awardResult(5, false));
-
-      const result = await service.upsertQuizProgress('u1', quiz.code, {
-        selectedLabel: 'B',
-      });
-
-      expect(result.reward).toEqual({ xp: 10, points: 5 });
-    });
-
-    it('returns no reward when the award was already credited', async () => {
-      award
-        .mockResolvedValueOnce(awardResult(10, true))
-        .mockResolvedValueOnce(awardResult(5, true));
-
-      const result = await service.upsertQuizProgress('u1', quiz.code, {
-        selectedLabel: 'B',
-      });
-
-      expect(award).toHaveBeenCalledTimes(2);
-      expect(result.reward).toBeNull();
-    });
-
-    it('returns only the currency credited on a retry', async () => {
-      award
-        .mockResolvedValueOnce(awardResult(10, true))
-        .mockResolvedValueOnce(awardResult(5, false));
-
-      const result = await service.upsertQuizProgress('u1', quiz.code, {
-        selectedLabel: 'B',
-      });
-
-      expect(result.reward).toEqual({ xp: null, points: 5 });
-    });
-
-    it('only looks up available quizzes', async () => {
-      award
-        .mockResolvedValueOnce(awardResult(10, false))
-        .mockResolvedValueOnce(awardResult(5, false));
-
-      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' });
-
-      expect(prisma.quiz.findFirst).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { code: quiz.code, available: true },
-        }),
-      );
-    });
-
-    it('rejects answers to an unavailable quiz without recording or rewarding', async () => {
-      prisma.quiz.findFirst.mockResolvedValue(null);
-
-      await expect(
-        service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'B' }),
-      ).rejects.toBeInstanceOf(NotFoundException);
-
-      expect(prisma.quizProgress.upsert).not.toHaveBeenCalled();
-      expect(userEventService.record).not.toHaveBeenCalled();
-      expect(award).not.toHaveBeenCalled();
     });
   });
 });

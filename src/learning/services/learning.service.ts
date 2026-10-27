@@ -82,12 +82,9 @@ export class LearningService {
    * progress is already persisted by the time we get here and the next attempt would
    * be skipped.
    *
-   * Returns only what this call newly credited: a replayed entry was earned on an
-   * earlier request, so reporting it again would make clients celebrate (and add
-   * to their local balance) a second time. Returns null when nothing new was
-   * credited or crediting failed. A failure must not surface as a request error
-   * (the progress write did succeed); the next request for the same content
-   * retries the credit.
+   * Returns what the ledger actually holds, or null when crediting failed. A failure
+   * must not surface as a request error (the progress write did succeed); the next
+   * request for the same content retries the credit.
    */
   private async awardContentReward(
     base: {
@@ -104,23 +101,23 @@ export class LearningService {
       let points: number | null = null;
 
       if (reward.xp) {
-        const { entry, replayed } = await this.walletService.award({
+        const { entry } = await this.walletService.award({
           ...base,
           currency: WalletCurrency.XP,
           amount: reward.xp,
         });
-        if (!replayed) xp = entry.amount;
+        xp = entry.amount;
       }
       if (reward.points) {
-        const { entry, replayed } = await this.walletService.award({
+        const { entry } = await this.walletService.award({
           ...base,
           currency: WalletCurrency.POINTS,
           amount: reward.points,
         });
-        if (!replayed) points = entry.amount;
+        points = entry.amount;
       }
 
-      return xp === null && points === null ? null : { xp, points };
+      return { xp, points };
     } catch (error) {
       this.logger.error(
         `Failed to award ${base.sourceType} ${base.sourceId} reward to user ${base.userId}`,
@@ -571,7 +568,7 @@ export class LearningService {
     lang?: string,
   ): Promise<QuizProgressResponseDto> {
     const quiz = await this.prisma.quiz.findFirst({
-      where: { ...codeOrIdWhere(codeOrId), available: true },
+      where: codeOrIdWhere(codeOrId),
       include: {
         options: { orderBy: { sortOrder: 'asc' } },
         reward: true,
@@ -937,21 +934,11 @@ export class LearningService {
     lang?: string,
   ): Promise<QuestProgressResponseDto> {
     const quest = await this.prisma.quest.findFirst({
-      where: { ...codeOrIdWhere(codeOrId), available: true },
+      where: codeOrIdWhere(codeOrId),
       include: { reward: true },
     });
     if (!quest) {
       throw new NotFoundException('Quest not found');
-    }
-
-    // The admin override can target any user, so an unknown id must be a 404
-    // rather than a foreign-key failure on the upsert below.
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
     }
 
     const progress = await this.prisma.$transaction(async (tx) => {
