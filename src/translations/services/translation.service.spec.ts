@@ -155,23 +155,29 @@ describe('TranslationService', () => {
       );
     });
 
-    it('supports matching at the start of a word', async () => {
-      prisma.entityTranslation.findMany.mockResolvedValue([]);
+    it('matches words and their inflected forms', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'raw', value: 'Pomodori crudi' },
+        { entityId: 'puree', value: 'Concentrato di pomodoro' },
+        { entityId: 'puree', value: 'Passata di pomodoro' },
+        { entityId: 'parsnip', value: 'Pomodorinoso inventato' },
+      ]);
 
-      await service.findEntityIdsByValue(
+      const ids = await service.findEntityIdsByValue(
         'GenericFood',
         'it',
         ['foodName'],
-        'pollo',
-        'wordStart',
+        'pomodoro',
+        'word',
       );
 
+      expect(ids).toEqual(['raw', 'puree']);
       expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             OR: [
-              { value: { startsWith: 'pollo', mode: 'insensitive' } },
-              { value: { contains: ' pollo', mode: 'insensitive' } },
+              { value: { startsWith: 'pomodor', mode: 'insensitive' } },
+              { value: { contains: ' pomodor', mode: 'insensitive' } },
             ],
           }),
         }),
