@@ -2,9 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import {
   hasWordMatch,
+  isCompoundHeadMatch,
   searchPrefix,
 } from '../../common/utils/text-search.util';
-import { isCompoundHeadMatch } from '../../generic-foods/utils/search-ranking';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   ENTITY_TRANSLATABLE_FIELDS,

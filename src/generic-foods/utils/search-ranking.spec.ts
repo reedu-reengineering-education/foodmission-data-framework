@@ -1,12 +1,9 @@
 import {
-  isCompoundHeadMatch,
   foodex2FacetCount,
   foodGroupTier,
   isBaseForm,
   matchQuality,
   MatchQuality,
-  normalizeForSearch,
-  normalizeSearchTerm,
   rankSearchCandidates,
   RankableSearchCandidate,
 } from './search-ranking';
@@ -32,37 +29,6 @@ const namesOf = (ranked: RankableSearchCandidate[]) =>
   ranked.map((c) => c.foodName);
 
 describe('search ranking', () => {
-  describe('normalizeSearchTerm', () => {
-    it.each([
-      ["olio d'oliva", 'olio d oliva'],
-      ['Olio d’oliva', 'olio d oliva'],
-      ['Elstar-eple', 'elstar eple'],
-      ['tin/glass, drained', 'tin glass drained'],
-      ['Peanut butter 100%', 'peanut butter 100'],
-      ['«fin» — test…', 'fin test'],
-    ])('%s -> %s', (input, expected) => {
-      expect(normalizeSearchTerm(input)).toBe(expected);
-    });
-
-    it('keeps accented and non-Latin letters', () => {
-      expect(normalizeSearchTerm('Eple-pære')).toBe('eple pære');
-      expect(normalizeSearchTerm('Ελαιόλαδο (παρθένο)')).toBe(
-        'ελαιόλαδο παρθένο',
-      );
-      expect(normalizeSearchTerm('Ser żółty')).toBe('ser żółty');
-    });
-  });
-
-  describe('normalizeForSearch', () => {
-    it('lowercases and strips accents', () => {
-      expect(normalizeForSearch(' Crème Brûlée ')).toBe('creme brulee');
-    });
-
-    it('treats punctuation as spaces', () => {
-      expect(normalizeForSearch('Olio d’oliva')).toBe('olio d oliva');
-    });
-  });
-
   describe('matchQuality', () => {
     it.each([
       ['milk', 'Milk', MatchQuality.EXACT],
@@ -94,18 +60,6 @@ describe('search ranking', () => {
       ['ei', 'Eisbergsalat', MatchQuality.WORD_PREFIX],
     ])('compound head: %s in %s', (term, text, expected) => {
       expect(matchQuality(term, text, { compoundHeads: true })).toBe(expected);
-    });
-  });
-
-  describe('isCompoundHeadMatch', () => {
-    it.each([
-      ['milch', 'Vollmilch', 'de', true],
-      ['kartoffel', 'Kartoffeln, gekocht', 'de', true],
-      ['milch', 'Käse aus Rohmilch', 'de', false],
-      ['ei', 'Brei', 'de', false],
-      ['milk', 'Buttermilk', 'en', false],
-    ])('%s in %s (%s): %s', (term, text, locale, expected) => {
-      expect(isCompoundHeadMatch(term, text, locale)).toBe(expected);
     });
   });
 
