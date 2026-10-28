@@ -19,7 +19,12 @@ import {
 import { Prisma, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
-import { searchWords } from '../../common/utils/text-search.util';
+import { searchPrefix, searchWords } from '../../common/utils/text-search.util';
+import {
+  SearchableRecipe,
+  matchesTitle,
+  matchesTitleOrIngredients,
+} from '../utils/recipe-search';
 import { plainToInstance } from 'class-transformer';
 import {
   EventSource,
@@ -186,12 +191,13 @@ export class RecipesService {
   }
 
   /**
-   * Adds the search to `where`: every search word must appear in the title.
-   * Each word may instead match an ingredient, by name or by a word of its
-   * generic food's translated name, endings included ("pomodoro" finds
-   * "Pomodori crudi", "pollo" does not find "Cipollotti"). That happens when
-   * the client asks for it, or for languages other than English when no
-   * title matches (titles exist only in English).
+   * Narrows `where` to the recipes matching the search. Every search word must
+   * appear in the title. Each word may instead match an ingredient, by name or
+   * by its generic food's translated name ("pomodoro" finds "Pomodori
+   * crudi"), when the client asks for it, or for languages other than English
+   * when no title matches (titles exist only in English). Titles and
+   * ingredients use the same word rule (see hasWordMatch); SQL only narrows
+   * the candidates by searchPrefix first.
    */
   private async withSearch(
     where: Prisma.RecipeWhereInput,
@@ -199,19 +205,28 @@ export class RecipesService {
   ): Promise<Prisma.RecipeWhereInput> {
     const words = searchWords(query.search);
     if (words.length === 0) return where;
-
-    const byTitle: Prisma.RecipeWhereInput = {
+    const prefixes = words.map(searchPrefix);
+    const contains = (prefix: string) => ({
+      contains: prefix,
+      mode: 'insensitive' as const,
+    });
+    const onlyIds = (recipes: SearchableRecipe[]) => ({
       ...where,
-      AND: words.map((word) => ({
-        title: { contains: word, mode: 'insensitive' },
-      })),
-    };
+      id: { in: recipes.map((recipe) => recipe.id) },
+    });
+
+    const titleMatches = (
+      await this.recipeRepository.findSearchCandidates({
+        ...where,
+        AND: prefixes.map((prefix) => ({ title: contains(prefix) })),
+      })
+    ).filter((recipe) => matchesTitle(recipe, words));
+
     const locale = this.translationService.resolveLocale(query.lang);
     const searchIngredients =
       query.searchIngredients ||
-      (locale !== DEFAULT_LOCALE &&
-        (await this.recipeRepository.count(byTitle)) === 0);
-    if (!searchIngredients) return byTitle;
+      (locale !== DEFAULT_LOCALE && titleMatches.length === 0);
+    if (!searchIngredients) return onlyIds(titleMatches);
 
     const translatedFoodIds = await Promise.all(
       words.map((word) =>
@@ -224,16 +239,16 @@ export class RecipesService {
         ),
       ),
     );
-    return {
+    const candidates = await this.recipeRepository.findSearchCandidates({
       ...where,
-      AND: words.map((word, i) => ({
+      AND: prefixes.map((prefix, i) => ({
         OR: [
-          { title: { contains: word, mode: 'insensitive' } },
+          { title: contains(prefix) },
           {
             ingredients: {
               some: {
                 OR: [
-                  { name: { contains: word, mode: 'insensitive' } },
+                  { name: contains(prefix) },
                   { genericFoodId: { in: translatedFoodIds[i] } },
                 ],
               },
@@ -241,7 +256,13 @@ export class RecipesService {
           },
         ],
       })),
-    };
+    });
+    const foodIdSets = translatedFoodIds.map((ids) => new Set(ids));
+    return onlyIds(
+      candidates.filter((recipe) =>
+        matchesTitleOrIngredients(recipe, words, foodIdSets),
+      ),
+    );
   }
 
   async findOne(

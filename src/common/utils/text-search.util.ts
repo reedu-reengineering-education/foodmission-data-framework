@@ -25,7 +25,10 @@ export function searchWords(search: string | undefined): string[] {
 /** Letters an inflected form may add after the stem: "pomodor-i", "pomodor-ini". */
 const MAX_INFLECTION_LENGTH = 3;
 
-/** Shorter terms must match a whole word, so "ei" does not find "eingelegt". */
+/**
+ * Shorter terms must match a whole word, plus at most one letter ("egg" finds
+ * "eggs"), so "ei" does not find "eingelegt".
+ */
 const MIN_PREFIX_LENGTH = 4;
 
 /**
@@ -52,10 +55,12 @@ export function textWords(text: string): string[] {
  * True when `word` starts with `part` ("pomod" finds "pomodoro"), or is an
  * inflected form of it: its stem plus a short ending ("pomodoro" finds
  * "pomodori", "pasta" finds "paste" but not "pastinaca"). Parts shorter than
- * MIN_PREFIX_LENGTH must equal the word.
+ * MIN_PREFIX_LENGTH must equal the word, plus at most one letter.
  */
 function isWordMatch(word: string, part: string): boolean {
-  if (part.length < MIN_PREFIX_LENGTH) return word === part;
+  if (part.length < MIN_PREFIX_LENGTH) {
+    return word.startsWith(part) && word.length - part.length <= 1;
+  }
   const stem = searchStem(part);
   return (
     word.startsWith(part) ||
@@ -76,4 +81,14 @@ export function hasWordMatch(text: string, term: string): boolean {
     parts.length > 0 &&
     parts.every((part) => words.some((word) => isWordMatch(word, part)))
   );
+}
+
+/**
+ * A substring of every text hasWordMatch accepts for `term`: the stem of its
+ * longest word ("d'oliva" -> "oliv"). Lets SQL narrow the rows before the
+ * word check runs in code. Empty when the term has no letters or digits.
+ */
+export function searchPrefix(term: string): string {
+  const [longest] = textWords(term).sort((a, b) => b.length - a.length);
+  return longest ? searchStem(longest) : '';
 }
