@@ -198,6 +198,30 @@ describe('TranslationService', () => {
       ).resolves.toEqual(['olive-oil']);
     });
 
+    it('matches a term with punctuation by its words', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'olive-oil', value: "Olio d'oliva" },
+        { entityId: 'olives', value: 'Olive verdi' },
+      ]);
+
+      await expect(
+        service.findEntityIdsByValue(
+          'GenericFood',
+          'it',
+          ['foodName'],
+          "d'oliva",
+          'word',
+        ),
+      ).resolves.toEqual(['olive-oil']);
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            value: { contains: 'oliv', mode: 'insensitive' },
+          }),
+        }),
+      );
+    });
+
     it('also matches compound heads in German', async () => {
       prisma.entityTranslation.findMany.mockResolvedValue([
         { entityId: 'whole-milk', value: 'Vollmilch' },

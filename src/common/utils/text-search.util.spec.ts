@@ -1,4 +1,9 @@
-import { hasWordMatch, searchStem, searchWords } from './text-search.util';
+import {
+  hasWordMatch,
+  searchStem,
+  searchWords,
+  textWords,
+} from './text-search.util';
 
 describe('searchStem', () => {
   it('drops a final vowel from terms of 4+ letters', () => {
@@ -14,6 +19,20 @@ describe('searchStem', () => {
   });
 });
 
+describe('textWords', () => {
+  it('splits on anything but letters and digits', () => {
+    expect(textWords("Olio d'oliva, Tomaten-Gemüse/Saft 2")).toEqual([
+      'olio',
+      'd',
+      'oliva',
+      'tomaten',
+      'gemüse',
+      'saft',
+      '2',
+    ]);
+  });
+});
+
 describe('hasWordMatch', () => {
   it.each([
     ['Pomodori crudi', 'pomodoro'],
@@ -23,6 +42,8 @@ describe('hasWordMatch', () => {
     ['Pomodori crudi', 'pomod'],
     ['Paste fresche', 'pasta'],
     ['Ei, gekocht', 'ei'],
+    ["Olio d'oliva", "d'oliva"],
+    ["Olio d'oliva", 'olio-oliva'],
   ])('%s matches %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(true);
   });
@@ -33,6 +54,8 @@ describe('hasWordMatch', () => {
     ['Pomodori crudi', 'pomodoroso'],
     ['Peperoni, sauer eingelegt', 'ei'],
     ['Eigelb, roh', 'ei'],
+    ["Olio d'oliva", "l'oliva"],
+    ['Olio di semi', "'-"],
   ])('%s does not match %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(false);
   });
