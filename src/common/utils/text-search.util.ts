@@ -31,25 +31,40 @@ export function searchStem(term: string): string {
     : lower;
 }
 
-/**
- * True when a word of `text` starts with `term` ("pomod" finds "pomodoro"), or
- * is an inflected form of it: its stem plus a short ending ("pomodoro" finds
- * "pomodori", "pasta" finds "paste" but not "pastinaca"). Words, not
- * substrings, so "pollo" does not find "cipollotti". Terms shorter than
- * MIN_PREFIX_LENGTH must equal a word.
- */
-export function hasWordMatch(text: string, term: string): boolean {
-  const needle = term.toLowerCase();
-  const stem = searchStem(needle);
-  const matches =
-    needle.length < MIN_PREFIX_LENGTH
-      ? (word: string) => word === needle
-      : (word: string) =>
-          word.startsWith(needle) ||
-          (word.startsWith(stem) &&
-            word.length - stem.length <= MAX_INFLECTION_LENGTH);
+/** Lowercased words, split on anything but letters and digits: "Olio d'oliva" -> olio, d, oliva. */
+export function textWords(text: string): string[] {
   return text
     .toLowerCase()
     .split(/[^\p{L}\p{N}]+/u)
-    .some(matches);
+    .filter((word) => word.length > 0);
+}
+
+/**
+ * True when `word` starts with `part` ("pomod" finds "pomodoro"), or is an
+ * inflected form of it: its stem plus a short ending ("pomodoro" finds
+ * "pomodori", "pasta" finds "paste" but not "pastinaca"). Parts shorter than
+ * MIN_PREFIX_LENGTH must equal the word.
+ */
+function isWordMatch(word: string, part: string): boolean {
+  if (part.length < MIN_PREFIX_LENGTH) return word === part;
+  const stem = searchStem(part);
+  return (
+    word.startsWith(part) ||
+    (word.startsWith(stem) &&
+      word.length - stem.length <= MAX_INFLECTION_LENGTH)
+  );
+}
+
+/**
+ * True when every word of `term` matches a word of `text` (see isWordMatch),
+ * so "d'oliva" finds "Olio d'oliva". Words, not substrings, so "pollo" does
+ * not find "cipollotti".
+ */
+export function hasWordMatch(text: string, term: string): boolean {
+  const words = textWords(text);
+  const parts = textWords(term);
+  return (
+    parts.length > 0 &&
+    parts.every((part) => words.some((word) => isWordMatch(word, part)))
+  );
 }
