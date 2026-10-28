@@ -45,7 +45,6 @@ describe('LearningService', () => {
 
   const mockTranslations = {
     resolveLocale: jest.fn((lang?: string) => lang ?? DEFAULT_LOCALE),
-    findSearchMatches: jest.fn().mockResolvedValue([]),
     overlayFields: jest.fn(
       (
         _type: string,
@@ -228,45 +227,6 @@ describe('LearningService', () => {
       hasNext: false,
       hasPrevious: false,
     });
-  });
-
-  it('listFoodFacts requires every search word to match in English or in translation', async () => {
-    prisma.foodFact.findMany.mockResolvedValue([]);
-    prisma.foodFact.count.mockResolvedValue(0);
-    mockTranslations.findSearchMatches.mockResolvedValueOnce([[], ['ff-it']]);
-
-    await service.listFoodFacts({
-      page: 1,
-      limit: 10,
-      search: 'Meat carne',
-      lang: 'it',
-    });
-
-    expect(mockTranslations.findSearchMatches).toHaveBeenCalledWith(
-      'FoodFact',
-      expect.objectContaining({ search: 'Meat carne', lang: 'it' }),
-    );
-    expect(prisma.foodFact.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({
-          AND: [
-            {
-              OR: [
-                { title: { contains: 'meat', mode: 'insensitive' } },
-                { body: { contains: 'meat', mode: 'insensitive' } },
-              ],
-            },
-            {
-              OR: [
-                { title: { contains: 'carne', mode: 'insensitive' } },
-                { body: { contains: 'carne', mode: 'insensitive' } },
-                { id: { in: ['ff-it'] } },
-              ],
-            },
-          ],
-        }),
-      }),
-    );
   });
 
   describe('listAllFoodFactProgressPaginated', () => {

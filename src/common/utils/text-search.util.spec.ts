@@ -1,10 +1,4 @@
-import { Prisma } from '@prisma/client';
-import {
-  hasWordMatch,
-  searchStem,
-  searchWords,
-  textSearchConditions,
-} from './text-search.util';
+import { hasWordMatch, searchStem, searchWords } from './text-search.util';
 
 describe('searchStem', () => {
   it('drops a final vowel from terms of 4+ letters', () => {
@@ -55,32 +49,5 @@ describe('searchWords', () => {
   it('returns no words for an empty term', () => {
     expect(searchWords(undefined)).toEqual([]);
     expect(searchWords('   ')).toEqual([]);
-  });
-});
-
-describe('textSearchConditions', () => {
-  it('matches any of the fields, case-insensitively', () => {
-    expect(
-      textSearchConditions<Prisma.FoodFactWhereInput>('meat', [
-        'title',
-        'body',
-      ]),
-    ).toEqual([
-      { title: { contains: 'meat', mode: 'insensitive' } },
-      { body: { contains: 'meat', mode: 'insensitive' } },
-    ]);
-  });
-
-  it('also matches entities whose translation matched', () => {
-    expect(
-      textSearchConditions<Prisma.FoodFactWhereInput>(
-        'carne',
-        ['title'],
-        ['f1'],
-      ),
-    ).toEqual([
-      { title: { contains: 'carne', mode: 'insensitive' } },
-      { id: { in: ['f1'] } },
-    ]);
   });
 });

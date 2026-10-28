@@ -210,23 +210,15 @@ export class LearningService {
   async listFoodFacts(
     query: LearningPaginatedQueryDto,
   ): Promise<PaginatedResponseDto<FoodFactResponseDto>> {
-    const translatedIds = await this.translations.findSearchMatches(
-      'FoodFact',
-      query,
-    );
-    return this.pageFoodFacts(buildFoodFactWhere(query, translatedIds), query);
+    return this.pageFoodFacts(buildFoodFactWhere(query), query);
   }
 
   async listFoodFactsForUser(
     userId: string,
     query: UserFoodFactListQueryDto,
   ): Promise<PaginatedResponseDto<UserFoodFactResponseDto>> {
-    const translatedIds = await this.translations.findSearchMatches(
-      'FoodFact',
-      query,
-    );
     const { data, meta } = await this.pageFoodFacts(
-      buildUserFoodFactWhere(query, userId, translatedIds),
+      buildUserFoodFactWhere(query, userId),
       query,
     );
     return { data: await this.withCompletion(userId, data), meta };
@@ -443,11 +435,7 @@ export class LearningService {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
     const { skip, take } = pageLimitToSkipTake({ page, limit });
-    const translatedIds = await this.translations.findSearchMatches(
-      'Quiz',
-      query,
-    );
-    const where = buildQuizWhere(query, translatedIds);
+    const where = buildQuizWhere(query);
 
     const [rows, total] = await Promise.all([
       this.prisma.quiz.findMany({
@@ -484,11 +472,7 @@ export class LearningService {
     filters: LearningContentFiltersDto,
     lang?: string,
   ): Promise<QuizResponseDto | null> {
-    const translatedIds = await this.translations.findSearchMatches('Quiz', {
-      search: filters.search,
-      lang,
-    });
-    const where = buildQuizWhere(filters, translatedIds);
+    const where = buildQuizWhere(filters);
 
     const answeredIds = await this.prisma.quizProgress
       .findMany({
@@ -1373,11 +1357,7 @@ export class LearningService {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
     const { skip, take } = pageLimitToSkipTake({ page, limit });
-    const translatedIds = await this.translations.findSearchMatches(
-      'MicroLearning',
-      query,
-    );
-    const where = buildMicroLearningWhere(query, translatedIds);
+    const where = buildMicroLearningWhere(query);
 
     const [rows, total] = await Promise.all([
       this.prisma.microLearning.findMany({

@@ -3,42 +3,12 @@ import {
   LearningContentFiltersDto,
   UserFoodFactListQueryDto,
 } from '../dto/learning-list-query.dto';
-import {
-  searchWords,
-  textSearchConditions,
-} from '../../common/utils/text-search.util';
-
-/** Text fields searched per content type, in English and in translation. */
-export const LEARNING_SEARCH_FIELDS = {
-  FoodFact: ['title', 'body'],
-  Quiz: ['title', 'question'],
-  MicroLearning: ['title', 'body'],
-} as const;
-
-/**
- * Every word of `search` must appear in one of `fields`, in English or in
- * translation: `translatedIds[i]` are the entities whose translation contains
- * word i (see LearningTranslationHelper.findSearchMatches).
- */
-function everyWordMatches<TWhere>(
-  search: string,
-  fields: readonly (keyof TWhere & string)[],
-  translatedIds: string[][],
-): TWhere[] {
-  return searchWords(search).map(
-    (word, i) =>
-      ({
-        OR: textSearchConditions<TWhere>(word, fields, translatedIds[i]),
-      }) as TWhere,
-  );
-}
 
 export function buildUserFoodFactWhere(
   filters: UserFoodFactListQueryDto,
   userId: string,
-  translatedIds: string[][] = [],
 ): Prisma.FoodFactWhereInput {
-  const where = buildFoodFactWhere(filters, translatedIds);
+  const where = buildFoodFactWhere(filters);
   if (filters.completed !== undefined) {
     where.progress = filters.completed
       ? { some: { userId } }
@@ -49,7 +19,6 @@ export function buildUserFoodFactWhere(
 
 export function buildFoodFactWhere(
   filters: LearningContentFiltersDto,
-  translatedIds: string[][] = [],
 ): Prisma.FoodFactWhereInput {
   const where: Prisma.FoodFactWhereInput = { available: true };
 
@@ -58,11 +27,10 @@ export function buildFoodFactWhere(
   if (filters.foodChoice !== undefined) where.foodChoice = filters.foodChoice;
   if (filters.foodWaste !== undefined) where.foodWaste = filters.foodWaste;
   if (filters.search) {
-    where.AND = everyWordMatches<Prisma.FoodFactWhereInput>(
-      filters.search,
-      LEARNING_SEARCH_FIELDS.FoodFact,
-      translatedIds,
-    );
+    where.OR = [
+      { title: { contains: filters.search, mode: 'insensitive' } },
+      { body: { contains: filters.search, mode: 'insensitive' } },
+    ];
   }
 
   if (filters.topicCode || filters.dimensionCode) {
@@ -79,7 +47,6 @@ export function buildFoodFactWhere(
 
 export function buildQuizWhere(
   filters: LearningContentFiltersDto,
-  translatedIds: string[][] = [],
 ): Prisma.QuizWhereInput {
   const where: Prisma.QuizWhereInput = { available: true };
 
@@ -88,11 +55,10 @@ export function buildQuizWhere(
   if (filters.foodChoice !== undefined) where.foodChoice = filters.foodChoice;
   if (filters.foodWaste !== undefined) where.foodWaste = filters.foodWaste;
   if (filters.search) {
-    where.AND = everyWordMatches<Prisma.QuizWhereInput>(
-      filters.search,
-      LEARNING_SEARCH_FIELDS.Quiz,
-      translatedIds,
-    );
+    where.OR = [
+      { title: { contains: filters.search, mode: 'insensitive' } },
+      { question: { contains: filters.search, mode: 'insensitive' } },
+    ];
   }
 
   if (filters.topicCode || filters.dimensionCode) {
@@ -109,7 +75,6 @@ export function buildQuizWhere(
 
 export function buildMicroLearningWhere(
   filters: LearningContentFiltersDto,
-  translatedIds: string[][] = [],
 ): Prisma.MicroLearningWhereInput {
   const and: Prisma.MicroLearningWhereInput[] = [{ available: true }];
 
@@ -122,13 +87,12 @@ export function buildMicroLearningWhere(
     and.push({ foodWaste: filters.foodWaste });
   }
   if (filters.search) {
-    and.push(
-      ...everyWordMatches<Prisma.MicroLearningWhereInput>(
-        filters.search,
-        LEARNING_SEARCH_FIELDS.MicroLearning,
-        translatedIds,
-      ),
-    );
+    and.push({
+      OR: [
+        { title: { contains: filters.search, mode: 'insensitive' } },
+        { body: { contains: filters.search, mode: 'insensitive' } },
+      ],
+    });
   }
   if (filters.topicCode) {
     and.push({ topic: { code: filters.topicCode } });
