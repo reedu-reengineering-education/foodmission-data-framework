@@ -71,6 +71,7 @@ export class RecipeController {
   @ApiQuery({ name: 'allergens', required: false, isArray: true })
   @ApiQuery({ name: 'difficulty', required: false })
   @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'searchIngredients', required: false, type: Boolean })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiResponse({
@@ -94,6 +95,7 @@ export class RecipeController {
   @ApiQuery({ name: 'allergens', required: false, isArray: true })
   @ApiQuery({ name: 'difficulty', required: false })
   @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'searchIngredients', required: false, type: Boolean })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiResponse({

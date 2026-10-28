@@ -9,6 +9,7 @@ import {
   IsString,
 } from 'class-validator';
 import {
+  TransformBooleanString,
   TransformCSVToStringArray,
   TransformTrimLowercaseToUndefined,
   TransformTrimToUndefined,
@@ -88,11 +89,24 @@ export class QueryRecipeDto extends PaginationQueryDto {
   @TransformTrimToUndefined()
   difficulty?: string;
 
-  @ApiPropertyOptional({ description: 'Search by title' })
+  @ApiPropertyOptional({
+    description:
+      'Every word must appear in the title. For languages other than English, ingredients are searched when no title matches.',
+  })
   @IsOptional()
   @IsString()
   @TransformTrimToUndefined()
   search?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Also match search words against ingredients (name, or translated food name in `lang`), even when titles match.',
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @TransformBooleanString()
+  searchIngredients?: boolean;
 
   @ApiPropertyOptional({
     description: `Optional locale for ingredient names linked to NEVO generic foods. Defaults to ${DEFAULT_LOCALE}.`,
