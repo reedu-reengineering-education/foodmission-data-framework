@@ -13,6 +13,7 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
+import { SearchableRecipe } from '../utils/recipe-search';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
@@ -200,6 +201,20 @@ export class RecipesRepository implements BaseRepository<
 
   async delete(id: string): Promise<void> {
     await this.prisma.recipe.delete({ where: { id } });
+  }
+
+  /** Recipes matching `where`, with only what a search looks at. */
+  findSearchCandidates(
+    where: Prisma.RecipeWhereInput,
+  ): Promise<SearchableRecipe[]> {
+    return this.prisma.recipe.findMany({
+      where,
+      select: {
+        id: true,
+        title: true,
+        ingredients: { select: { name: true, genericFoodId: true } },
+      },
+    });
   }
 
   async count(where?: Prisma.RecipeWhereInput): Promise<number> {

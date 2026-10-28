@@ -2,8 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import {
   hasWordMatch,
-  searchStem,
-  textWords,
+  searchPrefix,
 } from '../../common/utils/text-search.util';
 import { isCompoundHeadMatch } from '../../generic-foods/utils/search-ranking';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
@@ -188,9 +187,9 @@ export class TranslationService {
   }
 
   /**
-   * Values containing the stem of the term's longest word, narrowed in code to those hasWordMatch
-   * accepts: SQL cannot split words on apostrophes ("Olio d'oliva") or check
-   * the ending length. In compounding locales a word may also end in the
+   * Values containing the term's searchPrefix, narrowed in code to those
+   * hasWordMatch accepts: SQL cannot split words on apostrophes ("Olio
+   * d'oliva") or check the ending length. In compounding locales a word may also end in the
    * term ("milch" finds "Vollmilch"), as in the generic food search ranking.
    */
   private async findEntityIdsByWord(
@@ -199,15 +198,14 @@ export class TranslationService {
     fields: string[],
     search: string,
   ): Promise<string[]> {
-    // Narrow on the longest word of the term: "d'oliva" -> "oliv".
-    const [longest] = textWords(search).sort((a, b) => b.length - a.length);
-    if (!longest) return [];
+    const prefix = searchPrefix(search);
+    if (!prefix) return [];
     const rows = await this.prisma.entityTranslation.findMany({
       where: {
         entityType,
         locale,
         field: { in: fields },
-        value: { contains: searchStem(longest), mode: 'insensitive' },
+        value: { contains: prefix, mode: 'insensitive' },
       },
       select: { entityId: true, value: true },
     });

@@ -1,6 +1,7 @@
 import {
   MAX_SEARCH_WORDS,
   hasWordMatch,
+  searchPrefix,
   searchStem,
   searchWords,
   textWords,
@@ -45,6 +46,8 @@ describe('hasWordMatch', () => {
     ['Ei, gekocht', 'ei'],
     ["Olio d'oliva", "d'oliva"],
     ["Olio d'oliva", 'olio-oliva'],
+    ['Eggs, beaten', 'egg'],
+    ['Mini chilli beef pies', 'pie'],
   ])('%s matches %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(true);
   });
@@ -57,6 +60,8 @@ describe('hasWordMatch', () => {
     ['Eigelb, roh', 'ei'],
     ["Olio d'oliva", "l'oliva"],
     ['Olio di semi', "'-"],
+    ['Chicken pieces', 'pie'],
+    ['Eggplant', 'egg'],
   ])('%s does not match %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(false);
   });
@@ -100,5 +105,16 @@ describe('searchWords', () => {
     expect(searchWords(undefined)).toEqual([]);
     expect(searchWords('   ')).toEqual([]);
     expect(searchWords(" ' - , ")).toEqual([]);
+  });
+});
+
+describe('searchPrefix', () => {
+  it('is the stem of the longest word', () => {
+    expect(searchPrefix("d'oliva")).toBe('oliv');
+    expect(searchPrefix('Egg')).toBe('egg');
+  });
+
+  it('is empty without letters or digits', () => {
+    expect(searchPrefix("'-")).toBe('');
   });
 });

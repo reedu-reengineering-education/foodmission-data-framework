@@ -33,7 +33,7 @@ describe('RecipesService', () => {
     findRating: jest.fn(),
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
-    count: jest.fn(),
+    findSearchCandidates: jest.fn(),
   };
 
   const mockPrisma = {
@@ -139,7 +139,6 @@ describe('RecipesService', () => {
       allergens: ['TREE_NUTS'],
       dietaryLabels: [' vegan '],
       difficulty: 'easy',
-      search: 'pasta',
       page: 2,
       limit: 5,
     });
@@ -155,134 +154,149 @@ describe('RecipesService', () => {
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['TREE_NUTS'] },
         dietaryLabels: { hasSome: ['vegan'] },
-        AND: [{ title: { contains: 'pasta', mode: 'insensitive' } }],
       },
       orderBy: { createdAt: 'desc' },
     });
   });
 
-  it('should require every search word to appear in the title', async () => {
-    mockRecipeRepository.findWithPagination.mockResolvedValue(
-      emptyPaginationMock(),
-    );
+  describe('search', () => {
+    const recipe = (
+      id: string,
+      title: string,
+      ingredients: { name: string; genericFoodId?: string }[] = [],
+    ) => ({
+      id,
+      title,
+      ingredients: ingredients.map((i) => ({
+        name: i.name,
+        genericFoodId: i.genericFoodId ?? null,
+      })),
+    });
+    const pagedWhere = () =>
+      mockRecipeRepository.findWithPagination.mock.calls[0][0].where;
 
-    await service.findAll(userId, {
-      search: 'Curry  chicken',
-      page: 1,
-      limit: 10,
+    beforeEach(() => {
+      mockRecipeRepository.findWithPagination.mockResolvedValue(
+        emptyPaginationMock(),
+      );
     });
 
-    const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
-    expect(where.OR).toEqual([{ userId }, { isPublic: true }]);
-    expect(where.AND).toEqual([
-      { title: { contains: 'curry', mode: 'insensitive' } },
-      { title: { contains: 'chicken', mode: 'insensitive' } },
-    ]);
-    // English: titles only, no ingredient lookup.
-    expect(mockRecipeRepository.count).not.toHaveBeenCalled();
-    expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
-  });
+    it('narrows candidates in SQL, then keeps whole-word title matches', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('curry', 'Nutty Chicken Curry'),
+        recipe('pieces', 'Chicken pieces in curry sauce'),
+        recipe('scurry', 'Scurrying chickens'),
+      ]);
 
-  it('should keep title matches only for other languages when titles match', async () => {
-    mockRecipeRepository.findWithPagination.mockResolvedValue(
-      emptyPaginationMock(),
-    );
-    mockRecipeRepository.count.mockResolvedValue(2);
+      await service.findAll(userId, {
+        search: 'Curry  chicken',
+        page: 1,
+        limit: 10,
+      });
 
-    await service.findAll(userId, {
-      search: 'chilli beef',
-      lang: 'it',
-      page: 1,
-      limit: 10,
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith({
+        OR: [{ userId }, { isPublic: true }],
+        AND: [
+          { title: { contains: 'curry', mode: 'insensitive' } },
+          { title: { contains: 'chicken', mode: 'insensitive' } },
+        ],
+      });
+      // "Scurrying" contains "curry" but no word starts with it.
+      expect(pagedWhere()).toEqual({
+        OR: [{ userId }, { isPublic: true }],
+        id: { in: ['curry', 'pieces'] },
+      });
+      // English: titles only, no ingredient lookup.
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
     });
 
-    const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
-    expect(where.AND).toEqual([
-      { title: { contains: 'chilli', mode: 'insensitive' } },
-      { title: { contains: 'beef', mode: 'insensitive' } },
-    ]);
-    expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
-  });
+    it('keeps title matches only for other languages when titles match', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('pies', 'Mini chilli beef pies'),
+      ]);
 
-  it('should search ingredients, incl. translated names, for other languages when no title matches', async () => {
-    mockRecipeRepository.findWithPagination.mockResolvedValue(
-      emptyPaginationMock(),
-    );
-    mockRecipeRepository.count.mockResolvedValue(0);
-    mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
-      { entityId: 'tomato-food', value: 'Pomodori crudi' },
-    ]);
+      await service.findAll(userId, {
+        search: 'chilli beef',
+        lang: 'it',
+        page: 1,
+        limit: 10,
+      });
 
-    await service.findMine(userId, {
-      search: 'pomodoro',
-      lang: 'it',
-      page: 1,
-      limit: 10,
+      expect(pagedWhere().id).toEqual({ in: ['pies'] });
+      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
     });
 
-    expect(mockPrisma.entityTranslation.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({
-          entityType: 'GenericFood',
-          locale: 'it',
-          field: { in: ['foodName', 'synonym'] },
-          value: { contains: 'pomodor', mode: 'insensitive' },
-        }),
-      }),
-    );
-    const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
-    expect(where.userId).toBe(userId);
-    expect(where.AND).toEqual([
-      {
-        OR: [
-          { title: { contains: 'pomodoro', mode: 'insensitive' } },
+    it('searches ingredients the same way for other languages when no title matches', async () => {
+      mockRecipeRepository.findSearchCandidates
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([
+          recipe('salad', 'Greek salad', [
+            { name: 'Tomatoes', genericFoodId: 'tomato-food' },
+          ]),
+          recipe('stew', 'Bean stew', [{ name: 'Pomodoro sauce' }]),
+          recipe('soup', 'Onion soup', [{ name: 'Onions' }]),
+        ]);
+      mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
+        { entityId: 'tomato-food', value: 'Pomodori crudi' },
+      ]);
+
+      await service.findMine(userId, {
+        search: 'pomodoro',
+        lang: 'it',
+        page: 1,
+        limit: 10,
+      });
+
+      expect(
+        mockRecipeRepository.findSearchCandidates,
+      ).toHaveBeenLastCalledWith({
+        userId,
+        AND: [
           {
-            ingredients: {
-              some: {
-                OR: [
-                  { name: { contains: 'pomodoro', mode: 'insensitive' } },
-                  { genericFoodId: { in: ['tomato-food'] } },
-                ],
+            OR: [
+              { title: { contains: 'pomodor', mode: 'insensitive' } },
+              {
+                ingredients: {
+                  some: {
+                    OR: [
+                      { name: { contains: 'pomodor', mode: 'insensitive' } },
+                      { genericFoodId: { in: ['tomato-food'] } },
+                    ],
+                  },
+                },
               },
-            },
+            ],
           },
         ],
-      },
-    ]);
-  });
-
-  it('should search ingredients when asked, even in English with title matches', async () => {
-    mockRecipeRepository.findWithPagination.mockResolvedValue(
-      emptyPaginationMock(),
-    );
-    mockRecipeRepository.count.mockResolvedValue(5);
-
-    await service.findAll(userId, {
-      search: 'tomato',
-      searchIngredients: true,
-      page: 1,
-      limit: 10,
+      });
+      expect(pagedWhere()).toEqual({
+        userId,
+        id: { in: ['salad', 'stew'] },
+      });
     });
 
-    expect(mockRecipeRepository.count).not.toHaveBeenCalled();
-    const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
-    expect(where.AND).toEqual([
-      {
-        OR: [
-          { title: { contains: 'tomato', mode: 'insensitive' } },
-          {
-            ingredients: {
-              some: {
-                OR: [
-                  { name: { contains: 'tomato', mode: 'insensitive' } },
-                  { genericFoodId: { in: [] } },
-                ],
-              },
-            },
-          },
-        ],
-      },
-    ]);
+    it('searches ingredients when asked, even in English with title matches', async () => {
+      mockRecipeRepository.findSearchCandidates
+        .mockResolvedValueOnce([recipe('soup', 'Creamy tomato soup')])
+        .mockResolvedValueOnce([
+          recipe('soup', 'Creamy tomato soup'),
+          recipe('shakshuka', 'Shakshuka', [{ name: 'Chopped tomatoes' }]),
+          recipe('ketchup', 'Burger', [{ name: 'Tomatillo salsa' }]),
+        ]);
+
+      await service.findAll(userId, {
+        search: 'tomato',
+        searchIngredients: true,
+        page: 1,
+        limit: 10,
+      });
+
+      expect(pagedWhere().id).toEqual({ in: ['soup', 'shakshuka'] });
+      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+    });
   });
 
   it('should map Prisma unique error to ResourceAlreadyExistsException on create', async () => {
