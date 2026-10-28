@@ -158,6 +158,7 @@ describe('TranslationService', () => {
     it('matches words and their inflected forms', async () => {
       prisma.entityTranslation.findMany.mockResolvedValue([
         { entityId: 'raw', value: 'Pomodori crudi' },
+        { entityId: 'juice', value: 'Succo di pomodoro/verdura' },
         { entityId: 'puree', value: 'Concentrato di pomodoro' },
         { entityId: 'puree', value: 'Passata di pomodoro' },
         { entityId: 'parsnip', value: 'Pomodorinoso inventato' },
@@ -171,17 +172,30 @@ describe('TranslationService', () => {
         'word',
       );
 
-      expect(ids).toEqual(['raw', 'puree']);
+      expect(ids).toEqual(['raw', 'juice', 'puree']);
       expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
-            OR: [
-              { value: { startsWith: 'pomodor', mode: 'insensitive' } },
-              { value: { contains: ' pomodor', mode: 'insensitive' } },
-            ],
+            value: { contains: 'pomodor', mode: 'insensitive' },
           }),
         }),
       );
+    });
+
+    it('matches words after an apostrophe', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'olive-oil', value: "Olio d'oliva" },
+      ]);
+
+      await expect(
+        service.findEntityIdsByValue(
+          'GenericFood',
+          'it',
+          ['foodName'],
+          'oliva',
+          'word',
+        ),
+      ).resolves.toEqual(['olive-oil']);
     });
 
     it('also matches compound heads in German', async () => {
@@ -203,7 +217,7 @@ describe('TranslationService', () => {
       expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
-            OR: [{ value: { contains: 'milch', mode: 'insensitive' } }],
+            value: { contains: 'milch', mode: 'insensitive' },
           }),
         }),
       );

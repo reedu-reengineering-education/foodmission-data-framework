@@ -226,10 +226,7 @@ describe('RecipesService', () => {
           entityType: 'GenericFood',
           locale: 'it',
           field: { in: ['foodName', 'synonym'] },
-          OR: [
-            { value: { startsWith: 'pomodor', mode: 'insensitive' } },
-            { value: { contains: ' pomodor', mode: 'insensitive' } },
-          ],
+          value: { contains: 'pomodor', mode: 'insensitive' },
         }),
       }),
     );
