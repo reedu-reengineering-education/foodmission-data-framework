@@ -112,6 +112,13 @@ export function hasWordMatch(text: string, term: string): boolean {
   );
 }
 
+/** True when every word of `term` is a word of `text` as is: "pie" in "Fish pie", not "pies". */
+export function hasExactWordMatch(text: string, term: string): boolean {
+  const words = new Set(textWords(text));
+  const parts = textWords(term);
+  return parts.length > 0 && parts.every((part) => words.has(part));
+}
+
 /**
  * A substring of every text hasWordMatch accepts for `term`: the stem of its
  * longest word ("d'oliva" -> "oliv"). Lets SQL narrow the rows before the
