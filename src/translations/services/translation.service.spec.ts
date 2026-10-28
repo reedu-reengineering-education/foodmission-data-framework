@@ -155,6 +155,29 @@ describe('TranslationService', () => {
       );
     });
 
+    it('supports matching at the start of a word', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([]);
+
+      await service.findEntityIdsByValue(
+        'GenericFood',
+        'it',
+        ['foodName'],
+        'pollo',
+        'wordStart',
+      );
+
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            OR: [
+              { value: { startsWith: 'pollo', mode: 'insensitive' } },
+              { value: { contains: ' pollo', mode: 'insensitive' } },
+            ],
+          }),
+        }),
+      );
+    });
+
     it('supports exact match for filters', async () => {
       prisma.entityTranslation.findMany.mockResolvedValue([
         { entityId: 'id-1' },

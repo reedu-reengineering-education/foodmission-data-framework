@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
@@ -10,7 +11,8 @@ import {
 
 export type FieldFallbacks = Record<string, string | null | undefined>;
 
-export type TranslationValueMatch = 'contains' | 'equals';
+/** `wordStart`: a word in the value starts with the term ("pollo" ≠ "Cipollotti"). */
+export type TranslationValueMatch = 'contains' | 'equals' | 'wordStart';
 
 @Injectable()
 export class TranslationService {
@@ -148,17 +150,24 @@ export class TranslationService {
       return [];
     }
 
-    const valueFilter =
+    const valueWhere: Prisma.EntityTranslationWhereInput =
       match === 'equals'
-        ? { equals: search, mode: 'insensitive' as const }
-        : { contains: search, mode: 'insensitive' as const };
+        ? { value: { equals: search, mode: 'insensitive' } }
+        : match === 'wordStart'
+          ? {
+              OR: [
+                { value: { startsWith: search, mode: 'insensitive' } },
+                { value: { contains: ` ${search}`, mode: 'insensitive' } },
+              ],
+            }
+          : { value: { contains: search, mode: 'insensitive' } };
 
     const rows = await this.prisma.entityTranslation.findMany({
       where: {
         entityType,
         locale: resolvedLocale,
         field: { in: fields },
-        value: valueFilter,
+        ...valueWhere,
       },
       select: { entityId: true },
       distinct: ['entityId'],

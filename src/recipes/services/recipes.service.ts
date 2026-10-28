@@ -83,12 +83,11 @@ export class RecipesService {
     const { page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.RecipeWhereInput = {
-      userId,
-      ...this.buildFiltersWhere(query),
-    };
-
     try {
+      const where = await this.withSearch(
+        { userId, ...this.buildFiltersWhere(query) },
+        query,
+      );
       const result = await this.recipeRepository.findWithPagination({
         skip,
         take: limit,
@@ -129,12 +128,11 @@ export class RecipesService {
           ? { userId, isPublic: false }
           : { OR: [{ userId }, { isPublic: true }] };
 
-    const where: Prisma.RecipeWhereInput = {
-      ...visibilityWhere,
-      ...this.buildFiltersWhere(query),
-    };
-
     try {
+      const where = await this.withSearch(
+        { ...visibilityWhere, ...this.buildFiltersWhere(query) },
+        query,
+      );
       const result = await this.recipeRepository.findWithPagination({
         skip,
         take: limit,
@@ -169,7 +167,6 @@ export class RecipesService {
       allergens,
       difficulty,
       origin,
-      search,
     } = query;
     return {
       ...(category ? { category } : {}),
@@ -185,14 +182,65 @@ export class RecipesService {
       ...(dietaryLabels && dietaryLabels.length
         ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
         : {}),
-      ...(search
-        ? {
-            // Every word must appear in the title. Titles have no translations.
-            AND: searchWords(search).map((word) => ({
-              title: { contains: word, mode: 'insensitive' as const },
-            })),
-          }
-        : {}),
+    };
+  }
+
+  /**
+   * Adds the search to `where`: every search word must appear in the title.
+   * Each word may instead match an ingredient, by name or by a word of its
+   * generic food's translated name ("pomodoro" finds recipes with tomatoes,
+   * "pollo" does not find "Cipollotti"), when the client asks for it, or for
+   * languages other than English when no title matches (titles exist only
+   * in English).
+   */
+  private async withSearch(
+    where: Prisma.RecipeWhereInput,
+    query: QueryRecipeDto,
+  ): Promise<Prisma.RecipeWhereInput> {
+    const words = searchWords(query.search);
+    if (words.length === 0) return where;
+
+    const byTitle: Prisma.RecipeWhereInput = {
+      ...where,
+      AND: words.map((word) => ({
+        title: { contains: word, mode: 'insensitive' },
+      })),
+    };
+    const locale = this.translationService.resolveLocale(query.lang);
+    const searchIngredients =
+      query.searchIngredients ||
+      (locale !== DEFAULT_LOCALE &&
+        (await this.recipeRepository.count(byTitle)) === 0);
+    if (!searchIngredients) return byTitle;
+
+    const translatedFoodIds = await Promise.all(
+      words.map((word) =>
+        this.translationService.findEntityIdsByValue(
+          'GenericFood',
+          locale,
+          ['foodName', 'synonym'],
+          word,
+          'wordStart',
+        ),
+      ),
+    );
+    return {
+      ...where,
+      AND: words.map((word, i) => ({
+        OR: [
+          { title: { contains: word, mode: 'insensitive' } },
+          {
+            ingredients: {
+              some: {
+                OR: [
+                  { name: { contains: word, mode: 'insensitive' } },
+                  { genericFoodId: { in: translatedFoodIds[i] } },
+                ],
+              },
+            },
+          },
+        ],
+      })),
     };
   }
 
