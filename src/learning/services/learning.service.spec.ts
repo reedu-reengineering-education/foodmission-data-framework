@@ -230,29 +230,39 @@ describe('LearningService', () => {
     });
   });
 
-  it('listFoodFacts also matches food facts whose translation matches the search', async () => {
+  it('listFoodFacts requires every search word to match in English or in translation', async () => {
     prisma.foodFact.findMany.mockResolvedValue([]);
     prisma.foodFact.count.mockResolvedValue(0);
-    mockTranslations.findSearchMatches.mockResolvedValueOnce(['ff-it']);
+    mockTranslations.findSearchMatches.mockResolvedValueOnce([[], ['ff-it']]);
 
     await service.listFoodFacts({
       page: 1,
       limit: 10,
-      search: 'carne',
+      search: 'Meat carne',
       lang: 'it',
     });
 
     expect(mockTranslations.findSearchMatches).toHaveBeenCalledWith(
       'FoodFact',
-      expect.objectContaining({ search: 'carne', lang: 'it' }),
+      expect.objectContaining({ search: 'Meat carne', lang: 'it' }),
     );
     expect(prisma.foodFact.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          OR: [
-            { title: { contains: 'carne', mode: 'insensitive' } },
-            { body: { contains: 'carne', mode: 'insensitive' } },
-            { id: { in: ['ff-it'] } },
+          AND: [
+            {
+              OR: [
+                { title: { contains: 'meat', mode: 'insensitive' } },
+                { body: { contains: 'meat', mode: 'insensitive' } },
+              ],
+            },
+            {
+              OR: [
+                { title: { contains: 'carne', mode: 'insensitive' } },
+                { body: { contains: 'carne', mode: 'insensitive' } },
+                { id: { in: ['ff-it'] } },
+              ],
+            },
           ],
         }),
       }),

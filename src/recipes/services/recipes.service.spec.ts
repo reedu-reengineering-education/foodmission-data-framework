@@ -198,6 +198,7 @@ describe('RecipesService', () => {
       }),
     );
     const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
+    expect(where.AND).toHaveLength(1);
     expect(where.AND[0].OR[1]).toEqual({
       ingredients: {
         some: {
@@ -207,6 +208,32 @@ describe('RecipesService', () => {
           ],
         },
       },
+    });
+  });
+
+  it('should require every search word to match the title or an ingredient', async () => {
+    mockRecipeRepository.findWithPagination.mockResolvedValue(
+      emptyPaginationMock(),
+    );
+    mockPrisma.entityTranslation.findMany
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([{ entityId: 'tomato-food' }]);
+
+    await service.findAll(userId, {
+      search: 'Pasta pomodoro',
+      lang: 'it',
+      page: 1,
+      limit: 10,
+    });
+
+    const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
+    expect(where.OR).toEqual([{ userId }, { isPublic: true }]);
+    expect(where.AND.map((w: any) => w.OR[0].title.contains)).toEqual([
+      'pasta',
+      'pomodoro',
+    ]);
+    expect(where.AND[1].OR[1].ingredients.some.OR[1]).toEqual({
+      genericFoodId: { in: ['tomato-food'] },
     });
   });
 

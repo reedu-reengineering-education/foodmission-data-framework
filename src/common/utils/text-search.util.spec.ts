@@ -1,5 +1,19 @@
 import { Prisma } from '@prisma/client';
-import { textSearchConditions } from './text-search.util';
+import { searchWords, textSearchConditions } from './text-search.util';
+
+describe('searchWords', () => {
+  it('splits on whitespace, lowercases and drops duplicates', () => {
+    expect(searchWords('  Pasta  POMODORO pasta ')).toEqual([
+      'pasta',
+      'pomodoro',
+    ]);
+  });
+
+  it('returns no words for an empty term', () => {
+    expect(searchWords(undefined)).toEqual([]);
+    expect(searchWords('   ')).toEqual([]);
+  });
+});
 
 describe('textSearchConditions', () => {
   it('matches any of the fields, case-insensitively', () => {

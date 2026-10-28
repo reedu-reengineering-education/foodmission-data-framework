@@ -19,7 +19,10 @@ import {
 import { Prisma, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
-import { textSearchConditions } from '../../common/utils/text-search.util';
+import {
+  searchWords,
+  textSearchConditions,
+} from '../../common/utils/text-search.util';
 import { plainToInstance } from 'class-transformer';
 import {
   EventSource,
@@ -187,43 +190,50 @@ export class RecipesService {
       ...(dietaryLabels && dietaryLabels.length
         ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
         : {}),
-      // AND keeps the search OR apart from the visibility OR in findAll.
-      ...(search ? { AND: [await this.searchWhere(search, query.lang)] } : {}),
+      ...(search ? await this.searchWhere(search, query.lang) : {}),
     };
   }
 
   /**
-   * Recipes whose title or an ingredient contains `search`. Ingredients also
-   * match through their generic food's translated name, so "pomodoro" finds
-   * recipes with tomatoes. Titles have no translations.
+   * Every word of `search` must appear in the title or in an ingredient.
+   * Ingredients also match through their generic food's translated name, so
+   * "pasta pomodoro" finds pasta recipes with tomatoes. Titles have no
+   * translations.
    */
   private async searchWhere(
     search: string,
     lang?: string,
   ): Promise<Prisma.RecipeWhereInput> {
-    const translatedFoodIds =
-      await this.translationService.findEntityIdsByValue(
-        'GenericFood',
-        this.translationService.resolveLocale(lang),
-        ['foodName', 'synonym'],
-        search,
-      );
+    const words = searchWords(search);
+    const locale = this.translationService.resolveLocale(lang);
+    const translatedFoodIds = await Promise.all(
+      words.map((word) =>
+        this.translationService.findEntityIdsByValue(
+          'GenericFood',
+          locale,
+          ['foodName', 'synonym'],
+          word,
+        ),
+      ),
+    );
     return {
-      OR: [
-        { title: { contains: search, mode: 'insensitive' } },
-        {
-          ingredients: {
-            some: {
-              OR: textSearchConditions<Prisma.RecipeIngredientWhereInput>(
-                search,
-                ['name'],
-                translatedFoodIds,
-                'genericFoodId',
-              ),
+      AND: words.map((word, i) => ({
+        OR: [
+          { title: { contains: word, mode: 'insensitive' } },
+          {
+            ingredients: {
+              some: {
+                OR: textSearchConditions<Prisma.RecipeIngredientWhereInput>(
+                  word,
+                  ['name'],
+                  translatedFoodIds[i],
+                  'genericFoodId',
+                ),
+              },
             },
           },
-        },
-      ],
+        ],
+      })),
     };
   }
 
