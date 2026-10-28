@@ -184,6 +184,31 @@ describe('TranslationService', () => {
       );
     });
 
+    it('also matches compound heads in German', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'whole-milk', value: 'Vollmilch' },
+        { entityId: 'shake', value: 'Milchshake' },
+        { entityId: 'cheese', value: 'Käse aus Rohmilch' },
+      ]);
+
+      const ids = await service.findEntityIdsByValue(
+        'GenericFood',
+        'de',
+        ['foodName'],
+        'milch',
+        'word',
+      );
+
+      expect(ids).toEqual(['whole-milk', 'shake']);
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            OR: [{ value: { contains: 'milch', mode: 'insensitive' } }],
+          }),
+        }),
+      );
+    });
+
     it('supports exact match for filters', async () => {
       prisma.entityTranslation.findMany.mockResolvedValue([
         { entityId: 'id-1' },

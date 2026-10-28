@@ -28,6 +28,7 @@ describe('hasWordMatch', () => {
     ['Petto di pollo crudo', 'Pollo'],
     ['Pomodori crudi', 'pomod'],
     ['Paste fresche', 'pasta'],
+    ['Ei, gekocht', 'ei'],
   ])('%s matches %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(true);
   });
@@ -36,6 +37,8 @@ describe('hasWordMatch', () => {
     ['Cipollotti crudi', 'pollo'],
     ['Pastinaca cruda', 'pasta'],
     ['Pomodori crudi', 'pomodoroso'],
+    ['Peperoni, sauer eingelegt', 'ei'],
+    ['Eigelb, roh', 'ei'],
   ])('%s does not match %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(false);
   });

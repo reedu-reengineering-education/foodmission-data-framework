@@ -1,6 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { hasWordMatch, searchStem } from '../../common/utils/text-search.util';
+import {
+  isCompoundHeadMatch,
+  isCompoundingLocale,
+} from '../../generic-foods/utils/search-ranking';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   ENTITY_TRANSLATABLE_FIELDS,
@@ -11,7 +15,11 @@ import {
 
 export type FieldFallbacks = Record<string, string | null | undefined>;
 
-/** `word`: a word of the value starts with the term or is an inflected form of it (see hasWordMatch). */
+/**
+ * `word`: a word of the value starts with the term or is an inflected form of
+ * it (see hasWordMatch); in German, Dutch and Norwegian also a compound with
+ * the term as its head (see isCompoundHeadMatch).
+ */
 export type TranslationValueMatch = 'contains' | 'equals' | 'word';
 
 @Injectable()
@@ -179,8 +187,10 @@ export class TranslationService {
   }
 
   /**
-   * Values with a word starting with the term's stem, narrowed in code to
-   * those hasWordMatch accepts (SQL cannot check the ending length).
+   * Values that may match, narrowed in code to those hasWordMatch accepts
+   * (SQL cannot check the ending length). In compounding locales a word may
+   * also end in the term ("milch" finds "Vollmilch"), as in the generic food
+   * search ranking.
    */
   private async findEntityIdsByWord(
     entityType: TranslatableEntityType,
@@ -189,15 +199,18 @@ export class TranslationService {
     search: string,
   ): Promise<string[]> {
     const stem = searchStem(search);
+    const compounding = isCompoundingLocale(locale);
     const rows = await this.prisma.entityTranslation.findMany({
       where: {
         entityType,
         locale,
         field: { in: fields },
-        OR: [
-          { value: { startsWith: stem, mode: 'insensitive' } },
-          { value: { contains: ` ${stem}`, mode: 'insensitive' } },
-        ],
+        OR: compounding
+          ? [{ value: { contains: stem, mode: 'insensitive' } }]
+          : [
+              { value: { startsWith: stem, mode: 'insensitive' } },
+              { value: { contains: ` ${stem}`, mode: 'insensitive' } },
+            ],
       },
       select: { entityId: true, value: true },
     });
@@ -205,7 +218,11 @@ export class TranslationService {
     return [
       ...new Set(
         rows
-          .filter((row) => hasWordMatch(row.value, search))
+          .filter(
+            (row) =>
+              hasWordMatch(row.value, search) ||
+              isCompoundHeadMatch(search, row.value, locale),
+          )
           .map((row) => row.entityId),
       ),
     ];

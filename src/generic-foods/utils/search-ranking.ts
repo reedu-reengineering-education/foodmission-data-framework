@@ -172,6 +172,28 @@ export function matchQuality(
   return MatchQuality.NONE;
 }
 
+/** Food names in this locale are compound words with the head last. */
+export function isCompoundingLocale(locale: string): boolean {
+  return COMPOUNDING_LOCALES.has(locale);
+}
+
+/**
+ * In a compounding locale, a leading word of `text` is `term` as a compound
+ * head or with a short plural ending: "milch" finds "Vollmilch", "kartoffel"
+ * finds "Kartoffeln" (see matchQuality).
+ */
+export function isCompoundHeadMatch(
+  term: string,
+  text: string,
+  locale: string,
+): boolean {
+  return (
+    isCompoundingLocale(locale) &&
+    matchQuality(term, text, { compoundHeads: true }) >=
+      MatchQuality.NAME_PREFIX
+  );
+}
+
 /** 0 = basic ingredient, 1 = other, 2 = dish / composite. */
 export function foodGroupTier(foodGroup: string | null): 0 | 1 | 2 {
   const group = (foodGroup ?? '').trim().toLowerCase();

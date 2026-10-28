@@ -1,4 +1,5 @@
 import {
+  isCompoundHeadMatch,
   foodex2FacetCount,
   foodGroupTier,
   isBaseForm,
@@ -93,6 +94,18 @@ describe('search ranking', () => {
       ['ei', 'Eisbergsalat', MatchQuality.WORD_PREFIX],
     ])('compound head: %s in %s', (term, text, expected) => {
       expect(matchQuality(term, text, { compoundHeads: true })).toBe(expected);
+    });
+  });
+
+  describe('isCompoundHeadMatch', () => {
+    it.each([
+      ['milch', 'Vollmilch', 'de', true],
+      ['kartoffel', 'Kartoffeln, gekocht', 'de', true],
+      ['milch', 'Käse aus Rohmilch', 'de', false],
+      ['ei', 'Brei', 'de', false],
+      ['milk', 'Buttermilk', 'en', false],
+    ])('%s in %s (%s): %s', (term, text, locale, expected) => {
+      expect(isCompoundHeadMatch(term, text, locale)).toBe(expected);
     });
   });
 
