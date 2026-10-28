@@ -3,6 +3,7 @@ import { OffMongoPrismaService } from '../../database/off-mongo-prisma.service';
 import { OffProduct, Prisma } from '.prisma/off-mongo-client';
 import { OpenFoodFactsSearchOptions } from '../interfaces/openfoodfacts.interface';
 import { describeError } from '../../common/utils/error.utils';
+import { searchWords } from '../../common/utils/text-search.util';
 
 /** The OFF tags meal-flag derivation reads (see `derive-meal-flags.ts`). */
 export interface OffMealFacts {
@@ -202,14 +203,7 @@ export class OffMongoProductRepository {
   private async resolveKeywordMatch(
     query: string | undefined,
   ): Promise<KeywordMatch | 'no-match' | null> {
-    const words = [
-      ...new Set(
-        (query ?? '')
-          .toLowerCase()
-          .split(/\s+/)
-          .filter((word) => word.length > 0),
-      ),
-    ];
+    const words = searchWords(query);
     if (words.length === 0) return null;
     if (words.length === 1) return { anchor: words[0], others: [] };
 
