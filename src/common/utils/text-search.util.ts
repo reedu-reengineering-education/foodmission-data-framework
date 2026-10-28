@@ -1,14 +1,16 @@
 /**
- * Lowercased, unique words of a search term. Shared with the Open Food Facts
- * search, so every search splits a term the same way.
+ * Lowercased, unique words of a search term. Splits on spaces and on
+ * punctuation between words ("chilli,beef"), but keeps apostrophes and
+ * hyphens inside a word ("d'oliva", "coca-cola"). Shared with the Open Food
+ * Facts search, so every search splits a term the same way.
  */
 export function searchWords(search: string | undefined): string[] {
   return [
     ...new Set(
       (search ?? '')
         .toLowerCase()
-        .split(/\s+/)
-        .filter((word) => word.length > 0),
+        .split(/[^\p{L}\p{N}'’-]+/u)
+        .filter((word) => /[\p{L}\p{N}]/u.test(word)),
     ),
   ];
 }

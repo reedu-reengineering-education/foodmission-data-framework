@@ -69,8 +69,28 @@ describe('searchWords', () => {
     ]);
   });
 
-  it('returns no words for an empty term', () => {
+  it('splits on punctuation between words', () => {
+    expect(searchWords('chilli,beef; rice/peas + salt.')).toEqual([
+      'chilli',
+      'beef',
+      'rice',
+      'peas',
+      'salt',
+    ]);
+  });
+
+  it('keeps apostrophes and hyphens inside a word', () => {
+    expect(searchWords("olio d'oliva coca-cola d’oliva")).toEqual([
+      'olio',
+      "d'oliva",
+      'coca-cola',
+      'd’oliva',
+    ]);
+  });
+
+  it('returns no words for an empty term or punctuation only', () => {
     expect(searchWords(undefined)).toEqual([]);
     expect(searchWords('   ')).toEqual([]);
+    expect(searchWords(" ' - , ")).toEqual([]);
   });
 });
