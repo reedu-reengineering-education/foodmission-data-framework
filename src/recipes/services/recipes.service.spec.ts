@@ -154,87 +154,29 @@ describe('RecipesService', () => {
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['TREE_NUTS'] },
         dietaryLabels: { hasSome: ['vegan'] },
-        AND: [
-          {
-            OR: [
-              { title: { contains: 'pasta', mode: 'insensitive' } },
-              {
-                ingredients: {
-                  some: {
-                    OR: [{ name: { contains: 'pasta', mode: 'insensitive' } }],
-                  },
-                },
-              },
-            ],
-          },
-        ],
+        AND: [{ title: { contains: 'pasta', mode: 'insensitive' } }],
       },
       orderBy: { createdAt: 'desc' },
     });
   });
 
-  it('should match recipes by translated ingredient names', async () => {
+  it('should require every search word to appear in the title', async () => {
     mockRecipeRepository.findWithPagination.mockResolvedValue(
       emptyPaginationMock(),
     );
-    mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
-      { entityId: 'tomato-food' },
-    ]);
 
     await service.findAll(userId, {
-      search: 'pomodoro',
-      lang: 'it',
-      page: 1,
-      limit: 10,
-    });
-
-    expect(mockPrisma.entityTranslation.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({
-          entityType: 'GenericFood',
-          locale: 'it',
-          field: { in: ['foodName', 'synonym'] },
-        }),
-      }),
-    );
-    const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
-    expect(where.AND).toHaveLength(1);
-    expect(where.AND[0].OR[1]).toEqual({
-      ingredients: {
-        some: {
-          OR: [
-            { name: { contains: 'pomodoro', mode: 'insensitive' } },
-            { genericFoodId: { in: ['tomato-food'] } },
-          ],
-        },
-      },
-    });
-  });
-
-  it('should require every search word to match the title or an ingredient', async () => {
-    mockRecipeRepository.findWithPagination.mockResolvedValue(
-      emptyPaginationMock(),
-    );
-    mockPrisma.entityTranslation.findMany
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([{ entityId: 'tomato-food' }]);
-
-    await service.findAll(userId, {
-      search: 'Pasta pomodoro',
-      lang: 'it',
+      search: 'Curry  chicken',
       page: 1,
       limit: 10,
     });
 
     const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
     expect(where.OR).toEqual([{ userId }, { isPublic: true }]);
-    expect(where.AND.map((w: any) => w.OR[0].title.contains)).toEqual([
-      'pasta',
-      'pomodoro',
+    expect(where.AND).toEqual([
+      { title: { contains: 'curry', mode: 'insensitive' } },
+      { title: { contains: 'chicken', mode: 'insensitive' } },
     ]);
-    expect(where.AND[1].OR[1].ingredients.some.OR[1]).toEqual({
-      genericFoodId: { in: ['tomato-food'] },
-    });
   });
 
   it('should map Prisma unique error to ResourceAlreadyExistsException on create', async () => {

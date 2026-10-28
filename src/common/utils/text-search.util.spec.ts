@@ -40,18 +40,4 @@ describe('textSearchConditions', () => {
       { id: { in: ['f1'] } },
     ]);
   });
-
-  it('matches translated ids on a custom id field', () => {
-    expect(
-      textSearchConditions<Prisma.RecipeIngredientWhereInput>(
-        'pomodoro',
-        ['name'],
-        ['g1'],
-        'genericFoodId',
-      ),
-    ).toEqual([
-      { name: { contains: 'pomodoro', mode: 'insensitive' } },
-      { genericFoodId: { in: ['g1'] } },
-    ]);
-  });
 });
