@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { hasWordMatch, searchStem } from '../../common/utils/text-search.util';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   ENTITY_TRANSLATABLE_FIELDS,
@@ -11,8 +11,8 @@ import {
 
 export type FieldFallbacks = Record<string, string | null | undefined>;
 
-/** `wordStart`: a word in the value starts with the term ("pollo" ≠ "Cipollotti"). */
-export type TranslationValueMatch = 'contains' | 'equals' | 'wordStart';
+/** `word`: a word of the value starts with the term or is an inflected form of it (see hasWordMatch). */
+export type TranslationValueMatch = 'contains' | 'equals' | 'word';
 
 @Injectable()
 export class TranslationService {
@@ -150,30 +150,65 @@ export class TranslationService {
       return [];
     }
 
-    const valueWhere: Prisma.EntityTranslationWhereInput =
+    if (match === 'word') {
+      return this.findEntityIdsByWord(
+        entityType,
+        resolvedLocale,
+        fields,
+        search,
+      );
+    }
+
+    const value =
       match === 'equals'
-        ? { value: { equals: search, mode: 'insensitive' } }
-        : match === 'wordStart'
-          ? {
-              OR: [
-                { value: { startsWith: search, mode: 'insensitive' } },
-                { value: { contains: ` ${search}`, mode: 'insensitive' } },
-              ],
-            }
-          : { value: { contains: search, mode: 'insensitive' } };
+        ? { equals: search, mode: 'insensitive' as const }
+        : { contains: search, mode: 'insensitive' as const };
 
     const rows = await this.prisma.entityTranslation.findMany({
       where: {
         entityType,
         locale: resolvedLocale,
         field: { in: fields },
-        ...valueWhere,
+        value,
       },
       select: { entityId: true },
       distinct: ['entityId'],
     });
 
     return rows.map((r) => r.entityId);
+  }
+
+  /**
+   * Values with a word starting with the term's stem, narrowed in code to
+   * those hasWordMatch accepts (SQL cannot check the ending length).
+   */
+  private async findEntityIdsByWord(
+    entityType: TranslatableEntityType,
+    locale: string,
+    fields: string[],
+    search: string,
+  ): Promise<string[]> {
+    const stem = searchStem(search);
+    const rows = await this.prisma.entityTranslation.findMany({
+      where: {
+        entityType,
+        locale,
+        field: { in: fields },
+        OR: [
+          { value: { startsWith: stem, mode: 'insensitive' } },
+          { value: { contains: ` ${stem}`, mode: 'insensitive' } },
+        ],
+      },
+      select: { entityId: true, value: true },
+    });
+
+    return [
+      ...new Set(
+        rows
+          .filter((row) => hasWordMatch(row.value, search))
+          .map((row) => row.entityId),
+      ),
+    ];
   }
 
   async listDistinct(

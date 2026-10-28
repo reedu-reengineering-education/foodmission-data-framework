@@ -188,10 +188,10 @@ export class RecipesService {
   /**
    * Adds the search to `where`: every search word must appear in the title.
    * Each word may instead match an ingredient, by name or by a word of its
-   * generic food's translated name ("pomodoro" finds recipes with tomatoes,
-   * "pollo" does not find "Cipollotti"), when the client asks for it, or for
-   * languages other than English when no title matches (titles exist only
-   * in English).
+   * generic food's translated name, endings included ("pomodoro" finds
+   * "Pomodori crudi", "pollo" does not find "Cipollotti"). That happens when
+   * the client asks for it, or for languages other than English when no
+   * title matches (titles exist only in English).
    */
   private async withSearch(
     where: Prisma.RecipeWhereInput,
@@ -220,7 +220,7 @@ export class RecipesService {
           locale,
           ['foodName', 'synonym'],
           word,
-          'wordStart',
+          'word',
         ),
       ),
     );

@@ -210,7 +210,7 @@ describe('RecipesService', () => {
     );
     mockRecipeRepository.count.mockResolvedValue(0);
     mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
-      { entityId: 'tomato-food' },
+      { entityId: 'tomato-food', value: 'Pomodori crudi' },
     ]);
 
     await service.findMine(userId, {
@@ -227,8 +227,8 @@ describe('RecipesService', () => {
           locale: 'it',
           field: { in: ['foodName', 'synonym'] },
           OR: [
-            { value: { startsWith: 'pomodoro', mode: 'insensitive' } },
-            { value: { contains: ' pomodoro', mode: 'insensitive' } },
+            { value: { startsWith: 'pomodor', mode: 'insensitive' } },
+            { value: { contains: ' pomodor', mode: 'insensitive' } },
           ],
         }),
       }),
