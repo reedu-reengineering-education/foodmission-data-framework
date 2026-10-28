@@ -1,4 +1,8 @@
-import { matchesTitle, matchesTitleOrIngredients } from './recipe-search';
+import {
+  matchesTitle,
+  matchesTitleOrIngredients,
+  rankRecipes,
+} from './recipe-search';
 
 describe('recipe search matching', () => {
   const recipe = {
@@ -39,5 +43,55 @@ describe('recipe search matching', () => {
         [new Set(['tomato-food']), new Set()],
       ),
     ).toBe(true);
+  });
+
+  describe('rankRecipes', () => {
+    const titled = (id: string, title: string) => ({
+      id,
+      title,
+      ingredients: [],
+    });
+    const ids = (recipes: { id: string }[]) => recipes.map((r) => r.id);
+
+    it('puts more title words first, so title matches beat ingredient-only ones', () => {
+      expect(
+        ids(
+          rankRecipes(
+            [
+              titled('ingredients-only', 'Shakshuka'),
+              titled('one-word', 'Tomato soup'),
+              titled('both-words', 'Tomato and egg stir fry'),
+            ],
+            ['tomato', 'egg'],
+          ),
+        ),
+      ).toEqual(['both-words', 'one-word', 'ingredients-only']);
+    });
+
+    it('then exact words, then shorter titles', () => {
+      expect(
+        ids(
+          rankRecipes(
+            [
+              titled('plural', 'Mini pies'),
+              titled('long', 'Three fish pie with prawns'),
+              titled('short', 'Fish pie'),
+            ],
+            ['pie'],
+          ),
+        ),
+      ).toEqual(['short', 'long', 'plural']);
+    });
+
+    it('keeps the input order for ties', () => {
+      expect(
+        ids(
+          rankRecipes(
+            [titled('newer', 'Fish pie'), titled('older', 'Meat pie')],
+            ['pie'],
+          ),
+        ),
+      ).toEqual(['newer', 'older']);
+    });
   });
 });

@@ -34,6 +34,7 @@ describe('RecipesService', () => {
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
     findSearchCandidates: jest.fn(),
+    findByIds: jest.fn(),
   };
 
   const mockPrisma = {
@@ -172,13 +173,10 @@ describe('RecipesService', () => {
         genericFoodId: i.genericFoodId ?? null,
       })),
     });
-    const pagedWhere = () =>
-      mockRecipeRepository.findWithPagination.mock.calls[0][0].where;
+    const pageIds = () => mockRecipeRepository.findByIds.mock.calls[0][0];
 
     beforeEach(() => {
-      mockRecipeRepository.findWithPagination.mockResolvedValue(
-        emptyPaginationMock(),
-      );
+      mockRecipeRepository.findByIds.mockResolvedValue([]);
     });
 
     it('narrows candidates in SQL, then keeps whole-word title matches', async () => {
@@ -201,11 +199,10 @@ describe('RecipesService', () => {
           { title: { contains: 'chicken', mode: 'insensitive' } },
         ],
       });
-      // "Scurrying" contains "curry" but no word starts with it.
-      expect(pagedWhere()).toEqual({
-        OR: [{ userId }, { isPublic: true }],
-        id: { in: ['curry', 'pieces'] },
-      });
+      // "Scurrying" contains "curry" but no word starts with it. The shorter
+      // title ranks first.
+      expect(pageIds()).toEqual(['curry', 'pieces']);
+      expect(mockRecipeRepository.findWithPagination).not.toHaveBeenCalled();
       // English: titles only, no ingredient lookup.
       expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledTimes(
         1,
@@ -225,7 +222,7 @@ describe('RecipesService', () => {
         limit: 10,
       });
 
-      expect(pagedWhere().id).toEqual({ in: ['pies'] });
+      expect(pageIds()).toEqual(['pies']);
       expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
     });
 
@@ -272,10 +269,7 @@ describe('RecipesService', () => {
           },
         ],
       });
-      expect(pagedWhere()).toEqual({
-        userId,
-        id: { in: ['salad', 'stew'] },
-      });
+      expect(pageIds()).toEqual(['salad', 'stew']);
     });
 
     it('searches ingredients when asked, even in English with title matches', async () => {
@@ -294,8 +288,36 @@ describe('RecipesService', () => {
         limit: 10,
       });
 
-      expect(pagedWhere().id).toEqual({ in: ['soup', 'shakshuka'] });
+      // The title match ranks before the ingredient-only match.
+      expect(pageIds()).toEqual(['soup', 'shakshuka']);
       expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+    });
+
+    it('ranks before paging and reports the total of all matches', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('long', 'Three fish pie with prawns'),
+        recipe('pies', 'Mini fish pies'),
+        recipe('short', 'Fish pie'),
+      ]);
+      mockRecipeRepository.findByIds.mockResolvedValueOnce([
+        buildRecipe({ id: 'pies', title: 'Mini fish pies' }),
+      ]);
+
+      const result = await service.findAll(userId, {
+        search: 'fish pie',
+        page: 2,
+        limit: 2,
+      });
+
+      // Ranked: Fish pie, Three fish pie with prawns (exact "pie"), Mini fish pies.
+      expect(pageIds()).toEqual(['pies']);
+      expect(result).toMatchObject({
+        total: 3,
+        page: 2,
+        limit: 2,
+        totalPages: 2,
+      });
+      expect(result.data.map((r) => r.id)).toEqual(['pies']);
     });
   });
 

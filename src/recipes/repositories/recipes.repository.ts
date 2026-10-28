@@ -203,18 +203,30 @@ export class RecipesRepository implements BaseRepository<
     await this.prisma.recipe.delete({ where: { id } });
   }
 
-  /** Recipes matching `where`, with only what a search looks at. */
+  /** Recipes matching `where`, newest first, with only what a search looks at. */
   findSearchCandidates(
     where: Prisma.RecipeWhereInput,
   ): Promise<SearchableRecipe[]> {
     return this.prisma.recipe.findMany({
       where,
+      orderBy: { createdAt: 'desc' },
       select: {
         id: true,
         title: true,
         ingredients: { select: { name: true, genericFoodId: true } },
       },
     });
+  }
+
+  /** Recipes with ingredients, in the order of `ids`. */
+  async findByIds(ids: string[]): Promise<Recipe[]> {
+    if (ids.length === 0) return [];
+    const rows = await this.prisma.recipe.findMany({
+      where: { id: { in: ids } },
+      include: RECIPE_WITH_INGREDIENTS_INCLUDE,
+    });
+    const byId = new Map(rows.map((row) => [row.id, row]));
+    return ids.flatMap((id) => byId.get(id) ?? []);
   }
 
   async count(where?: Prisma.RecipeWhereInput): Promise<number> {

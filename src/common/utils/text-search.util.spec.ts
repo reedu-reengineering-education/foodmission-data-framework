@@ -1,5 +1,6 @@
 import {
   MAX_SEARCH_WORDS,
+  hasExactWordMatch,
   hasWordMatch,
   isCompoundHeadMatch,
   normalizeForSearch,
@@ -162,5 +163,14 @@ describe('isCompoundHeadMatch', () => {
     ['milk', 'Buttermilk', 'en', false],
   ])('%s in %s (%s): %s', (term, text, locale, expected) => {
     expect(isCompoundHeadMatch(term, text, locale)).toBe(expected);
+  });
+});
+
+describe('hasExactWordMatch', () => {
+  it('needs every word of the term as a whole word', () => {
+    expect(hasExactWordMatch('Fish pie', 'pie')).toBe(true);
+    expect(hasExactWordMatch("Olio d'oliva", "d'oliva")).toBe(true);
+    expect(hasExactWordMatch('Mini pies', 'pie')).toBe(false);
+    expect(hasExactWordMatch('Fish pie', "'")).toBe(false);
   });
 });
