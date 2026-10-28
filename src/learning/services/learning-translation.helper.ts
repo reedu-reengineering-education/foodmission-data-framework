@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TranslationService } from '../../translations/services/translation.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
+import { LEARNING_SEARCH_FIELDS } from '../utils/learning-filters';
 
 @Injectable()
 export class LearningTranslationHelper {
@@ -8,6 +9,23 @@ export class LearningTranslationHelper {
 
   resolveLocale(lang?: string): string {
     return this.translationService.resolveLocale(lang);
+  }
+
+  /**
+   * Ids whose translated search fields contain `query.search`, for the list
+   * where-builders. Empty for English or when there is no search.
+   */
+  async findSearchMatches(
+    entityType: keyof typeof LEARNING_SEARCH_FIELDS,
+    query: { search?: string; lang?: string },
+  ): Promise<string[]> {
+    if (!query.search) return [];
+    return this.translationService.findEntityIdsByValue(
+      entityType,
+      this.resolveLocale(query.lang),
+      [...LEARNING_SEARCH_FIELDS[entityType]],
+      query.search,
+    );
   }
 
   async overlayFields<T extends { id: string }>(

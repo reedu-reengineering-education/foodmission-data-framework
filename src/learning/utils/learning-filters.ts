@@ -3,12 +3,21 @@ import {
   LearningContentFiltersDto,
   UserFoodFactListQueryDto,
 } from '../dto/learning-list-query.dto';
+import { textSearchConditions } from '../../common/utils/text-search.util';
+
+/** Text fields searched per content type, in English and in translation. */
+export const LEARNING_SEARCH_FIELDS = {
+  FoodFact: ['title', 'body'],
+  Quiz: ['title', 'question'],
+  MicroLearning: ['title', 'body'],
+} as const;
 
 export function buildUserFoodFactWhere(
   filters: UserFoodFactListQueryDto,
   userId: string,
+  translatedIds: string[] = [],
 ): Prisma.FoodFactWhereInput {
-  const where = buildFoodFactWhere(filters);
+  const where = buildFoodFactWhere(filters, translatedIds);
   if (filters.completed !== undefined) {
     where.progress = filters.completed
       ? { some: { userId } }
@@ -19,6 +28,7 @@ export function buildUserFoodFactWhere(
 
 export function buildFoodFactWhere(
   filters: LearningContentFiltersDto,
+  translatedIds: string[] = [],
 ): Prisma.FoodFactWhereInput {
   const where: Prisma.FoodFactWhereInput = { available: true };
 
@@ -27,10 +37,11 @@ export function buildFoodFactWhere(
   if (filters.foodChoice !== undefined) where.foodChoice = filters.foodChoice;
   if (filters.foodWaste !== undefined) where.foodWaste = filters.foodWaste;
   if (filters.search) {
-    where.OR = [
-      { title: { contains: filters.search, mode: 'insensitive' } },
-      { body: { contains: filters.search, mode: 'insensitive' } },
-    ];
+    where.OR = textSearchConditions<Prisma.FoodFactWhereInput>(
+      filters.search,
+      LEARNING_SEARCH_FIELDS.FoodFact,
+      translatedIds,
+    );
   }
 
   if (filters.topicCode || filters.dimensionCode) {
@@ -47,6 +58,7 @@ export function buildFoodFactWhere(
 
 export function buildQuizWhere(
   filters: LearningContentFiltersDto,
+  translatedIds: string[] = [],
 ): Prisma.QuizWhereInput {
   const where: Prisma.QuizWhereInput = { available: true };
 
@@ -55,10 +67,11 @@ export function buildQuizWhere(
   if (filters.foodChoice !== undefined) where.foodChoice = filters.foodChoice;
   if (filters.foodWaste !== undefined) where.foodWaste = filters.foodWaste;
   if (filters.search) {
-    where.OR = [
-      { title: { contains: filters.search, mode: 'insensitive' } },
-      { question: { contains: filters.search, mode: 'insensitive' } },
-    ];
+    where.OR = textSearchConditions<Prisma.QuizWhereInput>(
+      filters.search,
+      LEARNING_SEARCH_FIELDS.Quiz,
+      translatedIds,
+    );
   }
 
   if (filters.topicCode || filters.dimensionCode) {
@@ -75,6 +88,7 @@ export function buildQuizWhere(
 
 export function buildMicroLearningWhere(
   filters: LearningContentFiltersDto,
+  translatedIds: string[] = [],
 ): Prisma.MicroLearningWhereInput {
   const and: Prisma.MicroLearningWhereInput[] = [{ available: true }];
 
@@ -88,10 +102,11 @@ export function buildMicroLearningWhere(
   }
   if (filters.search) {
     and.push({
-      OR: [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { body: { contains: filters.search, mode: 'insensitive' } },
-      ],
+      OR: textSearchConditions<Prisma.MicroLearningWhereInput>(
+        filters.search,
+        LEARNING_SEARCH_FIELDS.MicroLearning,
+        translatedIds,
+      ),
     });
   }
   if (filters.topicCode) {

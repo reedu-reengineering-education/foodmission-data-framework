@@ -154,9 +154,59 @@ describe('RecipesService', () => {
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['TREE_NUTS'] },
         dietaryLabels: { hasSome: ['vegan'] },
-        title: { contains: 'pasta', mode: 'insensitive' },
+        AND: [
+          {
+            OR: [
+              { title: { contains: 'pasta', mode: 'insensitive' } },
+              {
+                ingredients: {
+                  some: {
+                    OR: [{ name: { contains: 'pasta', mode: 'insensitive' } }],
+                  },
+                },
+              },
+            ],
+          },
+        ],
       },
       orderBy: { createdAt: 'desc' },
+    });
+  });
+
+  it('should match recipes by translated ingredient names', async () => {
+    mockRecipeRepository.findWithPagination.mockResolvedValue(
+      emptyPaginationMock(),
+    );
+    mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
+      { entityId: 'tomato-food' },
+    ]);
+
+    await service.findAll(userId, {
+      search: 'pomodoro',
+      lang: 'it',
+      page: 1,
+      limit: 10,
+    });
+
+    expect(mockPrisma.entityTranslation.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          entityType: 'GenericFood',
+          locale: 'it',
+          field: { in: ['foodName', 'synonym'] },
+        }),
+      }),
+    );
+    const { where } = mockRecipeRepository.findWithPagination.mock.calls[0][0];
+    expect(where.AND[0].OR[1]).toEqual({
+      ingredients: {
+        some: {
+          OR: [
+            { name: { contains: 'pomodoro', mode: 'insensitive' } },
+            { genericFoodId: { in: ['tomato-food'] } },
+          ],
+        },
+      },
     });
   });
 
