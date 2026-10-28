@@ -1,10 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { hasWordMatch, searchStem } from '../../common/utils/text-search.util';
-import {
-  isCompoundHeadMatch,
-  isCompoundingLocale,
-} from '../../generic-foods/utils/search-ranking';
+import { isCompoundHeadMatch } from '../../generic-foods/utils/search-ranking';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   ENTITY_TRANSLATABLE_FIELDS,
@@ -187,10 +184,10 @@ export class TranslationService {
   }
 
   /**
-   * Values that may match, narrowed in code to those hasWordMatch accepts
-   * (SQL cannot check the ending length). In compounding locales a word may
-   * also end in the term ("milch" finds "Vollmilch"), as in the generic food
-   * search ranking.
+   * Values containing the term's stem, narrowed in code to those hasWordMatch
+   * accepts: SQL cannot split words on apostrophes ("Olio d'oliva") or check
+   * the ending length. In compounding locales a word may also end in the
+   * term ("milch" finds "Vollmilch"), as in the generic food search ranking.
    */
   private async findEntityIdsByWord(
     entityType: TranslatableEntityType,
@@ -198,19 +195,12 @@ export class TranslationService {
     fields: string[],
     search: string,
   ): Promise<string[]> {
-    const stem = searchStem(search);
-    const compounding = isCompoundingLocale(locale);
     const rows = await this.prisma.entityTranslation.findMany({
       where: {
         entityType,
         locale,
         field: { in: fields },
-        OR: compounding
-          ? [{ value: { contains: stem, mode: 'insensitive' } }]
-          : [
-              { value: { startsWith: stem, mode: 'insensitive' } },
-              { value: { contains: ` ${stem}`, mode: 'insensitive' } },
-            ],
+        value: { contains: searchStem(search), mode: 'insensitive' },
       },
       select: { entityId: true, value: true },
     });
