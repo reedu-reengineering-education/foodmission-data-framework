@@ -105,6 +105,20 @@ describe('SecurityService', () => {
         },
       });
     });
+
+    it('should leave credential fields untouched', () => {
+      const input = {
+        username: ' <b>alice</b> ',
+        password: ' x<y&z1234 ',
+        nested: { newPassword: '<secret123>', refresh_token: ' tok ' },
+      };
+      const result = service.sanitizeInput(input);
+      expect(result).toEqual({
+        username: 'alice',
+        password: ' x<y&z1234 ',
+        nested: { newPassword: '<secret123>', refresh_token: ' tok ' },
+      });
+    });
   });
 
   describe('validateEnvironmentVariables', () => {

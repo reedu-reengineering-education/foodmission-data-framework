@@ -25,6 +25,11 @@ const MAX_DEPTH = 5;
 
 export const REDACTED = '[REDACTED]';
 
+/** Whether `key` names a credential-like field (case-insensitive). */
+export function isSensitiveKey(key: string): boolean {
+  return SENSITIVE_KEYS.has(key.toLowerCase());
+}
+
 /**
  * Copy of `value` with credential-like keys (case-insensitive) replaced by
  * `[REDACTED]`, so objects can be logged safely. Strings, numbers and Errors
@@ -59,7 +64,7 @@ function redactValue(
 
   const result: Record<string, unknown> = {};
   for (const [key, item] of Object.entries(value)) {
-    result[key] = SENSITIVE_KEYS.has(key.toLowerCase())
+    result[key] = isSensitiveKey(key)
       ? REDACTED
       : redactValue(item, depth + 1, seen);
   }

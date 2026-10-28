@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import sanitizeHtml from 'sanitize-html';
-import { redact } from '../common/logging/redact';
+import { isSensitiveKey, redact } from '../common/logging/redact';
 
 @Injectable()
 export class SecurityService {
@@ -25,7 +25,9 @@ export class SecurityService {
   }
 
   /**
-   * Sanitize input to prevent injection attacks
+   * Sanitize input to prevent injection attacks. Credential-like keys
+   * (password, token, secret, ...) pass through untouched: they are never
+   * rendered, and altering them changes the password stored in Keycloak.
    */
   sanitizeInput(input: any): any {
     if (typeof input === 'string') {
@@ -39,7 +41,9 @@ export class SecurityService {
     if (input && typeof input === 'object') {
       const sanitized: any = {};
       for (const [key, value] of Object.entries(input)) {
-        sanitized[key] = this.sanitizeInput(value);
+        sanitized[key] = isSensitiveKey(key)
+          ? value
+          : this.sanitizeInput(value);
       }
       return sanitized;
     }
