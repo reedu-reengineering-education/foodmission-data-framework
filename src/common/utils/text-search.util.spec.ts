@@ -1,4 +1,5 @@
 import {
+  MAX_SEARCH_WORDS,
   hasWordMatch,
   searchStem,
   searchWords,
@@ -86,6 +87,13 @@ describe('searchWords', () => {
       'coca-cola',
       'd’oliva',
     ]);
+  });
+
+  it('keeps at most MAX_SEARCH_WORDS unique words, in order', () => {
+    const words = Array.from({ length: 20 }, (_, i) => `w${i}`);
+    expect(searchWords(['w0', ...words].join(' '))).toEqual(
+      words.slice(0, MAX_SEARCH_WORDS),
+    );
   });
 
   it('returns no words for an empty term or punctuation only', () => {

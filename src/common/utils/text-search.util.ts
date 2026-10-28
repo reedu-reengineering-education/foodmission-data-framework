@@ -1,8 +1,15 @@
 /**
- * Lowercased, unique words of a search term. Splits on spaces and on
- * punctuation between words ("chilli,beef"), but keeps apostrophes and
- * hyphens inside a word ("d'oliva", "coca-cola"). Shared with the Open Food
- * Facts search, so every search splits a term the same way.
+ * Words used from a search term; the rest are ignored. Each word costs a
+ * database query (Open Food Facts keyword counts, recipe translation
+ * lookups), so a long pasted text cannot fan out into hundreds of them.
+ */
+export const MAX_SEARCH_WORDS = 8;
+
+/**
+ * Lowercased, unique words of a search term, at most MAX_SEARCH_WORDS. Splits
+ * on spaces and on punctuation between words ("chilli,beef"), but keeps
+ * apostrophes and hyphens inside a word ("d'oliva", "coca-cola"). Shared with
+ * the Open Food Facts search, so every search splits a term the same way.
  */
 export function searchWords(search: string | undefined): string[] {
   return [
@@ -12,7 +19,7 @@ export function searchWords(search: string | undefined): string[] {
         .split(/[^\p{L}\p{N}'’-]+/u)
         .filter((word) => /[\p{L}\p{N}]/u.test(word)),
     ),
-  ];
+  ].slice(0, MAX_SEARCH_WORDS);
 }
 
 /** Letters an inflected form may add after the stem: "pomodor-i", "pomodor-ini". */
