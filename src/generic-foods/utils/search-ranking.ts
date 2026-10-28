@@ -1,3 +1,10 @@
+import {
+  hasCompoundHead,
+  headCandidates,
+  isCompoundingLocale,
+  normalizeForSearch,
+} from '../../common/utils/text-search.util';
+
 /**
  * Relevance ranking for generic food (NEVO) search.
  *
@@ -62,17 +69,6 @@ const COMPOSITE_GROUPS = new Set(
 );
 
 /**
- * Shortest term treated as a compound head, so "ei" does not match "Brei".
- */
-const MIN_COMPOUND_HEAD_LENGTH = 4;
-
-/** Locales whose food names are compound words with the head last. */
-const COMPOUNDING_LOCALES = new Set(['de', 'nl', 'no']);
-
-/** Plural/case ending still counted as the same word ("Kartoffel-n"). */
-const MAX_INFLECTION_LENGTH = 2;
-
-/**
  * FoodEx2 facets that make a food more specific: added ingredients (F04),
  * fortification (F09), qualitative info like "sugar added" (F10), ... F28
  * (process: raw, boiled) is left out, isBaseForm already covers it.
@@ -82,50 +78,10 @@ const SPECIFYING_FACET = /^F(?!28\.)\d{2}\./;
 /** NEVO marks the generic form with "raw" or "av" (average). */
 const BASE_FORM_WORDS = new Set(['raw', 'av']);
 
-/**
- * Whitespace, ASCII punctuation and common Unicode quotes/dashes. Mirrors the
- * character class in the SQL function search_normalize() (migration
- * 20261022120000_add_search_normalize_indexes) — change both together.
- */
-const SEPARATOR_RUN =
-  /[\s!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~’‘´“”„«»‹›–—…·]+/gu;
-
-/**
- * Same result as SQL search_normalize(): lowercase, punctuation runs become a
- * single space. Letters (including accents) are kept. Used for the search term
- * so it compares like-for-like with the normalized columns.
- */
-export function normalizeSearchTerm(text: string): string {
-  return text.toLowerCase().replace(SEPARATOR_RUN, ' ').trim();
-}
-
-/** As normalizeSearchTerm, plus accents stripped ("Crème" ~ "creme"); ranking only. */
-export function normalizeForSearch(text: string): string {
-  return normalizeSearchTerm(text.normalize('NFD').replace(/\p{M}/gu, ''));
-}
-
 export function wordsOf(text: string): string[] {
   return normalizeForSearch(text)
     .split(/[^\p{L}\p{N}]+/u)
     .filter((word) => word.length > 0);
-}
-
-/** One word with hyphenated parts joined: "Schokoladen-Blancmanger" -> "schokoladenblancmanger". */
-function joinedWord(word: string): string {
-  return normalizeForSearch(word).replace(/ /g, '');
-}
-
-/**
- * Words of a compound-language name that can name the food: the first word,
- * plus the second when the name starts with two words before any comma
- * ("Volle melk", "Rode kool, gekookt").
- */
-function headCandidates(text: string): { first: string; second?: string } {
-  const lead = (text.split(',')[0] ?? '').trim().split(/\s+/u);
-  return {
-    first: joinedWord(lead[0] ?? ''),
-    second: lead.length === 2 ? joinedWord(lead[1]) : undefined,
-  };
 }
 
 /**
@@ -133,10 +89,8 @@ function headCandidates(text: string): { first: string; second?: string } {
  * Norwegian the last part names the food: "Vollmilch" is milk, "Milchshake" is
  * a shake. So a head word equal to the term, ending in it, or the term plus a
  * short plural ending counts like a name prefix; a first word that only starts
- * with it ("Eisbergsalat" for "ei") like a word prefix. Ending/plural need
- * MIN_COMPOUND_HEAD_LENGTH so "ei" matches neither "Brei" nor "Eis". Only the
- * leading words, so "Käse aus Rohmilch" stays cheese. Off for English
- * ("Pineapple").
+ * with it ("Eisbergsalat" for "ei") like a word prefix (see hasCompoundHead
+ * for the head rule). Off for English ("Pineapple").
  */
 export function matchQuality(
   term: string,
@@ -150,18 +104,10 @@ export function matchQuality(
 
   if (haystack === needle) return MatchQuality.EXACT;
   if (compoundHeads) {
-    const long = needle.length >= MIN_COMPOUND_HEAD_LENGTH;
-    const isHead = (word: string) =>
-      word === needle ||
-      (long &&
-        (word.endsWith(needle) ||
-          (word.startsWith(needle) &&
-            word.length - needle.length <= MAX_INFLECTION_LENGTH)));
-    const { first, second } = headCandidates(text);
-    if (isHead(first) || (second !== undefined && isHead(second))) {
-      return MatchQuality.NAME_PREFIX;
+    if (hasCompoundHead(text, needle)) return MatchQuality.NAME_PREFIX;
+    if (headCandidates(text).first.startsWith(needle)) {
+      return MatchQuality.WORD_PREFIX;
     }
-    if (first.startsWith(needle)) return MatchQuality.WORD_PREFIX;
   }
   if (haystack.startsWith(needle)) return MatchQuality.NAME_PREFIX;
   const words = wordsOf(text);
@@ -195,7 +141,7 @@ export function rankSearchCandidates<T extends RankableSearchCandidate>(
   candidates: T[],
   locale = 'en',
 ): T[] {
-  const compoundHeads = COMPOUNDING_LOCALES.has(locale);
+  const compoundHeads = isCompoundingLocale(locale);
   const keyed = candidates.map((candidate) => {
     const english = Math.max(
       ...[candidate.foodName, candidate.synonym].map((text) =>

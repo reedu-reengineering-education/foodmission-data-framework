@@ -33,6 +33,8 @@ describe('RecipesService', () => {
     findRating: jest.fn(),
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
+    findSearchCandidates: jest.fn(),
+    findByIds: jest.fn(),
   };
 
   const mockPrisma = {
@@ -138,7 +140,6 @@ describe('RecipesService', () => {
       allergens: ['TREE_NUTS'],
       dietaryLabels: [' vegan '],
       difficulty: 'easy',
-      search: 'pasta',
       page: 2,
       limit: 5,
     });
@@ -154,9 +155,169 @@ describe('RecipesService', () => {
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['TREE_NUTS'] },
         dietaryLabels: { hasSome: ['vegan'] },
-        title: { contains: 'pasta', mode: 'insensitive' },
       },
       orderBy: { createdAt: 'desc' },
+    });
+  });
+
+  describe('search', () => {
+    const recipe = (
+      id: string,
+      title: string,
+      ingredients: { name: string; genericFoodId?: string }[] = [],
+    ) => ({
+      id,
+      title,
+      ingredients: ingredients.map((i) => ({
+        name: i.name,
+        genericFoodId: i.genericFoodId ?? null,
+      })),
+    });
+    const pageIds = () => mockRecipeRepository.findByIds.mock.calls[0][0];
+
+    beforeEach(() => {
+      mockRecipeRepository.findByIds.mockResolvedValue([]);
+    });
+
+    it('narrows candidates in SQL, then keeps whole-word title matches', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('curry', 'Nutty Chicken Curry'),
+        recipe('pieces', 'Chicken pieces in curry sauce'),
+        recipe('scurry', 'Scurrying chickens'),
+      ]);
+
+      await service.findAll(userId, {
+        search: 'Curry  chicken',
+        page: 1,
+        limit: 10,
+      });
+
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith({
+        OR: [{ userId }, { isPublic: true }],
+        AND: [
+          { title: { contains: 'curry', mode: 'insensitive' } },
+          { title: { contains: 'chicken', mode: 'insensitive' } },
+        ],
+      });
+      // "Scurrying" contains "curry" but no word starts with it. The shorter
+      // title ranks first.
+      expect(pageIds()).toEqual(['curry', 'pieces']);
+      expect(mockRecipeRepository.findWithPagination).not.toHaveBeenCalled();
+      // English: titles only, no ingredient lookup.
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+    });
+
+    it('keeps title matches only for other languages when titles match', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('pies', 'Mini chilli beef pies'),
+      ]);
+
+      await service.findAll(userId, {
+        search: 'chilli beef',
+        lang: 'it',
+        page: 1,
+        limit: 10,
+      });
+
+      expect(pageIds()).toEqual(['pies']);
+      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+    });
+
+    it('searches ingredients the same way for other languages when no title matches', async () => {
+      mockRecipeRepository.findSearchCandidates
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([
+          recipe('salad', 'Greek salad', [
+            { name: 'Tomatoes', genericFoodId: 'tomato-food' },
+          ]),
+          recipe('stew', 'Bean stew', [{ name: 'Pomodoro sauce' }]),
+          recipe('soup', 'Onion soup', [{ name: 'Onions' }]),
+        ]);
+      mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
+        { entityId: 'tomato-food', value: 'Pomodori crudi' },
+      ]);
+
+      await service.findMine(userId, {
+        search: 'pomodoro',
+        lang: 'it',
+        page: 1,
+        limit: 10,
+      });
+
+      expect(
+        mockRecipeRepository.findSearchCandidates,
+      ).toHaveBeenLastCalledWith({
+        userId,
+        AND: [
+          {
+            OR: [
+              { title: { contains: 'pomodor', mode: 'insensitive' } },
+              {
+                ingredients: {
+                  some: {
+                    OR: [
+                      { name: { contains: 'pomodor', mode: 'insensitive' } },
+                      { genericFoodId: { in: ['tomato-food'] } },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      });
+      expect(pageIds()).toEqual(['salad', 'stew']);
+    });
+
+    it('searches ingredients when asked, even in English with title matches', async () => {
+      mockRecipeRepository.findSearchCandidates
+        .mockResolvedValueOnce([recipe('soup', 'Creamy tomato soup')])
+        .mockResolvedValueOnce([
+          recipe('soup', 'Creamy tomato soup'),
+          recipe('shakshuka', 'Shakshuka', [{ name: 'Chopped tomatoes' }]),
+          recipe('ketchup', 'Burger', [{ name: 'Tomatillo salsa' }]),
+        ]);
+
+      await service.findAll(userId, {
+        search: 'tomato',
+        searchIngredients: true,
+        page: 1,
+        limit: 10,
+      });
+
+      // The title match ranks before the ingredient-only match.
+      expect(pageIds()).toEqual(['soup', 'shakshuka']);
+      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+    });
+
+    it('ranks before paging and reports the total of all matches', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('long', 'Three fish pie with prawns'),
+        recipe('pies', 'Mini fish pies'),
+        recipe('short', 'Fish pie'),
+      ]);
+      mockRecipeRepository.findByIds.mockResolvedValueOnce([
+        buildRecipe({ id: 'pies', title: 'Mini fish pies' }),
+      ]);
+
+      const result = await service.findAll(userId, {
+        search: 'fish pie',
+        page: 2,
+        limit: 2,
+      });
+
+      // Ranked: Fish pie, Three fish pie with prawns (exact "pie"), Mini fish pies.
+      expect(pageIds()).toEqual(['pies']);
+      expect(result).toMatchObject({
+        total: 3,
+        page: 2,
+        limit: 2,
+        totalPages: 2,
+      });
+      expect(result.data.map((r) => r.id)).toEqual(['pies']);
     });
   });
 

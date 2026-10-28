@@ -5,10 +5,8 @@ import { CreateGenericFoodDto } from '../dto/create-generic-food.dto';
 import { UpdateGenericFoodDto } from '../dto/update-generic-food.dto';
 import { GenericFoodQueryDto } from '../dto/generic-food-query.dto';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
-import {
-  normalizeSearchTerm,
-  RankableSearchCandidate,
-} from '../utils/search-ranking';
+import { normalizeSearchTerm } from '../../common/utils/text-search.util';
+import { RankableSearchCandidate } from '../utils/search-ranking';
 
 /** A search hit with what ranking needs (see utils/search-ranking.ts). */
 export type GenericFoodSearchCandidate = RankableSearchCandidate & {

@@ -16,9 +16,17 @@ import {
   RateRecipeDto,
   RecipeRatingResponseDto,
 } from '../dto/recipe-rating.dto';
-import { Prisma, RecipeOrigin } from '@prisma/client';
+import { Prisma, Recipe, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
+import { searchPrefix, searchWords } from '../../common/utils/text-search.util';
+import {
+  SearchableRecipe,
+  matchesTitle,
+  matchesTitleOrIngredients,
+  rankRecipes,
+} from '../utils/recipe-search';
+import { PaginatedResult } from '../../common/interfaces/base-repository.interface';
 import { plainToInstance } from 'class-transformer';
 import {
   EventSource,
@@ -79,22 +87,39 @@ export class RecipesService {
     userId: string,
     query: QueryRecipeDto,
   ): Promise<MultipleRecipeResponseDto> {
-    const { page = 1, limit = 10 } = query;
-    const skip = (page - 1) * limit;
+    return this.listRecipes(
+      { userId, ...this.buildFiltersWhere(query) },
+      query,
+    );
+  }
 
-    const where: Prisma.RecipeWhereInput = {
-      userId,
-      ...this.buildFiltersWhere(query),
-    };
+  async findAll(
+    userId: string,
+    query: QueryRecipeDto,
+  ): Promise<MultipleRecipeResponseDto> {
+    const { isPublic } = query;
 
+    // Visibility: when isPublic is explicit, use it; otherwise show user's recipes OR public
+    const visibilityWhere: Prisma.RecipeWhereInput =
+      isPublic === true
+        ? { isPublic: true }
+        : isPublic === false
+          ? { userId, isPublic: false }
+          : { OR: [{ userId }, { isPublic: true }] };
+
+    return this.listRecipes(
+      { ...visibilityWhere, ...this.buildFiltersWhere(query) },
+      query,
+    );
+  }
+
+  /** One page of the recipes matching `where` and the search. */
+  private async listRecipes(
+    where: Prisma.RecipeWhereInput,
+    query: QueryRecipeDto,
+  ): Promise<MultipleRecipeResponseDto> {
     try {
-      const result = await this.recipeRepository.findWithPagination({
-        skip,
-        take: limit,
-        where,
-        orderBy: { createdAt: 'desc' },
-      });
-
+      const result = await this.findPage(where, query);
       const data = await this.localizeIngredients(result.data, query.lang);
 
       return plainToInstance(
@@ -113,50 +138,38 @@ export class RecipesService {
     }
   }
 
-  async findAll(
-    userId: string,
+  /**
+   * Without a search: newest first, paged in SQL. With one: best match first
+   * (see rankRecipes), paged here, since the ranking runs in code.
+   */
+  private async findPage(
+    where: Prisma.RecipeWhereInput,
     query: QueryRecipeDto,
-  ): Promise<MultipleRecipeResponseDto> {
-    const { page = 1, limit = 10, isPublic } = query;
+  ): Promise<PaginatedResult<Recipe>> {
+    const { page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
-
-    // Visibility: when isPublic is explicit, use it; otherwise show user's recipes OR public
-    const visibilityWhere: Prisma.RecipeWhereInput =
-      isPublic === true
-        ? { isPublic: true }
-        : isPublic === false
-          ? { userId, isPublic: false }
-          : { OR: [{ userId }, { isPublic: true }] };
-
-    const where: Prisma.RecipeWhereInput = {
-      ...visibilityWhere,
-      ...this.buildFiltersWhere(query),
-    };
-
-    try {
-      const result = await this.recipeRepository.findWithPagination({
+    const words = searchWords(query.search);
+    if (words.length === 0) {
+      return this.recipeRepository.findWithPagination({
         skip,
         take: limit,
         where,
         orderBy: { createdAt: 'desc' },
       });
-
-      const data = await this.localizeIngredients(result.data, query.lang);
-
-      return plainToInstance(
-        MultipleRecipeResponseDto,
-        {
-          data: data.map((recipe) => this.toResponse(recipe)),
-          total: result.total,
-          page: result.page,
-          limit: result.limit,
-          totalPages: result.totalPages,
-        },
-        { excludeExtraneousValues: true },
-      );
-    } catch (error) {
-      throw handlePrismaError(error, 'find recipes', 'Recipe');
     }
+
+    const ranked = rankRecipes(
+      await this.searchRecipes(where, words, query),
+      words,
+    );
+    const pageIds = ranked.slice(skip, skip + limit).map((recipe) => recipe.id);
+    return {
+      data: await this.recipeRepository.findByIds(pageIds),
+      total: ranked.length,
+      page,
+      limit,
+      totalPages: Math.ceil(ranked.length / limit),
+    };
   }
 
   private buildFiltersWhere(query: QueryRecipeDto): Prisma.RecipeWhereInput {
@@ -168,7 +181,6 @@ export class RecipesService {
       allergens,
       difficulty,
       origin,
-      search,
     } = query;
     return {
       ...(category ? { category } : {}),
@@ -184,8 +196,74 @@ export class RecipesService {
       ...(dietaryLabels && dietaryLabels.length
         ? { dietaryLabels: { hasSome: dietaryLabels.map((d) => d.trim()) } }
         : {}),
-      ...(search ? { title: { contains: search, mode: 'insensitive' } } : {}),
     };
+  }
+
+  /**
+   * The recipes matching `where` and the search words, newest first. Every
+   * word must appear in the title. Each word may instead match an ingredient,
+   * by name or by its generic food's translated name ("pomodoro" finds
+   * "Pomodori crudi"), when the client asks for it, or for languages other
+   * than English when no title matches (titles exist only in English). Titles
+   * and ingredients use the same word rule (see hasWordMatch); SQL only
+   * narrows the candidates by searchPrefix first.
+   */
+  private async searchRecipes(
+    where: Prisma.RecipeWhereInput,
+    words: string[],
+    query: QueryRecipeDto,
+  ): Promise<SearchableRecipe[]> {
+    const prefixes = words.map(searchPrefix);
+    const contains = (prefix: string) => ({
+      contains: prefix,
+      mode: 'insensitive' as const,
+    });
+    const titleMatches = (
+      await this.recipeRepository.findSearchCandidates({
+        ...where,
+        AND: prefixes.map((prefix) => ({ title: contains(prefix) })),
+      })
+    ).filter((recipe) => matchesTitle(recipe, words));
+
+    const locale = this.translationService.resolveLocale(query.lang);
+    const searchIngredients =
+      query.searchIngredients ||
+      (locale !== DEFAULT_LOCALE && titleMatches.length === 0);
+    if (!searchIngredients) return titleMatches;
+
+    const translatedFoodIds = await Promise.all(
+      words.map((word) =>
+        this.translationService.findEntityIdsByValue(
+          'GenericFood',
+          locale,
+          ['foodName', 'synonym'],
+          word,
+          'word',
+        ),
+      ),
+    );
+    const candidates = await this.recipeRepository.findSearchCandidates({
+      ...where,
+      AND: prefixes.map((prefix, i) => ({
+        OR: [
+          { title: contains(prefix) },
+          {
+            ingredients: {
+              some: {
+                OR: [
+                  { name: contains(prefix) },
+                  { genericFoodId: { in: translatedFoodIds[i] } },
+                ],
+              },
+            },
+          },
+        ],
+      })),
+    });
+    const foodIdSets = translatedFoodIds.map((ids) => new Set(ids));
+    return candidates.filter((recipe) =>
+      matchesTitleOrIngredients(recipe, words, foodIdSets),
+    );
   }
 
   async findOne(
