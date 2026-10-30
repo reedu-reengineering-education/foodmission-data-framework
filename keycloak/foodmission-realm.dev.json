@@ -46,6 +46,7 @@
   "quickLoginCheckMilliSeconds": 1000,
   "maxDeltaTimeSeconds": 43200,
   "failureFactor": 30,
+  "passwordPolicy": "length(8) and notUsername and notEmail",
   "roles": {
     "realm": [
       {
@@ -484,7 +485,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "dev123",
+          "value": "dev-password-123",
           "temporary": false
         }
       ],
@@ -501,7 +502,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "dev123",
+          "value": "dev-password-123",
           "temporary": false
         }
       ],
@@ -518,7 +519,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "dev123",
+          "value": "dev-password-123",
           "temporary": false
         }
       ],
@@ -535,7 +536,7 @@
       "credentials": [
         {
           "type": "password",
-          "value": "dev123",
+          "value": "dev-password-123",
           "temporary": false
         }
       ],

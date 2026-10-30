@@ -39,13 +39,13 @@ The realm export includes human users with **fixed Keycloak user IDs**. Those ID
 
 ### Seeded users and database
 
-| Keycloak username | Password  | Email                     | JWT `sub` (=`User.keycloakId`)     |
-| ----------------- | --------- | ------------------------- | ----------------------------------- |
-| `developer`       | `dev123`  | dev@foodmission.dev       | `a1000000-0000-4000-8000-000000000001` |
-| `jane`            | `dev123`  | jane.smith@example.com    | `a1000000-0000-4000-8000-000000000002` |
-| `mike`            | `dev123`  | mike.johnson@example.com  | `a1000000-0000-4000-8000-000000000003` |
-| `sarah`           | `dev123`  | sarah.wilson@example.com  | `a1000000-0000-4000-8000-000000000004` |
-| `admin`           | `admin123`| admin@foodmission.dev     | `a1000000-0000-4000-8000-000000000005` |
+| Keycloak username | Password             | Email                     | JWT `sub` (=`User.keycloakId`)     |
+| ----------------- | -------------------- | ------------------------- | ----------------------------------- |
+| `developer`       | `dev-password-123`   | dev@foodmission.dev       | `a1000000-0000-4000-8000-000000000001` |
+| `jane`            | `dev-password-123`   | jane.smith@example.com    | `a1000000-0000-4000-8000-000000000002` |
+| `mike`            | `dev-password-123`   | mike.johnson@example.com  | `a1000000-0000-4000-8000-000000000003` |
+| `sarah`           | `dev-password-123`   | sarah.wilson@example.com  | `a1000000-0000-4000-8000-000000000004` |
+| `admin`           | `admin123`           | admin@foodmission.dev     | `a1000000-0000-4000-8000-000000000005` |
 
 Constants for seeds live in `prisma/seeds/keycloak-dev-user-ids.ts` and must stay in sync with `foodmission-realm.dev.json`.
 
@@ -61,7 +61,7 @@ If you **re-import** an older realm or create users manually, Keycloak may assig
 ### Developer User (summary)
 
 - **Username**: `developer`
-- **Password**: `dev123`
+- **Password**: `dev-password-123`
 - **Email**: `dev@foodmission.dev`
 - **Roles**: `user` on client `foodmission-api`
 
@@ -139,6 +139,7 @@ curl -H "Authorization: Bearer ADMIN_JWT_TOKEN" \
 - **Email Verification**: Disabled for development
 - **Remember Me**: Disabled
 - **User Registration**: Limited through service account
+- **Password Policy**: `length(8) and notUsername and notEmail` — at least 8 characters, not the same as the username or email (case-insensitive). `RegisterDto` enforces the same rules so `POST /auth/register` returns a `VALIDATION_ERROR` before calling Keycloak. Keep the two in sync, and set the same policy by hand in deployed realms (Realm settings → Authentication → Policies).
 
 ## 🔄 Updating the Configuration
 
