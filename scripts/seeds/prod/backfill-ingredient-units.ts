@@ -34,13 +34,13 @@ export async function backfillIngredientUnits(
 
   const ingredients = await prisma.recipeIngredient.findMany({
     where,
-    select: { id: true, name: true, measure: true, quantity: true, unit: true },
+    select: { id: true, measure: true, quantity: true, unit: true },
   });
 
   let updated = 0;
   let unparsed = 0;
   for (const ingredient of ingredients) {
-    const parsed = parseQuantityUnit(ingredient.measure!, ingredient.name);
+    const parsed = parseQuantityUnit(ingredient.measure!);
     if (!parsed) unparsed++;
     const quantity = parsed?.quantity ?? null;
     const unit = parsed?.unit ?? null;

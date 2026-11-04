@@ -203,8 +203,8 @@ describe('RecipesRepository', () => {
               {
                 name: 'Salt',
                 measure: '1 tsp',
-                quantity: 6,
-                unit: 'G',
+                quantity: 1,
+                unit: 'TSP',
                 order: 1,
                 itemType: 'generic_food',
                 foodProductId: null,

@@ -41,7 +41,9 @@
     "KG": "kg",
     "ML": "ml",
     "L": "l",
-    "CUPS": "Koppen"
+    "CUPS": "Koppen",
+    "TBSP": "Eetlepels",
+    "TSP": "Theelepels"
   },
   "typeOfMeals": {
     "BREAKFAST": "Ontbijt",
