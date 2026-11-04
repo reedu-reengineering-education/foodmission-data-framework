@@ -11,14 +11,6 @@ export type SearchableRecipe = {
   ingredients: { name: string; genericFoodId: string | null }[];
 };
 
-/** Every search word appears in the title (see hasWordMatch). */
-export function matchesTitle(
-  recipe: SearchableRecipe,
-  words: string[],
-): boolean {
-  return words.every((word) => hasWordMatch(recipe.title, word));
-}
-
 /**
  * Every search word appears in the title or in an ingredient: in its name, or
  * as its generic food's translated name (`translatedFoodIds[i]` holds the
