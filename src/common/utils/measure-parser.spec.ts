@@ -380,7 +380,7 @@ describe('adversarial input', () => {
     const start = performance.now();
     for (let i = 0; i < 20; i++) {
       parseMeasure(measure, 'Salt');
-      parseQuantityUnit(measure, 'Salt');
+      parseQuantityUnit(measure);
     }
     expect(performance.now() - start).toBeLessThan(500);
   });
@@ -469,81 +469,59 @@ describe('getAverageWeight', () => {
 
 describe('parseQuantityUnit', () => {
   it.each([
-    ['500g', 'Chicken', 500, 'G'],
-    ['1.5kg', 'Beef', 1.5, 'KG'],
-    ['1,5 kg', 'Beef', 1.5, 'KG'],
-    ['250 ml', 'Milk', 250, 'ML'],
-    ['2 cl', 'Rum', 20, 'ML'],
-    ['1 l', 'Water', 1, 'L'],
-    ['2 cups', 'Rice', 2, 'CUPS'],
-    ['2-3 cups', 'Rice', 2.5, 'CUPS'],
-    ['1 lb', 'Beef', 453.6, 'G'],
-    ['8 oz', 'Cheese', 226.8, 'G'],
-    ['8 fl oz', 'Milk', 236.56, 'ML'],
-    ['200g/7oz', 'Pasta', 200, 'G'],
-    ['2', 'Eggs', 2, 'PIECES'],
-    ['2 cloves minced', 'Garlic', 2, 'PIECES'],
-    ['1 large', 'Onion', 1, 'PIECES'],
-    ['1 can', 'Chopped Tomatoes', 1, 'PIECES'],
-    ['2 PIECES', 'Eggs', 2, 'PIECES'],
-    ['500 G', 'Flour', 500, 'G'],
-  ])('parses %s of %s', (measure, name, quantity, unit) => {
-    expect(parseQuantityUnit(measure, name)).toEqual({ quantity, unit });
+    ['500g', 500, 'G'],
+    ['1.5kg', 1.5, 'KG'],
+    ['1,5 kg', 1.5, 'KG'],
+    ['250 ml', 250, 'ML'],
+    ['2 cl', 20, 'ML'],
+    ['1 l', 1, 'L'],
+    ['2 cups', 2, 'CUPS'],
+    ['2-3 cups', 2.5, 'CUPS'],
+    ['1 lb', 453.6, 'G'],
+    ['8 oz', 226.8, 'G'],
+    ['8 fl oz', 236.56, 'ML'],
+    ['200g/7oz', 200, 'G'],
+    ['2', 2, 'PIECES'],
+    ['2 cloves minced', 2, 'PIECES'],
+    ['1 large', 1, 'PIECES'],
+    ['1 can', 1, 'PIECES'],
+    ['1  bunch', 1, 'PIECES'],
+    ['2 bunches', 2, 'PIECES'],
+    ['2 PIECES', 2, 'PIECES'],
+    ['500 G', 500, 'G'],
+  ])('parses %s', (measure, quantity, unit) => {
+    expect(parseQuantityUnit(measure)).toEqual({ quantity, unit });
   });
 
   it.each([
-    ['2 tbsp', 'Olive Oil', 30, 'ML'],
-    ['1 tsp', 'Vanilla Extract', 5, 'ML'],
-    ['1 tbsp', 'Coconut Milk', 15, 'ML'],
-    ['1 tsp', 'Baking Powder', 4.6, 'G'],
-    ['½ tsp', 'Salt', 3, 'G'],
-    ['1 ½ tbsp', 'Plain Flour', 11.93, 'G'],
-    ['2 tbsp', 'Butter', 28.5, 'G'],
-    ['1 tsp', 'Cream of Tartar', 3, 'G'],
-    ['2 tbsp', 'Sour Cream', 30, 'G'],
-    ['2 tablespoons', 'Chopped Chive', 6, 'G'],
-    ['1 tbs', 'Spring Onions', 6, 'G'],
-    ['1 tblsp', 'Ground Cardomom', 6, 'G'],
-    ['2 tablespoons', 'Roasted Peanut', 18, 'G'],
-    ['1 tbsp', 'Tomato Purée', 16.05, 'G'],
-    ['1 tsp', 'Turmeric Powder', 3, 'G'],
-    ['1 tsp', 'Chinese five spice powder', 2.5, 'G'],
-  ])('converts %s of %s by ingredient', (measure, name, quantity, unit) => {
-    expect(parseQuantityUnit(measure, name)).toEqual({ quantity, unit });
+    ['2 tbsp', 2, 'TBSP'],
+    ['1 tbs', 1, 'TBSP'],
+    ['1 tblsp', 1, 'TBSP'],
+    ['2 tablespoons', 2, 'TBSP'],
+    ['1 ½ tbsp', 1.5, 'TBSP'],
+    ['1 tsp', 1, 'TSP'],
+    ['½ tsp', 0.5, 'TSP'],
+    ['3 teaspoons', 3, 'TSP'],
+    ['1 TBSP', 1, 'TBSP'],
+  ])('keeps spoon measure %s as is', (measure, quantity, unit) => {
+    expect(parseQuantityUnit(measure)).toEqual({ quantity, unit });
   });
 
   it.each([
-    ['juice of 1', 'Lime', 1],
-    ['Juice of 1/2', 'Lemon', 0.5],
-    ['juice of half', 'Lemon', 0.5],
-    ['Zest of 2', 'Orange', 2],
-    ['Grated Zest of 2', 'Lemons', 2],
-    ['zest and juice of 1', 'Lemon', 1],
-    ['Juice/zest of one', 'Lime', 1],
-    ['The juice and zest of one', 'lemon', 1],
-    ['1  bunch', 'Spring Onions', 1],
-    ['2 bunches', 'Coriander', 2],
-  ])('counts %s of %s as pieces', (measure, name, quantity) => {
-    expect(parseQuantityUnit(measure, name)).toEqual({
-      quantity,
-      unit: 'PIECES',
-    });
-  });
-
-  it.each([
-    ['to taste', 'Salt'],
-    ['bunch', 'Dill'],
-    ['small bunch', 'Parsley'],
-    ['1/2 handful', 'Mint'],
-    ['1 dash', 'Worcestershire Sauce'],
-    ['1 pinch', 'Salt'],
-    ['handful', 'Parsley'],
-    ['chopped', 'Onion'],
-    ['3cm piece', 'Ginger'],
-    ['0', 'Water'],
-    ['1 tbsp', 'Mystery Thing'],
-  ])('returns null for %s of %s', (measure, name) => {
-    expect(parseQuantityUnit(measure, name)).toBeNull();
+    'to taste',
+    'bunch',
+    'small bunch',
+    '1/2 handful',
+    '1 dash',
+    '1 pinch',
+    'handful',
+    'chopped',
+    'juice of 1',
+    'zest and juice of 1',
+    '3cm piece',
+    '0',
+  ])('returns null for %s', (measure) => {
+    expect(parseQuantityUnit(measure)).toBeNull();
   });
 });
 
@@ -575,7 +553,12 @@ describe('quantityToGrams', () => {
     [{ quantity: 1, unit: 'L' as const }, 'Milk', 1000, 'medium'],
     [{ quantity: 2, unit: 'CUPS' as const }, 'Rice', 300, 'medium'],
     [{ quantity: 2, unit: 'PIECES' as const }, 'Eggs', 100, 'low'],
+    [{ quantity: 2, unit: 'TBSP' as const }, 'Olive Oil', 30, 'medium'],
+    [{ quantity: 2, unit: 'TBSP' as const }, 'Plain Flour', 15.9, 'medium'],
+    [{ quantity: 1, unit: 'TSP' as const }, 'Salt', 6, 'medium'],
   ])('converts %o of %s', (parsed, name, grams, confidence) => {
-    expect(quantityToGrams(parsed, name)).toMatchObject({ grams, confidence });
+    const result = quantityToGrams(parsed, name);
+    expect(result.grams).toBeCloseTo(grams);
+    expect(result.confidence).toBe(confidence);
   });
 });

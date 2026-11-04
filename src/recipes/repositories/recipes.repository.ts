@@ -79,7 +79,7 @@ function toIngredientCreateInput(
 ): Prisma.RecipeIngredientUncheckedCreateWithoutRecipeInput {
   const parsed =
     ing.quantity === undefined && ing.unit === undefined && ing.measure
-      ? parseQuantityUnit(ing.measure, ing.name)
+      ? parseQuantityUnit(ing.measure)
       : null;
   return {
     name: ing.name,

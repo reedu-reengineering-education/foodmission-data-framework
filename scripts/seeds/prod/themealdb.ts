@@ -287,9 +287,7 @@ export async function seedRecipes(
               recipeId: createdRecipe.id,
               name: ing.name,
               measure: ing.measure?.trim() ?? null,
-              ...(ing.measure
-                ? parseQuantityUnit(ing.measure, ing.name)
-                : null),
+              ...(ing.measure ? parseQuantityUnit(ing.measure) : null),
               order: ing.order,
               itemType: 'generic_food',
               genericFoodId: ing.genericFoodId ?? null,
