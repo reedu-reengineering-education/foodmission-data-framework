@@ -9,7 +9,6 @@ import {
   IsString,
 } from 'class-validator';
 import {
-  TransformBooleanString,
   TransformCSVToStringArray,
   TransformTrimLowercaseToUndefined,
   TransformTrimToUndefined,
@@ -92,28 +91,16 @@ export class QueryRecipeDto extends PaginationQueryDto {
   @ApiPropertyOptional({
     description:
       'Words to search for, separated by spaces or punctuation; at most 8 are used. ' +
-      'Every word must match a word in the title, in any order: its start ("chick" finds "Chicken") ' +
-      'or a form with a different ending ("pie" finds "pies", "pomodoro" finds "pomodori"). ' +
-      'For languages other than English, when no title matches, words may also match ingredients, ' +
-      'by name or by their food name in `lang`. ' +
-      'Results are ordered by relevance: more words in the title, exact words and shorter titles first.',
+      'Every word must match a word in the title or in an ingredient (its name, or its food name in `lang`), in any order: ' +
+      'its start ("chick" finds "Chicken") or a form with a different ending ("pie" finds "pies", "pomodoro" finds "pomodori"). ' +
+      'Results are ordered by relevance: more words in the title first (so title matches before ingredient-only ones), ' +
+      'then exact words, then shorter titles.',
     example: 'chicken curry',
   })
   @IsOptional()
   @IsString()
   @TransformTrimToUndefined()
   search?: string;
-
-  @ApiPropertyOptional({
-    description:
-      'Let search words also match ingredients, by name or by their food name in `lang`, ' +
-      'even when titles match. Title matches still come first.',
-    type: Boolean,
-  })
-  @IsOptional()
-  @IsBoolean()
-  @TransformBooleanString()
-  searchIngredients?: boolean;
 
   @ApiPropertyOptional({
     description: `Locale for ingredient names linked to NEVO generic foods, and for searching them (see \`search\`). Defaults to ${DEFAULT_LOCALE}.`,

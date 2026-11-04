@@ -22,7 +22,6 @@ import { handlePrismaError } from '../../common/utils/error.utils';
 import { searchPrefix, searchWords } from '../../common/utils/text-search.util';
 import {
   SearchableRecipe,
-  matchesTitle,
   matchesTitleOrIngredients,
   rankRecipes,
 } from '../utils/recipe-search';
@@ -201,36 +200,18 @@ export class RecipesService {
 
   /**
    * The recipes matching `where` and the search words, newest first. Every
-   * word must appear in the title. Each word may instead match an ingredient,
-   * by name or by its generic food's translated name ("pomodoro" finds
-   * "Pomodori crudi"), when the client asks for it, or for languages other
-   * than English when no title matches (titles exist only in English). Titles
-   * and ingredients use the same word rule (see hasWordMatch); SQL only
-   * narrows the candidates by searchPrefix first.
+   * word must appear in the title or in an ingredient: by its name, or by its
+   * generic food's name in `lang` ("pomodoro" finds "Pomodori crudi"). Titles
+   * and ingredients use the same word rule (see hasWordMatch); rankRecipes
+   * then puts title matches first. SQL only narrows the candidates by
+   * searchPrefix.
    */
   private async searchRecipes(
     where: Prisma.RecipeWhereInput,
     words: string[],
     query: QueryRecipeDto,
   ): Promise<SearchableRecipe[]> {
-    const prefixes = words.map(searchPrefix);
-    const contains = (prefix: string) => ({
-      contains: prefix,
-      mode: 'insensitive' as const,
-    });
-    const titleMatches = (
-      await this.recipeRepository.findSearchCandidates({
-        ...where,
-        AND: prefixes.map((prefix) => ({ title: contains(prefix) })),
-      })
-    ).filter((recipe) => matchesTitle(recipe, words));
-
     const locale = this.translationService.resolveLocale(query.lang);
-    const searchIngredients =
-      query.searchIngredients ||
-      (locale !== DEFAULT_LOCALE && titleMatches.length === 0);
-    if (!searchIngredients) return titleMatches;
-
     const translatedFoodIds = await Promise.all(
       words.map((word) =>
         this.translationService.findEntityIdsByValue(
@@ -242,9 +223,13 @@ export class RecipesService {
         ),
       ),
     );
+    const contains = (prefix: string) => ({
+      contains: prefix,
+      mode: 'insensitive' as const,
+    });
     const candidates = await this.recipeRepository.findSearchCandidates({
       ...where,
-      AND: prefixes.map((prefix, i) => ({
+      AND: words.map(searchPrefix).map((prefix, i) => ({
         OR: [
           { title: contains(prefix) },
           {

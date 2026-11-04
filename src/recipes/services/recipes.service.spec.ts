@@ -179,11 +179,15 @@ describe('RecipesService', () => {
       mockRecipeRepository.findByIds.mockResolvedValue([]);
     });
 
-    it('narrows candidates in SQL, then keeps whole-word title matches', async () => {
+    it('narrows candidates in SQL by title or ingredient, then checks whole words', async () => {
       mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('kebabs', 'Red curry chicken kebabs'),
         recipe('curry', 'Nutty Chicken Curry'),
-        recipe('pieces', 'Chicken pieces in curry sauce'),
         recipe('scurry', 'Scurrying chickens'),
+        recipe('rice', 'Fried rice', [
+          { name: 'Chicken thighs' },
+          { name: 'Curry powder' },
+        ]),
       ]);
 
       await service.findAll(userId, {
@@ -192,50 +196,43 @@ describe('RecipesService', () => {
         limit: 10,
       });
 
-      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith({
-        OR: [{ userId }, { isPublic: true }],
-        AND: [
-          { title: { contains: 'curry', mode: 'insensitive' } },
-          { title: { contains: 'chicken', mode: 'insensitive' } },
+      const titleOrIngredient = (prefix: string) => ({
+        OR: [
+          { title: { contains: prefix, mode: 'insensitive' } },
+          {
+            ingredients: {
+              some: {
+                OR: [
+                  { name: { contains: prefix, mode: 'insensitive' } },
+                  { genericFoodId: { in: [] } },
+                ],
+              },
+            },
+          },
         ],
       });
-      // "Scurrying" contains "curry" but no word starts with it. The shorter
-      // title ranks first.
-      expect(pageIds()).toEqual(['curry', 'pieces']);
-      expect(mockRecipeRepository.findWithPagination).not.toHaveBeenCalled();
-      // English: titles only, no ingredient lookup.
-      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
-    });
-
-    it('keeps title matches only for other languages when titles match', async () => {
-      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
-        recipe('pies', 'Mini chilli beef pies'),
-      ]);
-
-      await service.findAll(userId, {
-        search: 'chilli beef',
-        lang: 'it',
-        page: 1,
-        limit: 10,
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith({
+        OR: [{ userId }, { isPublic: true }],
+        AND: [titleOrIngredient('curry'), titleOrIngredient('chicken')],
       });
-
-      expect(pageIds()).toEqual(['pies']);
+      // "Scurrying" contains "curry" but no word starts with it. Title
+      // matches come first, the shorter title before the longer one; the
+      // ingredient-only match comes last.
+      expect(pageIds()).toEqual(['curry', 'kebabs', 'rice']);
+      expect(mockRecipeRepository.findWithPagination).not.toHaveBeenCalled();
+      // English: no translation lookup.
       expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
     });
 
-    it('searches ingredients the same way for other languages when no title matches', async () => {
-      mockRecipeRepository.findSearchCandidates
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([
-          recipe('salad', 'Greek salad', [
-            { name: 'Tomatoes', genericFoodId: 'tomato-food' },
-          ]),
-          recipe('stew', 'Bean stew', [{ name: 'Pomodoro sauce' }]),
-          recipe('soup', 'Onion soup', [{ name: 'Onions' }]),
-        ]);
+    it('matches ingredients through their translated food name in lang', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('salad', 'Greek salad', [
+          { name: 'Tomatoes', genericFoodId: 'tomato-food' },
+        ]),
+        recipe('stew', 'Bean stew', [{ name: 'Pomodoro sauce' }]),
+        recipe('pasta', 'Pasta al pomodoro'),
+        recipe('soup', 'Onion soup', [{ name: 'Onions' }]),
+      ]);
       mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
         { entityId: 'tomato-food', value: 'Pomodori crudi' },
       ]);
@@ -247,21 +244,28 @@ describe('RecipesService', () => {
         limit: 10,
       });
 
+      expect(mockPrisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            entityType: 'GenericFood',
+            locale: 'it',
+            field: { in: ['foodName', 'synonym'] },
+            value: { contains: 'pomodor', mode: 'insensitive' },
+          }),
+        }),
+      );
       expect(
-        mockRecipeRepository.findSearchCandidates,
-      ).toHaveBeenLastCalledWith({
+        mockRecipeRepository.findSearchCandidates.mock.calls[0][0],
+      ).toMatchObject({
         userId,
         AND: [
           {
             OR: [
-              { title: { contains: 'pomodor', mode: 'insensitive' } },
+              {},
               {
                 ingredients: {
                   some: {
-                    OR: [
-                      { name: { contains: 'pomodor', mode: 'insensitive' } },
-                      { genericFoodId: { in: ['tomato-food'] } },
-                    ],
+                    OR: [{}, { genericFoodId: { in: ['tomato-food'] } }],
                   },
                 },
               },
@@ -269,28 +273,8 @@ describe('RecipesService', () => {
           },
         ],
       });
-      expect(pageIds()).toEqual(['salad', 'stew']);
-    });
-
-    it('searches ingredients when asked, even in English with title matches', async () => {
-      mockRecipeRepository.findSearchCandidates
-        .mockResolvedValueOnce([recipe('soup', 'Creamy tomato soup')])
-        .mockResolvedValueOnce([
-          recipe('soup', 'Creamy tomato soup'),
-          recipe('shakshuka', 'Shakshuka', [{ name: 'Chopped tomatoes' }]),
-          recipe('ketchup', 'Burger', [{ name: 'Tomatillo salsa' }]),
-        ]);
-
-      await service.findAll(userId, {
-        search: 'tomato',
-        searchIngredients: true,
-        page: 1,
-        limit: 10,
-      });
-
-      // The title match ranks before the ingredient-only match.
-      expect(pageIds()).toEqual(['soup', 'shakshuka']);
-      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+      // The title match first, then ingredient matches (newest first).
+      expect(pageIds()).toEqual(['pasta', 'salad', 'stew']);
     });
 
     it('ranks before paging and reports the total of all matches', async () => {

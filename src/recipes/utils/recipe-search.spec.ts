@@ -1,8 +1,4 @@
-import {
-  matchesTitle,
-  matchesTitleOrIngredients,
-  rankRecipes,
-} from './recipe-search';
+import { matchesTitleOrIngredients, rankRecipes } from './recipe-search';
 
 describe('recipe search matching', () => {
   const recipe = {
@@ -14,11 +10,15 @@ describe('recipe search matching', () => {
     ],
   };
 
-  it('matches titles by whole words, in any order', () => {
-    expect(matchesTitle(recipe, ['chilli', 'beef'])).toBe(true);
-    expect(matchesTitle(recipe, ['chil'])).toBe(true);
-    expect(matchesTitle(recipe, ['raise'])).toBe(false);
-    expect(matchesTitle(recipe, ['beef', 'tomato'])).toBe(false);
+  it('matches title words in any order, by whole words', () => {
+    const none = [new Set<string>(), new Set<string>()];
+    expect(matchesTitleOrIngredients(recipe, ['chilli', 'beef'], none)).toBe(
+      true,
+    );
+    expect(matchesTitleOrIngredients(recipe, ['chil'], [new Set()])).toBe(true);
+    expect(matchesTitleOrIngredients(recipe, ['raise'], [new Set()])).toBe(
+      false,
+    );
   });
 
   it('lets each word match the title or any ingredient', () => {
