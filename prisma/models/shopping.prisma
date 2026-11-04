@@ -9,6 +9,8 @@ enum Unit {
   ML
   L
   CUPS
+  TBSP
+  TSP
 }
 
 model ShoppingList {

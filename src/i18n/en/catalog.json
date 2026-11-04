@@ -40,7 +40,9 @@
     "KG": "kg",
     "ML": "ml",
     "L": "l",
-    "CUPS": "Cups"
+    "CUPS": "Cups",
+    "TBSP": "Tablespoons",
+    "TSP": "Teaspoons"
   },
   "typeOfMeals": {
     "BREAKFAST": "Breakfast",

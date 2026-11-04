@@ -186,6 +186,8 @@ model RecipeIngredient {
   recipeId  String
   name      String // Original ingredient name from recipe
   measure   String? // Amount/measurement string
+  quantity  Float?
+  unit      Unit?
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

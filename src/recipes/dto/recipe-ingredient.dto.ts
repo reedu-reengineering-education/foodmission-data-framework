@@ -1,7 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Unit } from '@prisma/client';
 import {
+  IsEnum,
+  IsNumber,
   IsString,
   IsNotEmpty,
+  MaxLength,
   IsInt,
   IsOptional,
   IsUUID,
@@ -13,6 +17,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { MAX_MEASURE_LENGTH } from '../../common/utils/measure-parser';
 
 /**
  * Validator: ensures 0 or 1 of foodProductId/genericFoodId is provided (not both)
@@ -46,12 +51,34 @@ export class CreateRecipeIngredientDto {
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Measurement/amount',
+    description:
+      'Free-text amount as written in the recipe, kept for display. Parsed into quantity/unit when those are omitted',
     example: '500g',
   })
   @IsString()
+  @MaxLength(MAX_MEASURE_LENGTH)
   @IsOptional()
   measure?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Amount in the given unit. Derived from measure when quantity and unit are omitted',
+    example: 500,
+    minimum: 0,
+  })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  quantity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Catalog unit (see /catalog/units)',
+    enum: Unit,
+    example: Unit.G,
+  })
+  @IsEnum(Unit)
+  @IsOptional()
+  unit?: Unit;
 
   @ApiPropertyOptional({
     description: 'Order in the recipe',
@@ -96,12 +123,34 @@ export class UpdateRecipeIngredientDto {
   name?: string;
 
   @ApiPropertyOptional({
-    description: 'Measurement/amount',
+    description:
+      'Free-text amount as written in the recipe, kept for display. Parsed into quantity/unit when those are omitted',
     example: '600g',
   })
   @IsString()
+  @MaxLength(MAX_MEASURE_LENGTH)
   @IsOptional()
   measure?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Amount in the given unit. Derived from measure when quantity and unit are omitted',
+    example: 600,
+    minimum: 0,
+  })
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  quantity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Catalog unit (see /catalog/units)',
+    enum: Unit,
+    example: Unit.G,
+  })
+  @IsEnum(Unit)
+  @IsOptional()
+  unit?: Unit;
 
   @ApiPropertyOptional({
     description: 'Order in the recipe',
@@ -146,9 +195,31 @@ export class RecipeIngredientResponseDto {
   @Expose()
   name: string;
 
-  @ApiPropertyOptional({ description: 'Measurement/amount' })
+  @ApiPropertyOptional({
+    description: 'Free-text amount as written in the recipe',
+    example: '2 tbsp',
+  })
   @Expose()
   measure?: string;
+
+  @ApiPropertyOptional({
+    description: 'Amount in unit; null when measure could not be parsed',
+    type: Number,
+    nullable: true,
+    example: 30,
+  })
+  @Expose()
+  quantity?: number | null;
+
+  @ApiPropertyOptional({
+    description:
+      'Catalog unit (see /catalog/units); null when measure could not be parsed',
+    enum: Unit,
+    nullable: true,
+    example: Unit.ML,
+  })
+  @Expose()
+  unit?: Unit | null;
 
   @ApiProperty({ description: 'Order in recipe' })
   @Expose()

@@ -2,6 +2,10 @@ import {
   parseMeasure,
   parseFraction,
   getAverageWeight,
+  parseQuantityUnit,
+  lookupVolumeIngredient,
+  quantityToGrams,
+  MAX_MEASURE_LENGTH,
 } from './measure-parser';
 
 describe('parseMeasure', () => {
@@ -162,6 +166,16 @@ describe('parseMeasure', () => {
     it('parses fraction teaspoons', () => {
       const result = parseMeasure('1/2 tsp');
       expect(result.grams).toBe(2.5);
+    });
+
+    it('uses ingredient density for dry spoon measures', () => {
+      expect(parseMeasure('2 tbsp', 'Plain Flour').grams).toBeCloseTo(15.9);
+      expect(parseMeasure('1 tsp', 'Salt').grams).toBe(6);
+    });
+
+    it('keeps 1 g/ml for liquids and unknown ingredients', () => {
+      expect(parseMeasure('2 tbsp', 'Olive Oil').grams).toBe(30);
+      expect(parseMeasure('1 tsp', 'Mystery').grams).toBe(5);
     });
   });
 
@@ -330,6 +344,45 @@ describe('parseMeasure', () => {
       expect(result.grams).toBe(1000);
       expect(result.confidence).toBe('medium');
     });
+
+    it.each([
+      ['½ cup', 75],
+      ['1 ½ tsp', 7.5],
+      ['1½ kg', 1500],
+      ['1 1/2 L', 1500],
+      ['1/2 kg chopped', 500],
+      ['2.5 tbsp', 37.5],
+      ['1-2tbsp', 22.5],
+      ['6-8 slices', 210],
+      ['2 400g cans', 400],
+      ['8-ounce sliced', 226.8],
+    ])('parses amount in %s', (measure, grams) => {
+      expect(parseMeasure(measure).grams).toBeCloseTo(grams);
+    });
+
+    it('treats measures over the length limit as unknown', () => {
+      const result = parseMeasure('1'.repeat(MAX_MEASURE_LENGTH + 1));
+      expect(result).toMatchObject({ grams: 0, confidence: 'unknown' });
+    });
+  });
+});
+
+describe('adversarial input', () => {
+  const inputs = [
+    ['spaces', '1' + ' '.repeat(MAX_MEASURE_LENGTH - 2) + 'x'],
+    ['fraction', '1' + ' '.repeat(MAX_MEASURE_LENGTH - 2) + '½'],
+    ['digits', '1'.repeat(MAX_MEASURE_LENGTH - 1) + 'x'],
+    ['spaced digits', '1 '.repeat(MAX_MEASURE_LENGTH / 2 - 1) + 'x'],
+    ['over limit', ' '.repeat(100_000) + '½'],
+  ];
+
+  it.each(inputs)('parses %s quickly', (_, measure) => {
+    const start = performance.now();
+    for (let i = 0; i < 20; i++) {
+      parseMeasure(measure, 'Salt');
+      parseQuantityUnit(measure);
+    }
+    expect(performance.now() - start).toBeLessThan(500);
   });
 });
 
@@ -411,5 +464,101 @@ describe('getAverageWeight', () => {
 
   it('returns weight for garlic', () => {
     expect(getAverageWeight('garlic')).toBe(3);
+  });
+});
+
+describe('parseQuantityUnit', () => {
+  it.each([
+    ['500g', 500, 'G'],
+    ['1.5kg', 1.5, 'KG'],
+    ['1,5 kg', 1.5, 'KG'],
+    ['250 ml', 250, 'ML'],
+    ['2 cl', 20, 'ML'],
+    ['1 l', 1, 'L'],
+    ['2 cups', 2, 'CUPS'],
+    ['2-3 cups', 2.5, 'CUPS'],
+    ['1 lb', 453.6, 'G'],
+    ['8 oz', 226.8, 'G'],
+    ['8 fl oz', 236.56, 'ML'],
+    ['200g/7oz', 200, 'G'],
+    ['2', 2, 'PIECES'],
+    ['2 cloves minced', 2, 'PIECES'],
+    ['1 large', 1, 'PIECES'],
+    ['1 can', 1, 'PIECES'],
+    ['1  bunch', 1, 'PIECES'],
+    ['2 bunches', 2, 'PIECES'],
+    ['2 PIECES', 2, 'PIECES'],
+    ['500 G', 500, 'G'],
+  ])('parses %s', (measure, quantity, unit) => {
+    expect(parseQuantityUnit(measure)).toEqual({ quantity, unit });
+  });
+
+  it.each([
+    ['2 tbsp', 2, 'TBSP'],
+    ['1 tbs', 1, 'TBSP'],
+    ['1 tblsp', 1, 'TBSP'],
+    ['2 tablespoons', 2, 'TBSP'],
+    ['1 ½ tbsp', 1.5, 'TBSP'],
+    ['1 tsp', 1, 'TSP'],
+    ['½ tsp', 0.5, 'TSP'],
+    ['3 teaspoons', 3, 'TSP'],
+    ['1 TBSP', 1, 'TBSP'],
+  ])('keeps spoon measure %s as is', (measure, quantity, unit) => {
+    expect(parseQuantityUnit(measure)).toEqual({ quantity, unit });
+  });
+
+  it.each([
+    'to taste',
+    'bunch',
+    'small bunch',
+    '1/2 handful',
+    '1 dash',
+    '1 pinch',
+    'handful',
+    'chopped',
+    'juice of 1',
+    'zest and juice of 1',
+    '3cm piece',
+    '0',
+  ])('returns null for %s', (measure) => {
+    expect(parseQuantityUnit(measure)).toBeNull();
+  });
+});
+
+describe('lookupVolumeIngredient', () => {
+  it('uses the head noun of compound names', () => {
+    expect(lookupVolumeIngredient('Rice Vinegar')).toEqual({
+      liquid: true,
+      gramsPerMl: 1,
+    });
+    expect(lookupVolumeIngredient('Cream Cheese')?.liquid).toBe(false);
+    expect(lookupVolumeIngredient('Cheese Sauce')?.liquid).toBe(true);
+  });
+
+  it('prefers the longer key on the same head', () => {
+    expect(lookupVolumeIngredient('Kosher Salt')?.gramsPerMl).toBe(0.6);
+  });
+
+  it('does not match inside other words', () => {
+    expect(lookupVolumeIngredient('Buttermilk')?.liquid).toBe(true);
+    expect(lookupVolumeIngredient('Boiled Egg')).toBeNull();
+  });
+});
+
+describe('quantityToGrams', () => {
+  it.each([
+    [{ quantity: 200, unit: 'G' as const }, 'Pasta', 200, 'high'],
+    [{ quantity: 1.5, unit: 'KG' as const }, 'Beef', 1500, 'high'],
+    [{ quantity: 30, unit: 'ML' as const }, 'Olive Oil', 30, 'medium'],
+    [{ quantity: 1, unit: 'L' as const }, 'Milk', 1000, 'medium'],
+    [{ quantity: 2, unit: 'CUPS' as const }, 'Rice', 300, 'medium'],
+    [{ quantity: 2, unit: 'PIECES' as const }, 'Eggs', 100, 'low'],
+    [{ quantity: 2, unit: 'TBSP' as const }, 'Olive Oil', 30, 'medium'],
+    [{ quantity: 2, unit: 'TBSP' as const }, 'Plain Flour', 15.9, 'medium'],
+    [{ quantity: 1, unit: 'TSP' as const }, 'Salt', 6, 'medium'],
+  ])('converts %o of %s', (parsed, name, grams, confidence) => {
+    const result = quantityToGrams(parsed, name);
+    expect(result.grams).toBeCloseTo(grams);
+    expect(result.confidence).toBe(confidence);
   });
 });
