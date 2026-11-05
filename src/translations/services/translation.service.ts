@@ -1,5 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  hasWordMatch,
+  isCompoundHeadMatch,
+  searchPrefix,
+} from '../../common/utils/text-search.util';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   ENTITY_TRANSLATABLE_FIELDS,
@@ -10,7 +15,12 @@ import {
 
 export type FieldFallbacks = Record<string, string | null | undefined>;
 
-export type TranslationValueMatch = 'contains' | 'equals';
+/**
+ * `word`: a word of the value starts with the term or is an inflected form of
+ * it (see hasWordMatch); in German, Dutch and Norwegian also a compound with
+ * the term as its head (see isCompoundHeadMatch).
+ */
+export type TranslationValueMatch = 'contains' | 'equals' | 'word';
 
 @Injectable()
 export class TranslationService {
@@ -148,7 +158,16 @@ export class TranslationService {
       return [];
     }
 
-    const valueFilter =
+    if (match === 'word') {
+      return this.findEntityIdsByWord(
+        entityType,
+        resolvedLocale,
+        fields,
+        search,
+      );
+    }
+
+    const value =
       match === 'equals'
         ? { equals: search, mode: 'insensitive' as const }
         : { contains: search, mode: 'insensitive' as const };
@@ -158,13 +177,50 @@ export class TranslationService {
         entityType,
         locale: resolvedLocale,
         field: { in: fields },
-        value: valueFilter,
+        value,
       },
       select: { entityId: true },
       distinct: ['entityId'],
     });
 
     return rows.map((r) => r.entityId);
+  }
+
+  /**
+   * Values containing the term's searchPrefix, narrowed in code to those
+   * hasWordMatch accepts: SQL cannot split words on apostrophes ("Olio
+   * d'oliva") or check the ending length. In compounding locales a word may also end in the
+   * term ("milch" finds "Vollmilch"), as in the generic food search ranking.
+   */
+  private async findEntityIdsByWord(
+    entityType: TranslatableEntityType,
+    locale: string,
+    fields: string[],
+    search: string,
+  ): Promise<string[]> {
+    const prefix = searchPrefix(search);
+    if (!prefix) return [];
+    const rows = await this.prisma.entityTranslation.findMany({
+      where: {
+        entityType,
+        locale,
+        field: { in: fields },
+        value: { contains: prefix, mode: 'insensitive' },
+      },
+      select: { entityId: true, value: true },
+    });
+
+    return [
+      ...new Set(
+        rows
+          .filter(
+            (row) =>
+              hasWordMatch(row.value, search) ||
+              isCompoundHeadMatch(search, row.value, locale),
+          )
+          .map((row) => row.entityId),
+      ),
+    ];
   }
 
   async listDistinct(

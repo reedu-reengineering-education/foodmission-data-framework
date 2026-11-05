@@ -155,6 +155,98 @@ describe('TranslationService', () => {
       );
     });
 
+    it('matches words and their inflected forms', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'raw', value: 'Pomodori crudi' },
+        { entityId: 'juice', value: 'Succo di pomodoro/verdura' },
+        { entityId: 'puree', value: 'Concentrato di pomodoro' },
+        { entityId: 'puree', value: 'Passata di pomodoro' },
+        { entityId: 'parsnip', value: 'Pomodorinoso inventato' },
+      ]);
+
+      const ids = await service.findEntityIdsByValue(
+        'GenericFood',
+        'it',
+        ['foodName'],
+        'pomodoro',
+        'word',
+      );
+
+      expect(ids).toEqual(['raw', 'juice', 'puree']);
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            value: { contains: 'pomodor', mode: 'insensitive' },
+          }),
+        }),
+      );
+    });
+
+    it('matches words after an apostrophe', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'olive-oil', value: "Olio d'oliva" },
+      ]);
+
+      await expect(
+        service.findEntityIdsByValue(
+          'GenericFood',
+          'it',
+          ['foodName'],
+          'oliva',
+          'word',
+        ),
+      ).resolves.toEqual(['olive-oil']);
+    });
+
+    it('matches a term with punctuation by its words', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'olive-oil', value: "Olio d'oliva" },
+        { entityId: 'olives', value: 'Olive verdi' },
+      ]);
+
+      await expect(
+        service.findEntityIdsByValue(
+          'GenericFood',
+          'it',
+          ['foodName'],
+          "d'oliva",
+          'word',
+        ),
+      ).resolves.toEqual(['olive-oil']);
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            value: { contains: 'oliv', mode: 'insensitive' },
+          }),
+        }),
+      );
+    });
+
+    it('also matches compound heads in German', async () => {
+      prisma.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'whole-milk', value: 'Vollmilch' },
+        { entityId: 'shake', value: 'Milchshake' },
+        { entityId: 'cheese', value: 'Käse aus Rohmilch' },
+      ]);
+
+      const ids = await service.findEntityIdsByValue(
+        'GenericFood',
+        'de',
+        ['foodName'],
+        'milch',
+        'word',
+      );
+
+      expect(ids).toEqual(['whole-milk', 'shake']);
+      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            value: { contains: 'milch', mode: 'insensitive' },
+          }),
+        }),
+      );
+    });
+
     it('supports exact match for filters', async () => {
       prisma.entityTranslation.findMany.mockResolvedValue([
         { entityId: 'id-1' },

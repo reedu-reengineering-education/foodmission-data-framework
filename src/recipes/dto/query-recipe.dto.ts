@@ -88,14 +88,22 @@ export class QueryRecipeDto extends PaginationQueryDto {
   @TransformTrimToUndefined()
   difficulty?: string;
 
-  @ApiPropertyOptional({ description: 'Search by title' })
+  @ApiPropertyOptional({
+    description:
+      'Words to search for, separated by spaces or punctuation; at most 8 are used. ' +
+      'Every word must match a word in the title or in an ingredient (its name, or its food name in `lang`), in any order: ' +
+      'its start ("chick" finds "Chicken") or a form with a different ending ("pie" finds "pies", "pomodoro" finds "pomodori"). ' +
+      'Results are ordered by relevance: more words in the title first (so title matches before ingredient-only ones), ' +
+      'then exact words, then shorter titles.',
+    example: 'chicken curry',
+  })
   @IsOptional()
   @IsString()
   @TransformTrimToUndefined()
   search?: string;
 
   @ApiPropertyOptional({
-    description: `Optional locale for ingredient names linked to NEVO generic foods. Defaults to ${DEFAULT_LOCALE}.`,
+    description: `Locale for ingredient names linked to NEVO generic foods, and for searching them (see \`search\`). Defaults to ${DEFAULT_LOCALE}.`,
     enum: SUPPORTED_LOCALES,
     example: 'de',
   })
