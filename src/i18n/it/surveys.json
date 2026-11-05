@@ -1,12 +1,13 @@
 {
   "meta": {
-    "locale": "it"
+    "locale": "it",
+    "lastImportedAt": "2026-11-05T17:47:26.933Z"
   },
   "likert5": {
-    "1": "Del tutto in disaccordo",
+    "1": "Fortemente in disaccordo",
     "2": "In disaccordo",
     "3": "Né d’accordo né in disaccordo",
     "4": "D’accordo",
-    "5": "Del tutto d’accordo"
+    "5": "Fortemente in accordo"
   }
 }

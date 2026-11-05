@@ -1,12 +1,13 @@
 {
   "meta": {
-    "locale": "sl"
+    "locale": "sl",
+    "lastImportedAt": "2026-11-05T17:47:26.933Z"
   },
   "likert5": {
     "1": "Sploh se ne strinjam",
     "2": "Se ne strinjam",
-    "3": "Niti se strinjam niti ne strinjam",
+    "3": "Niti se strinjam niti se ne strinjam",
     "4": "Se strinjam",
-    "5": "Popolnoma se strinjam"
+    "5": "Močno se strinjam"
   }
 }

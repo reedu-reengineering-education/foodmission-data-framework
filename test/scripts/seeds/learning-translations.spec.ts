@@ -16,8 +16,8 @@ describe('learning translation files', () => {
     expect(file.topics?.REDUCING_MEAT_CONSUMPTION).toContain('Fleisch');
     expect(file.foodFacts?.['FF1.1.1']?.body).toContain('rotes Fleisch');
     expect(file.quizzes?.['Q1.1.1']?.options?.A).toContain('Linsen');
-    expect(file.missions?.['M.A1.1']?.title).toContain('grünen Zone');
-    expect(file.challenges?.['CH.A1.1']?.title).toContain('Getreide');
+    expect(file.missions?.['M.A1.1']?.title).toContain('grünen Bereich');
+    expect(file.challenges?.['CH.A1.1']?.title).toContain('getreide');
     expect(file.quests?.['QUEST.DIET_CHANGES.BEGINNER.2']?.title).toContain(
       'Anfänger',
     );

@@ -1,9 +1,9 @@
 {
   "dimensions": {
     "DIET_CHANGES": "Cambiamenti nell'alimentazione verso un sistema più sostenibile",
-    "PRODUCT_CHOICES": "Scelte di prodotto che tengono conto dell'impatto ambientale",
+    "PRODUCT_CHOICES": "Scelte di prodotto che tengano conto dell'impatto ambientale",
     "PRODUCTION_METHODS": "Metodi di produzione",
-    "PACKAGING": "Confezione",
+    "PACKAGING": "Imballaggio",
     "FOOD_WASTE": "Spreco alimentare",
     "NUTRITION_VALUES": "Valori nutrizionali"
   },
@@ -15,15 +15,15 @@
     "WATER_USE": "Consumo idrico",
     "ENERGY_CONSUMPTION": "Consumo energetico",
     "CARBON_FOOTPRINT": "Impronta di carbonio",
-    "TRAVEL_DISTANCES": "Distanze di viaggio",
-    "LEVEL_OF_PROCESSING": "Livello di trattamento",
+    "TRAVEL_DISTANCES": "Distanze di percorso",
+    "LEVEL_OF_PROCESSING": "Levello di trasformazione",
     "COUNTRY_OF_ORIGIN": "Paese di origine",
     "FARMING_PRODUCTION_METHODS": "Metodi di produzione agricola",
     "BREEDING_METHODS": "Metodi di allevamento",
     "FAIR_TRADE_LABOUR": "Commercio equo e solidale/lavoro",
     "SUSTAINABILITY_OF_PACKAGING_MATERIALS": "Sostenibilità dei materiali di imballaggio",
     "CAPACITY_TO_REUSE_PACKAGING": "Possibilità di riutilizzare gli imballaggi",
-    "PLATE_WASTE": "Rifiuti dei piatti (direttamente nel cestino)",
+    "PLATE_WASTE": "Scarti dei piatti (direttamente nel cestino)",
     "LEFTOVERS_WASTE": "Spreco di avanzi (conservazione o riutilizzo non corretti)",
     "EXPIRED_FOOD": "Alimenti scaduti (acquisti eccessivi o scarsa pianificazione)",
     "OVERCONSUMPTION": "Consumo eccessivo",
@@ -42,19 +42,19 @@
     },
     "FF1.1.2": {
       "title": "Carne bovina e foreste",
-      "body": "Ridurre il consumo di carne bovina può contribuire ad alleggerire la pressione sulle foreste e sugli habitat naturali."
+      "body": "Ridurre il consumo di carne bovina può contribuire a ridurre la pressione sulle foreste e sugli habitat naturali."
     },
     "FF1.1.3": {
       "title": "Meno carne, meno emissioni",
-      "body": "Le diete con un minor consumo di carne generano in genere minori emissioni di gas serra."
+      "body": "Le diete a minor consumo di carne generano, in genere, minori emissioni di gas serra."
     },
     "FF1.1.4": {
       "title": "Più vegetali, meno carne rossa",
-      "body": "Le diete sostenibili tendono a contenere più alimenti di origine vegetale e meno carne rossa."
+      "body": "Le diete sostenibili tendono a includere più alimenti di origine vegetale e meno carne rossa."
     },
     "FF1.1.5": {
       "title": "Il suolo occupato dalla carne bovina",
-      "body": "La produzione di carne bovina richiede una superficie molto maggiore rispetto alla produzione di proteine vegetali come i piselli o il tofu."
+      "body": "La produzione di carne bovina richiede una superficie molto maggiore rispetto a quella delle proteine vegetali, come i piselli o il tofu."
     },
     "FF1.1.6": {
       "title": "Carne e consumo d'acqua",
@@ -62,11 +62,11 @@
     },
     "FF1.1.7": {
       "title": "Carne e antibiotici",
-      "body": "Ridurre il consumo di carne potrebbe contribuire a diminuire il ricorso agli antibiotici nell'allevamento."
+      "body": "Ridurre il consumo di carne potrebbe contribuire a limitare il ricorso agli antibiotici nell'allevamento."
     },
     "FF1.1.8": {
       "title": "Terreni per il bestiame e calorie",
-      "body": "La produzione zootecnica occupa la maggior parte dei terreni agricoli a livello mondiale, pur fornendo una quota molto più ridotta di calorie e proteine."
+      "body": "La produzione zootecnica occupa la maggior parte dei terreni agricoli a livello mondiale, pur fornendo una quota molto minore di calorie e proteine."
     },
     "FF1.1.9": {
       "title": "Zootecnia e biodiversità",
@@ -74,7 +74,7 @@
     },
     "FF1.1.10": {
       "title": "Legumi al posto della carne",
-      "body": "Sostituire alcuni pasti a base di carne con legumi permette di mantenere l'apporto proteico riducendo al contempo l'impatto ambientale."
+      "body": "Sostituire alcuni pasti a base di carne con legumi consente di mantenere l'apporto proteico, riducendo al contempo l'impatto ambientale."
     },
     "FF1.2.1": {
       "title": "I legumi riducono l'impatto climatico",
@@ -86,7 +86,7 @@
     },
     "FF1.2.3": {
       "title": "Diversifica le tue proteine",
-      "body": "La diversificazione delle fonti proteiche contribuisce a promuovere sia la salute umana che la sostenibilità ambientale."
+      "body": "La diversificazione delle fonti proteiche contribuisce a promuovere sia la salute umana sia la sostenibilità ambientale."
     },
     "FF1.2.4": {
       "title": "Le proteine più sostenibili",
@@ -110,11 +110,11 @@
     },
     "FF1.2.9": {
       "title": "Insetti come fonte proteica",
-      "body": "Gli insetti sono ricchi di sostanze nutritive e potrebbero diventare un'importante fonte alternativa di proteine nei sistemi alimentari del futuro."
+      "body": "Gli insetti sono ricchi di nutrienti e potrebbero diventare un'importante fonte alternativa di proteine nei sistemi alimentari del futuro."
     },
     "FF1.2.10": {
       "title": "Alternative vegetali alla carne",
-      "body": "Le alternative vegetali alla carne possono contribuire a ridurre il consumo di carne, ma la loro qualità nutrizionale varia a seconda dei prodotti."
+      "body": "Le alternative vegetali alla carne possono contribuire a ridurre il consumo di carne, ma la loro qualità nutrizionale varia a seconda del prodotto."
     },
     "FF1.3.1": {
       "title": "Quinoa: una proteina completa",
@@ -126,15 +126,15 @@
     },
     "FF1.3.3": {
       "title": "Oltre grano, riso e mais",
-      "body": "Le colture alternative contribuiscono a ridurre la dipendenza da grano, riso e mais."
+      "body": "Le colture alternative contribuiscono a ridurre la dipendenza dal grano, dal riso e dal mais."
     },
     "FF1.3.4": {
       "title": "Il miglio, una coltura resistente",
       "body": "I miglio sono colture estremamente resistenti, in grado di crescere in condizioni di caldo e siccità con scarse risorse idriche."
     },
     "FF1.3.5": {
-      "title": "Il miglio e il clima che cambia",
-      "body": "I miglio possono continuare a produrre cibo anche in condizioni climatiche in cui altre colture potrebbero non riuscire a crescere."
+      "title": "Il miglio in un clima che cambia",
+      "body": "Il miglio può continuare a produrre cibo anche in condizioni climatiche in cui altre colture potrebbero non riuscire a crescere."
     },
     "FF1.3.6": {
       "title": "Più colture, più sicurezza alimentare",
@@ -142,7 +142,7 @@
     },
     "FF1.3.7": {
       "title": "La quinoa conquista il mondo",
-      "body": "La quinoa viene oggi coltivata in oltre 70 paesi, contribuendo a diversificare la produzione alimentare mondiale."
+      "body": "La quinoa è coltivata oggi in oltre 70 paesi, contribuendo a diversificare la produzione alimentare mondiale."
     },
     "FF1.3.8": {
       "title": "I benefici del grano saraceno",
@@ -154,7 +154,7 @@
     },
     "FF1.3.10": {
       "title": "Antiossidanti nei cereali antichi",
-      "body": "I cereali antichi come il miglio, la quinoa e l'amaranto contengono composti antiossidanti benefici."
+      "body": "I cereali antichi, come il miglio, la quinoa e l'amaranto, contengono composti antiossidanti benefici."
     },
     "FF2.1.1": {
       "title": "L'agricoltura occupa metà delle terre",
@@ -166,15 +166,15 @@
     },
     "FF2.1.3": {
       "title": "Pasti vegetali liberano terreni",
-      "body": "Scegliere pasti più a base vegetale può contribuire a liberare terreni da destinare al ripristino della natura."
+      "body": "Scegliere pasti più a base vegetale può contribuire a liberare terreni da destinare al ripristino degli ecosistemi."
     },
     "FF2.1.4": {
       "title": "Meno carne bovina, meno suolo",
-      "body": "La riduzione del consumo di carne bovina rappresenta uno dei cambiamenti alimentari più significativi per ridurre l'uso del suolo."
+      "body": "La riduzione del consumo di carne bovina è uno dei cambiamenti alimentari più significativi per ridurre l'uso del suolo."
     },
     "FF2.1.5": {
       "title": "La carne bovina richiede più terreno",
-      "body": "La carne bovina è uno degli alimenti che richiedono il maggior impiego di terreno tra quelli consumati dall'uomo."
+      "body": "La carne bovina è uno degli alimenti che richiedono la maggiore superficie di terreno tra quelli consumati dall'uomo."
     },
     "FF2.1.6": {
       "title": "Spreco alimentare, terreno sprecato",
@@ -190,7 +190,7 @@
     },
     "FF2.1.9": {
       "title": "Espansione agricola e biodiversità",
-      "body": "L'espansione dei terreni agricoli è uno dei principali fattori alla base della perdita di biodiversità."
+      "body": "L'espansione delle aree agricole è uno dei principali fattori alla base della perdita di biodiversità."
     },
     "FF2.1.10": {
       "title": "Terreni agricoli degradati",
@@ -202,7 +202,7 @@
     },
     "FF2.2.2": {
       "title": "Meno prodotti animali, meno acqua",
-      "body": "Le diete con un minor consumo di prodotti di origine animale spesso richiedono meno acqua."
+      "body": "Le diete a minor consumo di prodotti di origine animale spesso richiedono meno acqua."
     },
     "FF2.2.3": {
       "title": "Le diete sostenibili risparmiano acqua",
@@ -234,7 +234,7 @@
     },
     "FF2.2.10": {
       "title": "Fertilizzanti e inquinamento idrico",
-      "body": "L'uso eccessivo di fertilizzanti contribuisce all'inquinamento idrico e alla formazione di zone morte."
+      "body": "L'uso eccessivo di fertilizzanti contribuisce all'inquinamento delle acque e alla formazione di zone morte."
     },
     "FF2.3.1": {
       "title": "La quota di emissioni del cibo",
@@ -242,11 +242,11 @@
     },
     "FF2.3.2": {
       "title": "I legumi riducono le emissioni",
-      "body": "Sostituire parte delle proteine animali con i legumi può ridurre le emissioni legate all'alimentazione."
+      "body": "Sostituire una parte delle proteine animali con i legumi può ridurre le emissioni legate all'alimentazione."
     },
     "FF2.3.3": {
       "title": "Cibo di stagione, meno emissioni",
-      "body": "Acquistare alimenti di stagione può contribuire a ridurre le emissioni legate al settore alimentare."
+      "body": "Acquistare alimenti di stagione può contribuire a ridurre le emissioni del settore alimentare."
     },
     "FF2.3.4": {
       "title": "Stesse calorie, impronte diverse",
@@ -258,11 +258,11 @@
     },
     "FF2.3.6": {
       "title": "Le emissioni della dieta vegetariana",
-      "body": "Le diete vegetariane possono generare emissioni notevolmente inferiori rispetto alle diete ricche di carne."
+      "body": "Le diete vegetariane possono generare emissioni notevolmente inferiori rispetto a quelle ricche di carne."
     },
     "FF2.3.7": {
       "title": "L'effetto flessitariano",
-      "body": "Le diete flessitariane possono ridurre in modo significativo l'impatto sul clima."
+      "body": "Le diete flessitariane possono ridurre significativamente l'impatto sul clima."
     },
     "FF2.3.8": {
       "title": "Le emissioni dello spreco alimentare",
@@ -270,7 +270,7 @@
     },
     "FF2.3.9": {
       "title": "Le foreste immagazzinano carbonio",
-      "body": "La tutela delle foreste impedisce che la conversione dei terreni generi ingenti emissioni di carbonio."
+      "body": "La tutela delle foreste impedisce che la conversione dei terreni produca ingenti emissioni di carbonio."
     },
     "FF2.3.10": {
       "title": "Rotazioni colturali con legumi",
@@ -282,15 +282,15 @@
     },
     "FF2.4.2": {
       "title": "Trasporto refrigerato",
-      "body": "Il trasporto su lunghe distanze richiede spesso l'uso di sistemi di refrigerazione, il che aumenta il consumo energetico e l'impronta di carbonio dei prodotti alimentari."
+      "body": "Il trasporto su lunghe distanze richiede spesso l'uso di sistemi di refrigerazione, aumentando il consumo energetico e l'impronta di carbonio dei prodotti alimentari."
     },
     "FF2.4.3": {
       "title": "Scelte di stagione, meno trasporti",
-      "body": "Scegliere alimenti di stagione e ridurre i trasporti non necessari può contribuire a diminuire l'impatto climatico del sistema alimentare."
+      "body": "Scegliere alimenti di stagione e ridurre i trasporti non necessari possono contribuire a ridurre l'impatto climatico del sistema alimentare."
     },
     "FF2.4.4": {
       "title": "La quota del trasporto nelle emissioni",
-      "body": "Quasi un quinto delle emissioni di gas serra prodotte dal sistema alimentare globale è dovuto al trasporto dei prodotti alimentari."
+      "body": "Quasi un quinto delle emissioni di gas serra del sistema alimentare globale è dovuto al trasporto dei prodotti alimentari."
     },
     "FF2.4.5": {
       "title": "I chilometri di frutta e verdura",
@@ -306,15 +306,15 @@
     },
     "FF2.4.8": {
       "title": "Emissioni del trasporto merci alimentare",
-      "body": "Sebbene il settore alimentare rappresenti solo circa il 18% delle distanze percorse dal trasporto merci a livello globale, è responsabile di circa il 27% delle emissioni legate al trasporto merci."
+      "body": "Sebbene il settore alimentare rappresenti solo circa il 18% delle distanze percorse dal trasporto merci a livello globale, è responsabile di circa il 27% delle emissioni del trasporto merci."
     },
     "FF2.4.9": {
       "title": "Cibo perso senza refrigerazione",
-      "body": "Ogni anno circa 526 milioni di tonnellate di alimenti vanno persi o vengono sprecati a causa di sistemi di refrigerazione e raffreddamento inadeguati."
+      "body": "Ogni anno, circa 526 milioni di tonnellate di alimenti vengono perse o sprecate a causa di sistemi di refrigerazione e raffreddamento inadeguati."
     },
     "FF2.4.10": {
       "title": "Catene del freddo migliori",
-      "body": "Il potenziamento delle infrastrutture della catena del freddo può ridurre le perdite alimentari, migliorare la sicurezza alimentare e ridurre l'impatto ambientale."
+      "body": "Il potenziamento delle infrastrutture della catena del freddo può ridurre le perdite alimentari, migliorare la sicurezza alimentare e diminuire l'impatto ambientale."
     },
     "FF3.1.1": {
       "title": "Trasformazione e sicurezza",
@@ -322,11 +322,11 @@
     },
     "FF3.1.2": {
       "title": "La trasformazione previene gli sprechi",
-      "body": "La trasformazione può contribuire a ridurre lo spreco alimentare, consentendo di conservare gli alimenti più a lungo."
+      "body": "La trasformazione può contribuire a ridurre gli sprechi alimentari, consentendo di conservare gli alimenti più a lungo."
     },
     "FF3.1.3": {
-      "title": "Alimenti ultra-trasformati",
-      "body": "Gli alimenti ultra-trasformati hanno spesso un contenuto più elevato di zuccheri, sale e grassi saturi."
+      "title": "Alimenti ultra-processati",
+      "body": "Gli alimenti ultra-processati hanno spesso un contenuto più elevato di zuccheri, sale e grassi saturi."
     },
     "FF3.1.4": {
       "title": "Lavorazione e consumo energetico",
@@ -341,8 +341,8 @@
       "body": "La trasformazione, il confezionamento e il trasporto contribuiscono tutti all’impatto del sistema alimentare."
     },
     "FF3.1.7": {
-      "title": "Trasformato non significa dannoso",
-      "body": "Non tutti gli alimenti trasformati hanno un impatto ambientale elevato."
+      "title": "Processato non significa dannoso",
+      "body": "Non tutti gli alimenti processati hanno un impatto ambientale elevato."
     },
     "FF3.1.8": {
       "title": "Conservazione e trasporto efficienti",
@@ -350,11 +350,11 @@
     },
     "FF3.1.9": {
       "title": "La tecnologia conta",
-      "body": "La sostenibilità degli alimenti trasformati dipende dalla tecnologia di produzione."
+      "body": "La sostenibilità degli alimenti processati dipende dalla tecnologia di produzione."
     },
     "FF3.1.10": {
       "title": "L'intero ciclo di vita",
-      "body": "Considerare l'intero ciclo di vita degli alimenti offre un quadro più completo della sostenibilità rispetto al concentrarsi esclusivamente sulla fase di trasformazione."
+      "body": "Considerare l'intero ciclo di vita degli alimenti offre un quadro più completo della sostenibilità rispetto al concentrarsi esclusivamente sulla fase di processamento."
     },
     "FF3.2.1": {
       "title": "Catene di approvvigionamento corte",
@@ -362,11 +362,11 @@
     },
     "FF3.2.2": {
       "title": "Di stagione e locale",
-      "body": "I prodotti alimentari locali di stagione possono ridurre le esigenze di stoccaggio e trasporto."
+      "body": "I prodotti alimentari locali di stagione possono ridurre le esigenze di stoccaggio e di trasporto."
     },
     "FF3.2.3": {
       "title": "L'origine non è tutto",
-      "body": "Il paese di origine, da solo, non può determinare se un alimento sia sostenibile."
+      "body": "Il paese di origine da solo non può determinare se un alimento sia sostenibile."
     },
     "FF3.2.4": {
       "title": "Origine e tracciabilità",
@@ -374,7 +374,7 @@
     },
     "FF3.2.5": {
       "title": "Il boom del commercio alimentare",
-      "body": "Il commercio alimentare mondiale è aumentato in modo vertiginoso negli ultimi decenni."
+      "body": "Il commercio alimentare mondiale è cresciuto vertiginosamente negli ultimi decenni."
     },
     "FF3.2.6": {
       "title": "I mangimi importati in Europa",
@@ -382,7 +382,7 @@
     },
     "FF3.2.7": {
       "title": "Fiducia nelle etichette di provenienza",
-      "body": "I consumatori associano spesso le etichette di provenienza alla qualità e alla sicurezza."
+      "body": "I consumatori spesso associano le etichette di provenienza alla qualità e alla sicurezza."
     },
     "FF3.2.8": {
       "title": "Locale non è sempre più sostenibile",
@@ -418,11 +418,11 @@
     },
     "FF3.3.6": {
       "title": "Diversificazione delle colture",
-      "body": "La diversificazione delle colture aiuta le aziende agricole a resistere a parassiti e malattie."
+      "body": "La diversificazione delle colture aiuta le aziende agricole a resistere ai parassiti e alle malattie."
     },
     "FF3.3.7": {
       "title": "Agroforestazione",
-      "body": "L'agroforestazione consiste nel combinare la coltivazione di alberi con quella di colture agricole o l'allevamento di bestiame sullo stesso appezzamento di terreno."
+      "body": "L'agroforestazione consiste nel combinare la coltivazione di alberi con quella di colture agricole o con l'allevamento di bestiame sullo stesso appezzamento di terreno."
     },
     "FF3.3.8": {
       "title": "Gestione integrata dei parassiti",
@@ -434,7 +434,7 @@
     },
     "FF3.3.10": {
       "title": "Agricoltura conservativa",
-      "body": "L'agricoltura conservativa riduce il disturbo del suolo e ne tutela la salute."
+      "body": "L'agricoltura conservativa riduce le alterazioni del suolo e ne tutela la salute."
     },
     "FF3.4.1": {
       "title": "Diversità di colture e razze",
@@ -450,7 +450,7 @@
     },
     "FF3.4.4": {
       "title": "Allevamento a basso metano",
-      "body": "L'allevamento di animali che producono minori emissioni di metano può ridurre l'impatto del bestiame."
+      "body": "L'allevamento di animali che emettono meno metano può ridurre l'impatto del bestiame."
     },
     "FF3.4.5": {
       "title": "Mangimi alternativi per pesci",
@@ -469,12 +469,12 @@
       "body": "La modifica del genoma potrebbe contribuire allo sviluppo di colture più resistenti allo stress climatico."
     },
     "FF3.4.9": {
-      "title": "Efficienza alimentare del bestiame",
-      "body": "L'allevamento selettivo può migliorare l'efficienza alimentare nel bestiame."
+      "title": "Bestiame con un uso efficiente del mangime",
+      "body": "L’allevamento selettivo può migliorare l’efficienza con cui il bestiame utilizza il mangime."
     },
     "FF3.4.10": {
       "title": "Idroponica e acquaponica",
-      "body": "I sistemi idroponici e acquaponici possono consumare una quantità d'acqua di gran lunga inferiore rispetto all'agricoltura convenzionale."
+      "body": "I sistemi idroponici e acquaponici possono consumare una quantità d'acqua notevolmente inferiore rispetto all'agricoltura convenzionale."
     },
     "FF3.5.1": {
       "title": "Lavoro minorile in agricoltura",
@@ -486,7 +486,7 @@
     },
     "FF3.5.3": {
       "title": "Prezzi equi",
-      "body": "Il commercio equo e solidale promuove la trasparenza e una determinazione equa dei prezzi lungo tutte le catene di approvvigionamento."
+      "body": "Il commercio equo e solidale promuove la trasparenza e una determinazione equa dei prezzi lungo l'intera catena di approvvigionamento."
     },
     "FF3.5.4": {
       "title": "Condizioni di lavoro dignitose",
@@ -498,11 +498,11 @@
     },
     "FF3.5.6": {
       "title": "Lavoratori alimentari vulnerabili",
-      "body": "Molti lavoratori del settore alimentare continuano a essere esposti al rischio di sfruttamento."
+      "body": "Molti lavoratori del settore alimentare restano esposti al rischio di sfruttamento."
     },
     "FF3.5.7": {
       "title": "Scelte alimentari etiche",
-      "body": "I consumatori attribuiscono sempre più importanza a una produzione alimentare etica ed equa."
+      "body": "I consumatori attribuiscono sempre più importanza alla produzione alimentare etica ed equa."
     },
     "FF3.5.8": {
       "title": "Le donne nella produzione alimentare",
@@ -510,7 +510,7 @@
     },
     "FF3.5.9": {
       "title": "Piccoli agricoltori",
-      "body": "I piccoli agricoltori producono gran parte del cibo mondiale."
+      "body": "I piccoli agricoltori producono gran parte del cibo a livello mondiale."
     },
     "FF3.5.10": {
       "title": "Sistemi alimentari sostenibili ed equi",
@@ -534,7 +534,7 @@
     },
     "FF4.1.5": {
       "title": "Imballaggi contro lo spreco",
-      "body": "Un imballaggio ben progettato può ridurre lo spreco alimentare prolungando la durata di conservazione e prevenendo il deterioramento durante il trasporto, lo stoccaggio e l'uso domestico."
+      "body": "Un imballaggio ben progettato può ridurre gli sprechi alimentari prolungando la durata di conservazione e prevenendo il deterioramento durante il trasporto, lo stoccaggio e l'uso domestico."
     },
     "FF4.1.6": {
       "title": "Nessun imballaggio perfetto",
@@ -558,7 +558,7 @@
     },
     "FF4.2.1": {
       "title": "Il riutilizzo ripaga nel tempo",
-      "body": "Gli imballaggi riutilizzabili diventano vantaggiosi dal punto di vista ambientale solo dopo essere stati riutilizzati un numero sufficiente di volte."
+      "body": "Gli imballaggi riutilizzabili diventano vantaggiosi dal punto di vista ambientale solo dopo un numero sufficiente di riutilizzazioni."
     },
     "FF4.2.2": {
       "title": "I rifiuti da imballaggio in Europa",
@@ -574,11 +574,11 @@
     },
     "FF4.2.5": {
       "title": "La frequenza di riutilizzo conta",
-      "body": "I benefici ambientali degli imballaggi riutilizzabili dipendono dalla frequenza con cui vengono riutilizzati."
+      "body": "I benefici ambientali degli imballaggi riutilizzabili dipendono dalla frequenza di riutilizzo."
     },
     "FF4.2.6": {
       "title": "Trasporto e pulizia",
-      "body": "Le distanze di trasporto e i processi di pulizia influenzano l'impatto ambientale dei sistemi di imballaggio riutilizzabili."
+      "body": "Le distanze di trasporto e i processi di pulizia incidono sull'impatto ambientale dei sistemi di imballaggio riutilizzabili."
     },
     "FF4.2.7": {
       "title": "Il punto di pareggio",
@@ -590,7 +590,7 @@
     },
     "FF4.2.9": {
       "title": "L'imballaggio prolunga la conservazione",
-      "body": "Sistemi di confezionamento più efficienti possono contribuire a ridurre lo spreco alimentare prolungando la durata di conservazione dei prodotti."
+      "body": "Sistemi di confezionamento più efficienti possono contribuire a ridurre gli sprechi alimentari prolungando la durata di conservazione dei prodotti."
     },
     "FF4.2.10": {
       "title": "Imballaggi da trasporto durevoli",
@@ -606,11 +606,11 @@
     },
     "FF5.1.3": {
       "title": "Liste della spesa e pianificazione",
-      "body": "Le liste della spesa e la pianificazione dei pasti possono aiutare a ridurre lo spreco alimentare in casa."
+      "body": "Le liste della spesa e la pianificazione dei pasti possono aiutare a ridurre gli sprechi alimentari in casa."
     },
     "FF5.1.4": {
       "title": "Porzioni più piccole, meno sprechi",
-      "body": "Offrire porzioni più piccole può ridurre gli sprechi nei refettori e nei ristoranti."
+      "body": "Offrire porzioni più piccole può ridurre gli sprechi nelle mense e nei ristoranti."
     },
     "FF5.1.5": {
       "title": "Porzioni standard, più avanzi",
@@ -618,7 +618,7 @@
     },
     "FF5.1.6": {
       "title": "Eccessi al buffet",
-      "body": "In molti ristoranti a buffet, le persone tendono a servirsi più cibo di quanto riescano a mangiare."
+      "body": "Nei ristoranti a buffet, le persone tendono a servirsene più di quanto riescano a mangiare."
     },
     "FF5.1.7": {
       "title": "Spreco e clima",
@@ -630,19 +630,19 @@
     },
     "FF5.1.9": {
       "title": "Se lo spreco alimentare fosse un Paese",
-      "body": "Se lo spreco alimentare fosse un Paese, sarebbe uno dei maggiori responsabili delle emissioni di gas serra al mondo."
+      "body": "Se lo spreco alimentare fosse un Paese, sarebbe tra i maggiori responsabili delle emissioni di gas serra al mondo."
     },
     "FF5.1.10": {
       "title": "Sostanze nutritive sprecate",
-      "body": "Lo spreco alimentare comporta anche lo spreco di sostanze nutritive quali proteine e fibre."
+      "body": "Lo spreco alimentare comporta anche la perdita di sostanze nutritive, come proteine e fibre."
     },
     "FF5.2.1": {
       "title": "Lo spreco inizia a casa",
-      "body": "Le famiglie sono responsabili di oltre la metà degli sprechi alimentari generati nell'UE."
+      "body": "Le famiglie sono responsabili di oltre la metà degli sprechi alimentari nell'UE."
     },
     "FF5.2.2": {
       "title": "Conserva bene il cibo",
-      "body": "Una corretta conservazione contribuisce a ridurre gli sprechi e garantisce la sicurezza alimentare."
+      "body": "Una corretta conservazione contribuisce a ridurre gli sprechi e a garantire la sicurezza alimentare."
     },
     "FF5.2.3": {
       "title": "La regola delle due ore",
@@ -674,7 +674,7 @@
     },
     "FF5.2.10": {
       "title": "Contenitori ermetici",
-      "body": "I contenitori ermetici aiutano a mantenere freschi gli avanzi più a lungo."
+      "body": "I contenitori ermetici aiutano a mantenere gli avanzi freschi più a lungo."
     },
     "FF5.3.1": {
       "title": "Famiglie in testa allo spreco alimentare",
@@ -690,7 +690,7 @@
     },
     "FF5.3.4": {
       "title": "Congela il cibo in eccesso",
-      "body": "Congelare il cibo in eccesso prima che vada a male può prolungarne la durata di conservazione e ridurre gli sprechi."
+      "body": "Congelare il cibo in eccesso prima che vada a male può prolungarne la conservazione e ridurre gli sprechi."
     },
     "FF5.3.5": {
       "title": "69 milioni di tonnellate",
@@ -698,7 +698,7 @@
     },
     "FF5.3.6": {
       "title": "Confusione sulle date di scadenza",
-      "body": "La confusione tra le diciture “da consumarsi preferibilmente entro” e “da consumarsi entro” contribuisce in modo significativo allo spreco alimentare inutile."
+      "body": "La confusione tra le diciture “da consumarsi preferibilmente entro” e “da consumarsi entro” contribuisce in modo significativo allo spreco alimentare."
     },
     "FF5.3.7": {
       "title": "Sicuri anche dopo la scadenza",
@@ -710,7 +710,7 @@
     },
     "FF5.3.9": {
       "title": "Alimenti spesso acquistati in eccesso",
-      "body": "La frutta fresca, la verdura, i latticini e i prodotti da forno sono tra gli alimenti che vengono sprecati più spesso a causa di acquisti eccessivi."
+      "body": "La frutta fresca, la verdura, i latticini e i prodotti da forno sono tra gli alimenti più spesso sprecati a causa di acquisti eccessivi."
     },
     "FF5.3.10": {
       "title": "Monitora i tuoi sprechi",
@@ -722,15 +722,15 @@
     },
     "FF5.4.2": {
       "title": "Porzioni più grandi, non più sazi",
-      "body": "Porzioni più abbondanti spesso inducono le persone a mangiare di più senza sentirsi proporzionalmente più sazi."
+      "body": "Le porzioni più abbondanti spesso inducono le persone a mangiare di più senza sentirsi proporzionalmente più sazi."
     },
     "FF5.4.3": {
       "title": "Sano per te e per il pianeta",
-      "body": "Ridurre il consumo eccessivo di cibo può apportare benefici sia alla salute personale che alla sostenibilità ambientale."
+      "body": "Ridurre il consumo eccessivo di cibo può apportare benefici sia alla salute personale sia alla sostenibilità ambientale."
     },
     "FF5.4.4": {
       "title": "Conta anche quanto mangi",
-      "body": "L'impatto ambientale di una dieta dipende non solo da ciò che le persone mangiano, ma anche da quanto mangiano."
+      "body": "L'impatto ambientale di una dieta dipende non solo da ciò che le persone mangiano, ma anche da quanto ne mangiano."
     },
     "FF5.4.5": {
       "title": "Calorie in eccesso, più emissioni",
@@ -738,11 +738,11 @@
     },
     "FF5.4.6": {
       "title": "Alimenti ad alto impatto in eccesso",
-      "body": "Gli alimenti con un’elevata impronta ambientale hanno un impatto ancora maggiore se consumati in eccesso."
+      "body": "Gli alimenti ad alta impronta ambientale hanno un impatto ancora maggiore se consumati in eccesso."
     },
     "FF5.4.7": {
       "title": "Porzioni della giusta dimensione",
-      "body": "Scegliere porzioni di dimensioni adeguate può aiutare a ridurre sia l'eccessivo apporto calorico sia il consumo di risorse."
+      "body": "Scegliere porzioni di dimensioni adeguate può aiutare a ridurre sia l'eccesso di apporto calorico sia il consumo di risorse."
     },
     "FF5.4.8": {
       "title": "Mangiare troppo consuma risorse",
@@ -750,23 +750,23 @@
     },
     "FF5.4.9": {
       "title": "L'effetto a catena del consumo eccessivo",
-      "body": "Il consumo eccessivo contribuisce a creare una domanda superflua in termini di produzione, trasporto, stoccaggio e confezionamento degli alimenti."
+      "body": "Il consumo eccessivo genera una domanda superflua di produzione, trasporto, stoccaggio e confezionamento degli alimenti."
     },
     "FF5.4.10": {
       "title": "Quanto basta, senza eccessi",
-      "body": "Le diete sostenibili incoraggiano a mangiare quanto basta per soddisfare il fabbisogno nutrizionale, evitando al contempo un consumo eccessivo."
+      "body": "Le diete sostenibili incoraggiano a mangiare quanto basta per soddisfare il fabbisogno nutrizionale, evitando al contempo il consumo eccessivo."
     },
     "FF6.1.1": {
       "title": "A cosa servono le proteine",
-      "body": "Le proteine contribuiscono alla formazione e alla riparazione dei muscoli, dei tessuti, degli enzimi e degli ormoni."
+      "body": "Le proteine contribuiscono alla formazione e alla riparazione dei muscoli e dei tessuti, nonché alla produzione di enzimi e ormoni."
     },
     "FF6.1.2": {
       "title": "Proteine vegetali e animali",
-      "body": "Sia gli alimenti di origine vegetale che quelli di origine animale possono fornire proteine."
+      "body": "Sia gli alimenti di origine vegetale sia quelli di origine animale possono fornire proteine."
     },
     "FF6.1.3": {
       "title": "Legumi per la salute e il pianeta",
-      "body": "Sostituire parte della carne rossa con i legumi apporta benefici sia alla salute che alla sostenibilità."
+      "body": "Sostituire parte della carne rossa con i legumi apporta benefici sia alla salute sia alla sostenibilità."
     },
     "FF6.1.4": {
       "title": "Di quante proteine hai bisogno",
@@ -810,7 +810,7 @@
     },
     "FF6.2.4": {
       "title": "Il tipo di grassi conta",
-      "body": "Il tipo di grassi che si consumano è importante tanto quanto la quantità."
+      "body": "Il tipo di grassi che si consumano è importante quanto la quantità."
     },
     "FF6.2.5": {
       "title": "Evita i grassi trans",
@@ -826,11 +826,11 @@
     },
     "FF6.2.8": {
       "title": "Pochi grassi, tanto zucchero",
-      "body": "I cibi trasformati a basso contenuto di grassi possono comunque contenere livelli elevati di zucchero."
+      "body": "I cibi processati a basso contenuto di grassi possono comunque contenere livelli elevati di zucchero."
     },
     "FF6.2.9": {
       "title": "Eliminare i grassi trans",
-      "body": "I grassi trans prodotti industrialmente possono essere eliminati senza compromettere la disponibilità di alimenti."
+      "body": "I grassi trans prodotti industrialmente possono essere eliminati senza compromettere la disponibilità degli alimenti."
     },
     "FF6.2.10": {
       "title": "Grassi e vitamine",
@@ -874,7 +874,7 @@
     },
     "FF6.3.10": {
       "title": "Riconosci gli zuccheri aggiunti",
-      "body": "Leggere le etichette può aiutare a individuare gli alimenti con un alto contenuto di zuccheri aggiunti."
+      "body": "Leggere le etichette può aiutare a individuare gli alimenti ad alto contenuto di zuccheri aggiunti."
     },
     "FF6.4.1": {
       "title": "Troppo sale",
@@ -882,11 +882,11 @@
     },
     "FF6.4.2": {
       "title": "Sale e salute del cuore",
-      "body": "Ridurre il consumo di sale diminuisce il rischio di malattie cardiache e ictus."
+      "body": "Ridurre il consumo di sale riduce il rischio di malattie cardiache e di ictus."
     },
     "FF6.4.3": {
       "title": "Il prezzo globale del sodio",
-      "body": "Un consumo eccessivo di sodio contribuisce a causare milioni di decessi in tutto il mondo."
+      "body": "Un consumo eccessivo di sodio contribuisce a milioni di decessi in tutto il mondo."
     },
     "FF6.4.4": {
       "title": "Meno di 5 grammi di sale",
@@ -898,7 +898,7 @@
     },
     "FF6.4.6": {
       "title": "Sodio e pressione sanguigna",
-      "body": "Un elevato apporto di sodio fa aumentare la pressione sanguigna."
+      "body": "Un elevato apporto di sodio aumenta la pressione sanguigna."
     },
     "FF6.4.7": {
       "title": "Erbe al posto del sale",
@@ -938,7 +938,7 @@
     },
     "FF6.5.6": {
       "title": "La bontà dei cereali integrali",
-      "body": "I cereali integrali forniscono fibre e importanti sostanze nutritive."
+      "body": "I cereali integrali forniscono fibre e importanti nutrienti."
     },
     "FF6.5.7": {
       "title": "Fibre per la digestione",
@@ -946,11 +946,11 @@
     },
     "FF6.5.8": {
       "title": "Fibre e rischio di malattie",
-      "body": "Un maggiore apporto di fibre è associato a un minor rischio di malattie cardiache e diabete di tipo 2."
+      "body": "Un maggiore apporto di fibre è associato a un rischio inferiore di malattie cardiache e di diabete di tipo 2."
     },
     "FF6.5.9": {
       "title": "Fibre solubili e insolubili",
-      "body": "Sia le fibre solubili che quelle insolubili contribuiscono alla salute."
+      "body": "Sia le fibre solubili sia quelle insolubili contribuiscono alla salute."
     },
     "FF6.5.10": {
       "title": "Le fibre saziano a lungo",
@@ -990,11 +990,11 @@
     },
     "FF6.6.9": {
       "title": "B12 per i vegani",
-      "body": "I vegani potrebbero aver bisogno di alimenti arricchiti o integratori per assumere una quantità sufficiente di vitamina B12."
+      "body": "I vegani potrebbero aver bisogno di alimenti arricchiti o di integratori per assumere una quantità sufficiente di vitamina B12."
     },
     "FF6.6.10": {
       "title": "Fame nascosta",
-      "body": "Le carenze vitaminiche possono verificarsi anche quando il cibo è abbondante."
+      "body": "Le carenze vitaminiche possono verificarsi anche quando l'apporto alimentare è abbondante."
     },
     "FF6.7.1": {
       "title": "Calorie sufficienti per tutti",
@@ -1005,8 +1005,8 @@
       "body": "Gli alimenti ricchi di sostanze nutritive non sono sempre gli stessi degli alimenti ricchi di calorie."
     },
     "FF6.7.3": {
-      "title": "Ultra-trasformati e sovralimentazione",
-      "body": "Gli alimenti ultra-trasformati potrebbero indurre le persone a consumare più calorie."
+      "title": "Ultra-processati e sovralimentazione",
+      "body": "Gli alimenti ultra-processati potrebbero indurre le persone a consumare più calorie."
     },
     "FF6.7.4": {
       "title": "Calorie uguali, impatti diversi",
@@ -1018,7 +1018,7 @@
     },
     "FF6.7.6": {
       "title": "Calorie perse dal campo al piatto",
-      "body": "Più della metà delle calorie degli alimenti va persa tra l’azienda agricola e il piatto."
+      "body": "Più della metà delle calorie degli alimenti si perde tra l’azienda agricola e il piatto."
     },
     "FF6.7.7": {
       "title": "I tre grandi alimenti di base",
@@ -1030,7 +1030,7 @@
     },
     "FF6.7.9": {
       "title": "Emissioni per caloria della carne bovina",
-      "body": "La carne bovina produce emissioni per caloria di gran lunga superiori rispetto alla maggior parte degli alimenti di origine vegetale."
+      "body": "La carne bovina produce emissioni per caloria di gran lunga superiori alla maggior parte degli alimenti di origine vegetale."
     },
     "FF6.7.10": {
       "title": "Sistemi alimentari efficienti",
@@ -2470,7 +2470,7 @@
   },
   "missions": {
     "M.A1.1": {
-      "title": "Rimanete nella Zona Verde",
+      "title": "Rimani nella Zona Verde",
       "goal": "Non superare i quattro pasti a base di carne alla settimana.",
       "whyItMatters": "Le diete flessitariane possono ridurre in modo significativo l'impatto sul clima."
     },
@@ -2496,32 +2496,32 @@
     },
     "M.A2.1": {
       "title": "Oltre il Paese di origine",
-      "goal": "Quando scegli i prodotti per almeno 3 pasti, prendi in considerazione sia il paese di origine sia un ulteriore indicatore di sostenibilità (ad esempio, certificazione, metodo di produzione, stagionalità).",
+      "goal": "Quando scegli i prodotti, per almeno 3 pasti, considera sia il paese di origine sia un ulteriore indicatore di sostenibilità (ad esempio, certificazione, metodo di produzione, stagionalità).",
       "whyItMatters": "La sostenibilità alimentare dipende da molteplici fattori, non solo dalla distanza di trasporto."
     },
     "M.A2.2": {
       "title": "Critico delle certificazioni",
-      "goal": "Scegli un prodotto che riporti almeno due diverse etichette di sostenibilità e annota cosa rappresenta ciascuna di esse.",
+      "goal": "Scegli un prodotto che riporti almeno due etichette di sostenibilità diverse e annota cosa rappresenta ciascuna.",
       "whyItMatters": "Etichette diverse comunicano aspetti diversi della sostenibilità."
     },
     "M.A2.3": {
       "title": "Acquirente con molteplici interessi",
-      "goal": "Per almeno 3 decisioni di acquisto, prendi in considerazione due diverse dimensioni ambientali prima di scegliere un prodotto. Esempi:\nUtilizzo del suolo + impronta di carbonio\nImpronta di carbonio + distanza di trasporto\nConsumo idrico + metodo di produzione",
+      "goal": "Per almeno 3 decisioni di acquisto, considera due dimensioni ambientali diverse prima di scegliere un prodotto. Esempi:\nUtilizzo del suolo + impronta di carbonio\nImpronta di carbonio + distanza di trasporto\nConsumo idrico + metodo di produzione",
       "whyItMatters": "La sostenibilità alimentare è un concetto multidimensionale."
     },
     "M.A2.4": {
       "title": "Responsabile delle decisioni stagionali",
-      "goal": "Includi prodotti di stagione in almeno 4 pasti e pensa a un motivo per cui sono stati scelti.",
-      "whyItMatters": "La stagionalità influisce sulle esigenze in materia di trasporto, stoccaggio ed energia."
+      "goal": "Includi prodotti di stagione in almeno 4 pasti e pensa al motivo per cui li hai scelti.",
+      "whyItMatters": "La stagionalità influisce sulle esigenze di trasporto, stoccaggio ed energia."
     },
     "M.A2.5": {
       "title": "Abitudine di acquisto consapevole",
       "goal": "Prima di acquistare un prodotto alimentare, prendi in considerazione almeno tre dei seguenti aspetti:\nPaese di origine\nMetodo di produzione\nCertificazione\nStagionalità\nDistanza percorsa\nApplica questo procedimento ad almeno 4 scelte alimentari.",
-      "whyItMatters": "Nessun indicatore ambientale, da solo, è sufficiente a determinare la sostenibilità."
+      "whyItMatters": "Nessun indicatore ambientale, da solo, è sufficiente per determinare la sostenibilità."
     },
     "M.A3.1": {
       "title": "Decisioni multicriteriali",
-      "goal": "Per almeno tre acquisti, prima di prendere una decisione, prendi in considerazione sia la classificazione NOVA che il Green-Score. Consulta Open Food Facts o le informazioni riportate sulla confezione.",
+      "goal": "Per almeno tre acquisti, prima di prendere una decisione, considera sia la classificazione NOVA sia il Green-Score. Consulta Open Food Facts o le informazioni riportate sulla confezione.",
       "whyItMatters": "L'impatto ambientale, la qualità nutrizionale e il livello di trasformazione non sempre vanno di pari passo."
     },
     "M.A3.2": {
@@ -2530,9 +2530,9 @@
       "whyItMatters": ": L'impatto ambientale, la qualità nutrizionale e il livello di trasformazione non sempre vanno di pari passo."
     },
     "M.A3.3": {
-      "title": "Consapevolezza dei compromessi nel trattamento dei dati",
+      "title": "Consapevolezza dei compromessi nella trasformazione degli alimenti",
       "goal": "Indica tre alimenti per i quali la lavorazione sembra comportare sia vantaggi che svantaggi. Utilizza la classificazione NOVA, gli elenchi degli ingredienti e le informazioni riportate sulla confezione.",
-      "whyItMatters": "La trasformazione può migliorare la conservazione e la praticità, aumentando al contempo l'utilizzo delle risorse. La trasformazione alimentare comporta sia vantaggi a livello di sistema che costi ambientali."
+      "whyItMatters": "La trasformazione può migliorare la conservazione e la praticità, aumentando al contempo l'uso delle risorse. La trasformazione alimentare comporta sia vantaggi a livello di sistema sia costi ambientali."
     },
     "M.A3.4": {
       "title": "Esploratore della diversità degli indicatori",
@@ -2541,38 +2541,38 @@
     },
     "M.A3.5": {
       "title": "Abitudine orientata alla produzione",
-      "goal": "Utilizza almeno un indicatore relativo alla produzione nell’ambito di cinque decisioni di acquisto. Utilizza gli indicatori relativi all’imballaggio, alla classificazione NOVA, al Green-Score o a Open Food Facts.",
-      "whyItMatters": "La consapevolezza in materia di sostenibilità a lungo termine richiede l'integrazione delle informazioni relative alla produzione nelle decisioni quotidiane."
+      "goal": "Utilizza almeno un indicatore di produzione in almeno cinque decisioni di acquisto. Utilizza gli indicatori relativi all’imballaggio, alla classificazione NOVA, al Green-Score o a Open Food Facts.",
+      "whyItMatters": "La consapevolezza in materia di sostenibilità a lungo termine richiede l'integrazione delle informazioni sulla produzione nelle decisioni quotidiane."
     },
     "M.A4.1": {
       "title": "Decisioni relative all'imballaggio basate su criteri multipli",
-      "goal": "Per almeno tre acquisti, prima di scegliere, valuta sia il materiale di imballaggio che le opzioni di smaltimento a fine vita. Controlla la composizione dei materiali, le istruzioni per il riciclaggio e le informazioni sul riutilizzo.",
+      "goal": "Per almeno tre acquisti, prima di scegliere, valuta sia il materiale d'imballaggio sia le opzioni di smaltimento a fine vita. Controlla la composizione dei materiali, le istruzioni per il riciclo e le informazioni sul riutilizzo.",
       "whyItMatters": "Per scegliere l'imballaggio più sostenibile è necessario considerare l'intero ciclo di vita."
     },
     "M.A4.2": {
       "title": "Strumento per sviluppare l'abitudine al riutilizzo",
       "goal": "Utilizza sistemi di imballaggio riutilizzabili o ricaricabili in almeno cinque occasioni. Cerca prodotti venduti tramite sistemi di deposito-restituzione o di ricarica.",
-      "whyItMatters": "Gli imballaggi riutilizzabili diventano vantaggiosi dal punto di vista ambientale solo se utilizzati ripetutamente. Gli imballaggi riutilizzabili devono raggiungere un punto di pareggio prima di risultare più vantaggiosi rispetto a quelli monouso."
+      "whyItMatters": "Gli imballaggi riutilizzabili diventano vantaggiosi dal punto di vista ambientale solo se vengono riutilizzati più volte. Gli imballaggi riutilizzabili devono raggiungere il punto di pareggio prima di risultare più vantaggiosi rispetto a quelli monouso."
     },
     "M.A4.3": {
       "title": "Osservatorio sui compromessi nel settore del packaging",
       "goal": "Valuta i compromessi relativi al packaging di almeno cinque prodotti. Osserva le dimensioni, i materiali e le funzioni protettive degli imballaggi.",
-      "whyItMatters": "Ridurre gli imballaggi non è sempre la scelta più sostenibile. Gli imballaggi che impediscono il deterioramento degli alimenti possono offrire maggiori benefici ambientali rispetto alla loro totale eliminazione."
+      "whyItMatters": "Ridurre gli imballaggi non è sempre la scelta più sostenibile. Gli imballaggi che impediscono il deterioramento degli alimenti possono offrire maggiori benefici ambientali rispetto alla loro eliminazione totale"
     },
     "M.A4.4": {
       "title": "Esploratore di imballaggi intelligenti",
-      "goal": "Individua le innovazioni nel campo del packaging su almeno due prodotti. Cerca indicatori di freschezza, codici QR, sistemi di tracciabilità o sistemi di monitoraggio della temperatura.",
-      "whyItMatters": "Le tecnologie di confezionamento si stanno evolvendo oltre la semplice funzione di contenimento. Gli imballaggi attivi e intelligenti possono contribuire a ridurre il deterioramento dei prodotti e a migliorare la condivisione delle informazioni."
+      "goal": "Individua le innovazioni nel campo del packaging per almeno due prodotti. Cerca indicatori di freschezza, codici QR, sistemi di tracciabilità o di monitoraggio della temperatura.",
+      "whyItMatters": "Le tecnologie di confezionamento stanno evolvendo oltre la semplice funzione di contenimento. Gli imballaggi attivi e intelligenti possono contribuire a ridurre il deterioramento dei prodotti e a migliorare la condivisione delle informazioni."
     },
     "M.A4.5": {
       "title": "Abitudine attenta all’imballaggio",
-      "goal": "Considera gli aspetti relativi alla confezione come uno dei criteri decisionali per almeno cinque acquisti di prodotti alimentari. Prendi in considerazione le etichette sulle confezioni, le istruzioni per il riciclaggio e le informazioni sul riutilizzo.",
-      "whyItMatters": "I consumatori influenzano la domanda di imballaggi attraverso le loro scelte di acquisto."
+      "goal": "Considera gli aspetti relativi alla confezione come uno dei criteri decisionali per almeno cinque acquisti di prodotti alimentari. Prendi in considerazione le etichette sulle confezioni, le istruzioni per il riciclo e le informazioni sul riutilizzo.",
+      "whyItMatters": "I consumatori influenzano la domanda di imballaggi attraverso le proprie scelte di acquisto."
     },
     "M.A5.1": {
       "title": "Attenzione allo spreco alimentare a tavola",
       "goal": "Registra almeno 7 azioni “Half Plate Saved”. Come fare: inizia sempre con una porzione più piccola e prendi altro cibo solo se necessario.",
-      "whyItMatters": "La prevenzione degli sprechi nel piatto inizia prima che il cibo arrivi nel piatto. Porzioni più piccole sono associate a una minore quantità di sprechi nel piatto."
+      "whyItMatters": "La prevenzione degli sprechi inizia prima che il cibo arrivi nel piatto. Le porzioni più piccole sono associate a una minore quantità di sprechi nel piatto."
     },
     "M.A5.2": {
       "title": "Esperto di \"economia degli avanzi\"",
@@ -2581,42 +2581,42 @@
     },
     "M.A5.3": {
       "title": "Esperto nella prevenzione delle scadenze",
-      "goal": "Registra 4 azioni relative al consumo di prodotti scaduti. Come fare: durante la settimana, dai la priorità agli alimenti che stanno per raggiungere la data di scadenza.",
-      "whyItMatters": "Lo smaltimento prematuro rimane una delle principali fonti di rifiuti evitabili."
+      "goal": "Registra 4 azioni relative al consumo di prodotti scaduti. Come fare: durante la settimana, dai priorità agli alimenti che stanno per raggiungere la data di scadenza.",
+      "whyItMatters": "Buttare via alimenti alimenti troppo presto, ancora consumabili, rimane una delle principali fonti di rifiuti evitabili."
     },
     "M.A5.4": {
       "title": "Esperto in \"First-In, First-Out\"",
-      "goal": "Durante la settimana, riordina il frigorifero, il congelatore o la dispensa in modo che gli alimenti con la durata di conservazione più breve siano sempre posizionati in primo piano e vengano consumati per primi. Ogni volta che acquisti nuovi alimenti, metti i prodotti più vecchi davanti a quelli più recenti.",
+      "goal": "Durante la settimana, riordina il frigorifero, il congelatore o la dispensa in modo che gli alimenti con la durata di conservazione più breve siano sempre in primo piano e vengano consumati per primi. Ogni volta che acquisti nuovi alimenti, metti i prodotti più vecchi davanti a quelli più recenti.",
       "whyItMatters": "Molti alimenti finiscono nella spazzatura semplicemente perché i consumatori si dimenticano di averli già in casa."
     },
     "M.A5.5": {
       "title": "Settimana della pianificazione a rifiuti zero",
-      "goal": "Pianifica tutti i pasti principali della settimana prima di andare a fare la spesa per la prima volta e acquista solo gli alimenti che hai intenzione di utilizzare. Controlla il frigorifero, il congelatore e la dispensa prima di andare a fare la spesa.",
+      "goal": "Pianifica tutti i pasti principali della settimana prima di andare a fare la spesa per la prima volta e acquista solo gli alimenti che intendi utilizzare. Controlla il frigorifero, il congelatore e la dispensa prima di andare a fare la spesa.",
       "whyItMatters": "Gli acquisti eccessivi e una pianificazione inadeguata sono tra le cause più comuni dello spreco alimentare nelle famiglie."
     },
     "M.A6.1": {
       "title": "Settimana dell'arcobaleno",
-      "goal": "Consuma ogni giorno alimenti di almeno cinque diversi colori tra frutta e verdura. Cerca di includere nel corso della giornata un mix di frutta e verdura di colore verde, rosso, arancione, giallo, viola o bianco.",
-      "whyItMatters": "La varietà dei colori riflette spesso la varietà dei nutrienti."
+      "goal": "Consuma ogni giorno alimenti di almeno cinque colori diversi tra frutta e verdura. Cerca di includere nel corso della giornata un mix di frutta e verdura di colore verde, rosso, arancione, giallo, viola o bianco.",
+      "whyItMatters": "La varietà dei colori spesso riflette quella dei nutrienti."
     },
     "M.A6.2": {
       "title": "Settimana della colazione ricca di fibre",
-      "goal": "Inizia ogni giornata con una colazione che contenga una buona dose di fibre. Componi la colazione utilizzando avena, cereali integrali, frutta, semi, frutta secca o altri alimenti ricchi di fibre.",
+      "goal": "Inizia ogni giornata con una colazione ricca di fibre. Prepara la colazione scegliendo avena, cereali integrali, frutta, semi, frutta secca o altri alimenti ricchi di fibre.",
       "whyItMatters": "La colazione è spesso uno dei pasti più poveri di fibre della giornata."
     },
     "M.A6.3": {
       "title": "Settimana di sensibilizzazione sugli zuccheri aggiunti",
-      "goal": "Durante la settimana, evita cibi o bevande che abbiano gli zuccheri aggiunti tra i primi tre ingredienti. Leggi l'elenco degli ingredienti prima di consumare alimenti confezionati.",
+      "goal": "Durante la settimana, evita cibi o bevande in cui gli zuccheri aggiunti siano tra i primi tre ingredienti. Leggi l'elenco degli ingredienti prima di consumare alimenti confezionati.",
       "whyItMatters": "Molti alimenti trasformati contengono quantità considerevoli di zuccheri aggiunti."
     },
     "M.A6.4": {
       "title": "Settimana del piatto ricco di nutrienti",
-      "goal": "Assicurati che ogni pasto principale comprenda almeno tre dei seguenti elementi: una fonte proteica, un alimento ricco di fibre, un frutto o una verdura, oppure una fonte di grassi sani.",
+      "goal": "Assicurati che ogni pasto principale comprenda almeno tre dei seguenti elementi: una fonte proteica, un alimento ricco di fibre, un frutto o una verdura, o una fonte di grassi sani.",
       "whyItMatters": "Le abitudini alimentari sane dipendono dalla qualità nutrizionale complessiva."
     },
     "M.A6.5": {
       "title": "Settimana della diversità dei micronutrienti",
-      "goal": "Consuma almeno 20 alimenti vegetali diversi nel corso della settimana. Tieni conto di frutta, verdura, legumi, erbe aromatiche, frutta secca, semi e cereali integrali diversi.",
+      "goal": "Consuma almeno 20 alimenti vegetali diversi nel corso della settimana. Tieni conto di frutta, verdura, legumi, erbe aromatiche, frutta secca, semi e vari cereali integrali.",
       "whyItMatters": "La varietà alimentare migliora l'apporto di vitamine, minerali e composti vegetali benefici."
     },
     "M.B1.1": {
@@ -2630,29 +2630,29 @@
       "whyItMatters": "Molte persone non si rendono conto di quanto spesso la carne sia presente nella loro alimentazione."
     },
     "M.B1.3": {
-      "title": "Ridurre di un pasto a base di carne",
+      "title": "Riduci di uno i pasti a base di carne",
       "goal": "Consuma un pasto a base di carne in meno rispetto alla settimana precedente.",
-      "whyItMatters": "Spesso è più facile mantenere piccoli cambiamenti piuttosto che cambiamenti drastici nell'alimentazione."
+      "whyItMatters": "Spesso è più facile apportare piccoli cambiamenti piuttosto che cambiamenti drastici nell'alimentazione."
     },
     "M.B1.4": {
-      "title": "Primo \"Swap\" sostenibile",
-      "goal": "Registra le 2 sostituzioni di proteine. Utilizza una qualsiasi delle sostituzioni disponibili: manzo → maiale, manzo → pollo, manzo → legumi, maiale → pollo, maiale → legumi o pollo → legumi.",
-      "whyItMatters": "Piccole sostituzioni possono ridurre in modo significativo l'impatto ambientale dei pasti senza richiedere grandi cambiamenti nella dieta."
+      "title": "Prima \"sostituzione\" sostenibile",
+      "goal": "Registra le 2 sostituzioni di proteine. Utilizza una delle  seguenti sostituzioni: manzo → maiale, manzo → pollo, manzo → legumi, maiale → pollo, maiale → legumi o pollo → legumi.",
+      "whyItMatters": "Piccole sostituzioni possono ridurre significativamente l'impatto ambientale dei pasti senza richiedere grandi cambiamenti nella dieta."
     },
     "M.B1.5": {
-      "title": "Antipasto a base di riduzione di manzo",
-      "goal": "Registra 2 sostituzioni: manzo → pollo o manzo → legumi. Ogni volta che normalmente sceglieresti il manzo, opta invece per il pollo o i legumi e registra la sostituzione.",
+      "title": "Inizia a ridurre la carne bovina",
+      "goal": "Registra 2 sostituzioni: manzo → pollo oppure manzo → legumi. Ogni volta che normalmente sceglieresti il manzo, opta invece per il pollo o per i legumi e registra la sostituzione.",
       "whyItMatters": "La carne bovina presenta una delle impronte ambientali più elevate tra gli alimenti di consumo comune."
     },
     "M.B2.1": {
       "title": "Tracciatore di origine",
       "goal": "Individua il paese di origine di almeno 5 prodotti alimentari consumati durante la settimana.",
-      "whyItMatters": "Capire da dove proviene il cibo è il primo passo per comprenderne il percorso ambientale. Il trasporto degli alimenti contribuisce in modo sostanziale alle emissioni di gas serra del sistema alimentare."
+      "whyItMatters": "Capire da dove proviene il cibo è il primo passo per comprenderne l'impatto ambientale. Il trasporto degli alimenti contribuisce in modo significativo alle emissioni di gas serra del sistema alimentare."
     },
     "M.B2.2": {
       "title": "Scelte stagionali",
       "goal": "Registra 5 pasti che includano almeno un frutto o un ortaggio di stagione.",
-      "whyItMatters": "I prodotti stagionali possono ridurre le esigenze di stoccaggio e trasporto. La scelta di prodotti stagionali può contribuire a ridurre le emissioni legate al settore alimentare."
+      "whyItMatters": "I prodotti stagionali possono ridurre le esigenze di stoccaggio e trasporto. La scelta di prodotti stagionali può contribuire a ridurre le emissioni del settore alimentare."
     },
     "M.B2.3": {
       "title": "Scelta certificata",
@@ -2662,12 +2662,12 @@
     "M.B2.4": {
       "title": "Esploratore dei prodotti locali",
       "goal": "Registra 3 pasti che contengano almeno un prodotto locale.",
-      "whyItMatters": "Le scelte alimentari possono influire sulle esigenze di trasporto e sulle catene di approvvigionamento."
+      "whyItMatters": "Le scelte alimentari possono incidere sul trasporto e sulle catene di approvvigionamento."
     },
     "M.B2.5": {
       "title": "Esploratore delle informazioni sull'imballaggio",
-      "goal": "Per almeno 5 prodotti alimentari consumati durante la settimana, individua un’informazione relativa all’ambiente o alla sostenibilità che sia visibile sulla confezione. Alcuni esempi potrebbero essere il paese di origine, un marchio di certificazione, una dichiarazione relativa alla produzione o informazioni relative alle pratiche agricole.",
-      "whyItMatters": "Molti consumatori scelgono gli alimenti senza leggere le informazioni riportate sulle confezioni. Imparare dove trovare le informazioni relative alla sostenibilità è un primo passo importante per compiere scelte alimentari più consapevoli."
+      "goal": "Per almeno 5 prodotti alimentari consumati durante la settimana, individua un’informazione relativa all’ambiente o alla sostenibilità visibile sulla confezione. Alcuni esempi potrebbero essere il paese di origine, un marchio di certificazione, una dichiarazione sulla produzione o informazioni sulle pratiche agricole.",
+      "whyItMatters": "Molti consumatori scelgono gli alimenti senza leggere le informazioni riportate sulle confezioni. Imparare dove trovare le informazioni sulla sostenibilità è un primo passo importante per compiere scelte alimentari più consapevoli."
     },
     "M.B3.1": {
       "title": "Osservatore del metodo di produzione",
@@ -2677,11 +2677,11 @@
     "M.B3.2": {
       "title": "NOVA Explorer",
       "goal": "Cerca la classificazione NOVA di almeno 3 prodotti alimentari. Utilizza Open Food Facts oppure prodotti su cui siano riportate le informazioni NOVA.",
-      "whyItMatters": "La trasformazione alimentare spazia dagli alimenti minimamente lavorati alle formulazioni industriali altamente trasformate, e il livello di trasformazione influisce sugli esiti nutrizionali, ambientali ed economici."
+      "whyItMatters": "La trasformazione alimentare spazia dagli alimenti minimamente lavorati alle formulazioni industriali altamente trasformate, e il grado di trasformazione incide sugli esiti nutrizionali, ambientali ed economici."
     },
     "M.B3.3": {
       "title": "Osservatorio sull'elenco degli ingredienti",
-      "goal": "Esamina l'elenco degli ingredienti di almeno 5 prodotti alimentari consumati questa settimana e cerca informazioni relative al livello di trasformazione del prodotto. Leggi l'elenco degli ingredienti direttamente sulla confezione. Gli alimenti ultra-trasformati sono in genere composti da ingredienti raffinati e additivi e spesso sono molto lontani dalle materie prime originali.",
+      "goal": "Esamina l'elenco degli ingredienti di almeno 5 prodotti alimentari consumati questa settimana e cerca informazioni sul grado di lavorazione di ciascun prodotto. Leggi l'elenco degli ingredienti direttamente sulla confezione. Gli alimenti ultra-processati sono in genere composti da ingredienti raffinati e additivi e spesso sono molto lontani dalle materie prime originali.",
       "whyItMatters": "Gli elenchi degli ingredienti forniscono indicazioni sul grado di trasformazione e sulla complessità dei prodotti alimentari."
     },
     "M.B3.4": {
@@ -2690,33 +2690,33 @@
       "whyItMatters": "La sostenibilità ambientale è influenzata da numerose fasi della produzione e della trasformazione alimentare."
     },
     "M.B3.5": {
-      "title": "Prima elaborazione dello swap",
+      "title": "Prima elaborazione della \"sostituzione\"",
       "goal": "Registra 2 sostituzioni relative agli alimenti trasformati. Azioni ammesse:\nBevanda zuccherata → Acqua\nSnack zuccherato → Frutta o frutta secca\nCereali zuccherati → Avena/frutta\nPiatto pronto → Pasto cucinato in casa\nCarne lavorata → Legumi",
       "whyItMatters": "Piccole sostituzioni possono ridurre la dipendenza dagli alimenti altamente trasformati, migliorando al contempo la qualità nutrizionale e riducendo l'impatto ambientale."
     },
     "M.B4.1": {
       "title": "Osservatorio sui materiali da imballaggio",
       "goal": "Indica il materiale di imballaggio di almeno cinque prodotti alimentari consumati durante la settimana. Tra i materiali più comuni figurano la plastica, il vetro, la carta, il cartone, l’alluminio e i materiali compositi.",
-      "whyItMatters": "I diversi materiali di imballaggio presentano caratteristiche ambientali e percorsi di riciclaggio diversi."
+      "whyItMatters": "I diversi materiali di imballaggio presentano caratteristiche ambientali e percorsi di riciclo differenti"
     },
     "M.B4.2": {
       "title": "Lettore di etichette per il riciclaggio",
-      "goal": "Controlla le istruzioni per lo smaltimento o la raccolta differenziata riportate su almeno dieci confezioni di prodotti alimentari. Cerca i simboli della raccolta differenziata, i codici dei materiali o le istruzioni per la separazione riportati sulle confezioni.",
-      "whyItMatters": "Una corretta selezione migliora la qualità del riciclaggio e il recupero dei materiali."
+      "goal": "Controlla le istruzioni per lo smaltimento o per la raccolta differenziata riportate su almeno dieci confezioni di prodotti alimentari. Cerca i simboli della raccolta differenziata, i codici dei materiali o le istruzioni per la separazione riportati sulle confezioni.",
+      "whyItMatters": "Una corretta selezione migliora la qualità del riciclo e il recupero dei materiali."
     },
     "M.B4.3": {
       "title": "Sensibilizzazione sul packaging",
       "goal": "Rifletti sul tipo di confezione di almeno 10 alimenti consumati questa settimana. Osserva se i prodotti sono venduti in confezioni di vetro, plastica, cartone, metallo, materiale composito o ricaricabili.",
-      "whyItMatters": "Le scelte relative agli imballaggi influiscono sull'utilizzo delle risorse, sulla riciclabilità e sulla produzione di rifiuti."
+      "whyItMatters": "Le scelte relative agli imballaggi incidono sull'uso delle risorse, sulla riciclabilità e sulla produzione di rifiuti."
     },
     "M.B4.4": {
       "title": "Guida agli imballaggi riutilizzabili",
-      "goal": "Individua, in almeno cinque occasioni, soluzioni di imballaggi alimentari riutilizzabili o ricaricabili. Cerca i simboli di ricarica, i sistemi di deposito-restituzione, le stazioni di ricarica o le indicazioni relative agli imballaggi riutilizzabili.",
-      "whyItMatters": "I sistemi riutilizzabili possono ridurre i rifiuti da imballaggio se utilizzati più volte."
+      "goal": "Individua, in almeno cinque occasioni, soluzioni di imballaggio alimentare riutilizzabili o ricaricabili. Cerca i simboli di ricarica, i sistemi di deposito-restituzione, le stazioni di ricarica o le indicazioni relative agli imballaggi riutilizzabili.",
+      "whyItMatters": "I sistemi riutilizzabili possono ridurre i rifiuti da imballaggio se vengono utilizzati più volte."
     },
     "M.B4.5": {
       "title": "Strumento di raccolta delle informazioni sull'imballaggio",
-      "goal": "Individua almeno una caratteristica relativa alla confezione per ciascuno dei dieci prodotti alimentari consumati. Utilizza le informazioni riportate sulla confezione, quali il tipo di materiale, le istruzioni per il riciclaggio, le indicazioni relative al contenuto riciclato o al riutilizzo.",
+      "goal": "Individua almeno una caratteristica della confezione per ciascuno dei dieci prodotti alimentari consumati. Utilizza le informazioni riportate sulla confezione, come il tipo di materiale, le istruzioni per il riciclo, le indicazioni sul contenuto riciclato o sul riutilizzo.",
       "whyItMatters": "Le confezioni contengono informazioni che i consumatori spesso trascurano."
     },
     "M.B5.1": {
@@ -2727,7 +2727,7 @@
     "M.B5.2": {
       "title": "Il salvatore degli avanzi",
       "goal": "Registro 3: Azioni salvate relative al “piatto completo”. Come completarlo: conservare il cibo cotto non consumato per un pasto futuro, invece di gettarlo via.",
-      "whyItMatters": "Gli avanzi sono una delle principali fonti di spreco alimentare domestico evitabile. Le competenze nella gestione del cibo, come ad esempio il riutilizzo degli avanzi, sono fattori determinanti per la riduzione dello spreco alimentare domestico."
+      "whyItMatters": "Gli avanzi sono una delle principali fonti di spreco alimentare domestico evitabile. Le competenze nella gestione del cibo, come il riutilizzo degli avanzi, sono fattori determinanti per ridurre gli sprechi alimentari domestici."
     },
     "M.B5.3": {
       "title": "Esplora etichette data",
@@ -2736,12 +2736,12 @@
     },
     "M.B5.4": {
       "title": "Archiviazione più intelligente",
-      "goal": "Assicurati di leggere attentamente le istruzioni riportate sulla confezione relative alle modalità di conservazione degli alimenti dopo l'apertura della confezione per almeno cinque dei prodotti acquistati.",
-      "whyItMatters": "Una conservazione non corretta provoca il deterioramento inutile degli alimenti. Una conservazione inadeguata è una delle principali cause dello spreco alimentare da parte dei consumatori."
+      "goal": "Assicurati di leggere attentamente le istruzioni riportate sulla confezione relative alle modalità di conservazione degli alimenti dopo l'apertura, per almeno cinque dei prodotti acquistati.",
+      "whyItMatters": "Una conservazione inadeguata provoca il deterioramento inutile degli alimenti. Una conservazione inadeguata è una delle principali cause dello spreco alimentare da parte dei consumatori."
     },
     "M.B5.5": {
       "title": "Strumento per la coerenza",
-      "goal": "Registra almeno un'azione volta al risparmio alimentare in 4 giorni diversi. Utilizza una qualsiasi delle tre azioni di monitoraggio.",
+      "goal": "Registra almeno un'azione volta al risparmio alimentare in 4 giorni diversi. Utilizza una delle tre azioni di monitoraggio.",
       "whyItMatters": "Ripetere piccole azioni aiuta a sviluppare abitudini a lungo termine. Lo spreco alimentare è strettamente legato alle routine quotidiane e alle abitudini domestiche."
     },
     "M.B6.1": {
@@ -2756,13 +2756,13 @@
     },
     "M.B6.3": {
       "title": "Aggiornamento bevanda",
-      "goal": "Registro 3: Sostituzione di bevande zuccherate con acqua.",
+      "goal": "Registro 3: Sostituzione delle bevande zuccherate con acqua.",
       "whyItMatters": "Le bevande zuccherate sono una delle principali fonti di assunzione di zuccheri liberi."
     },
     "M.B6.4": {
       "title": "Settimana dei cereali integrali",
       "goal": "Scegli ogni giorno un prodotto a base di cereali integrali. Come fare? Scegli alimenti come pane integrale, pasta integrale, avena, riso integrale, pane di segale, quinoa o altri cereali integrali.",
-      "whyItMatters": "I cereali integrali forniscono fibre e altre sostanze nutritive che spesso vengono eliminate durante la raffinazione."
+      "whyItMatters": "I cereali integrali forniscono fibre e altri nutrienti che spesso vengono rimossi durante la raffinazione."
     },
     "M.B6.5": {
       "title": "Sostituzione intelligente degli snack",
@@ -2771,18 +2771,18 @@
     },
     "M.I1.1": {
       "title": "Generatore di scambi sostenibili",
-      "goal": "Registra le 4 sostituzioni proteiche. Utilizza una qualsiasi delle sostituzioni disponibili: manzo → maiale, manzo → pollo, manzo → legumi, maiale → pollo, maiale → legumi o pollo → legumi.",
-      "whyItMatters": "Sostituire ripetutamente determinati alimenti aiuta a adottare scelte proteiche più sostenibili."
+      "goal": "Registra le 4 sostituzioni proteiche. Utilizza una delle seguenti sostituzioni: manzo → maiale, manzo → pollo, manzo → legumi, maiale → pollo, maiale → legumi o pollo → legumi.",
+      "whyItMatters": "Sostituire ripetutamente determinati alimenti aiuta ad adottare scelte proteiche più sostenibili."
     },
     "M.I1.2": {
       "title": "Sali la scala delle proteine",
       "goal": "Registra almeno una sostituzione per ciascun livello di impatto:\nManzo → maiale o manzo → pollo\nManzo → legumi\nMaiale → legumi o pollo → legumi\nSostituisci progressivamente le proteine ad alto impatto con opzioni a basso impatto.",
-      "whyItMatters": "Non tutte le sostituzioni proteiche comportano gli stessi benefici ambientali. Passare dalla carne bovina ai legumi comporta in genere un risparmio ambientale maggiore rispetto al passaggio dalla carne bovina a quella suina."
+      "whyItMatters": "Non tutte le sostituzioni proteiche comportano gli stessi benefici ambientali. Passare dalla carne bovina ai legumi comporta, in genere, un risparmio ambientale maggiore rispetto al passaggio dalla carne bovina a quella suina."
     },
     "M.I1.3": {
       "title": "Due giorni senza carne",
       "goal": "Completa due giorni senza carne.",
-      "whyItMatters": "Le diete con un minor consumo di carne generano in genere minori emissioni di gas serra."
+      "whyItMatters": "Le diete a minor consumo di carne generano in genere minori emissioni di gas serra."
     },
     "M.I1.4": {
       "title": "Programma per i legumi",
@@ -2811,22 +2811,22 @@
     },
     "M.I2.4": {
       "title": "Tracciamento delle informazioni sui prodotti",
-      "goal": "Annota almeno due informazioni relative alla sostenibilità per 5 prodotti consumati. Esempi: provenienza o certificazione."
+      "goal": "Annota almeno due informazioni sulla sostenibilità per 5 prodotti consumati. Esempi: provenienza o certificazione."
     },
     "M.I2.5": {
       "title": "Acquisti rispettosi del clima",
-      "goal": "In cinque occasioni, scegliete consapevolmente un prodotto dopo aver esaminato le informazioni ambientali riportate sulla confezione.",
+      "goal": "In cinque occasioni, scegli consapevolmente un prodotto dopo aver esaminato le informazioni ambientali riportate sulla confezione.",
       "whyItMatters": "Le decisioni di acquisto rappresentano un importante punto di leva per la sostenibilità del sistema alimentare."
     },
     "M.I3.1": {
       "title": "Scelta basata sui dati di produzione",
-      "goal": "Utilizza la classificazione NOVA, il Green-Score o le informazioni contenute nell'elenco degli ingredienti per orientare almeno cinque decisioni di acquisto. Dove posso trovare queste informazioni? Consulta le confezioni, il sito Open Food Facts o le app per la scansione degli alimenti.",
-      "whyItMatters": "Le informazioni relative alla produzione assumono rilevanza quando influenzano le scelte."
+      "goal": "Utilizza la classificazione NOVA, il Green-Score o le informazioni presenti nell'elenco degli ingredienti per orientare almeno cinque decisioni di acquisto. Dove posso trovare queste informazioni? Consulta le confezioni, il sito di Open Food Facts o le app per scansionare gli alimenti.",
+      "whyItMatters": "Le informazioni relative alla produzione diventano rilevanti quando influenzano le scelte."
     },
     "M.I3.2": {
       "title": "Confronta i livelli di elaborazione",
-      "goal": "Confronta alimenti con diverse classificazioni NOVA su almeno tre prodotti appartenenti alla stessa categoria alimentare (ad esempio, tre tipi di formaggio). Utilizza le informazioni NOVA disponibili su Open Food Facts o riportate sulle etichette dei prodotti.",
-      "whyItMatters": "Gli alimenti appartenenti alla stessa categoria possono presentare differenze sostanziali in termini di grado di lavorazione."
+      "goal": "Confronta alimenti con diverse classificazioni NOVA per almeno tre prodotti appartenenti alla stessa categoria alimentare (ad esempio, tre tipi di formaggio). Utilizza le informazioni NOVA disponibili su Open Food Facts o riportate sulle etichette dei prodotti.",
+      "whyItMatters": "Gli alimenti appartenenti alla stessa categoria possono presentare differenze sostanziali nel grado di lavorazione."
     },
     "M.I3.3": {
       "title": "Settimana dedicata alle attività che richiedono meno elaborazione",
@@ -2836,21 +2836,21 @@
     "M.I3.4": {
       "title": "Tracker a indicatori multipli",
       "goal": "Per quattro alimenti acquistati, confronta la classificazione NOVA con il Green-Score o con il Nutri-Score.",
-      "whyItMatters": "Indicatori diversi offrono prospettive diverse sulla qualità e la sostenibilità degli alimenti."
+      "whyItMatters": "Indicatori diversi offrono prospettive diverse sulla qualità e sulla sostenibilità degli alimenti."
     },
     "M.I3.5": {
       "title": "Diario di produzione e sostenibilità",
-      "goal": "Tieni traccia degli indicatori relativi alla produzione di sei alimenti che consumi e valuta se questi hanno influenzato le tue scelte. Utilizza le informazioni riportate sulle confezioni degli alimenti, NOVA, Green-Score e Open Food Facts.",
+      "goal": "Tieni traccia degli indicatori relativi alla produzione di sei alimenti che consumi e valuta se questi hanno influenzato le tue scelte. Utilizza le informazioni riportate sulle confezioni degli alimenti, su NOVA, Green-Score e Open Food Facts.",
       "whyItMatters": "La consapevolezza è un importante presupposto per il cambiamento comportamentale. La sostenibilità del sistema alimentare dipende dalle decisioni prese nelle fasi di produzione, trasformazione e consumo."
     },
     "M.I4.1": {
       "title": "Scelte consapevoli in materia di imballaggi",
-      "goal": "Tieni conto delle caratteristiche dell’imballaggio quando devi prendere almeno tre decisioni di acquisto. Utilizza le etichette sull’imballaggio, le informazioni sul riciclaggio e i simboli di identificazione dei materiali.",
+      "goal": "Tieni conto delle caratteristiche dell’imballaggio quando devi prendere almeno tre decisioni di acquisto. Utilizza le etichette sull’imballaggio, le informazioni sul riciclo e i simboli di identificazione dei materiali.",
       "whyItMatters": "Le scelte dei consumatori possono favorire l'adozione di sistemi di imballaggio che utilizzano le risorse in modo più efficiente. La riduzione degli imballaggi superflui è la priorità assoluta nella gerarchia europea degli imballaggi."
     },
     "M.I4.2": {
       "title": "Strumento di monitoraggio della riciclabilità",
-      "goal": "Stabilisci se, sulla base delle informazioni fornite, almeno dieci confezioni alimentari risultino facili o difficili da riciclare.",
+      "goal": "Stabilisci, sulla base delle informazioni fornite, se almeno dieci confezioni alimentari risultino facili o difficili da riciclare.",
       "whyItMatters": "La riciclabilità varia notevolmente a seconda del tipo di imballaggio. Gli imballaggi che non possono essere riutilizzati o riciclati diventano una risorsa sprecata anziché un materiale prezioso."
     },
     "M.I4.3": {
@@ -2866,31 +2866,31 @@
     "M.I4.5": {
       "title": "Esploratore di imballaggi circolari",
       "goal": "Individua gli imballaggi che possono essere riutilizzati, riciclati o riempiti nuovamente per almeno quattro prodotti alimentari.",
-      "whyItMatters": "Un'economia circolare si basa sul mantenimento dei materiali in uso. La gerarchia europea degli imballaggi dà la priorità alla riduzione, poi al riutilizzo e infine al riciclaggio."
+      "whyItMatters": "Un'economia circolare si basa sul mantenimento dei materiali in uso. La gerarchia europea degli imballaggi dà priorità alla riduzione, poi al riutilizzo e infine al riciclaggio."
     },
     "M.I5.1": {
       "title": "L'abitudine di pianificare i pasti",
-      "goal": "Prepara un menu prima di fare la spesa principale.",
-      "whyItMatters": "Una buona pianificazione riduce gli acquisti eccessivi e lo spreco dovuto alla scadenza dei prodotti."
+      "goal": "Prepara un menù prima di fare la spesa principale.",
+      "whyItMatters": "Una buona pianificazione riduce gli acquisti eccessivi e gli sprechi dovuti alla scadenza dei prodotti."
     },
     "M.I5.2": {
       "title": "Prima gli avanzi",
       "goal": "Consuma gli avanzi prima di preparare un nuovo pasto in almeno 3 occasioni.",
-      "whyItMatters": "Molti avanzi finiscono per diventare rifiuti perché vengono dimenticati. Le competenze nella gestione del cibo influenzano notevolmente i livelli di rifiuti domestici."
+      "whyItMatters": "Molti avanzi finiscono per diventare rifiuti perché vengono dimenticati. Le competenze nella gestione del cibo incidono notevolmente sulla quantità dei rifiuti domestici."
     },
     "M.I5.3": {
       "title": "Missione 3: Controllo periodico del frigorifero",
       "goal": "Prima di fare la spesa principale, controlla il frigorifero o la dispensa. Registra almeno 3 azioni \"Consumo di prodotti scaduti\" o 3 azioni \"Risparmio di un piatto pieno\".",
-      "whyItMatters": "Spesso i consumatori acquistano prodotti che possiedono già."
+      "whyItMatters": "Spesso i consumatori acquistano prodotti che già possiedono."
     },
     "M.I5.4": {
-      "title": "Portion Control Pro",
-      "goal": "Registra almeno 3 azioni “Mezzo piatto risparmiato”. Come fare: inizia ogni pasto con una porzione più piccola e aggiungi altro cibo solo se necessario. Se riesci a risparmiare cibo con questo comportamento, registra un'azione “Mezzo piatto risparmiato”.",
+      "title": "Esperto nel controllo delle porzioni",
+      "goal": "Registra almeno 3 azioni “Mezzo piatto risparmiato”. Come fare: inizia ogni pasto con una porzione più piccola e aggiungi altro cibo solo se necessario. Se riesci a risparmiare cibo grazie a questo comportamento, registra l'azione “Mezzo piatto risparmiato”.",
       "whyItMatters": "Servire porzioni eccessive è una causa comune di spreco nel piatto. La dimensione delle porzioni è un fattore determinante nello spreco alimentare."
     },
     "M.I5.5": {
       "title": "Il campione degli avanzi",
-      "goal": "Registra almeno 3 azioni “Piatto pieno risparmiato”. Come fare: conserva gli avanzi dei pasti o gli ingredienti per consumarli in futuro, invece di buttarli via. Se riesci a consumare un pasto completo utilizzando gli avanzi, puoi registrare un’azione “Piatto pieno risparmiato”.",
+      "goal": "Registra almeno 3 azioni “Piatto pieno risparmiato”. Come fare: conserva gli avanzi dei pasti o gli ingredienti per consumarli in futuro, invece di buttarli via. Se riesci a consumare un pasto completo utilizzando gli avanzi, puoi registrare l'azione “Piatto pieno risparmiato”.",
       "whyItMatters": "Molti alimenti finiscono tra i rifiuti perché non vengono riutilizzati. Riutilizzare gli avanzi è una strategia efficace per ridurre gli sprechi alimentari domestici."
     },
     "M.I6.1": {
@@ -2905,17 +2905,17 @@
     },
     "M.I6.3": {
       "title": "Tavola senza sale",
-      "goal": "Durante la settimana, non aggiungere sale ai piatti a tavola. Preferisci erbe aromatiche, spezie, aglio, limone o altri condimenti al posto del sale da tavola.",
+      "goal": "Per tutta la settimana, non aggiungere sale ai piatti a tavola. Preferisci erbe aromatiche, spezie, aglio, limone o altri condimenti.",
       "whyItMatters": "La maggior parte della popolazione consuma una quantità di sodio notevolmente superiore a quella raccomandata."
     },
     "M.I6.4": {
-      "title": "Aggiornamento sui grassi sani",
-      "goal": "Scegli una fonte di grassi insaturi al posto di una fonte di grassi saturi almeno cinque volte. Opta per alimenti come l'olio d'oliva, la frutta secca, i semi, l'avocado o il pesce invece di burro, panna, carni grasse o altre fonti ricche di grassi saturi.",
+      "title": "Scegli grassi più sani",
+      "goal": "Scegli una fonte di grassi insaturi al posto di una fonte di grassi saturi almeno 5 volte. Preferisci alimenti come l'olio d'oliva, la frutta secca, i semi, l'avocado o il pesce invece di burro, panna, carni grasse o altre fonti ricche di grassi saturi.",
       "whyItMatters": "La qualità dei grassi alimentari è importante per la salute cardiovascolare"
     },
     "M.I6.5": {
       "title": "Varietà proteica",
-      "goal": "Consuma almeno quattro diverse fonti proteiche durante la settimana. Come fare: varia l’apporto proteico includendo combinazioni di legumi, latticini, uova, pesce, frutta secca, semi, tofu o carni magre.",
+      "goal": "Consuma almeno quattro  fonti proteiche diverse per tutta la settimana. Come fare: varia l’apporto proteico includendo combinazioni di legumi, latticini, uova, pesce, frutta secca, semi, tofu o carni magre.",
       "whyItMatters": "I diversi alimenti proteici forniscono nutrienti e profili aminoacidici diversi."
     }
   },
@@ -2927,7 +2927,7 @@
     },
     "CH.A1.2": {
       "title": "Creare un menu sostenibile",
-      "task": "Elabora un menù per l'intera giornata che includa: un legume, un alimento base alternativo e non più di un pasto a base di carne.",
+      "task": "Elabora un menù per l'intera giornata che includa: un legume, un alimento di base alternativo e al massimo un pasto a base di carne.",
       "whyItMatters": "Pianificare i pasti aiuta a tradurre le conoscenze in comportamenti concreti."
     },
     "CH.A1.3": {
@@ -2943,11 +2943,11 @@
     "CH.A1.5": {
       "title": "Esperto in impatto ambientale",
       "task": "Scopri l'impatto ambientale di: carne bovina, carne suina, pollo e legumi. Classificali in ordine decrescente di impatto.",
-      "whyItMatters": "Il confronto tra diversi alimenti può evidenziare notevoli differenze in termini di impatto ambientale."
+      "whyItMatters": "Il confronto tra diversi alimenti può evidenziare notevoli differenze nell'impatto alimentare."
     },
     "CH.A2.1": {
       "title": "Crea un carrello della spesa sostenibile",
-      "task": "Crea un carrello della spesa ipotetico contenente: un prodotto di stagione; un prodotto locale; un prodotto certificato e una fonte proteica a basse emissioni di carbonio.",
+      "task": "Crea un carrello della spesa ipotetico contenente: un prodotto di stagione, un prodotto locale, un prodotto certificato e una fonte proteica a basse emissioni di carbonio.",
       "whyItMatters": "Le scelte alimentari sostenibili comportano molteplici aspetti che vanno oltre la semplice nutrizione."
     },
     "CH.A2.2": {
@@ -2963,7 +2963,7 @@
     "CH.A2.4": {
       "title": "Confronto tra le etichette di sostenibilità",
       "task": "Confronta due certificazioni di sostenibilità presenti sui prodotti alimentari e individua: cosa certificano; quali informazioni forniscono e quali differenze esistono tra loro",
-      "whyItMatters": "Le diverse certificazioni affrontano diverse tematiche relative alla sostenibilità."
+      "whyItMatters": "Le diverse certificazioni affrontano tematiche differenti relative alla sostenibilità."
     },
     "CH.A2.5": {
       "title": "Riflessione sull'impatto del prodotto",
@@ -2973,7 +2973,7 @@
     "CH.A3.1": {
       "title": "I limiti di un unico punteggio",
       "task": "Scegli un prodotto e valuta perché un unico indicatore sia sufficiente per comprenderne la sostenibilità e la qualità. Utilizza Nutri-Score, la classificazione NOVA, Green-Score e le informazioni contenute nell'elenco degli ingredienti, quando disponibili.",
-      "whyItMatters": "Non esiste un unico indicatore in grado di cogliere ogni aspetto della sostenibilità alimentare."
+      "whyItMatters": "Non esiste un unico indicatore in grado di cogliere tutti gli aspetti della sostenibilità alimentare."
     },
     "CH.A3.2": {
       "title": "Il dibattito su NOVA",
@@ -2982,7 +2982,7 @@
     },
     "CH.A3.3": {
       "title": "Analisi della trasformazione alimentare",
-      "task": "Scegli un alimento trasformato e analizza in che modo la trasformazione possa influire sulla praticità, sulla durata di conservazione, sul valore nutrizionale e sull'impatto ambientale.",
+      "task": "Scegli un alimento processato e analizza in che modo la trasformazione possa influire sulla praticità, sulla durata di conservazione, sul valore nutrizionale e sull'impatto ambientale.",
       "whyItMatters": "Gli effetti della lavorazione vanno oltre un singolo risultato."
     },
     "CH.A3.4": {
@@ -2991,34 +2991,34 @@
       "whyItMatters": "Gli indicatori sono concepiti per rispondere a domande diverse."
     },
     "CH.A3.5": {
-      "title": "A quale indicatore ti fidi di più?",
-      "task": "Confronta diversi prodotti e rifletti su quale indicatore ritieni personalmente più utile nella scelta degli alimenti e perché. Utilizza le informazioni riportate sulle confezioni, Open Food Facts, Nutri-Score, la classificazione NOVA e Green-Score.",
+      "title": "Di quale indicatore ti fidi di più?",
+      "task": "Confronta diversi prodotti e rifletti su quale indicatore ritieni personalmente più utile nella scelta degli alimenti e perché. Utilizza le informazioni riportate sulle confezioni, Open Food Facts, Nutri-Score, la classificazione NOVA e il Green-Score.",
       "whyItMatters": "I consumatori si trovano sempre più spesso di fronte a una molteplicità di indicatori e devono decidere come utilizzarli."
     },
     "CH.A4.1": {
       "title": "Il dilemma dell'imballaggio",
-      "task": "Individua un prodotto con un imballaggio particolarmente elaborato e valuta se tale imballaggio aggiuntivo possa essere giustificato.",
-      "whyItMatters": "Gli imballaggi dovrebbero ridurre al minimo l'uso di materiali senza compromettere la sicurezza alimentare né aumentare lo spreco alimentare."
+      "task": "Individua un prodotto con un imballaggio particolarmente elaborato e valuta se tale imballaggio aggiuntivo sia giustificato.",
+      "whyItMatters": "Gli imballaggi dovrebbero ridurre al minimo l'uso di materiali, senza compromettere la sicurezza alimentare né aumentare gli sprechi alimentari."
     },
     "CH.A4.2": {
       "title": "Qual è la soluzione più sostenibile?",
-      "task": "Confronta due materiali di confezionamento utilizzati per lo stesso tipo di alimento e valuta se sia possibile individuare un'unica opzione “migliore”.",
-      "whyItMatters": "Non esiste un materiale da imballaggio che sia universalmente l'opzione più sostenibile in tutte le situazioni."
+      "task": "Confronta, per lo stesso tipo di alimento, due materiali di confezionamento e valuta se sia possibile individuare un'unica opzione “migliore”.",
+      "whyItMatters": "Non esiste un materiale d'imballaggio che sia universalmente l'opzione più sostenibile in ogni situazione."
     },
     "CH.A4.3": {
       "title": "Riflessioni sull'economia circolare",
       "task": "Scegli una confezione alimentare e analizza come potrebbe inserirsi in un sistema di economia circolare dopo l'uso.",
-      "whyItMatters": "Gli approcci basati sull'economia circolare mirano a mantenere i materiali in uso attraverso il riutilizzo e il riciclaggio."
+      "whyItMatters": "Gli approcci basati sull'economia circolare mirano a mantenere i materiali in uso attraverso il riutilizzo e il riciclo."
     },
     "CH.A4.4": {
       "title": "Esploratore del packaging del futuro",
       "task": "Analizza un’innovazione nel campo degli imballaggi, come ad esempio gli imballaggi commestibili, gli imballaggi attivi o gli imballaggi intelligenti, e rifletti sul problema che essa cerca di risolvere.",
-      "whyItMatters": "I sistemi di imballaggio commestibili, attivi e intelligenti hanno il potenziale di ridurre gli sprechi e migliorare la conservazione degli alimenti."
+      "whyItMatters": "I sistemi di imballaggio commestibili, attivi e intelligenti hanno il potenziale per ridurre gli sprechi e migliorare la conservazione degli alimenti."
     },
     "CH.A4.5": {
       "title": "Un prodotto, molteplici prospettive",
-      "task": "Valuta una confezione alimentare da tre punti di vista: utilizzo delle risorse, conservazione degli alimenti e gestione a fine ciclo di vita. Rifletti su quale di questi punti di vista ritieni più importante e perché.",
-      "whyItMatters": "La sostenibilità degli imballaggi non può essere determinata da un’unica caratteristica, ma dipende dall’equilibrio tra protezione, utilizzo delle risorse e circolarità."
+      "task": "Valuta una confezione alimentare da tre punti di vista: utilizzo delle risorse, conservazione degli alimenti e gestione a fine vita. Rifletti su quale di questi punti di vista ritieni più importante e perché.",
+      "whyItMatters": "La sostenibilità degli imballaggi non può essere determinata da un’unica caratteristica, ma dipende dall’equilibrio tra protezione, uso delle risorse e circolarità."
     },
     "CH.A5.1": {
       "title": "La trasformazione degli avanzi",
@@ -3027,13 +3027,13 @@
     },
     "CH.A5.2": {
       "title": "Il test del frigo vuoto",
-      "task": "Apri il frigorifero e individua un alimento che andrebbe consumato entro i prossimi due giorni. Prepara un piano per assicurarti che non vada sprecato.",
+      "task": "Apri il frigorifero e individua un alimento da consumare entro i prossimi due giorni. Prepara un piano per assicurarti che non vada sprecato.",
       "whyItMatters": "Molti alimenti finiscono per essere sprecati semplicemente perché vengono trascurati."
     },
     "CH.A5.3": {
       "title": "Un cambiamento, un impatto enorme",
-      "task": "Scegli un’abitudine legata allo spreco alimentare che, realisticamente, saresti disposto a cambiare questo mese.",
-      "whyItMatters": "Un cambiamento sostenibile nelle abitudini spesso parte da una singola azione alla nostra portata."
+      "task": "Scegli un’abitudine legata allo spreco alimentare che, in modo realistico, saresti disposto a cambiare questo mese.",
+      "whyItMatters": "Un cambiamento sostenibile nelle abitudini spesso inizia con un'unica azione a nostra portata."
     },
     "CH.A5.4": {
       "title": "Zona \"Mangiami per primo\"",
@@ -3053,15 +3053,15 @@
     "CH.A6.2": {
       "title": "A caccia dello zucchero nascosto",
       "task": "Indica quale alimento presente in casa tua ha il più alto contenuto di zucchero per 100 grammi.",
-      "whyItMatters": "È possibile che alimenti inaspettati contengano grandi quantità di zucchero."
+      "whyItMatters": "È possibile che alcuni alimenti inaspettati contengano grandi quantità di zucchero."
     },
     "CH.A6.3": {
       "title": "Verifica della densità nutrizionale",
-      "task": "Scegli un alimento che consumi regolarmente e individua se il suo apporto principale è costituito da proteine, fibre, vitamine, grassi sani o soprattutto calorie.",
-      "whyItMatters": "Non tutti gli alimenti contribuiscono nella stessa misura alla qualità nutrizionale."
+      "task": "Scegli un alimento che consumi regolarmente e individua se il suo apporto principale è costituito da proteine, fibre, vitamine, grassi sani o, soprattutto, calorie.",
+      "whyItMatters": "Non tutti gli alimenti contribuiscono allo stesso modo alla qualità nutrizionale."
     },
     "CH.A6.4": {
-      "title": "Rainbow Audit",
+      "title": "Verifica dei colori del piatto",
       "task": "Ripensa ai pasti di ieri e conta quanti colori diversi di frutta e verdura hai consumato.",
       "whyItMatters": "La varietà alimentare favorisce l'apporto di micronutrienti."
     },
@@ -3073,7 +3073,7 @@
     "CH.B1.1": {
       "title": "Quale proteina ha l'impronta ecologica più bassa?",
       "task": "Vai alla lista della spesa e confronta l’impronta ecologica di due proteine che consumi spesso",
-      "whyItMatters": "Le diverse fonti proteiche hanno impatti ambientali molto diversi tra loro."
+      "whyItMatters": "Le diverse fonti proteiche hanno impatti ambientali molto diversi."
     },
     "CH.B1.2": {
       "title": "Trova tre fonti proteiche non di origine animale",
@@ -3087,8 +3087,8 @@
     },
     "CH.B1.4": {
       "title": "Trova la carne nascosta",
-      "task": "Pensa a tutto quello che hai mangiato ieri e individua gli alimenti che contenevano carne lavorata.",
-      "whyItMatters": "I prodotti a base di carne lavorata possono essere presenti in molti alimenti di uso quotidiano."
+      "task": "Pensa a tutto quello che hai mangiato ieri e individua gli alimenti che contenevano carne processata.",
+      "whyItMatters": "I prodotti a base di carne processata possono essere presenti in molti alimenti di uso quotidiano."
     },
     "CH.B1.5": {
       "title": "Crea la tua lista dei desideri per un'alimentazione sostenibile",
@@ -3103,7 +3103,7 @@
     "CH.B2.2": {
       "title": "Il detective di campagna",
       "task": "Prendi tre prodotti alimentari dalla tua cucina e individua dove sono stati prodotti.",
-      "whyItMatters": "Il cibo percorre spesso lunghe distanze prima di arrivare ai consumatori. Il trasporto alimentare a livello globale genera circa 3 miliardi di tonnellate di emissioni di CO₂ equivalente all’anno."
+      "whyItMatters": "Il cibo spesso percorre lunghe distanze prima di arrivare ai consumatori. Il trasporto alimentare a livello globale genera circa 3 miliardi di tonnellate di emissioni di CO₂ equivalente all’anno."
     },
     "CH.B2.3": {
       "title": "Trova un alimento di stagione",
@@ -3122,7 +3122,7 @@
     },
     "CH.B3.1": {
       "title": "Come interpretare l'elenco degli ingredienti",
-      "task": "Scegli un prodotto alimentare confezionato e leggi l'elenco degli ingredienti dall'inizio alla fine. Individua tre ingredienti che riconosci e uno che non riconosci.",
+      "task": "Scegli un prodotto alimentare confezionato e leggi l'elenco degli ingredienti dall'inizio alla fine. Individua tre ingredienti che conosci e uno che non conosci.",
       "whyItMatters": "Gli elenchi degli ingredienti possono rivelare come gli alimenti vengono formulati e lavorati."
     },
     "CH.B3.2": {
@@ -3132,13 +3132,13 @@
     },
     "CH.B3.3": {
       "title": "Caccia al tesoro tra le confezioni",
-      "task": "Scegli un alimento confezionato e individua tutte le informazioni riportate sulla confezione che forniscono indicazioni su come è stato prodotto o lavorato.",
-      "whyItMatters": "Molti consumatori trascurano le informazioni già riportate sulle confezioni degli alimenti."
+      "task": "Scegli un alimento confezionato e individua tutte le informazioni riportate sulla confezione che indicano come è stato prodotto o lavorato.",
+      "whyItMatters": "Molti consumatori trascurano le informazioni riportate sulle confezioni degli alimenti."
     },
     "CH.B3.4": {
       "title": "Un alimento, tante fasi",
       "task": "Scegli un prodotto alimentare e cerca di capire cosa possa essere successo tra le materie prime e il prodotto finale che hai acquistato.",
-      "whyItMatters": "La lavorazione degli alimenti comporta spesso numerose fasi di trasformazione che i consumatori non vedono mai."
+      "whyItMatters": "Il processo di lavorazione degli alimenti comporta spesso numerose fasi di trasformazione che i consumatori non vedono mai."
     },
     "CH.B3.5": {
       "title": "Tre etichette, tre storie",
@@ -3211,29 +3211,29 @@
       "whyItMatters": "Le fibre si trovano quasi esclusivamente negli alimenti di origine vegetale."
     },
     "CH.B6.4": {
-      "title": "Salt Spotter",
+      "title": "Caccia al sale",
       "task": "Scegli un alimento confezionato e calcola la quantità di sale contenuta in 100 grammi.",
       "whyItMatters": "Molti alimenti contengono sodio nascosto."
     },
     "CH.B6.5": {
-      "title": "Esploratore delle indicazioni relative alle proteine",
+      "title": "Alla scoperta delle indicazioni sulle proteine",
       "task": "Individua un prodotto che riporti un'indicazione relativa alle proteine e stabilisci se possa essere considerato una fonte di proteine o un alimento ad alto contenuto proteico.",
       "whyItMatters": "Le indicazioni nutrizionali devono rispettare criteri specifici."
     },
     "CH.I1.1": {
-      "title": "Prova un nuovo ritmo",
-      "task": "Scegli un legume che mangi raramente o mai. Assaggialo per la prima volta o preparalo in un modo nuovo.",
-      "whyItMatters": "I legumi sono tra gli alimenti più sostenibili e ricchi di proteine disponibili."
+      "title": "Prova un nuovo legume",
+      "task": "Scegli un legume che mangi raramente o mai. Assaggialo per la prima volta o preparalo in modo nuovo.",
+      "whyItMatters": "I legumi sono tra gli alimenti più sostenibili e ricchi di proteine."
     },
     "CH.I1.2": {
       "title": "Confronto tra proteine",
       "task": "Leggi le etichette di due prodotti che hai a casa e confronta la quantità di proteine che contengono",
-      "whyItMatters": "Comprendere gli impatti aiuta a compiere scelte consapevoli."
+      "whyItMatters": "Comprendere gli impatti aiuta a prendere scelte consapevoli."
     },
     "CH.I1.3": {
       "title": "Scopri la quinoa",
       "task": "Scopri alcune curiosità sul cibo e perché la quinoa è considerata una “proteina completa”.",
-      "whyItMatters": "La quinoa offre una grande varietà nutrizionale."
+      "whyItMatters": "La quinoa offre un'ampia varietà nutrizionale."
     },
     "CH.I1.4": {
       "title": "Analisi dello shopping sostenibile",
@@ -3246,9 +3246,9 @@
       "whyItMatters": "Le competenze culinarie facilitano il cambiamento delle abitudini alimentari."
     },
     "CH.I2.1": {
-      "title": "Investigatore delle \"Food Miles\"",
+      "title": "Indaga i chilometri percorsi dal cibo",
       "task": "Scegli un prodotto alimentare e calcola approssimativamente la distanza che ha percorso prima di arrivare sulla tua tavola, basandoti sul paese di origine indicato sulla confezione.",
-      "whyItMatters": "I trasporti contribuiscono all'impronta ambientale degli alimenti."
+      "whyItMatters": "I trasporti incidono sull'impronta ambientale degli alimenti."
     },
     "CH.I2.2": {
       "title": "Alla ricerca del metodo di produzione",
@@ -3266,24 +3266,24 @@
       "whyItMatters": "Comprendere le dichiarazioni relative alla sostenibilità aiuta i consumatori a prendere decisioni consapevoli."
     },
     "CH.I2.5": {
-      "title": "Esploratore dell'uso del suolo dei supermercati",
-      "task": "La prossima volta che vai a fare la spesa, individua: un prodotto a base di carne bovina, un prodotto a base di pollame e un prodotto a base di proteine vegetali. Scatta una foto o prendi nota dei prodotti e rifletti su quale, secondo te, abbia richiesto la maggiore superficie agricola per la sua produzione.",
+      "title": "Esplora l’uso del suolo dei prodotti del supermercato",
+      "task": "La prossima volta che vai a fare la spesa, individua: un prodotto a base di carne bovina, uno a base di pollame e uno a base di proteine vegetali. Scatta una foto o prendi nota dei prodotti e rifletti su quale, secondo te, abbia richiesto la maggiore superficie agricola per la sua produzione.",
       "whyItMatters": "Alimenti diversi richiedono quantità di terreno molto diverse tra loro, anche quando forniscono sostanze nutritive simili."
     },
     "CH.I3.1": {
       "title": "Lo spettro di elaborazione",
-      "task": "Individua tre alimenti che sembrano rappresentare diversi livelli di lavorazione e spiega il motivo. Utilizza gli elenchi degli ingredienti e le classificazioni NOVA.",
-      "whyItMatters": "Gli alimenti non si dividono semplicemente in \"trasformati\" e \"non trasformati\", ma si collocano su uno spettro."
+      "task": "Individua tre alimenti che rappresentino diversi livelli di lavorazione e spiega il motivo. Utilizza gli elenchi degli ingredienti e le classificazioni NOVA.",
+      "whyItMatters": "Gli alimenti non si dividono semplicemente in \"processati\" e \"non processati\", ma si collocano su uno spettro."
     },
     "CH.I3.2": {
-      "title": "Vantaggio di lavorazione, Costo di lavorazione",
-      "task": "Scegli un alimento trasformato e individua un vantaggio e un potenziale svantaggio del processo di trasformazione utilizzato per produrlo. Utilizza la confezione, l’elenco degli ingredienti e Open Food Facts.",
-      "whyItMatters": "La trasformazione alimentare può migliorare la conservazione e la sicurezza, aumentando però al contempo il consumo di energia e risorse."
+      "title": "Vantaggio di processamento, costo di processo",
+      "task": "Scegli un alimento processato e individua un vantaggio e un potenziale svantaggio del processo di trasformazione utilizzato per produrlo. Utilizza la confezione, l’elenco degli ingredienti e Open Food Facts.",
+      "whyItMatters": "Il processo alimentare può migliorare la conservazione e la sicurezza, ma al contempo aumenta il consumo di energia e risorse."
     },
     "CH.I3.3": {
       "title": "Quando i punteggi non coincidono",
       "task": "Trova un prodotto alimentare per il quale due indicatori forniscano segnali contrastanti. Ad esempio, un Nutri-Score favorevole ma una classificazione NOVA elevata. Utilizza le informazioni riportate sulla confezione o il sito Open Food Facts.",
-      "whyItMatters": "La qualità nutrizionale, l'accessibilità economica e il grado di trasformazione non sempre vanno di pari passo."
+      "whyItMatters": "La qualità nutrizionale, l'accessibilità economica e il grado di processamento non sempre vanno di pari passo."
     },
     "CH.I3.4": {
       "title": "Esploratore della tecnologia alimentare",
@@ -3322,7 +3322,7 @@
     },
     "CH.I5.1": {
       "title": "Il detective dello spreco alimentare",
-      "task": "Indica la ragione principale per cui nella tua famiglia si spreca il cibo.",
+      "task": "Indica la ragione principale per cui si spreca il cibo nella tua casa",
       "whyItMatters": "A cause diverse corrispondono soluzioni diverse."
     },
     "CH.I5.2": {
@@ -3337,7 +3337,7 @@
     },
     "CH.I5.4": {
       "title": "Punti critici dello spreco alimentare",
-      "task": "Indica i tre alimenti che hai attualmente in casa e che corrono il rischio maggiore di finire nella spazzatura entro la prossima settimana.",
+      "task": "Indica i tre alimenti che hai attualmente in casa e che hanno il rischio maggiore di finire nella spazzatura entro la prossima settimana.",
       "whyItMatters": "Individuare tempestivamente i rischi può aiutare a prevenire gli sprechi."
     },
     "CH.I5.5": {
@@ -3347,16 +3347,16 @@
     },
     "CH.I6.1": {
       "title": "Controllo dei cereali integrali",
-      "task": "Esamina l'elenco degli ingredienti di un prodotto etichettato come \"integrale\" e verifica se si tratta effettivamente di un prodotto integrale. Il cereale integrale dovrebbe essere il primo ingrediente nell'elenco.",
+      "task": "Esamina l'elenco degli ingredienti di un prodotto etichettato come \"integrale\" e verifica se è effettivamente integrale. Il cereale integrale dovrebbe essere il primo ingrediente nell'elenco.",
       "whyItMatters": "Le indicazioni riportate sulle confezioni possono essere fuorvianti."
     },
     "CH.I6.2": {
       "title": "Confronto tra bevande",
-      "task": "Confronta due bevande zuccherate che ti piace bere e individua quale delle due contiene meno zucchero ogni 100 ml.",
+      "task": "Confronta due bevande zuccherate che ti piacciono e individua quale delle due contiene meno zucchero per 100 ml.",
       "whyItMatters": "Le bevande sono una delle principali fonti di zuccheri liberi."
     },
     "CH.I6.3": {
-      "title": "Fat Explorer",
+      "title": "Trova i grassi",
       "task": "Trova nella tua cucina un alimento che sia principalmente una fonte di grassi insaturi e uno che sia principalmente una fonte di grassi saturi.",
       "whyItMatters": "I diversi tipi di grassi hanno effetti diversi sulla salute."
     },
@@ -3373,44 +3373,44 @@
   },
   "quests": {
     "QUEST.DIET_CHANGES.BEGINNER.2": {
-      "name": "Conosci le tue abitudini con la carne",
-      "title": "Cambiamenti nell'alimentazione - Principianti",
-      "description": "Scopri quanto spesso la carne compare nei tuoi pasti ed esplora il suo impatto sul sistema alimentare. Comprendere le abitudini attuali è il primo passo per migliorare sia la salute personale sia la sostenibilità ambientale, perché ridurre il consumo di carne può diminuire le emissioni di gas serra, l'uso del suolo e la pressione sulle risorse naturali, favorendo al tempo stesso un'alimentazione più sana."
+      "name": "Conosci le tue abitudini di consumo di carne",
+      "title": "Cambiamenti nell'alimentazione - Principiante",
+      "description": "Scopri quanto spesso la carne compare nei tuoi pasti ed esplora il suo impatto sul sistema alimentare. Comprendere le proprie attuali abitudini è il primo passo per migliorare sia la salute personale sia la sostenibilità ambientale, perché ridurre il consumo di carne può diminuire le emissioni di gas serra, l'uso del suolo e la pressione sulle risorse naturali, favorendo al tempo stesso un'alimentazione più sana."
     },
     "QUEST.DIET_CHANGES.BEGINNER.3": {
-      "name": "La tua prima sostituzione proteica",
+      "name": "La tua prima sostituzione di fonte proteica",
       "title": "Cambiamenti nell'alimentazione - Principianti",
       "description": "Esplora semplici alternative alla carne come legumi, pesce, uova, latticini, frutta a guscio e semi. Diversificare le fonti proteiche aiuta a migliorare l'alimentazione riducendo la pressione su suolo, acqua e clima."
     },
     "QUEST.DIET_CHANGES.BEGINNER.4": {
       "name": "Scopri nuovi alimenti di base",
       "title": "Cambiamenti nell'alimentazione - Principianti",
-      "description": "Fai il primo passo oltre gli alimenti di base più comuni, come il grano e il riso. Esplorare alimenti di base alternativi può migliorare la varietà della dieta e farti conoscere cibi che contribuiscono a sistemi agricoli più resilienti."
+      "description": "Fai il primo passo oltre ai più comuni alimenti di base, come il grano e il riso. Esplorare alimenti di base alternativi può aumentare la varietà della dieta e farti scoprire cibi che contribuiscono a sistemi agricoli più resilienti."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.1": {
       "name": "Crea una routine con meno carne",
       "title": "Cambiamenti nell'alimentazione - Livello intermedio",
-      "description": "Inizia a sostituire alcuni pasti a base di carne con delle alternative e sperimenta cambiamenti flessibili nella tua alimentazione. Ridurre gradualmente la carne può migliorare la qualità della dieta, diversificare l'apporto di nutrienti e ridurre l'impronta ambientale legata all'allevamento."
+      "description": "Inizia a sostituire alcuni pasti a base di carne con alternative e sperimenta cambiamenti nella tua alimentazione con flessibilità. Ridurre gradualmente il consumo di carne può migliorare la qualità della dieta, diversificare l'apporto di nutrienti e ridurre l'impronta ambientale legata all'allevamento."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.2": {
       "name": "Amplia le tue scelte proteiche",
       "title": "Cambiamenti nell'alimentazione - Livello intermedio",
-      "description": "Acquisisci sicurezza nell'usare una varietà più ampia di alimenti ricchi di proteine e scopri come le diverse fonti proteiche influiscono su salute e sostenibilità. Un apporto proteico più vario favorisce un'alimentazione adeguata riducendo la dipendenza da alimenti ad alto impatto."
+      "description": "Acquisisci sicurezza nell'usare una varietà più ampia di alimenti ricchi di proteine e scopri come le diverse fonti proteiche influiscono sulla salute e sulla sostenibilità. Un apporto proteico più vario favorisce un'alimentazione adeguata riducendo la dipendenza da alimenti ad alto impatto."
     },
     "QUEST.DIET_CHANGES.INTERMEDIATE.3": {
       "name": "Varia il tuo piatto",
       "title": "Cambiamenti nell'alimentazione - Livello intermedio",
-      "description": "Sperimenta cereali e alimenti di base alternativi nei pasti di tutti i giorni. Una maggiore varietà alimentare può migliorare l'apporto di nutrienti e aiutare a ridurre la dipendenza da un piccolo numero di colture dominanti a livello mondiale."
+      "description": "Sperimenta cereali e alimenti di base alternativi nei pasti quotidiani. Una maggiore varietà alimentare può migliorare l'apporto di nutrienti e contribuire a ridurre la dipendenza da un numero limitato di colture dominanti a livello mondiale."
     },
     "QUEST.DIET_CHANGES.ADVANCED.1": {
       "name": "Padroneggia le proteine sostenibili",
       "title": "Cambiamenti nella dieta - Livello avanzato",
-      "description": "Sviluppa un modello alimentare duraturo che dipenda meno dalla carne. Comprendendo gli effetti più ampi delle tue scelte proteiche, puoi sostenere la biodiversità, gli obiettivi climatici e la tutela delle risorse, mantenendo una dieta equilibrata e sana."
+      "description": "Sviluppa un modello alimentare duraturo che dipenda meno dalla carne. Comprendendo gli effetti più ampi delle tue scelte proteiche, puoi sostenere la biodiversità, gli obiettivi climatici e la tutela delle risorse, mantenendo al contempo una dieta equilibrata e sana."
     },
     "QUEST.DIET_CHANGES.ADVANCED.2": {
       "name": "Campione della varietà proteica",
       "title": "Cambiamenti nella dieta - Livello avanzato",
-      "description": "Prepara pasti che uniscano nutrizione, varietà e sostenibilità. Conoscendo i punti di forza delle diverse fonti proteiche, puoi sostenere sia la salute a lungo termine sia sistemi alimentari resilienti."
+      "description": "Prepara pasti che uniscano nutrizione, varietà e sostenibilità. Conoscendo i punti di forza delle diverse fonti proteiche, puoi sostenere sia la salute a lungo termine sia la resilienza dei sistemi alimentari."
     },
     "QUEST.DIET_CHANGES.ADVANCED.3": {
       "name": "Un piatto a prova di futuro",
@@ -3420,7 +3420,7 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.1": {
       "name": "Il suolo dietro il tuo cibo",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Scopri come alimenti diversi richiedano quantità diverse di terreno per essere prodotti. Comprendere l'uso del suolo aiuta a spiegare in che modo le scelte alimentari influiscono su foreste, ecosistemi e biodiversità."
+      "description": "Scopri come alimenti diversi richiedono quantità diverse di terreno per essere coltivati. Comprendere l'uso del suolo aiuta a spiegare come le scelte alimentari influiscano su foreste, ecosistemi e biodiversità."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.2": {
       "name": "Ogni goccia conta",
@@ -3430,82 +3430,82 @@
     "QUEST.PRODUCT_CHOICES.BEGINNER.3": {
       "name": "L'energia dietro il tuo cibo",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Scopri come viene usata l'energia per produrre, trasformare e trasportare il cibo. Comprendere questi costi energetici nascosti aiuta a capire perché le scelte alimentari sono importanti per la sostenibilità."
+      "description": "Scopri come l'energia viene utilizzata per produrre, trasformare e trasportare il cibo. Comprendere questi costi energetici nascosti aiuta a capire perché le scelte alimentari sono importanti per la sostenibilità."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.4": {
       "name": "Alimentazione amica del clima",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Scopri in che modo le scelte alimentari contribuiscono alle emissioni di gas serra. Comprendere l'impronta di carbonio aiuta a individuare azioni semplici che fanno bene sia al pianeta sia alla salute umana."
+      "description": "Scopri come le scelte alimentari contribuiscono alle emissioni di gas serra. Comprendere l'impronta di carbonio aiuta a individuare azioni semplici che fanno bene sia al pianeta sia alla salute umana."
     },
     "QUEST.PRODUCT_CHOICES.BEGINNER.5": {
       "name": "Segui il viaggio del cibo",
       "title": "Scelta dei prodotti - Principianti",
-      "description": "Scopri come il cibo viaggia dal campo alla tavola e perché il trasporto conta per la sostenibilità. Comprendere i chilometri del cibo aiuta a svelare una parte della storia ambientale che si nasconde dietro ciò che mangiamo."
+      "description": "Scopri come il cibo viaggia dal campo alla tavola e perché il trasporto è cruciale per la sostenibilità. Comprendere i chilometri del cibo aiuta a svelare una parte della storia ambientale nascosta dietro ciò che mangiamo."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.1": {
       "name": "Scegli alimenti che consumano meno suolo",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Impara a confrontare gli alimenti in base al loro impatto sui terreni agricoli. Scegliere alimenti che richiedono meno suolo può ridurre la pressione sugli habitat naturali, sostenendo al tempo stesso una dieta sana e varia."
+      "description": "Impara a confrontare gli alimenti in base al loro impatto sui terreni agricoli. Scegliere alimenti che richiedono meno suolo può ridurre la pressione sugli habitat naturali, sostenendo al contempo una dieta sana e varia."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.2": {
       "name": "Mangia pensando all'acqua",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Scopri come le scelte alimentari e lo spreco di cibo influiscono sul consumo di acqua dolce. Risparmiare acqua favorisce la sicurezza alimentare a lungo termine e riduce le pressioni sull'ambiente."
+      "description": "Scopri come le scelte alimentari e lo spreco alimentare incidono sul consumo di acqua dolce. Risparmiare acqua favorisce la sicurezza alimentare a lungo termine e riduce la pressione sull'ambiente."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.3": {
       "name": "Meno energia dal campo alla tavola",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Esplora i modi per ridurre l'impronta energetica dei tuoi pasti attraverso le scelte alimentari e la riduzione degli sprechi. Una minore domanda di energia spesso significa un minore impatto ambientale."
+      "description": "Esplora come ridurre l'impronta energetica dei tuoi pasti attraverso le scelte alimentari e la riduzione degli sprechi. Una minore domanda di energia spesso si traduce in un minore impatto ambientale."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.4": {
       "name": "Riduci l'impronta di carbonio del tuo cibo",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Impara strategie pratiche per ridurre le emissioni con le scelte alimentari di tutti i giorni. Molte scelte amiche del clima favoriscono anche abitudini alimentari più sane."
+      "description": "Impara strategie pratiche per ridurre le emissioni attraverso le scelte alimentari di tutti i giorni. Molte scelte amiche del clima favoriscono anche abitudini alimentari più sane."
     },
     "QUEST.PRODUCT_CHOICES.INTERMEDIATE.5": {
       "name": "Oltre i chilometri del cibo",
       "title": "Scelta dei prodotti - Livello intermedio",
-      "description": "Scopri come interagiscono trasporto, refrigerazione, stagionalità e metodi di produzione. La distanza da sola non determina la sostenibilità, e i consumatori informati sanno guardare il quadro completo."
+      "description": "Scopri come interagiscono il trasporto, la refrigerazione, la stagionalità e i metodi di produzione. La distanza da sola non determina la sostenibilità, e i consumatori informati sanno guardare il quadro complessivo"
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.1": {
       "name": "Proteggi la natura con le tue scelte alimentari",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Comprendi come i sistemi alimentari competono per il suolo e in che modo le scelte alimentari influiscono sulla tutela della biodiversità. Le tue scelte possono aiutare a proteggere gli ecosistemi, sostenendo al tempo stesso una produzione alimentare sostenibile."
+      "description": "Comprendi come i sistemi alimentari competono per il suolo e come le scelte alimentari incidono sulla tutela della biodiversità. Le tue scelte possono aiutare a proteggere gli ecosistemi, sostenendo al contempo una produzione alimentare sostenibile."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.2": {
       "name": "Proteggi le nostre risorse idriche",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Approfondisci la comprensione della scarsità d'acqua e del consumo sostenibile. Scelte alimentari consapevoli possono proteggere gli ecosistemi d'acqua dolce, favorendo al tempo stesso un'alimentazione sana."
+      "description": "Approfondisci il tema della scarsità d'acqua e del consumo sostenibile. Scelte alimentari consapevoli possono proteggere gli ecosistemi d'acqua dolce, favorendo al contempo un'alimentazione sana."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.3": {
-      "name": "Alimenta un sistema alimentare sostenibile",
+      "name": "Dai energia ad un sistema alimentare sostenibile",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Comprendi come i sistemi alimentari usano l'energia e in che modo le abitudini di consumo influiscono sulla domanda di risorse. Un consumo più consapevole fa bene sia all'ambiente sia alla futura sicurezza alimentare."
+      "description": "Approfondisci la comprensione di come i sistemi alimentari utilizzano l'energia e di come le abitudini di consumo incidono sulla domanda di risorse. Un consumo più consapevole fa bene sia all'ambiente sia alla sicurezza alimentare futura."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.4": {
       "name": "Diventa campione del cibo a basse emissioni",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Approfondisci la comprensione degli impatti climatici lungo i sistemi alimentari. Le tue scelte possono contribuire a uno stile di vita più sano e sostenere gli obiettivi di mitigazione del cambiamento climatico."
+      "description": "Approfondisci la comprensione degli impatti del cambiamento climatico sui sistemi alimentari. Le tue scelte possono contribuire a uno stile di vita più sano e sostenere gli obiettivi di mitigazione del cambiamento climatico."
     },
     "QUEST.PRODUCT_CHOICES.ADVANCED.5": {
       "name": "Pensa oltre la distanza",
       "title": "Scelta dei prodotti - Avanzate",
-      "description": "Scopri come le catene di approvvigionamento globali influiscono sull'impatto ambientale. Comprendere i sistemi di trasporto può aiutarti a fare scelte più consapevoli a favore della sostenibilità e della qualità del cibo."
+      "description": "Scopri come le catene di approvvigionamento globali incidono sull'impatto ambientale. Comprendere i sistemi di trasporto può aiutarti a fare scelte più consapevoli a favore della sostenibilità e della qualità del cibo."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.1": {
-      "name": "Decifra la trasformazione degli alimenti",
+      "name": "Decifra come vengono trasformati gli alimenti",
       "title": "Metodi di produzione - Principianti",
-      "description": "Scopri come vengono trasformati gli alimenti prima di arrivare nel tuo piatto. La trasformazione influisce su valore nutrizionale, praticità, durata di conservazione e sostenibilità."
+      "description": "Scopri come gli alimenti vengono trasformati prima di arrivare nel tuo piatto. La trasformazione influisce sul valore nutrizionale, sulla praticità, sulla durata di conservazione e sulla sostenibilità."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.2": {
       "name": "Sai da dove viene?",
       "title": "Metodi di produzione - Principianti",
-      "description": "Inizia a fare attenzione al luogo in cui viene prodotto il cibo. Le informazioni sul paese di origine possono aiutare i consumatori a comprendere meglio i sistemi alimentari e le catene di approvvigionamento."
+      "description": "Inizia a prestare attenzione al luogo in cui viene prodotto il cibo. Le informazioni sul paese di origine possono aiutare i consumatori a comprendere meglio i sistemi alimentari e le catene di approvvigionamento."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.3": {
       "name": "L'agricoltura dietro l'etichetta",
       "title": "Metodi di produzione - Principianti",
-      "description": "Scopri come viene coltivato e prodotto il cibo. Le pratiche agricole influiscono su biodiversità, salute del suolo, risorse idriche e qualità degli alimenti."
+      "description": "Scopri come viene coltivato e prodotto il cibo. Le pratiche agricole influiscono sulla biodiversità, sulla salute del suolo, sulle risorse idriche e sulla qualità degli alimenti."
     },
     "QUEST.PRODUCTION_METHODS.BEGINNER.4": {
       "name": "Innovazione alimentare per il futuro",
@@ -3518,59 +3518,59 @@
       "description": "Scopri il lato umano della produzione alimentare. I sistemi alimentari sostenibili non dipendono solo dalla tutela dell'ambiente, ma anche da un trattamento equo dei lavoratori e dei produttori."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.1": {
-      "name": "Pro e contro della trasformazione",
+      "name": "Pro e contro del processamento",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Esplora i vantaggi e gli svantaggi dei diversi livelli di trasformazione. Riconoscere questi compromessi aiuta a fare scelte più sane e sostenibili."
+      "description": "Esplora i vantaggi e gli svantaggi dei diversi livelli di processamento. Riconoscere questi compromessi aiuta a fare scelte più sane e sostenibili."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.2": {
       "name": "Oltre i chilometri",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Scopri perché l'origine del cibo è solo una parte della sostenibilità. Metodi di produzione, stagionalità e trasporto influiscono tutti sulla prestazione ambientale."
+      "description": "Scopri perché l'origine del cibo è solo una parte della sostenibilità. Metodi di produzione, stagionalità e trasporto incidono tutti sulle prestazioni ambientali."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.3": {
       "name": "Scegli un'agricoltura migliore",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Scopri come i metodi di produzione influiscono sulla sostenibilità e sulla salute. Comprendere i sistemi agricoli aiuta a prendere decisioni d'acquisto più consapevoli."
+      "description": "Scopri come i metodi di produzione incidono sulla sostenibilità e sulla salute. Comprendere i sistemi agricoli aiuta a prendere decisioni d'acquisto più consapevoli."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.4": {
       "name": "Innovazione nel piatto",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Scopri come il miglioramento genetico delle razze e delle varietà e le proteine alternative influiscono sulla produzione alimentare. Queste innovazioni mirano a produrre cibo in modo più efficiente e sostenibile."
+      "description": "Scopri come il miglioramento genetico delle razze e delle varietà, nonché le proteine alternative, influiscono sulla produzione alimentare. Queste innovazioni mirano a produrre cibo in modo più efficiente e sostenibile."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.5": {
       "name": "Fai la spesa pensando all'impatto sociale",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Scopri come etichette, certificazioni e pratiche di approvvigionamento sono legate alle condizioni di lavoro e ai mezzi di sussistenza. Le scelte dei consumatori possono influire sulla sostenibilità sociale."
+      "description": "Scopri come le etichette, le certificazioni e le pratiche di approvvigionamento sono legate alle condizioni di lavoro e ai mezzi di sussistenza. Le scelte dei consumatori possono incidere sulla sostenibilità sociale."
     },
     "QUEST.PRODUCTION_METHODS.INTERMEDIATE.6": {
       "name": "Leggere tra le etichette",
       "title": "Metodi di produzione - Livello intermedio",
-      "description": "Le etichette alimentari possono fornire informazioni preziose su valori nutrizionali, trasformazione e sostenibilità, ma nessuna etichetta da sola racconta tutta la storia. In questa avventura imparerai a confrontare diversi indicatori, come la classificazione NOVA, il Nutri-Score, il Green-Score e l'elenco degli ingredienti, per fare scelte alimentari più consapevoli. Capire come vengono prodotti e valutati gli alimenti può aiutarti a scegliere prodotti che fanno bene sia alla tua salute sia a un sistema alimentare più sostenibile."
+      "description": "Le etichette alimentari possono fornire informazioni preziose sui valori nutrizionali, sulla trasformazione e sulla sostenibilità, ma nessuna etichetta da sola racconta tutta la storia. In questa avventura imparerai a confrontare diversi indicatori, come la classificazione NOVA, il Nutri-Score, il Green-Score e l'elenco degli ingredienti, per fare scelte alimentari più consapevoli. Capire come vengono prodotti e valutati gli alimenti può aiutarti a scegliere prodotti che fanno bene sia alla tua salute sia a un sistema alimentare più sostenibile."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.1": {
       "name": "Oltre le etichette sulla trasformazione",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Sviluppa una comprensione più sfumata della trasformazione degli alimenti. La sostenibilità dipende dall'intero sistema alimentare, non semplicemente dal fatto che un alimento sia trasformato o meno."
+      "description": "Sviluppa una comprensione più approfondita della trasformazione degli alimenti. La sostenibilità dipende dall'intero sistema alimentare, non semplicemente dal fatto che un alimento sia trasformato o meno."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.2": {
       "name": "Pensa globale, scegli con saggezza",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Comprendi come sono collegati il commercio globale e i sistemi alimentari. Le scelte consapevoli considerano l'origine insieme ad altri indicatori di sostenibilità."
+      "description": "Comprendi come il commercio globale e i sistemi alimentari sono collegati. Le scelte consapevoli considerano l'origine insieme ad altri indicatori di sostenibilità."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.3": {
       "name": "Sostieni l'agricoltura sostenibile",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Scopri come le pratiche agricole innovative contribuiscono a sistemi alimentari resilienti e rispettosi dell'ambiente, mantenendo al tempo stesso la produzione di cibo."
+      "description": "Scopri come le pratiche agricole innovative contribuiscono a sistemi alimentari resilienti e rispettosi dell'ambiente, mantenendo al contempo la produzione di cibo."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.4": {
       "name": "Esploratore dei cibi del futuro",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Comprendi come l'innovazione può favorire la resilienza climatica, ridurre l'uso delle risorse e migliorare la sostenibilità del sistema alimentare, preservando al tempo stesso la qualità nutrizionale."
+      "description": "Comprendi come l'innovazione può favorire la resilienza climatica, ridurre l'uso delle risorse e migliorare la sostenibilità del sistema alimentare, preservando al contempo la qualità nutrizionale."
     },
     "QUEST.PRODUCTION_METHODS.ADVANCED.5": {
       "name": "Sostieni sistemi alimentari equi",
       "title": "Metodi di produzione - Avanzato",
-      "description": "Comprendi come le catene di approvvigionamento alimentare globali influiscono sulle persone e sulle comunità. Scelte alimentari etiche possono contribuire a sistemi alimentari più equi e inclusivi."
+      "description": "Comprendi come le catene di approvvigionamento alimentare globali influiscono sulle persone e sulle comunità. Le scelte alimentari etiche possono contribuire a sistemi alimentari più equi e inclusivi."
     },
     "QUEST.PACKAGING.BEGINNER.1": {
       "name": "Perché l'imballaggio conta",
@@ -3580,22 +3580,22 @@
     "QUEST.PACKAGING.BEGINNER.2": {
       "name": "Usalo di nuovo",
       "title": "Imballaggio - Livello principiante",
-      "description": "Scopri come i sistemi di imballaggio riutilizzabile riducono i rifiuti. Piccoli gesti di riutilizzo possono aiutare a risparmiare risorse e ridurre l'impatto ambientale."
+      "description": "Scopri come i sistemi di imballaggio riutilizzabili riducono i rifiuti. Piccoli gesti, come il riutilizzo, possono aiutare a risparmiare risorse e a ridurre l'impatto ambientale."
     },
     "QUEST.PACKAGING.INTERMEDIATE.1": {
       "name": "Imballaggi con uno scopo",
       "title": "Imballaggio - Livello intermedio",
-      "description": "Scopri come i diversi materiali di imballaggio influiscono sullo spreco alimentare, sull'uso delle risorse e sulla riciclabilità. Gli imballaggi sostenibili comportano compromessi non sempre evidenti."
+      "description": "Scopri come i diversi materiali di imballaggio incidono sullo spreco alimentare, sull'uso delle risorse e sulla riciclabilità. Gli imballaggi sostenibili comportano compromessi non sempre evidenti."
     },
     "QUEST.PACKAGING.INTERMEDIATE.2": {
       "name": "Riutilizza per ridurre",
       "title": "Imballaggio - Livello intermedio",
-      "description": "Scopri come funzionano nella pratica i sistemi di reso, ricarica e riutilizzo. La partecipazione dei consumatori è fondamentale per renderli efficaci."
+      "description": "Scopri come funzionano, in pratica, i sistemi di reso, ricarica e riutilizzo. La partecipazione dei consumatori è fondamentale per renderli efficaci."
     },
     "QUEST.PACKAGING.ADVANCED.1": {
       "name": "Ragiona sul ciclo di vita",
       "title": "Confezionamento - Avanzato",
-      "description": "Considera l'imballaggio nella prospettiva del ciclo di vita. L'opzione più sostenibile dipende spesso dal prodotto, dalla sua durata di conservazione e da come viene usato l'imballaggio."
+      "description": "Considera l'imballaggio in prospettiva del ciclo di vita. L'opzione più sostenibile dipende spesso dal prodotto, dalla sua durata di conservazione e da come viene utilizzato l'imballaggio."
     },
     "QUEST.PACKAGING.ADVANCED.2": {
       "name": "Padroneggia l'imballaggio circolare",
@@ -3605,7 +3605,7 @@
     "QUEST.FOOD_WASTE.BEGINNER.1": {
       "name": "Ogni piatto conta",
       "title": "Spreco alimentare - Livello principiante",
-      "description": "Scopri come le dimensioni delle porzioni e le abitudini nel servire il cibo influiscono sullo spreco alimentare. Ridurre gli avanzi nel piatto fa risparmiare cibo, denaro e risorse ambientali."
+      "description": "Scopri come le dimensioni delle porzioni e le abitudini di servizio del cibo incidono sullo spreco alimentare. Ridurre gli avanzi nel piatto fa risparmiare cibo, denaro e risorse ambientali."
     },
     "QUEST.FOOD_WASTE.BEGINNER.2": {
       "name": "Conservalo per domani",
@@ -3615,17 +3615,17 @@
     "QUEST.FOOD_WASTE.BEGINNER.3": {
       "name": "Non cadere nella trappola della scadenza",
       "title": "Spreco alimentare - Livello principiante",
-      "description": "Impara la differenza tra qualità e sicurezza degli alimenti. Comprendere le etichette può evitare sprechi inutili senza mettere a rischio la salute."
+      "description": "Impara la differenza tra la qualità e la sicurezza degli alimenti. Comprendere le etichette può evitare sprechi inutili senza compromettere la salute."
     },
     "QUEST.FOOD_WASTE.BEGINNER.4": {
       "name": "Compra ciò che ti serve",
       "title": "Spreco alimentare - Livello principiante",
-      "description": "Scopri come le abitudini di acquisto influiscono sullo spreco alimentare e sulla spesa familiare. Evitare acquisti superflui aiuta a ridurre gli sprechi e l'uso delle risorse."
+      "description": "Scopri come le abitudini di acquisto incidono sullo spreco alimentare e sulla spesa familiare. Evitare acquisti superflui aiuta a ridurre gli sprechi e l'uso delle risorse."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.1": {
       "name": "Servi in modo più intelligente",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Sviluppa abitudini che adattano meglio le porzioni all'appetito. Evitare avanzi inutili fa bene sia al benessere personale sia alla sostenibilità."
+      "description": "Sviluppa abitudini che adattano meglio le porzioni all'appetito. Evitare gli sprechi fa bene sia al benessere personale sia alla sostenibilità."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.2": {
       "name": "Valorizza gli avanzi",
@@ -3635,22 +3635,22 @@
     "QUEST.FOOD_WASTE.INTERMEDIATE.3": {
       "name": "Pianifica prima della scadenza",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Sviluppa abitudini di conservazione e pianificazione che aiutano a consumare il cibo prima che diventi uno spreco. Una migliore pianificazione fa bene sia al portafoglio sia all'ambiente."
+      "description": "Sviluppa abitudini di conservazione e di pianificazione che aiutino a consumare il cibo prima che diventi uno spreco. Una migliore pianificazione fa bene sia al portafoglio sia all'ambiente."
     },
     "QUEST.FOOD_WASTE.INTERMEDIATE.4": {
       "name": "Pianifica prima di comprare",
       "title": "Spreco alimentare - Livello intermedio",
-      "description": "Scopri come offerte, dimensioni delle porzioni e decisioni d'acquisto influiscono sullo spreco alimentare. Una migliore pianificazione fa bene sia alla salute personale sia alla sostenibilità."
+      "description": "Scopri come le offerte, le dimensioni delle porzioni e le decisioni d'acquisto influiscono sullo spreco alimentare. Una migliore pianificazione fa bene sia alla salute personale sia alla sostenibilità."
     },
     "QUEST.FOOD_WASTE.ADVANCED.1": {
       "name": "Sprecare meno, incidere di più",
       "title": "Spreco alimentare - Livello avanzato",
-      "description": "Comprendi le conseguenze ambientali più ampie degli avanzi nel piatto e impara strategie avanzate per ridurre al minimo gli sprechi nelle situazioni di tutti i giorni."
+      "description": "Comprendi le conseguenze ambientali più ampie degli avanzi nel piatto e impara strategie avanzate per ridurre al minimo gli sprechi nella vita di tutti i giorni."
     },
     "QUEST.FOOD_WASTE.ADVANCED.2": {
       "name": "Padroneggia la cucina a spreco zero",
       "title": "Spreco alimentare - Livello avanzato",
-      "description": "Crea routine avanzate di conservazione, pianificazione e riutilizzo. Una gestione efficiente del cibo fa bene al bilancio familiare, all'alimentazione e alla sostenibilità."
+      "description": "Crea routine di conservazione, di pianificazione e di riutilizzo. Una gestione efficiente del cibo fa bene al bilancio familiare, all'alimentazione e alla sostenibilità."
     },
     "QUEST.FOOD_WASTE.ADVANCED.3": {
       "name": "Gioca d'anticipo sullo spreco",
@@ -3660,17 +3660,17 @@
     "QUEST.FOOD_WASTE.ADVANCED.4": {
       "name": "Consuma con consapevolezza",
       "title": "Spreco alimentare - Livello avanzato",
-      "description": "Comprendi il legame tra consumo eccessivo, spreco e impatto ambientale. Un consumo ponderato aiuta a sostenere stili di vita più sani e sostenibili."
+      "description": "Comprendi il legame tra il consumo eccessivo, lo spreco e l'impatto ambientale. Un consumo ponderato aiuta a sostenere stili di vita più sani e sostenibili."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.1": {
       "name": "Proteine più consapevoli",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Scopri perché le proteine sono importanti e conosci diversi alimenti ricchi di proteine. Scelte proteiche varie possono favorire sia la salute sia la sostenibilità."
+      "description": "Scopri perché le proteine sono importanti e scopri diversi alimenti ricchi di proteine. Scelte proteiche varie possono favorire sia la salute sia la sostenibilità."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.2": {
       "name": "Grassi migliori, scelte migliori",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Impara la differenza tra grassi più sani e meno sani. La qualità dei grassi può influire sulla salute a lungo termine."
+      "description": "Impara la differenza tra i grassi più sani e quelli meno sani. La qualità dei grassi può influire sulla salute a lungo termine."
     },
     "QUEST.NUTRITION_VALUES.BEGINNER.3": {
       "name": "Scova gli zuccheri nascosti",
@@ -3695,12 +3695,12 @@
     "QUEST.NUTRITION_VALUES.BEGINNER.7": {
       "name": "Energia con uno scopo",
       "title": "Valori nutrizionali - Principianti",
-      "description": "Scopri cosa sono le calorie e perché sono importanti. Comprendere l'apporto energetico aiuta a fare scelte alimentari più sane."
+      "description": "Scopri che cosa sono le calorie e perché sono importanti. Comprendere l'apporto energetico aiuta a fare scelte alimentari più sane."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.1": {
       "name": "Migliora le tue abitudini proteiche",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Esplora una gamma più ampia di fonti proteiche e scopri come contribuiscono a una dieta equilibrata. Le scelte proteiche influiscono anche sull'impatto ambientale."
+      "description": "Esplora un'ampia gamma di fonti proteiche e scopri come contribuiscono a una dieta equilibrata. Le scelte proteiche incidono anche sull'impatto ambientale."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.2": {
       "name": "Scegli grassi sani",
@@ -3710,7 +3710,7 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.3": {
       "name": "Ripensa le scelte dolci",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Impara a riconoscere e ridurre l'assunzione di zuccheri non necessari. Scelte più sane favoriscono il benessere a lungo termine e migliori abitudini alimentari."
+      "description": "Impara a riconoscere e ridurre l'assunzione di zuccheri non necessari. Scelte più sane favoriscono il benessere a lungo termine e abitudini alimentari migliori."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.4": {
       "name": "Scova il sodio nascosto",
@@ -3720,7 +3720,7 @@
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.5": {
       "name": "Un piatto ricco di fibre",
       "title": "Valori nutrizionali - Livello intermedio",
-      "description": "Scopri modi pratici per aumentare l'apporto di fibre con gli alimenti di tutti i giorni. Più fibre spesso significa un'alimentazione più ricca di vegetali e più sostenibile."
+      "description": "Scopri modi pratici per aumentare l'apporto di fibre con gli alimenti di tutti i giorni. Più fibre spesso indicano un'alimentazione più ricca di vegetali e più sostenibile."
     },
     "QUEST.NUTRITION_VALUES.INTERMEDIATE.6": {
       "name": "Mangia per la varietà di nutrienti",
@@ -3740,7 +3740,7 @@
     "QUEST.NUTRITION_VALUES.ADVANCED.2": {
       "name": "Padroneggia la qualità dei grassi",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Comprendi il ruolo dei diversi grassi per la salute e nei sistemi alimentari. Scelte consapevoli favoriscono la salute cardiovascolare e diete sostenibili."
+      "description": "Comprendi il ruolo dei diversi grassi per la salute e nei sistemi alimentari. Le scelte consapevoli favoriscono la salute cardiovascolare e le diete sostenibili."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.3": {
       "name": "Prendi il controllo dello zucchero",
@@ -3760,12 +3760,12 @@
     "QUEST.NUTRITION_VALUES.ADVANCED.6": {
       "name": "Costruisci la tua resilienza nutrizionale",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Sviluppa un'alimentazione ricca di fonti di nutrienti varie. Conoscere i micronutrienti aiuta a prevenire le carenze, favorendo al tempo stesso un modello alimentare equilibrato e sostenibile."
+      "description": "Sviluppa un'alimentazione ricca di diverse fonti di nutrienti. Conoscere i micronutrienti aiuta a prevenire le carenze, favorendo al contempo un modello alimentare equilibrato e sostenibile."
     },
     "QUEST.NUTRITION_VALUES.ADVANCED.7": {
       "name": "Oltre le calorie",
       "title": "Valori nutrizionali - Avanzato",
-      "description": "Comprendi come interagiscono calorie, densità nutrizionale, qualità degli alimenti e sostenibilità. Una dieta sana punta all'equilibrio, non solo all'apporto energetico."
+      "description": "Comprendi come interagiscono le calorie, la densità nutrizionale, la qualità degli alimenti e la sostenibilità. Una dieta sana punta all'equilibrio, non solo all'apporto energetico."
     }
   },
   "meta": {

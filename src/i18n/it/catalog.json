@@ -1,11 +1,11 @@
 {
   "meta": {
     "locale": "it",
-    "lastImportedAt": "2026-07-14T13:07:43.441Z"
+    "lastImportedAt": "2026-11-05T17:47:26.930Z"
   },
   "genders": {
-    "MALE": "Uomo",
-    "FEMALE": "Donna",
+    "MALE": "Maschile",
+    "FEMALE": "Femminile",
     "OTHER": "Altro",
     "UNSPECIFIED": "Non specificato",
     "PREFER_NOT_TO_SAY": "Preferisco non rispondere"
@@ -27,7 +27,7 @@
     "ABOVE_100000": "{min} o più all'anno"
   },
   "educationLevels": {
-    "NO_FORMAL_EDUCATION": "Nessuna istruzione formale",
+    "NO_FORMAL_EDUCATION": "Nessun titolo di studio",
     "PRIMARY": "Istruzione primaria",
     "SECONDARY": "Istruzione secondaria",
     "VOCATIONAL": "Formazione professionale",
@@ -52,9 +52,9 @@
     "OTHER": "Altro"
   },
   "mealCategories": {
-    "ANIMAL_PROTEIN": "Proteine animali",
+    "ANIMAL_PROTEIN": "Proteina animale",
     "SEAFOOD": "Pesce e frutti di mare",
-    "PLANT_PROTEIN": "Proteine vegetali",
+    "PLANT_PROTEIN": "Proteina vegetale",
     "STARCH_GRAIN": "Amidi e cereali",
     "VEGGIES_FRUIT": "Verdura e frutta",
     "DAIRY": "Prodotti caseari",
@@ -63,7 +63,7 @@
   "mealCourses": {
     "MAIN_DISH": "Piatto principale",
     "SIDE_SNACK": "Contorno o spuntino",
-    "DESSERT": "Dolce / Dessert",
+    "DESSERT": "Dolce",
     "BEVERAGE": "Bevanda",
     "SAUCE_OTHER": "Salsa o altro"
   },
@@ -76,16 +76,16 @@
     "VEGETARIAN": "Vegetariano",
     "PESCATARIAN": "Pescetariano",
     "GLUTEN_FREE": "Senza glutine",
-    "DAIRY_FREE": "Senza lattosio",
+    "DAIRY_FREE": "Senza latticini",
     "NUT_FREE": "Senza frutta a guscio"
   },
   "shoppingResponsibilities": {
     "NO_SPECIFIC": "Nessuna risposta specifica",
-    "ME": "Completamente io",
+    "ME": "Solo io",
     "MOSTLY_ME": "Principalmente io",
-    "SHARED_EQUALLY": "Diviso equamente",
-    "MOSTLY_SOMEONE_ELSE": "Principalmente qualcun altro",
-    "SOMEONE_ELSE": "Completamente qualcun altro"
+    "SHARED_EQUALLY": "Condivisa equamente",
+    "MOSTLY_SOMEONE_ELSE": "Principalmente un'altra persona",
+    "SOMEONE_ELSE": "Solo un'altra persona"
   },
   "weeklyMeatRanges": {
     "ZERO_TO_FOUR": "0–4",
@@ -124,7 +124,7 @@
   },
   "motivations": {
     "SUSTAINABLE_HABITS": "Acquisire abitudini più sostenibili",
-    "PLANETARY_IMPACT": "Impattare il pianeta in modo positivo",
+    "PLANETARY_IMPACT": "Impattare sul pianeta in modo positivo",
     "SUSTAINABILITY_KNOWLEDGE": "Acquisire conoscenze sulla sostenibilità"
   },
   "progressIndicatorKinds": {
@@ -132,7 +132,7 @@
     "FOOD_WASTE": "Spreco alimentare",
     "HEALTH": "Salute",
     "CO2_REDUCTION": "Riduzione di CO₂",
-    "ENERGY_REDUCTION": "Riduzione energetica",
+    "ENERGY_REDUCTION": "Riduzione dell'energia",
     "WATER_SAVINGS": "Risparmio idrico",
     "LAND_USE_REDUCTION": "Riduzione dell’uso del suolo",
     "PROTEIN": "Proteine",
@@ -165,7 +165,7 @@
   },
   "contentTags": {
     "HEALTH": "Salute",
-    "FOOD_CHOICE": "Scelte alimentari",
+    "FOOD_CHOICE": "Scelta alimentare",
     "FOOD_WASTE": "Spreco alimentare"
   }
 }

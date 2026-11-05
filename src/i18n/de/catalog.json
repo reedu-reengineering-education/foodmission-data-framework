@@ -1,7 +1,7 @@
 {
   "meta": {
     "locale": "de",
-    "lastImportedAt": "2026-07-14T13:07:43.441Z"
+    "lastImportedAt": "2026-11-05T17:47:26.930Z"
   },
   "genders": {
     "MALE": "Männlich",
@@ -11,7 +11,7 @@
     "PREFER_NOT_TO_SAY": "Lieber nicht sagen"
   },
   "activityLevels": {
-    "SEDENTARY": "Sitzend",
+    "SEDENTARY": "Wenig",
     "LIGHT": "Leicht",
     "MODERATE": "Mäßig",
     "ACTIVE": "Aktiv",
