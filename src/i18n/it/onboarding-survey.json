@@ -1,6 +1,7 @@
 {
   "meta": {
-    "locale": "it"
+    "locale": "it",
+    "lastImportedAt": "2026-11-05T17:47:26.932Z"
   },
   "questions": {
     "weeklyMeatConsumption": {
@@ -72,7 +73,7 @@
       }
     },
     "sustainabilityLabelFamiliarity": {
-      "text": "Quanto conosci le etichette e le dichiarazioni legate alla sostenibilità?",
+      "text": "Quanto ti sono familiari le etichette e le dichiarazioni legate alla sostenibilità?",
       "options": {
         "NOT_FAMILIAR": "Per niente",
         "SLIGHTLY_FAMILIAR": "Poco",
@@ -130,7 +131,7 @@
       }
     },
     "usesLeftovers": {
-      "text": "Con quale frequenza riutilizzi di proposito gli avanzi per un altro pasto?",
+      "text": "Con quale frequenza riutilizzi intenzionalmente gli avanzi per un altro pasto?",
       "options": {
         "NEVER": "Mai",
         "RARELY": "Raramente",
@@ -140,7 +141,7 @@
       }
     },
     "weeklyUpfConsumption": {
-      "text": "Con quale frequenza consumi alimenti ultra-trasformati come snack confezionati, bevande zuccherate, piatti pronti o prodotti a base di carne lavorata?",
+      "text": "Con quale frequenza consumi alimenti ultra-processati come snack confezionati, bevande zuccherate, piatti pronti o prodotti a base di carne trasformata?",
       "options": {
         "ZERO_TO_THREE": "0–3 volte a settimana",
         "FOUR_TO_NINE": "4–9 volte a settimana",

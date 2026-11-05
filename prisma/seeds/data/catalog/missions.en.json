@@ -92,7 +92,7 @@
     "duration": "1 week",
     "goal": "Choose one product carrying at least two different sustainability labels and record what each label represents.",
     "whyItMatters": "Different labels communicate different aspects of sustainability.",
-    "health": true,
+    "health": false,
     "foodChoice": true,
     "foodWaste": false,
     "available": true
@@ -106,7 +106,7 @@
     "duration": "1 week",
     "goal": "For at least 3 purchasing decisions, consider two different environmental dimensions before selecting a product. Examples:\nLand use + carbon footprint\nCarbon footprint + travel distance\nWater use + production method",
     "whyItMatters": "Food sustainability is multidimensional.",
-    "health": true,
+    "health": false,
     "foodChoice": true,
     "foodWaste": false,
     "available": true
@@ -500,7 +500,7 @@
     "whyItMatters": "Understanding where food comes from is the first step toward understanding its environmental journey. Food transport contributes substantially to food-system greenhouse gas emissions.",
     "health": false,
     "foodChoice": true,
-    "foodWaste": true,
+    "foodWaste": false,
     "available": true
   },
   {

@@ -1,39 +1,39 @@
 {
   "meta": {
     "locale": "sl",
-    "lastImportedAt": "2026-07-14T13:07:43.441Z"
+    "lastImportedAt": "2026-11-05T17:47:26.931Z"
   },
   "genders": {
     "MALE": "Moški",
     "FEMALE": "Ženska",
     "OTHER": "Drugo",
-    "UNSPECIFIED": "Neoznačeno",
+    "UNSPECIFIED": "Nedoločeno",
     "PREFER_NOT_TO_SAY": "Ne želim odgovoriti"
   },
   "activityLevels": {
     "SEDENTARY": "Sedeče",
-    "LIGHT": "Lahka aktivnost",
-    "MODERATE": "Zmerna aktivnost",
+    "LIGHT": "Svetla",
+    "MODERATE": "Zmerno",
     "ACTIVE": "Aktivno",
     "VERY_ACTIVE": "Zelo aktivno"
   },
   "annualIncomeLevels": {
     "BELOW_10000": "Manj kot {max} na leto",
-    "FROM_10000_TO_19999": "Od {min} do {max} na leto",
-    "FROM_20000_TO_34999": "Od {min} do {max} na leto",
-    "FROM_35000_TO_49999": "Od {min} do {max} na leto",
-    "FROM_50000_TO_74999": "Od {min} do {max} na leto",
-    "FROM_75000_TO_99999": "Od {min} do {max} na leto",
+    "FROM_10000_TO_19999": "{min}–{max} na leto",
+    "FROM_20000_TO_34999": "{min}–{max} na leto",
+    "FROM_35000_TO_49999": "{min}–{max} na leto",
+    "FROM_50000_TO_74999": "{min}–{max} na leto",
+    "FROM_75000_TO_99999": "{min}–{max} na leto",
     "ABOVE_100000": "{min} ali več na leto"
   },
   "educationLevels": {
     "NO_FORMAL_EDUCATION": "Brez formalne izobrazbe",
-    "PRIMARY": "Osnovna šola",
-    "SECONDARY": "Srednja šola",
-    "VOCATIONAL": "Poklicna šola",
-    "BACHELORS": "Dodiplomska izobrazba (Diploma)",
-    "MASTERS": "Podiplomska izobrazba (Magisterij)",
-    "DOCTORATE": "Doktorat"
+    "PRIMARY": "Osnovnošolska izobrazba",
+    "SECONDARY": "Srednješolska izobrazba",
+    "VOCATIONAL": "Poklicna izobrazba",
+    "BACHELORS": "Dodiplomska izobrazba",
+    "MASTERS": "Magistrska izobrazba",
+    "DOCTORATE": "Doktorat znanosti"
   },
   "units": {
     "PIECES": "Kosi",
@@ -48,14 +48,14 @@
     "LUNCH": "Kosilo",
     "DINNER": "Večerja",
     "SNACK": "Prigrizek",
-    "DRINKS": "Pijača",
+    "DRINKS": "Pijače",
     "OTHER": "Drugo"
   },
   "mealCategories": {
     "ANIMAL_PROTEIN": "Živalske beljakovine",
-    "SEAFOOD": "Morski sadeži in ribe",
+    "SEAFOOD": "Morski sadeži",
     "PLANT_PROTEIN": "Rastlinske beljakovine",
-    "STARCH_GRAIN": "Škrob in žitarice",
+    "STARCH_GRAIN": "Škrob in žita",
     "VEGGIES_FRUIT": "Zelenjava in sadje",
     "DAIRY": "Mlečni izdelki",
     "MIXED_OTHER": "Mešano ali drugo"
@@ -64,28 +64,28 @@
     "MAIN_DISH": "Glavna jed",
     "SIDE_SNACK": "Priloga ali prigrizek",
     "DESSERT": "Sladica",
-    "BEVERAGE": "Napitek",
+    "BEVERAGE": "Pijača",
     "SAUCE_OTHER": "Omaka ali drugo"
   },
   "groupRoles": {
-    "ADMIN": "Skrbnik",
-    "MEMBER": "Član"
+    "ADMIN": "Administrator",
+    "MEMBER": "Član/-ica"
   },
   "dietaryPreferences": {
     "VEGAN": "Vegansko",
     "VEGETARIAN": "Vegetarijansko",
-    "PESCATARIAN": "Peskariansko",
+    "PESCATARIAN": "Pesketarijanec/-ka",
     "GLUTEN_FREE": "Brez glutena",
-    "DAIRY_FREE": "Brez laktoze / mlečnih izdelkov",
+    "DAIRY_FREE": "Brez mlečnih izdelkov",
     "NUT_FREE": "Brez oreščkov"
   },
   "shoppingResponsibilities": {
-    "NO_SPECIFIC": "Brez posebnega odgovora",
-    "ME": "Povsem jaz",
+    "NO_SPECIFIC": "Brez specifičnega odgovora",
+    "ME": "Samo jaz",
     "MOSTLY_ME": "Večinoma jaz",
-    "SHARED_EQUALLY": "Porazdeljeno na pol",
+    "SHARED_EQUALLY": "Enakomerno porazdeljeno",
     "MOSTLY_SOMEONE_ELSE": "Večinoma nekdo drug",
-    "SOMEONE_ELSE": "Povsem nekdo drug"
+    "SOMEONE_ELSE": "Nekdo drug"
   },
   "weeklyMeatRanges": {
     "ZERO_TO_FOUR": "0–4",
@@ -97,7 +97,7 @@
     "NEVER": "Nikoli",
     "LESS_THAN_ONCE_PER_WEEK": "Manj kot enkrat na teden",
     "ONE_TO_TWO_TIMES_PER_WEEK": "1–2-krat na teden",
-    "THREE_PLUS_TIMES_PER_WEEK": "3+ krat na teden"
+    "THREE_PLUS_TIMES_PER_WEEK": "3-krat ali več na teden"
   },
   "weeklyFoodWasteRanges": {
     "ZERO": "0",
@@ -118,22 +118,22 @@
     "TEN_PLUS": "10+"
   },
   "userSegments": {
-    "BEGINNER": "Začetnik",
-    "INTERMEDIATE": "Srednje",
+    "BEGINNER": "Začetnik/-ca",
+    "INTERMEDIATE": "Nadaljevalec/-ka",
     "ADVANCED": "Napredno"
   },
   "motivations": {
-    "SUSTAINABLE_HABITS": "Pridobiti bolj trajnostne navade",
-    "PLANETARY_IMPACT": "Pozitivno vplivati na planet",
-    "SUSTAINABILITY_KNOWLEDGE": "Pridobiti znanje o trajnosti"
+    "SUSTAINABLE_HABITS": "Pridobi bolj trajnostne navade",
+    "PLANETARY_IMPACT": "Pozitivno vplivaj na planet",
+    "SUSTAINABILITY_KNOWLEDGE": "Pridobi znanje o trajnosti"
   },
   "progressIndicatorKinds": {
     "FOOD_CHOICES": "Izbira hrane",
     "FOOD_WASTE": "Zavržena hrana",
     "HEALTH": "Zdravje",
-    "CO2_REDUCTION": "Zmanjšanje CO₂",
-    "ENERGY_REDUCTION": "Zmanjšanje energije",
-    "WATER_SAVINGS": "Varčevanje z vodo",
+    "CO2_REDUCTION": "Zmanjšanje emisij CO₂",
+    "ENERGY_REDUCTION": "Zmanjšanje porabe energije",
+    "WATER_SAVINGS": "Prihranek vode",
     "LAND_USE_REDUCTION": "Zmanjšanje rabe zemljišč",
     "PROTEIN": "Beljakovine",
     "FAT": "Maščobe",
@@ -152,15 +152,15 @@
     "POINTS": "Točke"
   },
   "contentLevels": {
-    "BEGINNER": "Začetnik",
-    "INTERMEDIATE": "Srednje",
+    "BEGINNER": "Začetnik/-ca",
+    "INTERMEDIATE": "Nadaljevalec/-ka",
     "ADVANCED": "Napredno"
   },
   "questContentTypes": {
     "MISSION": "Misija",
     "CHALLENGE": "Izziv",
     "FOOD_FACT": "Dejstvo o hrani",
-    "QUIZ": "Kvizi",
+    "QUIZ": "Kviz",
     "MICRO_LEARNING": "Mikroučenje"
   },
   "contentTags": {

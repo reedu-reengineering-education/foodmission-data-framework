@@ -72,7 +72,7 @@
     "title": "Build a Sustainable Shopping Basket",
     "task": "Create a hypothetical shopping basket containing: one seasonal product; one local product; one certified product and one lower-carbon protein source.",
     "whyItMatters": "Sustainable food choices involve multiple considerations beyond nutrition.",
-    "health": true,
+    "health": false,
     "foodChoice": true,
     "foodWaste": false,
     "available": true
@@ -852,7 +852,7 @@
     "title": "Food Miles Investigator",
     "task": "Select one food product and estimate how far it travelled before reaching your table using the country of origin shown on the packaging.",
     "whyItMatters": "Transport contributes to the environmental footprint of food.",
-    "health": true,
+    "health": false,
     "foodChoice": true,
     "foodWaste": false,
     "available": true
@@ -878,7 +878,7 @@
     "title": "Local vs Imported",
     "task": "Compare a local product and an imported product in the same food category. Identify: country of origin and production method.",
     "whyItMatters": "Country of origin alone does not determine sustainability. How food is produced often matters more than the distance it travels.",
-    "health": true,
+    "health": false,
     "foodChoice": true,
     "foodWaste": false,
     "available": true
