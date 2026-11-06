@@ -2972,7 +2972,7 @@
     },
     "CH.A3.1": {
       "title": "Ograniczenia pojedynczego wyniku",
-      "task": "Wybierz produkt i oceń, dlaczego wystarczy jeden wskaźnik, aby ocenić jego zrównoważony charakter i jakość. Skorzystaj z systemu Nutri-Score, klasyfikacji NOVA, wskaźnika Green-Score oraz informacji zawartych w wykazie składników, o ile są one dostępne.",
+      "task": "Wybierz produkt i oceń, dlaczego jeden wskaźnik nie wystarczy, aby ocenić jego zrównoważony charakter i jakość. Skorzystaj z systemu Nutri-Score, klasyfikacji NOVA, wskaźnika Green-Score oraz informacji zawartych w wykazie składników, o ile są one dostępne.",
       "whyItMatters": "Żaden pojedynczy wskaźnik nie oddaje wszystkich aspektów zrównoważonego rozwoju w sektorze spożywczym."
     },
     "CH.A3.2": {

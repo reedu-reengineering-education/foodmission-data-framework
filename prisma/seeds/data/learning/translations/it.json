@@ -2972,7 +2972,7 @@
     },
     "CH.A3.1": {
       "title": "I limiti di un unico punteggio",
-      "task": "Scegli un prodotto e valuta perché un unico indicatore sia sufficiente per comprenderne la sostenibilità e la qualità. Utilizza Nutri-Score, la classificazione NOVA, Green-Score e le informazioni contenute nell'elenco degli ingredienti, quando disponibili.",
+      "task": "Scegli un prodotto e valuta perché un unico indicatore non sia sufficiente per comprenderne la sostenibilità e la qualità. Utilizza Nutri-Score, la classificazione NOVA, Green-Score e le informazioni contenute nell'elenco degli ingredienti, quando disponibili.",
       "whyItMatters": "Non esiste un unico indicatore in grado di cogliere tutti gli aspetti della sostenibilità alimentare."
     },
     "CH.A3.2": {

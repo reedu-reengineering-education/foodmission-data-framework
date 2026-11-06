@@ -2972,7 +2972,7 @@
     },
     "CH.A3.1": {
       "title": "Begrensningene ved én enkelt poengsum",
-      "task": "Velg et produkt og vurder hvorfor én indikator alene er tilstrekkelig for å forstå produktets bærekraft og kvalitet. Bruk Nutri-Score, NOVA-klassifiseringen, Green-Score og informasjon fra ingredienslisten når dette er tilgjengelig.",
+      "task": "Velg et produkt og vurder hvorfor én indikator alene ikke er tilstrekkelig for å forstå produktets bærekraft og kvalitet. Bruk Nutri-Score, NOVA-klassifiseringen, Green-Score og informasjon fra ingredienslisten når dette er tilgjengelig.",
       "whyItMatters": "Det finnes ingen enkelt indikator som fanger opp alle dimensjonene ved bærekraftig mat."
     },
     "CH.A3.2": {
