@@ -135,7 +135,7 @@
     "topicCode": null,
     "level": "ADVANCED",
     "title": "The Limits of a Single Score",
-    "task": "Choose a product and evaluate why one indicator alone is enough to understand its sustainability and quality. Use Nutri-Score, NOVA classification, Green-Score and ingredient-list information when available.",
+    "task": "Choose a product and evaluate why one indicator alone is NOT enough to understand its sustainability and quality. Use Nutri-Score, NOVA classification, Green-Score and ingredient-list information when available.",
     "whyItMatters": "No single metric captures every dimension of food sustainability.",
     "health": true,
     "foodChoice": true,
