@@ -21,6 +21,11 @@ import {
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { pickLocalizedString } from '../utils/off-locale';
 import { parseOffDietFlags } from '../utils/off-diet-flags';
+import {
+  extractOffNutrition,
+  extractOffNutritionPer,
+} from '../utils/off-nutrition';
+import { offImageUrl } from '../utils/off-images';
 import { describeError } from '../../common/utils/error.utils';
 
 @Injectable()
@@ -304,6 +309,7 @@ export class OpenFoodFactsService {
     const id = this.toOptionalString(product._id) ?? '';
     const ingredientsAnalysisTags =
       (product.ingredients_analysis_tags as string[]) || [];
+    const frontImageUrl = offImageUrl(product, 'front', lang);
 
     return {
       id,
@@ -338,12 +344,21 @@ export class OpenFoodFactsService {
             ],
           )
         : undefined,
-      nutritionDataPer: this.toOptionalString(product.nutrition_data_per),
-      imageUrl: this.toOptionalString(product.image_url),
-      imageFrontUrl: this.toOptionalString(product.image_front_url),
-      imageNutritionUrl: this.toOptionalString(product.image_nutrition_url),
-      imageIngredientsUrl: this.toOptionalString(product.image_ingredients_url),
-      nutritionalInfo: this.transformNutriments(nutriments),
+      // Legacy nutrition_data_per lingers on migrated docs and can disagree
+      // with the aggregated set the values now come from.
+      nutritionDataPer:
+        extractOffNutritionPer(product) ??
+        this.toOptionalString(product.nutrition_data_per),
+      imageUrl: this.toOptionalString(product.image_url) ?? frontImageUrl,
+      imageFrontUrl:
+        this.toOptionalString(product.image_front_url) ?? frontImageUrl,
+      imageNutritionUrl:
+        this.toOptionalString(product.image_nutrition_url) ??
+        offImageUrl(product, 'nutrition', lang),
+      imageIngredientsUrl:
+        this.toOptionalString(product.image_ingredients_url) ??
+        offImageUrl(product, 'ingredients', lang),
+      nutritionalInfo: extractOffNutrition(product),
       countries: (product.countries_tags as string[]) || [],
       stores: (product.stores_tags as string[]) || [],
       completeness: this.toOptionalNumber(product.completeness),
@@ -383,32 +398,6 @@ export class OpenFoodFactsService {
       pickLocalizedString(product, 'generic_name', lang) ||
       'Unknown Product'
     );
-  }
-
-  private transformNutriments(
-    nutriments?: OpenFoodFactsNutriments,
-  ): NutritionalInfo | undefined {
-    if (!nutriments) return undefined;
-
-    return {
-      energyKcal: nutriments['energy-kcal_100g'] || nutriments['energy-kcal'],
-      energyKj: nutriments['energy-kj_100g'] || nutriments['energy-kj'],
-      fat: nutriments.fat_100g || nutriments.fat,
-      saturatedFat:
-        nutriments['saturated-fat_100g'] || nutriments['saturated-fat'],
-      transFat: nutriments['trans-fat_100g'] || nutriments['trans-fat'],
-      cholesterol: nutriments.cholesterol_100g || nutriments.cholesterol,
-      carbohydrates: nutriments.carbohydrates_100g || nutriments.carbohydrates,
-      sugars: nutriments.sugars_100g || nutriments.sugars,
-      fiber: nutriments.fiber_100g || nutriments.fiber,
-      proteins: nutriments.proteins_100g || nutriments.proteins,
-      salt: nutriments.salt_100g || nutriments.salt,
-      sodium: nutriments.sodium_100g || nutriments.sodium,
-      vitaminA: nutriments['vitamin-a_100g'] || nutriments['vitamin-a'],
-      vitaminC: nutriments['vitamin-c_100g'] || nutriments['vitamin-c'],
-      calcium: nutriments.calcium_100g || nutriments.calcium,
-      iron: nutriments.iron_100g || nutriments.iron,
-    };
   }
 
   private buildProductHttpParams(lang: string): Record<string, string> {
