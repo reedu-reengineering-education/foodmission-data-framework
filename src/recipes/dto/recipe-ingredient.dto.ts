@@ -52,7 +52,7 @@ export class CreateRecipeIngredientDto {
 
   @ApiPropertyOptional({
     description:
-      'Free-text amount as written in the recipe, kept for display. Parsed into quantity/unit when those are omitted',
+      'Free-text amount as written in the recipe, stored as sent and never parsed',
     example: '500g',
   })
   @IsString()
@@ -61,8 +61,7 @@ export class CreateRecipeIngredientDto {
   measure?: string;
 
   @ApiPropertyOptional({
-    description:
-      'Amount in the given unit. Derived from measure when quantity and unit are omitted',
+    description: 'Amount in the given unit, stored as sent',
     example: 500,
     minimum: 0,
   })
@@ -124,7 +123,7 @@ export class UpdateRecipeIngredientDto {
 
   @ApiPropertyOptional({
     description:
-      'Free-text amount as written in the recipe, kept for display. Parsed into quantity/unit when those are omitted',
+      'Free-text amount as written in the recipe, stored as sent and never parsed',
     example: '600g',
   })
   @IsString()
@@ -133,8 +132,7 @@ export class UpdateRecipeIngredientDto {
   measure?: string;
 
   @ApiPropertyOptional({
-    description:
-      'Amount in the given unit. Derived from measure when quantity and unit are omitted',
+    description: 'Amount in the given unit, stored as sent',
     example: 600,
     minimum: 0,
   })
@@ -203,7 +201,8 @@ export class RecipeIngredientResponseDto {
   measure?: string;
 
   @ApiPropertyOptional({
-    description: 'Amount in unit; null when measure could not be parsed',
+    description:
+      'Amount in unit. For TheMealDB recipes parsed from measure into metric units; null when not parseable',
     type: Number,
     nullable: true,
     example: 30,
@@ -213,7 +212,7 @@ export class RecipeIngredientResponseDto {
 
   @ApiPropertyOptional({
     description:
-      'Catalog unit (see /catalog/units); null when measure could not be parsed',
+      'Catalog unit (see /catalog/units). TheMealDB recipes use only G, KG, ML, L or PIECES; null when not parseable',
     enum: Unit,
     nullable: true,
     example: Unit.ML,

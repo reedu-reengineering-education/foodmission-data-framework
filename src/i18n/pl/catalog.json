@@ -41,9 +41,7 @@
     "KG": "kg",
     "ML": "ml",
     "L": "l",
-    "CUPS": "Szklanki",
-    "TBSP": "Łyżki",
-    "TSP": "Łyżeczki"
+    "CUPS": "Szklanki"
   },
   "typeOfMeals": {
     "BREAKFAST": "Śniadanie",

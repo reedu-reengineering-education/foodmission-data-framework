@@ -19,27 +19,20 @@ const AMOUNT = String.raw`(\d+(?:[.,]\d+)?(?:\s+\d+\/\d+|\/\d+|\s*-\s*\d+(?:[.,]
 const QUALITATIVE_MEASURE =
   /to taste|pinch|dash|splash|drizzle|bunch|garnish|handful|sprigs? of fresh/i;
 
-const SPOON_UNITS: Record<string, Unit> = {
-  tablespoon: Unit.TBSP,
-  tablespoons: Unit.TBSP,
-  tbsp: Unit.TBSP,
-  tbs: Unit.TBSP,
-  tbl: Unit.TBSP,
-  tbls: Unit.TBSP,
-  tblsp: Unit.TBSP,
-  teaspoon: Unit.TSP,
-  teaspoons: Unit.TSP,
-  tsp: Unit.TSP,
+const SPOON_ML: Record<string, number> = {
+  tablespoon: 15,
+  tablespoons: 15,
+  tbsp: 15,
+  tbs: 15,
+  tbl: 15,
+  tbls: 15,
+  tblsp: 15,
+  teaspoon: 5,
+  teaspoons: 5,
+  tsp: 5,
 };
 
-const ML_PER_UNIT: Partial<Record<Unit, number>> = {
-  [Unit.ML]: 1,
-  [Unit.L]: 1000,
-  [Unit.TBSP]: 15,
-  [Unit.TSP]: 5,
-};
-
-const CATALOG_UNIT_TOKENS: Record<string, [Unit, number]> = {
+const METRIC_UNIT_TOKENS: Record<string, [Unit, number]> = {
   g: [Unit.G, 1],
   gr: [Unit.G, 1],
   gram: [Unit.G, 1],
@@ -57,8 +50,8 @@ const CATALOG_UNIT_TOKENS: Record<string, [Unit, number]> = {
   litres: [Unit.L, 1],
   liter: [Unit.L, 1],
   liters: [Unit.L, 1],
-  cup: [Unit.CUPS, 1],
-  cups: [Unit.CUPS, 1],
+  cup: [Unit.ML, 240],
+  cups: [Unit.ML, 240],
   lb: [Unit.G, 453.6],
   lbs: [Unit.G, 453.6],
   pound: [Unit.G, 453.6],
@@ -68,7 +61,7 @@ const CATALOG_UNIT_TOKENS: Record<string, [Unit, number]> = {
   ounces: [Unit.G, 28.35],
   'fl oz': [Unit.ML, 29.57],
   ...Object.fromEntries(
-    Object.entries(SPOON_UNITS).map(([token, unit]) => [token, [unit, 1]]),
+    Object.entries(SPOON_ML).map(([token, ml]) => [token, [Unit.ML, ml]]),
   ),
 };
 
@@ -311,14 +304,13 @@ export function parseMeasure(
     return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
-  for (const [token, spoonUnit] of Object.entries(SPOON_UNITS)) {
+  for (const [token, mlPerSpoon] of Object.entries(SPOON_ML)) {
     const regex = new RegExp(`${AMOUNT}\\s*${token}\\b`);
     const match = normalized.match(regex);
     if (match) {
       const gramsPerMl =
         (foodName && lookupVolumeIngredient(foodName)?.gramsPerMl) || 1;
-      const grams =
-        parseAmount(match[1]) * ML_PER_UNIT[spoonUnit]! * gramsPerMl;
+      const grams = parseAmount(match[1]) * mlPerSpoon * gramsPerMl;
       return { grams, original, confidence: 'medium', method: 'volume' };
     }
   }
@@ -431,9 +423,9 @@ export function parseQuantityUnit(measure: string): ParsedQuantity | null {
 
   if (!token) return { quantity: round2(amount), unit: Unit.PIECES };
 
-  const catalogUnit = CATALOG_UNIT_TOKENS[token];
-  if (catalogUnit) {
-    const [unit, factor] = catalogUnit;
+  const metricUnit = METRIC_UNIT_TOKENS[token];
+  if (metricUnit) {
+    const [unit, factor] = metricUnit;
     return { quantity: round2(amount * factor), unit };
   }
 
@@ -463,10 +455,8 @@ export function quantityToGrams(
         method: 'weight',
       };
     case Unit.ML:
-    case Unit.L:
-    case Unit.TBSP:
-    case Unit.TSP: {
-      const ml = quantity * ML_PER_UNIT[unit]!;
+    case Unit.L: {
+      const ml = unit === Unit.L ? quantity * 1000 : quantity;
       const gramsPerMl = lookupVolumeIngredient(foodName)?.gramsPerMl ?? 1;
       return {
         grams: ml * gramsPerMl,

@@ -15,7 +15,6 @@ import {
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
-import { parseQuantityUnit } from '../../common/utils/measure-parser';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
@@ -77,15 +76,11 @@ function toIngredientCreateInput(
   ing: CreateRecipeIngredientData,
   index: number,
 ): Prisma.RecipeIngredientUncheckedCreateWithoutRecipeInput {
-  const parsed =
-    ing.quantity === undefined && ing.unit === undefined && ing.measure
-      ? parseQuantityUnit(ing.measure)
-      : null;
   return {
     name: ing.name,
     measure: ing.measure ?? null,
-    quantity: parsed?.quantity ?? ing.quantity ?? null,
-    unit: parsed?.unit ?? ing.unit ?? null,
+    quantity: ing.quantity ?? null,
+    unit: ing.unit ?? null,
     order: ing.order ?? index,
     itemType: ing.foodProductId ? 'food_product' : 'generic_food',
     foodProductId: ing.foodProductId ?? null,

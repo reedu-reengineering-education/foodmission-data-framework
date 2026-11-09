@@ -41,9 +41,7 @@
     "KG": "kg",
     "ML": "ml",
     "L": "l",
-    "CUPS": "Tazas",
-    "TBSP": "Cucharadas",
-    "TSP": "Cucharaditas"
+    "CUPS": "Tazas"
   },
   "typeOfMeals": {
     "BREAKFAST": "Desayuno",
