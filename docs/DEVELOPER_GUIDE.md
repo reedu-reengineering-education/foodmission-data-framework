@@ -226,7 +226,6 @@ src/module-name/
 - What runs: `npm run db:seed:prod` executes the production seed runner and, by default, seeds NEVO categories, OpenFoodFacts products (from a JSON dump if present), and recipes (TheMealDB).
 - How to add more data: add a new seeder module under `prisma/seeds/` (implement an idempotent seeder, e.g. using `upsert`), place any source files under `prisma/seeds/data/` if needed, and import/invoke your seeder from `scripts/seed-prod.ts` so it runs as part of the production seed.
 - Keep it safe: test new seeders in staging or locally before running in production, and ensure seeders are idempotent and log summary counts.
-- Recipe ingredient units: the seed also re-parses `quantity`/`unit` of TheMealDB ingredients from their free-text `measure`, into metric units only (G, KG, ML, L) or PIECES for counts. User-created recipes are never parsed. To run only that step (e.g. right after the migration that adds the columns, or after parser changes): `npm run db:backfill:ingredient-units:prod -- --dry-run`, then without `--dry-run`. Re-running is safe.
 
    ```
 
