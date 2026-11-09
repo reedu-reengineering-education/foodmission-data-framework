@@ -64,6 +64,7 @@ export class CreateRecipeIngredientDto {
     description:
       'Free-text amount as written in the recipe, stored as sent and never parsed',
     example: '500g',
+    maxLength: MAX_MEASURE_LENGTH,
   })
   @IsString()
   @MaxLength(MAX_MEASURE_LENGTH)
