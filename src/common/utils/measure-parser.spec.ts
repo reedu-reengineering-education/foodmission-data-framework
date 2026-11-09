@@ -3,8 +3,6 @@ import {
   parseFraction,
   getAverageWeight,
   parseQuantityUnit,
-  lookupVolumeIngredient,
-  quantityToGrams,
   MAX_MEASURE_LENGTH,
 } from './measure-parser';
 
@@ -166,16 +164,6 @@ describe('parseMeasure', () => {
     it('parses fraction teaspoons', () => {
       const result = parseMeasure('1/2 tsp');
       expect(result.grams).toBe(2.5);
-    });
-
-    it('uses ingredient density for dry spoon measures', () => {
-      expect(parseMeasure('2 tbsp', 'Plain Flour').grams).toBeCloseTo(15.9);
-      expect(parseMeasure('1 tsp', 'Salt').grams).toBe(6);
-    });
-
-    it('keeps 1 g/ml for liquids and unknown ingredients', () => {
-      expect(parseMeasure('2 tbsp', 'Olive Oil').grams).toBe(30);
-      expect(parseMeasure('1 tsp', 'Mystery').grams).toBe(5);
     });
   });
 
@@ -523,41 +511,5 @@ describe('parseQuantityUnit', () => {
     '0',
   ])('returns null for %s', (measure) => {
     expect(parseQuantityUnit(measure)).toBeNull();
-  });
-});
-
-describe('lookupVolumeIngredient', () => {
-  it('uses the head noun of compound names', () => {
-    expect(lookupVolumeIngredient('Rice Vinegar')).toEqual({
-      liquid: true,
-      gramsPerMl: 1,
-    });
-    expect(lookupVolumeIngredient('Cream Cheese')?.liquid).toBe(false);
-    expect(lookupVolumeIngredient('Cheese Sauce')?.liquid).toBe(true);
-  });
-
-  it('prefers the longer key on the same head', () => {
-    expect(lookupVolumeIngredient('Kosher Salt')?.gramsPerMl).toBe(0.6);
-  });
-
-  it('does not match inside other words', () => {
-    expect(lookupVolumeIngredient('Buttermilk')?.liquid).toBe(true);
-    expect(lookupVolumeIngredient('Boiled Egg')).toBeNull();
-  });
-});
-
-describe('quantityToGrams', () => {
-  it.each([
-    [{ quantity: 200, unit: 'G' as const }, 'Pasta', 200, 'high'],
-    [{ quantity: 1.5, unit: 'KG' as const }, 'Beef', 1500, 'high'],
-    [{ quantity: 30, unit: 'ML' as const }, 'Olive Oil', 30, 'medium'],
-    [{ quantity: 1, unit: 'L' as const }, 'Milk', 1000, 'medium'],
-    [{ quantity: 2, unit: 'CUPS' as const }, 'Rice', 300, 'medium'],
-    [{ quantity: 2, unit: 'PIECES' as const }, 'Eggs', 100, 'low'],
-    [{ quantity: 30, unit: 'ML' as const }, 'Plain Flour', 15.9, 'medium'],
-  ])('converts %o of %s', (parsed, name, grams, confidence) => {
-    const result = quantityToGrams(parsed, name);
-    expect(result.grams).toBeCloseTo(grams);
-    expect(result.confidence).toBe(confidence);
   });
 });

@@ -37,6 +37,16 @@ class OptionalExclusiveFoodReferenceConstraint implements ValidatorConstraintInt
   }
 }
 
+const hasQuantityOrUnit = (o: { quantity?: number; unit?: Unit }) =>
+  o.quantity != null || o.unit != null;
+
+const quantityUnitMessage =
+  (invalidValueMessage: string) =>
+  ({ value }: ValidationArguments) =>
+    value == null
+      ? 'quantity and unit must be provided together'
+      : invalidValueMessage;
+
 /**
  * DTO for creating a recipe ingredient
  */
@@ -61,22 +71,26 @@ export class CreateRecipeIngredientDto {
   measure?: string;
 
   @ApiPropertyOptional({
-    description: 'Amount in the given unit, stored as sent',
+    description: 'Amount in the given unit, stored as sent. Required with unit',
     example: 500,
     minimum: 0,
   })
-  @IsNumber()
+  @ValidateIf(hasQuantityOrUnit)
+  @IsNumber({}, { message: quantityUnitMessage('quantity must be a number') })
   @Min(0)
-  @IsOptional()
   quantity?: number;
 
   @ApiPropertyOptional({
-    description: 'Catalog unit (see /catalog/units)',
+    description: 'Catalog unit (see /catalog/units). Required with quantity',
     enum: Unit,
     example: Unit.G,
   })
-  @IsEnum(Unit)
-  @IsOptional()
+  @ValidateIf(hasQuantityOrUnit)
+  @IsEnum(Unit, {
+    message: quantityUnitMessage(
+      `unit must be one of: ${Object.values(Unit).join(', ')}`,
+    ),
+  })
   unit?: Unit;
 
   @ApiPropertyOptional({
@@ -132,22 +146,26 @@ export class UpdateRecipeIngredientDto {
   measure?: string;
 
   @ApiPropertyOptional({
-    description: 'Amount in the given unit, stored as sent',
+    description: 'Amount in the given unit, stored as sent. Required with unit',
     example: 600,
     minimum: 0,
   })
-  @IsNumber()
+  @ValidateIf(hasQuantityOrUnit)
+  @IsNumber({}, { message: quantityUnitMessage('quantity must be a number') })
   @Min(0)
-  @IsOptional()
   quantity?: number;
 
   @ApiPropertyOptional({
-    description: 'Catalog unit (see /catalog/units)',
+    description: 'Catalog unit (see /catalog/units). Required with quantity',
     enum: Unit,
     example: Unit.G,
   })
-  @IsEnum(Unit)
-  @IsOptional()
+  @ValidateIf(hasQuantityOrUnit)
+  @IsEnum(Unit, {
+    message: quantityUnitMessage(
+      `unit must be one of: ${Object.values(Unit).join(', ')}`,
+    ),
+  })
   unit?: Unit;
 
   @ApiPropertyOptional({
