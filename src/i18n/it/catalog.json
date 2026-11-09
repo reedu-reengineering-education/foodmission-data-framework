@@ -41,9 +41,7 @@
     "KG": "kg",
     "ML": "ml",
     "L": "l",
-    "CUPS": "Tazze",
-    "TBSP": "Cucchiai",
-    "TSP": "Cucchiaini"
+    "CUPS": "Tazze"
   },
   "typeOfMeals": {
     "BREAKFAST": "Colazione",

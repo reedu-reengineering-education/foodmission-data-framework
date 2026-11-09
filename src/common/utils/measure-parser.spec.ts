@@ -475,8 +475,9 @@ describe('parseQuantityUnit', () => {
     ['250 ml', 250, 'ML'],
     ['2 cl', 20, 'ML'],
     ['1 l', 1, 'L'],
-    ['2 cups', 2, 'CUPS'],
-    ['2-3 cups', 2.5, 'CUPS'],
+    ['2 cups', 480, 'ML'],
+    ['2-3 cups', 600, 'ML'],
+    ['½ cup', 120, 'ML'],
     ['1 lb', 453.6, 'G'],
     ['8 oz', 226.8, 'G'],
     ['8 fl oz', 236.56, 'ML'],
@@ -494,16 +495,16 @@ describe('parseQuantityUnit', () => {
   });
 
   it.each([
-    ['2 tbsp', 2, 'TBSP'],
-    ['1 tbs', 1, 'TBSP'],
-    ['1 tblsp', 1, 'TBSP'],
-    ['2 tablespoons', 2, 'TBSP'],
-    ['1 ½ tbsp', 1.5, 'TBSP'],
-    ['1 tsp', 1, 'TSP'],
-    ['½ tsp', 0.5, 'TSP'],
-    ['3 teaspoons', 3, 'TSP'],
-    ['1 TBSP', 1, 'TBSP'],
-  ])('keeps spoon measure %s as is', (measure, quantity, unit) => {
+    ['2 tbsp', 30, 'ML'],
+    ['1 tbs', 15, 'ML'],
+    ['1 tblsp', 15, 'ML'],
+    ['2 tablespoons', 30, 'ML'],
+    ['1 ½ tbsp', 22.5, 'ML'],
+    ['1 tsp', 5, 'ML'],
+    ['½ tsp', 2.5, 'ML'],
+    ['3 teaspoons', 15, 'ML'],
+    ['1 TBSP', 15, 'ML'],
+  ])('converts spoon measure %s to ml', (measure, quantity, unit) => {
     expect(parseQuantityUnit(measure)).toEqual({ quantity, unit });
   });
 
@@ -553,9 +554,7 @@ describe('quantityToGrams', () => {
     [{ quantity: 1, unit: 'L' as const }, 'Milk', 1000, 'medium'],
     [{ quantity: 2, unit: 'CUPS' as const }, 'Rice', 300, 'medium'],
     [{ quantity: 2, unit: 'PIECES' as const }, 'Eggs', 100, 'low'],
-    [{ quantity: 2, unit: 'TBSP' as const }, 'Olive Oil', 30, 'medium'],
-    [{ quantity: 2, unit: 'TBSP' as const }, 'Plain Flour', 15.9, 'medium'],
-    [{ quantity: 1, unit: 'TSP' as const }, 'Salt', 6, 'medium'],
+    [{ quantity: 30, unit: 'ML' as const }, 'Plain Flour', 15.9, 'medium'],
   ])('converts %o of %s', (parsed, name, grams, confidence) => {
     const result = quantityToGrams(parsed, name);
     expect(result.grams).toBeCloseTo(grams);

@@ -164,7 +164,7 @@ export class PantryItemsController {
   @ApiQuery({
     name: 'unit',
     required: false,
-    description: 'Filter by unit (PIECES, G, KG, ML, L, CUPS, TBSP, TSP)',
+    description: 'Filter by unit (PIECES, G, KG, ML, L, CUPS)',
     enum: Unit,
   })
   @ApiQuery({

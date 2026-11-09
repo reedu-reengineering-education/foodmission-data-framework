@@ -193,8 +193,8 @@ describe('RecipesRepository', () => {
               {
                 name: 'Chicken',
                 measure: '500g',
-                quantity: 500,
-                unit: 'G',
+                quantity: null,
+                unit: null,
                 order: 0,
                 itemType: 'generic_food',
                 foodProductId: null,
@@ -203,8 +203,8 @@ describe('RecipesRepository', () => {
               {
                 name: 'Salt',
                 measure: '1 tsp',
-                quantity: 1,
-                unit: 'TSP',
+                quantity: null,
+                unit: null,
                 order: 1,
                 itemType: 'generic_food',
                 foodProductId: null,
@@ -256,7 +256,7 @@ describe('RecipesRepository', () => {
       });
     });
 
-    it('should keep explicit quantity and unit instead of parsing measure', async () => {
+    it('should store user quantity, unit and measure as sent without parsing', async () => {
       mockPrismaService.recipe.create.mockResolvedValueOnce(mockRecipe);
 
       await repository.create({
@@ -264,7 +264,8 @@ describe('RecipesRepository', () => {
         title: 'Test Recipe',
         ingredients: [
           { name: 'Flour', measure: '2 tbsp', quantity: 20, unit: 'G' },
-          { name: 'Salt', measure: 'to taste' },
+          { name: 'Milk', quantity: 1, unit: 'CUPS' },
+          { name: 'Salt', measure: '500g' },
         ],
       });
 
@@ -272,8 +273,21 @@ describe('RecipesRepository', () => {
         data: expect.objectContaining({
           ingredients: {
             create: [
-              expect.objectContaining({ quantity: 20, unit: 'G' }),
-              expect.objectContaining({ quantity: null, unit: null }),
+              expect.objectContaining({
+                measure: '2 tbsp',
+                quantity: 20,
+                unit: 'G',
+              }),
+              expect.objectContaining({
+                measure: null,
+                quantity: 1,
+                unit: 'CUPS',
+              }),
+              expect.objectContaining({
+                measure: '500g',
+                quantity: null,
+                unit: null,
+              }),
             ],
           },
         }),
@@ -361,8 +375,8 @@ describe('RecipesRepository', () => {
               {
                 name: 'New Ingredient',
                 measure: '200g',
-                quantity: 200,
-                unit: 'G',
+                quantity: null,
+                unit: null,
                 order: 0,
                 itemType: 'generic_food',
                 foodProductId: null,
