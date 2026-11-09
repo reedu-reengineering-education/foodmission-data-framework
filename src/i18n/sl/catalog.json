@@ -41,9 +41,7 @@
     "KG": "kg",
     "ML": "ml",
     "L": "l",
-    "CUPS": "Skodelice",
-    "TBSP": "Žlice",
-    "TSP": "Žličke"
+    "CUPS": "Skodelice"
   },
   "typeOfMeals": {
     "BREAKFAST": "Zajtrk",

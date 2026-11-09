@@ -41,9 +41,7 @@
     "KG": "kg",
     "ML": "ml",
     "L": "l",
-    "CUPS": "Kopper",
-    "TBSP": "Spiseskjeer",
-    "TSP": "Teskjeer"
+    "CUPS": "Kopper"
   },
   "typeOfMeals": {
     "BREAKFAST": "Frokost",

@@ -74,8 +74,6 @@ export const UNIT_TO_KG_CONVERSION: Record<Unit, number> = {
   ML: 0.001,
   PIECES: 0.25, // Average estimate per piece
   CUPS: 0.24, // Approximate
-  TBSP: 0.015, // Approximate
-  TSP: 0.005, // Approximate
 };
 
 @Injectable()
