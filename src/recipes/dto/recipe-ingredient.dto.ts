@@ -136,37 +136,12 @@ export class UpdateRecipeIngredientDto {
   name?: string;
 
   @ApiPropertyOptional({
-    description:
-      'Free-text amount as written in the recipe, stored as sent and never parsed',
+    description: 'Measurement/amount',
     example: '600g',
   })
   @IsString()
-  @MaxLength(MAX_MEASURE_LENGTH)
   @IsOptional()
   measure?: string;
-
-  @ApiPropertyOptional({
-    description: 'Amount in the given unit, stored as sent. Required with unit',
-    example: 600,
-    minimum: 0,
-  })
-  @ValidateIf(hasQuantityOrUnit)
-  @IsNumber({}, { message: quantityUnitMessage('quantity must be a number') })
-  @Min(0)
-  quantity?: number;
-
-  @ApiPropertyOptional({
-    description: 'Catalog unit (see /catalog/units). Required with quantity',
-    enum: Unit,
-    example: Unit.G,
-  })
-  @ValidateIf(hasQuantityOrUnit)
-  @IsEnum(Unit, {
-    message: quantityUnitMessage(
-      `unit must be one of: ${Object.values(Unit).join(', ')}`,
-    ),
-  })
-  unit?: Unit;
 
   @ApiPropertyOptional({
     description: 'Order in the recipe',
