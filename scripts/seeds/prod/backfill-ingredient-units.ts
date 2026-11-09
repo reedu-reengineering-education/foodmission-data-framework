@@ -17,7 +17,7 @@ import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
 export async function backfillIngredientUnits(
   prisma: PrismaClient,
   { dryRun = false }: { dryRun?: boolean } = {},
-): Promise<{ updated: number; unparsed: number }> {
+): Promise<void> {
   const ingredients = await prisma.recipeIngredient.findMany({
     where: { recipe: { origin: RecipeOrigin.THEMEALDB } },
     select: { id: true, measure: true, quantity: true, unit: true },
@@ -42,7 +42,9 @@ export async function backfillIngredientUnits(
     updated++;
   }
 
-  return { updated, unparsed };
+  console.log(
+    `   ✅ Ingredient units: ${dryRun ? 'would update' : 'updated'} ${updated}, ${unparsed} unparsed`,
+  );
 }
 
 async function main(): Promise<void> {
@@ -58,10 +60,7 @@ async function main(): Promise<void> {
 
   const prisma = new PrismaClient();
   try {
-    const result = await backfillIngredientUnits(prisma, { dryRun });
-    console.log(
-      `   ✅ ${dryRun ? 'Would update' : 'Updated'} ${result.updated} ingredients, ${result.unparsed} unparsed`,
-    );
+    await backfillIngredientUnits(prisma, { dryRun });
   } finally {
     await prisma.$disconnect();
   }
