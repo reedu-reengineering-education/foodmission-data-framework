@@ -16,7 +16,6 @@ export const MAX_MEASURE_LENGTH = 100;
 
 const GRAMS_PER_LB = 453.6;
 const GRAMS_PER_OZ = 28.35;
-const ML_PER_FL_OZ = 29.57;
 const ML_PER_CUP = 240;
 const GRAMS_PER_CUP = 150;
 
@@ -30,7 +29,6 @@ const SPOON_ML: Record<string, number> = {
   tablespoons: 15,
   tbsp: 15,
   tbs: 15,
-  tbl: 15,
   tbls: 15,
   tblsp: 15,
   teaspoon: 5,
@@ -40,22 +38,12 @@ const SPOON_ML: Record<string, number> = {
 
 const METRIC_UNIT_TOKENS: Record<string, [Unit, number]> = {
   g: [Unit.G, 1],
-  gr: [Unit.G, 1],
-  gram: [Unit.G, 1],
   grams: [Unit.G, 1],
   kg: [Unit.KG, 1],
-  kilo: [Unit.KG, 1],
-  kilos: [Unit.KG, 1],
-  kilogram: [Unit.KG, 1],
-  kilograms: [Unit.KG, 1],
   ml: [Unit.ML, 1],
-  cl: [Unit.ML, 10],
-  dl: [Unit.ML, 100],
   l: [Unit.L, 1],
   litre: [Unit.L, 1],
   litres: [Unit.L, 1],
-  liter: [Unit.L, 1],
-  liters: [Unit.L, 1],
   cup: [Unit.ML, ML_PER_CUP],
   cups: [Unit.ML, ML_PER_CUP],
   lb: [Unit.G, GRAMS_PER_LB],
@@ -65,7 +53,6 @@ const METRIC_UNIT_TOKENS: Record<string, [Unit, number]> = {
   oz: [Unit.G, GRAMS_PER_OZ],
   ounce: [Unit.G, GRAMS_PER_OZ],
   ounces: [Unit.G, GRAMS_PER_OZ],
-  'fl oz': [Unit.ML, ML_PER_FL_OZ],
   ...Object.fromEntries(
     Object.entries(SPOON_ML).map(([token, ml]) => [token, [Unit.ML, ml]]),
   ),
@@ -109,9 +96,7 @@ const COUNT_PATTERN = amountWith(anyOf(Object.keys(COUNT_GRAMS)));
 const SIZE_PATTERN = amountWith(anyOf(Object.keys(SIZE_MODIFIERS)));
 const BARE_COUNT_PATTERN = new RegExp(`^${AMOUNT}(?:\\s+\\w+)?$`);
 
-const LENGTH_TOKENS = new Set(['cm', 'mm', 'inch', 'inches']);
-
-const COUNTABLE_QUALITATIVE_TOKENS = new Set(['bunch', 'bunches']);
+const LENGTH_TOKENS = new Set(['cm', 'inch']);
 
 const UNICODE_FRACTIONS: Record<string, string> = {
   '½': '1/2',
@@ -122,7 +107,7 @@ const UNICODE_FRACTIONS: Record<string, string> = {
   '⅛': '1/8',
 };
 
-const LEADING_QUANTITY = new RegExp(`^${AMOUNT}\\s*(fl\\.?\\s*oz|[a-z]+)?`);
+const LEADING_QUANTITY = new RegExp(`^${AMOUNT}\\s*([a-z]+)?`);
 
 export function parseMeasure(
   measure: string,
@@ -234,19 +219,13 @@ export function parseFraction(str: string): number {
 export function parseQuantityUnit(measure: string): ParsedQuantity | null {
   if (measure.length > MAX_MEASURE_LENGTH) return null;
   const normalized = normalizeUnicodeFractions(measure.toLowerCase().trim());
+  if (QUALITATIVE_MEASURE.test(normalized)) return null;
 
   const match = normalized.match(LEADING_QUANTITY);
   if (!match) return null;
 
-  const token = match[2]?.replace(/fl\.?\s*oz/, 'fl oz');
-  if (
-    QUALITATIVE_MEASURE.test(normalized) &&
-    !(token && COUNTABLE_QUALITATIVE_TOKENS.has(token))
-  ) {
-    return null;
-  }
-
-  const amount = parseAmount(match[1]);
+  const [, amountText, token] = match;
+  const amount = parseAmount(amountText);
   if (amount <= 0) return null;
 
   if (!token) return { quantity: round2(amount), unit: Unit.PIECES };

@@ -80,10 +80,7 @@ async function main() {
       );
     }
 
-    const ingredientUnits = await backfillIngredientUnits(prisma);
-    console.log(
-      `   ✅ Ingredient units: ${ingredientUnits.updated} updated, ${ingredientUnits.unparsed} unparsed`,
-    );
+    await backfillIngredientUnits(prisma);
 
     const shelfLifeRes = await seedFoodKeeper(prisma, { skipExisting: true });
     if (shelfLifeRes.errors > 0) {
