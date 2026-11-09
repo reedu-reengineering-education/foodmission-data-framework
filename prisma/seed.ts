@@ -70,7 +70,7 @@ async function seedProduction() {
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
   const recipes = await seedRecipes(prisma);
-  const ingredientUnits = await backfillIngredientUnits(prisma);
+  await backfillIngredientUnits(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
   const surveys = await seedSurveys(prisma);
@@ -133,10 +133,6 @@ async function seedProduction() {
       label: 'shelfLife links',
       value: `${shelfLifeLinks.foodProducts} food products, ${shelfLifeLinks.genericFoods} generic foods`,
     },
-    {
-      label: 'ingredient units',
-      value: `${ingredientUnits.updated} updated, ${ingredientUnits.unparsed} unparsed`,
-    },
     { label: 'foodProducts (total in DB)', value: foodCount },
   ];
   for (const row of summaryRows) {
@@ -187,7 +183,7 @@ async function seedDevelopment() {
 
   // --- Recipes then meals (meals attach to seeded recipes) ---
   const recipes = await seedRecipes(prisma, { skipExisting });
-  const ingredientUnits = await backfillIngredientUnits(prisma);
+  await backfillIngredientUnits(prisma);
   const meals = await seedMeals(prisma);
 
   // --- Shelf-life reference data, then link rows onto FoodProduct / GenericFood ---
@@ -275,10 +271,6 @@ async function seedDevelopment() {
     {
       label: 'shelfLife links',
       value: `${shelfLifeLinks.foodProducts} food products, ${shelfLifeLinks.genericFoods} generic foods`,
-    },
-    {
-      label: 'ingredient units',
-      value: `${ingredientUnits.updated} updated, ${ingredientUnits.unparsed} unparsed`,
     },
     { label: 'foodProducts (total in DB)', value: foodCount },
   ];
