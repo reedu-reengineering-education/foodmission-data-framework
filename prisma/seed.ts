@@ -135,7 +135,7 @@ async function seedProduction() {
     },
     {
       label: 'ingredient units',
-      value: `${ingredientUnits.updated} parsed, ${ingredientUnits.unparsed} unparsed`,
+      value: `${ingredientUnits.updated} updated, ${ingredientUnits.unparsed} unparsed`,
     },
     { label: 'foodProducts (total in DB)', value: foodCount },
   ];
@@ -278,7 +278,7 @@ async function seedDevelopment() {
     },
     {
       label: 'ingredient units',
-      value: `${ingredientUnits.updated} parsed, ${ingredientUnits.unparsed} unparsed`,
+      value: `${ingredientUnits.updated} updated, ${ingredientUnits.unparsed} unparsed`,
     },
     { label: 'foodProducts (total in DB)', value: foodCount },
   ];

@@ -82,7 +82,7 @@ async function main() {
 
     const ingredientUnits = await backfillIngredientUnits(prisma);
     console.log(
-      `   ✅ Ingredient units: ${ingredientUnits.updated} parsed, ${ingredientUnits.unparsed} unparsed`,
+      `   ✅ Ingredient units: ${ingredientUnits.updated} updated, ${ingredientUnits.unparsed} unparsed`,
     );
 
     const shelfLifeRes = await seedFoodKeeper(prisma, { skipExisting: true });

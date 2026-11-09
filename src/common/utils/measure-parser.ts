@@ -14,6 +14,12 @@ export interface ParsedQuantity {
 
 export const MAX_MEASURE_LENGTH = 100;
 
+const GRAMS_PER_LB = 453.6;
+const GRAMS_PER_OZ = 28.35;
+const ML_PER_FL_OZ = 29.57;
+const ML_PER_CUP = 240;
+const GRAMS_PER_CUP = 150;
+
 const AMOUNT = String.raw`(\d+(?:[.,]\d+)?(?:\s+\d+\/\d+|\/\d+|\s*-\s*\d+(?:[.,]\d+)?)?)`;
 
 const QUALITATIVE_MEASURE =
@@ -50,16 +56,16 @@ const METRIC_UNIT_TOKENS: Record<string, [Unit, number]> = {
   litres: [Unit.L, 1],
   liter: [Unit.L, 1],
   liters: [Unit.L, 1],
-  cup: [Unit.ML, 240],
-  cups: [Unit.ML, 240],
-  lb: [Unit.G, 453.6],
-  lbs: [Unit.G, 453.6],
-  pound: [Unit.G, 453.6],
-  pounds: [Unit.G, 453.6],
-  oz: [Unit.G, 28.35],
-  ounce: [Unit.G, 28.35],
-  ounces: [Unit.G, 28.35],
-  'fl oz': [Unit.ML, 29.57],
+  cup: [Unit.ML, ML_PER_CUP],
+  cups: [Unit.ML, ML_PER_CUP],
+  lb: [Unit.G, GRAMS_PER_LB],
+  lbs: [Unit.G, GRAMS_PER_LB],
+  pound: [Unit.G, GRAMS_PER_LB],
+  pounds: [Unit.G, GRAMS_PER_LB],
+  oz: [Unit.G, GRAMS_PER_OZ],
+  ounce: [Unit.G, GRAMS_PER_OZ],
+  ounces: [Unit.G, GRAMS_PER_OZ],
+  'fl oz': [Unit.ML, ML_PER_FL_OZ],
   ...Object.fromEntries(
     Object.entries(SPOON_ML).map(([token, ml]) => [token, [Unit.ML, ml]]),
   ),
@@ -78,177 +84,7 @@ const UNICODE_FRACTIONS: Record<string, string> = {
   '⅛': '1/8',
 };
 
-const LEADING_QUANTITY =
-  /^(\d+\s*-\s*\d+|\d+\s+\d+\/\d+|\d+\/\d+|\d+(?:[.,]\d+)?)\s*(fl\.?\s*oz|[a-z]+)?/;
-
-const GRAMS_PER_ML: Record<string, number> = {
-  flour: 0.53,
-  cornflour: 0.53,
-  'corn flour': 0.53,
-  cornstarch: 0.53,
-  'ground almonds': 0.4,
-  sugar: 0.83,
-  'brown sugar': 0.9,
-  'icing sugar': 0.53,
-  'powdered sugar': 0.53,
-  salt: 1.2,
-  'kosher salt': 0.6,
-  'baking powder': 0.92,
-  'baking soda': 0.92,
-  'bicarbonate of soda': 0.92,
-  'cream of tartar': 0.6,
-  yeast: 0.56,
-  gelatine: 0.47,
-  gelatin: 0.47,
-  cocoa: 0.36,
-  cacao: 0.36,
-  'cocoa powder': 0.36,
-  paprika: 0.46,
-  cumin: 0.4,
-  cinnamon: 0.52,
-  ginger: 0.4,
-  'ground ginger': 0.35,
-  turmeric: 0.6,
-  'turmeric powder': 0.6,
-  'garlic powder': 0.62,
-  'curry powder': 0.42,
-  'garam masala': 0.4,
-  'chili powder': 0.53,
-  'chilli powder': 0.53,
-  'chilli flakes': 0.4,
-  'chili flakes': 0.4,
-  'red pepper flakes': 0.4,
-  pepper: 0.46,
-  'black pepper': 0.46,
-  'cayenne pepper': 0.35,
-  allspice: 0.38,
-  nutmeg: 0.47,
-  clove: 0.44,
-  cloves: 0.44,
-  'ground clove': 0.44,
-  coriander: 0.33,
-  'fennel seeds': 0.4,
-  cardamom: 0.4,
-  cardomom: 0.4,
-  masala: 0.4,
-  powder: 0.5,
-  'pul biber': 0.4,
-  savoury: 0.2,
-  seed: 0.5,
-  seeds: 0.5,
-  'mustard seeds': 0.66,
-  'sesame seeds': 0.6,
-  'poppy seeds': 0.6,
-  'khus khus': 0.6,
-  spice: 0.4,
-  seasoning: 0.4,
-  saffron: 0.2,
-  marjoram: 0.2,
-  oregano: 0.2,
-  thyme: 0.2,
-  basil: 0.2,
-  rosemary: 0.2,
-  dill: 0.2,
-  chive: 0.2,
-  chives: 0.2,
-  cilantro: 0.25,
-  peppercorns: 0.6,
-  sumac: 0.4,
-  'ras el hanout': 0.4,
-  sage: 0.15,
-  mint: 0.15,
-  parsley: 0.25,
-  herbs: 0.2,
-  garlic: 0.56,
-  'garlic clove': 0.56,
-  onion: 0.67,
-  onions: 0.67,
-  shallot: 0.6,
-  shallots: 0.6,
-  challots: 0.6,
-  'spring onion': 0.4,
-  'spring onions': 0.4,
-  scallions: 0.4,
-  chilli: 0.5,
-  chili: 0.5,
-  galangal: 0.4,
-  lemongrass: 0.4,
-  horseradish: 0.5,
-  zest: 0.4,
-  butter: 0.95,
-  'peanut butter': 1.07,
-  ghee: 0.9,
-  lard: 0.85,
-  tahini: 1,
-  'tomato puree': 1.07,
-  'tomato paste': 1.07,
-  mayonnaise: 0.92,
-  mustard: 1,
-  yogurt: 1.03,
-  yoghurt: 1.03,
-  'sour cream': 1,
-  'soured cream': 1,
-  dip: 1,
-  'creme fraiche': 1,
-  'cream cheese': 0.97,
-  jam: 1.33,
-  miso: 1.15,
-  paste: 1.1,
-  capers: 0.6,
-  'pine nuts': 0.6,
-  nuts: 0.6,
-  peanut: 0.6,
-  peanuts: 0.6,
-  almonds: 0.6,
-  pistachio: 0.6,
-  pistachios: 0.6,
-  beans: 0.75,
-  fat: 0.9,
-  starch: 0.53,
-  cheese: 0.4,
-  parmesan: 0.33,
-  breadcrumbs: 0.45,
-  oats: 0.34,
-  rice: 0.85,
-  'desiccated coconut': 0.35,
-};
-
-const LIQUIDS = [
-  'water',
-  'milk',
-  'coconut milk',
-  'buttermilk',
-  'cream',
-  'oil',
-  'sauce',
-  'juice',
-  'vinegar',
-  'stock',
-  'broth',
-  'extract',
-  'vanilla',
-  'wine',
-  'rice wine',
-  'beer',
-  'rum',
-  'brandy',
-  'sherry',
-  'vodka',
-  'whisky',
-  'liqueur',
-  'honey',
-  'syrup',
-  'molasses',
-  'treacle',
-  'ketchup',
-  'tabasco',
-  'sriracha',
-  'hotsauce',
-  'sake',
-  'mirin',
-];
-
-const VOLUME_INGREDIENT_KEYS = [...Object.keys(GRAMS_PER_ML), ...LIQUIDS];
+const LEADING_QUANTITY = new RegExp(`^${AMOUNT}\\s*(fl\\.?\\s*oz|[a-z]+)?`);
 
 export function parseMeasure(
   measure: string,
@@ -275,14 +111,14 @@ export function parseMeasure(
     new RegExp(`${AMOUNT}(?:-|\\s*)(?:lb|lbs|pound|pounds)\\b`),
   );
   if (lbMatch) {
-    const grams = parseAmount(lbMatch[1]) * 453.6;
+    const grams = parseAmount(lbMatch[1]) * GRAMS_PER_LB;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
   const ozMatch = normalized.match(
     new RegExp(`${AMOUNT}(?:-|\\s*)(?:oz|ounces?)\\b`),
   );
   if (ozMatch) {
-    const grams = parseAmount(ozMatch[1]) * 28.35;
+    const grams = parseAmount(ozMatch[1]) * GRAMS_PER_OZ;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
 
@@ -300,7 +136,7 @@ export function parseMeasure(
 
   const cupMatch = normalized.match(new RegExp(`${AMOUNT}\\s*cups?\\b`));
   if (cupMatch) {
-    const grams = parseAmount(cupMatch[1]) * 150;
+    const grams = parseAmount(cupMatch[1]) * GRAMS_PER_CUP;
     return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
@@ -308,9 +144,7 @@ export function parseMeasure(
     const regex = new RegExp(`${AMOUNT}\\s*${token}\\b`);
     const match = normalized.match(regex);
     if (match) {
-      const gramsPerMl =
-        (foodName && lookupVolumeIngredient(foodName)?.gramsPerMl) || 1;
-      const grams = parseAmount(match[1]) * mlPerSpoon * gramsPerMl;
+      const grams = parseAmount(match[1]) * mlPerSpoon;
       return { grams, original, confidence: 'medium', method: 'volume' };
     }
   }
@@ -432,82 +266,6 @@ export function parseQuantityUnit(measure: string): ParsedQuantity | null {
   if (LENGTH_TOKENS.has(token)) return null;
 
   return { quantity: round2(amount), unit: Unit.PIECES };
-}
-
-export function quantityToGrams(
-  { quantity, unit }: ParsedQuantity,
-  foodName: string,
-): ParsedMeasure {
-  const original = `${quantity} ${unit}`;
-  switch (unit) {
-    case Unit.G:
-      return {
-        grams: quantity,
-        original,
-        confidence: 'high',
-        method: 'weight',
-      };
-    case Unit.KG:
-      return {
-        grams: quantity * 1000,
-        original,
-        confidence: 'high',
-        method: 'weight',
-      };
-    case Unit.ML:
-    case Unit.L: {
-      const ml = unit === Unit.L ? quantity * 1000 : quantity;
-      const gramsPerMl = lookupVolumeIngredient(foodName)?.gramsPerMl ?? 1;
-      return {
-        grams: ml * gramsPerMl,
-        original,
-        confidence: 'medium',
-        method: 'volume',
-      };
-    }
-    case Unit.CUPS:
-      return {
-        grams: quantity * 150,
-        original,
-        confidence: 'medium',
-        method: 'volume',
-      };
-    case Unit.PIECES:
-      return {
-        grams: quantity * getAverageWeight(foodName),
-        original,
-        confidence: 'low',
-        method: 'count',
-      };
-  }
-}
-
-export function lookupVolumeIngredient(
-  foodName: string,
-): { liquid: boolean; gramsPerMl: number } | null {
-  const name = foodName
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-  let head: { key: string; end: number } | null = null;
-  for (const key of VOLUME_INGREDIENT_KEYS) {
-    const match = new RegExp(`\\b${key}\\b`).exec(name);
-    if (!match) continue;
-    const end = match.index + key.length;
-    if (
-      !head ||
-      end > head.end ||
-      (end === head.end && key.length > head.key.length)
-    ) {
-      head = { key, end };
-    }
-  }
-  if (!head) return null;
-
-  const gramsPerMl = GRAMS_PER_ML[head.key];
-  return gramsPerMl === undefined
-    ? { liquid: true, gramsPerMl: 1 }
-    : { liquid: false, gramsPerMl };
 }
 
 function normalizeUnicodeFractions(text: string): string {
