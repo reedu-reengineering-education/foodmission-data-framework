@@ -139,7 +139,7 @@ curl -H "Authorization: Bearer ADMIN_JWT_TOKEN" \
 - **Email Verification**: Disabled for development
 - **Remember Me**: Disabled
 - **User Registration**: Limited through service account
-- **Password Policy**: `length(8) and notUsername and notEmail` — at least 8 characters, not the same as the username or email (case-insensitive). `RegisterDto` enforces the same rules so `POST /auth/register` returns a `VALIDATION_ERROR` before calling Keycloak. Keep the two in sync, and set the same policy by hand in deployed realms (Realm settings → Authentication → Policies).
+- **Password Policy**: `length(6)` — at least 6 characters. Keycloak is the only place this is enforced. When a password is rejected, `POST /auth/register` returns the Keycloak message, for example `Invalid password: minimum length 6.` Set the same policy by hand in deployed realms (Realm settings → Authentication → Policies). An already imported realm is not updated by `--import-realm`.
 
 ## 🔄 Updating the Configuration
 

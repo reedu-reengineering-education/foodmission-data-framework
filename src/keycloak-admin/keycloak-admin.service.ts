@@ -196,12 +196,15 @@ export class KeycloakAdminService {
       const status = err?.response?.status || 502;
       const kcData = err?.response?.data;
 
-      // Prefer Keycloak's errormessage field if present, fall back to other common shapes
+      // Password-policy failures use error_description ("Invalid password: minimum length 6.").
+      // Other admin errors use errorMessage ("User exists with same username or email").
+      // `error` is the message key, so it is only a last resort.
       const extractedMessage =
-        kcData?.errormessage ??
+        kcData?.error_description ??
         kcData?.errorMessage ??
-        kcData?.error ??
+        kcData?.errormessage ??
         kcData?.message ??
+        (typeof kcData?.error === 'string' ? kcData.error : undefined) ??
         err?.message ??
         'Failed to create user via Keycloak admin API';
 
