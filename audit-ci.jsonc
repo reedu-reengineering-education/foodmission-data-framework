@@ -2,12 +2,6 @@
   "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
   "high": true,
   "allowlist": [
-    // GHSA-vfj7-8cjw-p6xm: braces stack exhaustion on deeply nested patterns, via nestjs-i18n > chokidar@3.
-    // No patched braces version exists upstream ("Patched versions: None").
-    // chokidar only runs when i18n watch is on (disabled in production/test) and watches a fixed path.
-    // Revisit: check if nestjs-i18n moves to chokidar >=4 (which drops braces).
-    "GHSA-vfj7-8cjw-p6xm",
-
     // GHSA-c475-qrg2-pj4r: basic-ftp quadratic CPU DoS in Client.list(), via keycloak-connect > chromedriver > proxy-agent > get-uri.
     // Fixed in basic-ftp 6.2.1, but get-uri@8 still pins basic-ftp ^5.
     // We never open FTP connections; only reachable if proxy-agent is pointed at an ftp:// PAC URL.
