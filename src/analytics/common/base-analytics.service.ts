@@ -20,6 +20,10 @@ export abstract class BaseAnalyticsService<
 
   abstract generateBatch(periodStart: Date, periodEnd: Date): Promise<string>;
 
+  /**
+   * Aggregates yesterday (UTC) into a STAGING batch. Like every batch it
+   * stays private until an admin approves and publishes it.
+   */
   async runDailyAggregation(): Promise<string> {
     const yesterday = new Date();
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
@@ -27,13 +31,7 @@ export abstract class BaseAnalyticsService<
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    const batchId = await this.generateBatch(yesterday, today);
-    await this.repository.updateBatchStatus(
-      batchId,
-      AnalyticsBatchStatus.PUBLISHED,
-      'system',
-    );
-    return batchId;
+    return this.generateBatch(yesterday, today);
   }
 
   async listBatches(status?: AnalyticsBatchStatus): Promise<TBatch[]> {

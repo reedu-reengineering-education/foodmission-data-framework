@@ -81,7 +81,11 @@ export abstract class BaseAnalyticsAdminController<TBatch> {
   @UseGuards(DataBaseAuthGuard)
   @ApiBearerAuth('JWT-auth')
   @Roles('admin')
-  @ApiOperation({ summary: 'Manually trigger the daily aggregation job' })
+  @ApiOperation({
+    summary: 'Manually trigger the daily aggregation job',
+    description:
+      'Aggregates yesterday into a STAGING batch that needs approval before publishing.',
+  })
   @ApiResponse({ status: 201, description: 'Batch ID for yesterday' })
   async runDaily() {
     const batchId = await this.analyticsService.runDailyAggregation();

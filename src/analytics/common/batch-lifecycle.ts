@@ -167,26 +167,3 @@ export async function deleteAnalyticsBatch<
   }
   await repo.deleteBatch(batchId);
 }
-
-/**
- * Publishes a newly generated batch and supersedes any previously PUBLISHED
- * batches that overlap the same period — in that order, so the old data
- * remains visible until the new batch is confirmed published.
- *
- * The newly published batch is excluded from the supersede query so it
- * cannot be immediately superseded by its own call.
- */
-export async function autoPublishAndSupersede<
-  TStatus extends string,
-  TBatch extends { id: string; status: TStatus },
->(
-  repo: IBatchRepository<TStatus, TBatch>,
-  batchId: string,
-  publishedStatus: TStatus,
-  userId: string,
-  periodStart: Date,
-  periodEnd: Date,
-): Promise<void> {
-  await repo.updateBatchStatus(batchId, publishedStatus, userId);
-  await repo.supersedeBatchesForPeriod(periodStart, periodEnd, batchId);
-}

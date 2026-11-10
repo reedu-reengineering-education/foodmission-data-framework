@@ -90,7 +90,7 @@ export class AnalyticsBatchCoordinator {
         const batchId = await trackCronJob(`analytics-daily:${name}`, () =>
           service.runDailyAggregation(),
         );
-        this.logger.log(`[${name}] Daily batch generated: ${batchId}`);
+        this.logger.log(`[${name}] Daily batch staged for review: ${batchId}`);
       } catch (err) {
         this.logger.error(
           `[${name}] Daily aggregation failed — continuing with next domain`,
