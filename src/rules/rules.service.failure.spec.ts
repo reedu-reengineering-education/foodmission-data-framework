@@ -43,7 +43,7 @@ const RULES = {
 } as unknown as RulesCoverageDoc;
 
 function buildDb() {
-  return {
+  const db = {
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -69,7 +69,13 @@ function buildDb() {
       findUnique: jest.fn().mockResolvedValue(null),
       upsert: jest.fn().mockResolvedValue({}),
     },
+    $queryRaw: jest.fn().mockResolvedValue([]),
+    $transaction: jest.fn(),
   };
+  db.$transaction.mockImplementation(
+    (work: (tx: typeof db) => Promise<unknown>) => work(db),
+  );
+  return db;
 }
 
 describe('RulesService failure', () => {

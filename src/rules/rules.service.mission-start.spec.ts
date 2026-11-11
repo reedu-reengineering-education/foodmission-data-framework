@@ -41,7 +41,7 @@ const RULES = {
 const STARTED_AT = new Date(Date.now() - 60 * 60 * 1000);
 
 function buildDb() {
-  return {
+  const db = {
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -71,7 +71,13 @@ function buildDb() {
       findMany: jest.fn().mockResolvedValue([]),
       findUnique: jest.fn().mockResolvedValue(null),
     },
+    $queryRaw: jest.fn().mockResolvedValue([]),
+    $transaction: jest.fn(),
   };
+  db.$transaction.mockImplementation(
+    (work: (tx: typeof db) => Promise<unknown>) => work(db),
+  );
+  return db;
 }
 
 describe('RulesService missions need an explicit start', () => {

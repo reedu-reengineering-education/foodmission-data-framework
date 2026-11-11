@@ -10,6 +10,7 @@ import {
 } from '../common/after-commit/after-commit.queue';
 import { ProgressStatus } from '../common/progress-status';
 import { progressEventKey } from '../common/progress-event-keys';
+import { lockProgressRow } from '../common/progress-row-lock';
 import { EventSource, EventType, EventTypeValue } from '../events/event-types';
 import {
   USER_EVENT_RECORDER,
@@ -265,13 +266,15 @@ export class RulesService implements OnModuleInit {
       if (!row || isResolved(row.status)) {
         continue;
       }
-      const completion = await this.syncProgress(
-        db,
-        events,
-        userId,
-        catalogItem,
-        entry,
-        'mission',
+      const completion = await this.inTransaction(tx, (itemTx) =>
+        this.syncProgress(
+          itemTx,
+          events,
+          userId,
+          catalogItem,
+          entry,
+          'mission',
+        ),
       );
       if (completion) {
         completions.push(completion);
@@ -288,13 +291,15 @@ export class RulesService implements OnModuleInit {
       if (isResolved(challengeProgress.get(catalogItem.id)?.status)) {
         continue;
       }
-      const completion = await this.syncProgress(
-        db,
-        events,
-        userId,
-        catalogItem,
-        entry,
-        'challenge',
+      const completion = await this.inTransaction(tx, (itemTx) =>
+        this.syncProgress(
+          itemTx,
+          events,
+          userId,
+          catalogItem,
+          entry,
+          'challenge',
+        ),
       );
       if (completion) {
         completions.push(completion);
@@ -511,14 +516,22 @@ export class RulesService implements OnModuleInit {
     return rows;
   }
 
+  private inTransaction<T>(
+    tx: Prisma.TransactionClient | undefined,
+    work: (tx: Prisma.TransactionClient) => Promise<T>,
+  ): Promise<T> {
+    return tx ? work(tx) : this.prisma.$transaction(work);
+  }
+
   private async syncProgress(
-    db: Prisma.TransactionClient | PrismaService,
+    db: Prisma.TransactionClient,
     events: UserEventRow[],
     userId: string,
     catalogItem: CatalogItem,
     entry: RuleEntry,
     kind: 'mission' | 'challenge',
   ): Promise<CompletionAward | null> {
+    await lockProgressRow(db, kind, userId, catalogItem.id);
     const previous =
       kind === 'mission'
         ? await db.missionProgress.findUnique({
@@ -699,7 +712,7 @@ export class RulesService implements OnModuleInit {
    * evaluation.
    */
   private async emitDerivedEvent(
-    db: Prisma.TransactionClient | PrismaService,
+    db: Prisma.TransactionClient,
     input: {
       userId: string;
       kind: 'mission' | 'challenge';
@@ -716,7 +729,10 @@ export class RulesService implements OnModuleInit {
     const isMission = input.kind === 'mission';
     // The same helper mission-/challenge-progress.service.ts use, so the two
     // paths deduplicate against each other.
-    const idempotencyKey = progressEventKey(input);
+    const idempotencyKey =
+      input.transition === 'updated'
+        ? null
+        : progressEventKey({ ...input, transition: input.transition });
 
     await this.getRecorder().record(
       {
@@ -734,9 +750,8 @@ export class RulesService implements OnModuleInit {
         },
         idempotencyKey,
       },
-      // Whatever client the evaluation is running on — the caller's transaction
-      // when there is one, so the event lands atomically with the progress row
-      // it describes.
+      // The transaction that wrote the progress row, so the event lands
+      // atomically with the row it describes.
       db,
     );
   }

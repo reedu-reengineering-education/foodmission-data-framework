@@ -59,6 +59,7 @@ import { MicroLearningResponseDto } from '../dto/micro-learning-response.dto';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { foodFactReadsWhere } from '../../gamification/content-completion';
+import { lockProgressRow } from '../../common/progress-row-lock';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
@@ -590,6 +591,7 @@ export class LearningService {
 
     const now = new Date();
     const progress = await this.prisma.$transaction(async (tx) => {
+      await lockProgressRow(tx, 'quiz', userId, quiz.id);
       const previous = await tx.quizProgress.findUnique({
         where: { userId_quizId: { userId, quizId: quiz.id } },
       });
@@ -638,7 +640,6 @@ export class LearningService {
             eventType: EventType.QUIZ_UPDATED,
             source: EventSource.LEARNING,
             metadata,
-            idempotencyKey: `quiz-updated:${userId}:${quiz.id}:${next.selectedOptionId}`,
           },
           tx,
         );
@@ -955,6 +956,7 @@ export class LearningService {
     }
 
     const progress = await this.prisma.$transaction(async (tx) => {
+      await lockProgressRow(tx, 'quest', userId, quest.id);
       const previous = await tx.questProgress.findUnique({
         where: { userId_questId: { userId, questId: quest.id } },
       });
@@ -1009,7 +1011,6 @@ export class LearningService {
             eventType: EventType.QUEST_UPDATED,
             source: EventSource.QUEST,
             metadata,
-            idempotencyKey: `quest-updated:${userId}:${quest.id}:${next.progress}:${next.completed}`,
           },
           tx,
         );

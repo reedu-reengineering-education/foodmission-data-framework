@@ -180,6 +180,20 @@ describe('MissionProgressService', () => {
   });
 
   describe('update', () => {
+    const givenUpdate = (previous: unknown, updated?: unknown) =>
+      (repository.upsert as jest.Mock).mockImplementation(
+        (
+          _userId: string,
+          _id: string,
+          _dto: unknown,
+          assertUpdatable: (row: unknown) => void,
+        ) => {
+          assertUpdatable(previous);
+          return Promise.resolve({ previous, updated });
+        },
+      );
+
+    beforeEach(() => givenUpdate(null));
     it('should upsert and return mission progress', async () => {
       const updated = {
         missionId: 'm1',
@@ -193,19 +207,21 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        null,
-      );
-      (repository.upsert as jest.Mock).mockResolvedValue(updated);
+      givenUpdate(null, updated);
       const result = await service.update(
         'm1',
         { completed: true, progress: 1 },
         'u1',
       );
-      expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
-        completed: true,
-        progress: 1,
-      });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        'u1',
+        'm1',
+        {
+          completed: true,
+          progress: 1,
+        },
+        expect.any(Function),
+      );
       expect(result).toEqual({
         missionId: 'm1',
         userId: 'u1',
@@ -233,10 +249,7 @@ describe('MissionProgressService', () => {
         title: 'Test Mission',
         reward: { id: 'r1', xp: 15, points: 20 },
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        null,
-      );
-      (repository.upsert as jest.Mock).mockResolvedValue(updated);
+      givenUpdate(null, updated);
 
       const result = await service.update(
         'm1',
@@ -278,13 +291,15 @@ describe('MissionProgressService', () => {
         title: 'Test Mission',
         reward: { id: 'r1', xp: 15, points: 20 },
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
-        missionId: 'm1',
-        userId: 'u1',
-        completed: true,
-        progress: 1,
-      });
-      (repository.upsert as jest.Mock).mockResolvedValue(updated);
+      givenUpdate(
+        {
+          missionId: 'm1',
+          userId: 'u1',
+          completed: true,
+          progress: 1,
+        },
+        updated,
+      );
 
       const result = await service.update('m1', { completed: true }, 'u1');
 
@@ -298,10 +313,7 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        null,
-      );
-      (repository.upsert as jest.Mock).mockResolvedValue({
+      givenUpdate(null, {
         missionId: 'm1',
         userId: 'u1',
         completed: false,
@@ -312,9 +324,14 @@ describe('MissionProgressService', () => {
       await service.update('M.A1.1', { progress: 10 }, 'u1');
 
       expect(repository.findMissionByCodeOrId).toHaveBeenCalledWith('M.A1.1');
-      expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
-        progress: 10,
-      });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        'u1',
+        'm1',
+        {
+          progress: 10,
+        },
+        expect.any(Function),
+      );
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           metadata: expect.objectContaining({
@@ -332,10 +349,7 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        null,
-      );
-      (repository.upsert as jest.Mock).mockResolvedValue({
+      givenUpdate(null, {
         missionId: 'm1',
         userId: 'u1',
         completed: false,
@@ -366,19 +380,21 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
-        missionId: 'm1',
-        userId: 'u1',
-        completed: false,
-        progress: 10,
-      });
-      (repository.upsert as jest.Mock).mockResolvedValue({
-        missionId: 'm1',
-        userId: 'u1',
-        completed: false,
-        progress: 40,
-        mission: { title: 'Test Mission' },
-      });
+      givenUpdate(
+        {
+          missionId: 'm1',
+          userId: 'u1',
+          completed: false,
+          progress: 10,
+        },
+        {
+          missionId: 'm1',
+          userId: 'u1',
+          completed: false,
+          progress: 40,
+          mission: { title: 'Test Mission' },
+        },
+      );
 
       await service.update('m1', { progress: 40 }, 'u1');
 
@@ -386,11 +402,13 @@ describe('MissionProgressService', () => {
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: EventType.MISSION_UPDATED,
-          idempotencyKey: 'mission-updated:u1:m1:40:false',
           metadata: expect.objectContaining({
             body: { progress: 40 },
           }),
         }),
+      );
+      expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
+        'idempotencyKey',
       );
     });
 
@@ -400,19 +418,21 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
-        missionId: 'm1',
-        userId: 'u1',
-        completed: false,
-        progress: 40,
-      });
-      (repository.upsert as jest.Mock).mockResolvedValue({
-        missionId: 'm1',
-        userId: 'u1',
-        completed: true,
-        progress: 100,
-        mission: { title: 'Test Mission' },
-      });
+      givenUpdate(
+        {
+          missionId: 'm1',
+          userId: 'u1',
+          completed: false,
+          progress: 40,
+        },
+        {
+          missionId: 'm1',
+          userId: 'u1',
+          completed: true,
+          progress: 100,
+          mission: { title: 'Test Mission' },
+        },
+      );
 
       await service.update('m1', { completed: true, progress: 100 }, 'u1');
 
@@ -436,10 +456,7 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-        null,
-      );
-      (repository.upsert as jest.Mock).mockResolvedValue({
+      givenUpdate(null, {
         missionId: 'm1',
         userId: 'u1',
         completed: false,
@@ -450,19 +467,21 @@ describe('MissionProgressService', () => {
       await service.update('m1', { progress: 0 }, 'u1');
       expect(userEventService.record).not.toHaveBeenCalled();
 
-      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
-        missionId: 'm1',
-        userId: 'u1',
-        completed: true,
-        progress: 100,
-      });
-      (repository.upsert as jest.Mock).mockResolvedValue({
-        missionId: 'm1',
-        userId: 'u1',
-        completed: true,
-        progress: 100,
-        mission: { title: 'Test Mission' },
-      });
+      givenUpdate(
+        {
+          missionId: 'm1',
+          userId: 'u1',
+          completed: true,
+          progress: 100,
+        },
+        {
+          missionId: 'm1',
+          userId: 'u1',
+          completed: true,
+          progress: 100,
+          mission: { title: 'Test Mission' },
+        },
+      );
 
       await service.update('m1', { completed: true, progress: 100 }, 'u1');
       expect(userEventService.record).not.toHaveBeenCalled();
@@ -492,17 +511,24 @@ describe('MissionProgressService', () => {
       });
 
       it('marks the mission FAILED and records MISSION_FAILED once, without a reward', async () => {
-        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
-          ...failedRow,
-          status: 'IN_PROGRESS',
-        });
-        (repository.upsert as jest.Mock).mockResolvedValue(failedRow);
+        givenUpdate(
+          {
+            ...failedRow,
+            status: 'IN_PROGRESS',
+          },
+          failedRow,
+        );
 
         const result = await service.update('m1', { failed: true }, 'u1');
 
-        expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
-          failed: true,
-        });
+        expect(repository.upsert).toHaveBeenCalledWith(
+          'u1',
+          'm1',
+          {
+            failed: true,
+          },
+          expect.any(Function),
+        );
         expect(result.status).toBe('FAILED');
         expect(result.reward).toBeNull();
         expect(userEventService.record).toHaveBeenCalledWith(
@@ -518,22 +544,20 @@ describe('MissionProgressService', () => {
         await expect(
           service.update('m1', { failed: true, completed: true }, 'u1'),
         ).rejects.toThrow(BadRequestException);
-        expect(repository.upsert).not.toHaveBeenCalled();
+        expect(userEventService.record).not.toHaveBeenCalled();
       });
 
       it('rejects any update to a failed mission', async () => {
-        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
-          failedRow,
-        );
+        givenUpdate(failedRow);
 
         await expect(
           service.update('m1', { progress: 100, completed: true }, 'u1'),
         ).rejects.toThrow(BadRequestException);
-        expect(repository.upsert).not.toHaveBeenCalled();
+        expect(userEventService.record).not.toHaveBeenCalled();
       });
 
       it('rejects failing a completed mission', async () => {
-        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+        givenUpdate({
           ...failedRow,
           completed: true,
           status: 'COMPLETED',

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { MissionProgress, Prisma } from '@prisma/client';
 import { ProgressStatus } from '../../common/progress-status';
+import { lockProgressRow } from '../../common/progress-row-lock';
 import { PrismaService } from '../../database/prisma.service';
 import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateMissionProgressDto } from '../dto/update-mission-progress.dto';
@@ -55,6 +56,7 @@ export class MissionProgressRepository {
     userId: string,
     missionId: string,
     updateDto: UpdateMissionProgressDto,
+    assertUpdatable: (previous: MissionProgress | null) => void,
   ) {
     const failed = updateDto.failed === true;
     const progress = updateDto.progress ?? 0;
@@ -69,30 +71,38 @@ export class MissionProgressRepository {
 
     // Creating the progress row is starting the mission, even at progress 0
     // (clients start it that way), so it always gets a start time.
-    return this.prisma.missionProgress.upsert({
-      where: { userId_missionId: { userId, missionId } },
-      create: {
-        userId,
-        missionId,
-        progress,
-        completed,
-        status,
-        state: { source: 'manual', mode: 'api' },
-        startedAt: new Date(),
-      },
-      update: {
-        ...(updateDto.progress !== undefined
-          ? { progress: updateDto.progress }
-          : {}),
-        ...(failed
-          ? { completed: false }
-          : updateDto.completed !== undefined
-            ? { completed: updateDto.completed }
+    return this.prisma.$transaction(async (tx) => {
+      await lockProgressRow(tx, 'mission', userId, missionId);
+      const previous = await tx.missionProgress.findUnique({
+        where: { userId_missionId: { userId, missionId } },
+      });
+      assertUpdatable(previous);
+      const updated = await tx.missionProgress.upsert({
+        where: { userId_missionId: { userId, missionId } },
+        create: {
+          userId,
+          missionId,
+          progress,
+          completed,
+          status,
+          state: { source: 'manual', mode: 'api' },
+          startedAt: new Date(),
+        },
+        update: {
+          ...(updateDto.progress !== undefined
+            ? { progress: updateDto.progress }
             : {}),
-        status,
-        state: { source: 'manual', mode: 'api' },
-      },
-      include: { mission: true },
+          ...(failed
+            ? { completed: false }
+            : updateDto.completed !== undefined
+              ? { completed: updateDto.completed }
+              : {}),
+          status,
+          state: { source: 'manual', mode: 'api' },
+        },
+        include: { mission: true },
+      });
+      return { previous, updated };
     });
   }
 

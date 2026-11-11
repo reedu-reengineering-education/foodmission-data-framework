@@ -40,6 +40,8 @@ const RULES = {
 } as unknown as RulesCoverageDoc;
 
 type MockDb = {
+  $queryRaw: jest.Mock;
+  $transaction: jest.Mock;
   user: { findUnique: jest.Mock };
   userEvent: { findMany: jest.Mock; create: jest.Mock };
   mission: { findMany: jest.Mock; findUnique: jest.Mock };
@@ -57,7 +59,7 @@ type MockDb = {
 };
 
 function buildDb(): MockDb {
-  return {
+  const db = {
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -95,7 +97,13 @@ function buildDb(): MockDb {
       findUnique: jest.fn().mockResolvedValue(null),
       upsert: jest.fn().mockResolvedValue({}),
     },
+    $queryRaw: jest.fn().mockResolvedValue([]),
+    $transaction: jest.fn(),
   };
+  db.$transaction.mockImplementation(
+    (work: (tx: typeof db) => Promise<unknown>) => work(db),
+  );
+  return db;
 }
 
 describe('RulesService completion rewards', () => {
@@ -171,6 +179,26 @@ describe('RulesService completion rewards', () => {
         idempotencyKey: 'challenge-completed:u1:c1',
       }),
       expect.anything(),
+    );
+  });
+
+  it('records CHALLENGE_UPDATED without a key, after locking the row', async () => {
+    prisma.challengeProgress.findUnique.mockResolvedValue({
+      progress: 0.5,
+      completed: false,
+    });
+
+    await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
+
+    expect(userEventService.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: EventType.CHALLENGE_UPDATED,
+        idempotencyKey: null,
+      }),
+      prisma,
+    );
+    expect(prisma.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
+      prisma.challengeProgress.findUnique.mock.invocationCallOrder[0],
     );
   });
 

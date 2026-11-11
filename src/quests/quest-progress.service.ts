@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Prisma, RewardSourceType } from '@prisma/client';
 import { AfterCommitQueue } from '../common/after-commit/after-commit.queue';
 import { ProgressStatus } from '../common/progress-status';
+import { lockProgressRow } from '../common/progress-row-lock';
 import { PrismaService } from '../database/prisma.service';
 import { EventSource, EventType } from '../events/event-types';
 import { UserEventService } from '../events/services/user-event.service';
@@ -206,9 +207,9 @@ export class QuestProgressService implements QuestProgressRecomputer {
 
     const finished = await findFinishedItemKeys(this.prisma, userId, scored);
     const completed = finished.size === scored.length;
-    // Rounded before it is stored and before it goes into a QUEST_UPDATED
-    // idempotency key: 4/9*100 is 44.44444444444444, and float jitter between
-    // two recomputes of identical state would emit a spurious event.
+    // Rounded before it is stored and compared with the stored value:
+    // 4/9*100 is 44.44444444444444, and float jitter between two recomputes of
+    // identical state would emit a spurious QUEST_UPDATED.
     const progress = Math.round((finished.size / scored.length) * 10000) / 100;
     const status = completed
       ? ProgressStatus.COMPLETED
@@ -216,10 +217,6 @@ export class QuestProgressService implements QuestProgressRecomputer {
         ? ProgressStatus.IN_PROGRESS
         : ProgressStatus.NOT_STARTED;
 
-    const previous = await this.prisma.questProgress.findUnique({
-      where: { userId_questId: { userId, questId: quest.id } },
-      select: { progress: true, completed: true, unlockedAt: true },
-    });
     const state = {
       source: 'DERIVED',
       total: scored.length,
@@ -231,25 +228,33 @@ export class QuestProgressService implements QuestProgressRecomputer {
       computedAt: new Date().toISOString(),
     } satisfies Prisma.JsonObject;
 
-    await this.prisma.questProgress.upsert({
-      where: { userId_questId: { userId, questId: quest.id } },
-      create: {
-        userId,
-        questId: quest.id,
-        progress,
-        completed,
-        status,
-        state,
-        unlockedAt: new Date(),
-        evaluatedAt: new Date(),
-      },
-      update: {
-        progress,
-        completed,
-        status,
-        state,
-        evaluatedAt: new Date(),
-      },
+    const previous = await this.prisma.$transaction(async (tx) => {
+      await lockProgressRow(tx, 'quest', userId, quest.id);
+      const before = await tx.questProgress.findUnique({
+        where: { userId_questId: { userId, questId: quest.id } },
+        select: { progress: true, completed: true },
+      });
+      await tx.questProgress.upsert({
+        where: { userId_questId: { userId, questId: quest.id } },
+        create: {
+          userId,
+          questId: quest.id,
+          progress,
+          completed,
+          status,
+          state,
+          unlockedAt: new Date(),
+          evaluatedAt: new Date(),
+        },
+        update: {
+          progress,
+          completed,
+          status,
+          state,
+          evaluatedAt: new Date(),
+        },
+      });
+      return before;
     });
 
     const firstCompletion = completed && !previous?.completed;
@@ -299,9 +304,6 @@ export class QuestProgressService implements QuestProgressRecomputer {
         eventType: EventType.QUEST_UPDATED,
         source: EventSource.QUEST,
         metadata,
-        // Same shape as the key the PATCH path builds, so the two paths
-        // deduplicate against each other.
-        idempotencyKey: `quest-updated:${userId}:${quest.id}:${change.progress}:${change.completed}`,
       });
     }
 

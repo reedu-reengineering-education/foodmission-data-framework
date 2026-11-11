@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { RewardSourceType } from '@prisma/client';
+import { MissionProgress, RewardSourceType } from '@prisma/client';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { overlayTitles } from '../../learning/utils/overlay-titles';
@@ -117,30 +117,11 @@ export class MissionProgressService {
 
     const mission = await this.requireMission(codeOrId);
 
-    const previous =
-      await this.missionProgressRepository.findByUserIdAndMissionId(
-        userId,
-        mission.id,
-      );
-
-    if (updateDto.failed && updateDto.completed) {
-      throw new BadRequestException(
-        'A mission cannot be failed and completed at once',
-      );
-    }
-    if (previous?.status === ProgressStatus.FAILED) {
-      throw new BadRequestException(
-        'This mission has failed; restart it to try again',
-      );
-    }
-    if (updateDto.failed && previous?.completed) {
-      throw new BadRequestException('A completed mission cannot be failed');
-    }
-
-    const updated = await this.missionProgressRepository.upsert(
+    const { previous, updated } = await this.missionProgressRepository.upsert(
       userId,
       mission.id,
       updateDto,
+      (current) => assertMissionUpdatable(current, updateDto),
     );
 
     const wasIdle =
@@ -185,15 +166,6 @@ export class MissionProgressService {
         eventType: EventType.MISSION_UPDATED,
         source: EventSource.MISSION,
         metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'mission',
-          transition: 'updated',
-          userId,
-          id: mission.id,
-          startedAt: updated.startedAt,
-          progress: updated.progress,
-          completed: updated.completed,
-        }),
       });
     }
 
@@ -464,4 +436,23 @@ function isNumberRecord(value: unknown): value is Record<string, number> {
     !Array.isArray(value) &&
     Object.values(value).every((v) => typeof v === 'number')
   );
+}
+
+function assertMissionUpdatable(
+  current: MissionProgress | null,
+  updateDto: UpdateMissionProgressDto,
+): void {
+  if (updateDto.failed && updateDto.completed) {
+    throw new BadRequestException(
+      'A mission cannot be failed and completed at once',
+    );
+  }
+  if (current?.status === ProgressStatus.FAILED) {
+    throw new BadRequestException(
+      'This mission has failed; restart it to try again',
+    );
+  }
+  if (updateDto.failed && current?.completed) {
+    throw new BadRequestException('A completed mission cannot be failed');
+  }
 }

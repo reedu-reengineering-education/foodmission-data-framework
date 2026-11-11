@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { ChallengeProgress } from '@prisma/client';
 import { ProgressStatus } from '../../common/progress-status';
+import { lockProgressRow } from '../../common/progress-row-lock';
 import { PrismaService } from '../../database/prisma.service';
 import { codeOrIdWhere } from '../../learning/utils/code-or-id';
 import { UpdateChallengeProgressDto } from '../dto/update-challenge-progress.dto';
@@ -53,6 +55,7 @@ export class ChallengeProgressRepository {
     userId: string,
     challengeId: string,
     updateDto: UpdateChallengeProgressDto,
+    assertUpdatable: (previous: ChallengeProgress | null) => void,
   ) {
     const failed = updateDto.failed === true;
     const progress = updateDto.progress ?? 0;
@@ -67,30 +70,38 @@ export class ChallengeProgressRepository {
 
     // Creating the progress row is starting the challenge, even at progress 0
     // (clients start it that way), so it always gets a start time.
-    return this.prisma.challengeProgress.upsert({
-      where: { userId_challengeId: { userId, challengeId } },
-      create: {
-        userId,
-        challengeId,
-        progress,
-        completed,
-        status,
-        state: { source: 'manual', mode: 'api' },
-        startedAt: new Date(),
-      },
-      update: {
-        ...(updateDto.progress !== undefined
-          ? { progress: updateDto.progress }
-          : {}),
-        ...(failed
-          ? { completed: false }
-          : updateDto.completed !== undefined
-            ? { completed: updateDto.completed }
+    return this.prisma.$transaction(async (tx) => {
+      await lockProgressRow(tx, 'challenge', userId, challengeId);
+      const previous = await tx.challengeProgress.findUnique({
+        where: { userId_challengeId: { userId, challengeId } },
+      });
+      assertUpdatable(previous);
+      const updated = await tx.challengeProgress.upsert({
+        where: { userId_challengeId: { userId, challengeId } },
+        create: {
+          userId,
+          challengeId,
+          progress,
+          completed,
+          status,
+          state: { source: 'manual', mode: 'api' },
+          startedAt: new Date(),
+        },
+        update: {
+          ...(updateDto.progress !== undefined
+            ? { progress: updateDto.progress }
             : {}),
-        status,
-        state: { source: 'manual', mode: 'api' },
-      },
-      include: { challenge: true },
+          ...(failed
+            ? { completed: false }
+            : updateDto.completed !== undefined
+              ? { completed: updateDto.completed }
+              : {}),
+          status,
+          state: { source: 'manual', mode: 'api' },
+        },
+        include: { challenge: true },
+      });
+      return { previous, updated };
     });
   }
 

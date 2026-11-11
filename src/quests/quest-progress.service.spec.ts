@@ -28,7 +28,7 @@ const MICRO = (code: string): Item => ({
 });
 
 function buildPrisma(items: Item[]) {
-  return {
+  const prisma = {
     user: {
       findUnique: jest.fn().mockResolvedValue({ currentQuestId: 'q1' }),
     },
@@ -53,7 +53,13 @@ function buildPrisma(items: Item[]) {
     quizProgress: { findMany: jest.fn().mockResolvedValue([]) },
     foodFactProgress: { findMany: jest.fn().mockResolvedValue([]) },
     userEvent: { findUnique: jest.fn().mockResolvedValue({ id: 'evt-1' }) },
+    $queryRaw: jest.fn().mockResolvedValue([]),
+    $transaction: jest.fn(),
   };
+  prisma.$transaction.mockImplementation(
+    (work: (tx: typeof prisma) => Promise<unknown>) => work(prisma),
+  );
+  return prisma;
 }
 
 describe('QuestProgressService', () => {
@@ -268,6 +274,30 @@ describe('QuestProgressService', () => {
           source: EventSource.QUEST,
           idempotencyKey: 'quest-completed:u1:q1',
         }),
+      );
+    });
+
+    it('emits QUEST_UPDATED without a key after locking the row', async () => {
+      service = build([MISSION('M.1'), MISSION('M.2')]);
+      prisma.missionProgress.findMany.mockResolvedValue([
+        { mission: { code: 'M.1' } },
+      ]);
+      prisma.questProgress.findUnique.mockResolvedValue({
+        progress: 0,
+        completed: false,
+      });
+
+      await service.recomputeForUser('u1');
+
+      const [updated] = userEventService.record.mock.calls[0];
+      expect(updated.eventType).toBe(EventType.QUEST_UPDATED);
+      expect(updated).not.toHaveProperty('idempotencyKey');
+      const lockOrder = prisma.$queryRaw.mock.invocationCallOrder[0];
+      const readOrders =
+        prisma.questProgress.findUnique.mock.invocationCallOrder;
+      expect(lockOrder).toBeLessThan(readOrders[readOrders.length - 1]);
+      expect(lockOrder).toBeLessThan(
+        prisma.questProgress.upsert.mock.invocationCallOrder[0],
       );
     });
 
