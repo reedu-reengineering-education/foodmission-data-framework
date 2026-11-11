@@ -22,7 +22,7 @@ Later rounds: in-depth user behaviour and food-consumption analytics, plus refac
 
 ### 2.2 Problems in the batch side (not fixed this round; recorded for later)
 
-- `BaseAnalyticsService.runDailyAggregation()` publishes daily batches directly as `'system'`, skipping STAGING → APPROVED. `docs/Data anonymization/DATA_ANONYMIZATION_PROCESS.md` promises human approval. Code and doc disagree (see Q2).
+- ~~`BaseAnalyticsService.runDailyAggregation()` publishes daily batches directly as `'system'`, skipping STAGING → APPROVED.~~ Fixed: daily batches now stop at STAGING, matching `docs/Data anonymization/DATA_ANONYMIZATION_PROCESS.md`; migration `20261110120000_stage_auto_published_analytics_batches` moves the previously auto-published ones back to STAGING (see Q2).
 - Overlapping PUBLISHED batches are all served and summed: no unique period, no auto-supersede, rows are not filtered by their own date. Counts can be double counted.
 - `GET /analytics/meal-log/public/records` serves per-meal microdata publicly with no k-anonymity. The UI does not use it.
 - Suppressed small groups can be recovered by subtracting the other groups from the published totals (no complementary suppression).
@@ -209,7 +209,7 @@ Update `docs/event-emission-guide.md` and `src/events/event-types.ts` together w
 ## 7. Open questions
 
 - **Q1 — meaning of "selected dimension".** Proposal: report both the dimension of the current quest (`dimension-focus`, what users work on) and the level per dimension (`dimension-levels`), and start recording `QUEST_SELECTED` for history. Confirm, or do we want an explicit "focus dimension" choice in the app?
-- **Q2 — approval for batch datasets.** The answer was "only badges approval". Assumption: this meant **batches**, i.e. meal-log/shopping-list datasets keep human approval. Then the daily cron should only stage (not auto-publish), matching the anonymisation doc. Confirm, or did it mean badges (manual badge grants)?
+- **Q2 — approval for batch datasets.** The answer was "only badges approval". Assumption: this meant **batches**, i.e. meal-log/shopping-list datasets keep human approval. Then the daily cron should only stage (not auto-publish), matching the anonymisation doc. **Resolved: batches. Every batch, including the daily one, needs admin approval before publishing.**
 - **Q3 — admins in usage numbers.** Exclude admin accounts from active-user counts?
 - **Q4 — public consumers.** Do the public `/analytics/*/public` routes have consumers other than foodmission-data-ui (partners, researchers)? This decides how long the old routes must stay.
 - **Q5 — country/language normalisation.** What does the mobile app send (ISO-2 / locale codes or names)? Validate on write instead of normalising at query time?

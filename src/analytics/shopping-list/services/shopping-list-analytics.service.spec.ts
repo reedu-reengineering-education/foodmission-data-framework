@@ -167,10 +167,6 @@ describe('ShoppingListAnalyticsService', () => {
     beforeEach(() => {
       aggregator.aggregate.mockResolvedValue(emptyAggResult);
       repository.createBatch.mockResolvedValue({ id: 'daily-batch' } as any);
-      repository.updateBatchStatus.mockResolvedValue({
-        id: 'daily-batch',
-        status: 'PUBLISHED',
-      } as any);
     });
 
     it('does not auto-supersede existing published batches', async () => {
@@ -179,14 +175,10 @@ describe('ShoppingListAnalyticsService', () => {
       expect(repository.supersedeBatchesForPeriod).not.toHaveBeenCalled();
     });
 
-    it('auto-publishes the generated batch as system user', async () => {
+    it('leaves the generated batch in STAGING for review', async () => {
       await service.runDailyAggregation();
 
-      expect(repository.updateBatchStatus).toHaveBeenCalledWith(
-        'daily-batch',
-        'PUBLISHED',
-        'system',
-      );
+      expect(repository.updateBatchStatus).not.toHaveBeenCalled();
     });
 
     it('returns the batch id', async () => {
