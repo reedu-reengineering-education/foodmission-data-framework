@@ -46,7 +46,7 @@ flowchart TD
 3. **Use idempotency for retries and rewards**  
    Stable keys, e.g. `onboarding-completed:{userId}`, `meal-logged:{userId}:{mealId}`, `mission-completed:{userId}:{missionId}`. For `POST /events`, the server builds `{eventType}:{userId}:{sessionId}` from the authenticated user and required `metadata.sessionId` — clients do not supply `idempotencyKey`. Concurrent retries should return the existing row (`replayed: true`), not a duplicate fact.
 
-   **Exception — `*_UPDATED` progress events (`QUIZ_UPDATED`, `QUEST_UPDATED`, `MISSION_UPDATED`, `CHALLENGE_UPDATED`) carry no key.** Their values can legitimately repeat (answer A → B → A → B, progress 50 → 30 → 50), so a key built from them drops real changes as replays. Instead, every writer locks the progress row (`lockProgressRow`, `SELECT … FOR UPDATE`) in the transaction that writes it, compares against the locked previous row, and records `*_UPDATED` only when the stored values changed. Retries and concurrent duplicates change nothing and so record nothing; the API and the rule engine are serialized on the same row. Events written before this change were deduplicated by value, so `*_UPDATED` counts are only complete from its deploy date.
+   **Exception — `*_UPDATED` progress events carry no key.** Their values can repeat (answer A → B → A), so a key built from them drops real changes. Instead, the writer locks the progress row (`lockProgressRow`), compares with the locked previous row and records `*_UPDATED` only when the stored values changed, so retries and concurrent duplicates record nothing.
 
 4. **Keep domains separate** (see catalog)  
    - **Account** — `USER_LOGGED_IN`, `ONBOARDING_COMPLETED`, `USER_GROUP_JOINED` / `USER_GROUP_LEFT`  

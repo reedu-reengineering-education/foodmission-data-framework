@@ -203,140 +203,91 @@ describeWithDb('progress UPDATED events (integration)', () => {
     }
   });
 
-  describe('quiz', () => {
-    const answer = (userId: string, selectedLabel: 'A' | 'B' | 'C') =>
-      learning.upsertQuizProgress(userId, QUIZ, { selectedLabel });
-
-    it('records every switch back to an earlier answer', async () => {
-      const userId = await newUser();
-
-      for (const label of ['A', 'B', 'A', 'B'] as const) {
-        await answer(userId, label);
-      }
-
-      expect(await countEvents(userId, EventType.QUIZ_ANSWERED)).toBe(1);
-      expect(await countEvents(userId, EventType.QUIZ_UPDATED)).toBe(3);
-    });
-
-    it('records nothing when the same answer is sent again', async () => {
-      const userId = await newUser();
-
-      await answer(userId, 'A');
-      await answer(userId, 'A');
-
-      expect(await countEvents(userId, EventType.QUIZ_UPDATED)).toBe(0);
-    });
-
-    it('records one change when the same answer arrives several times at once', async () => {
-      const userId = await newUser();
-      await answer(userId, 'A');
-
-      await Promise.all(times(PARALLEL, () => answer(userId, 'B')));
-
-      expect(await countEvents(userId, EventType.QUIZ_UPDATED)).toBe(1);
-    });
-
-    it('records both changes when different answers arrive at once', async () => {
-      const userId = await newUser();
-      await answer(userId, 'A');
-
-      await Promise.all([answer(userId, 'B'), answer(userId, 'C')]);
-
-      expect(await countEvents(userId, EventType.QUIZ_UPDATED)).toBe(2);
-    });
-  });
-
-  describe('quest', () => {
-    const setProgress = (userId: string, progress: number) =>
-      learning.upsertQuestProgress(userId, QUEST, { progress });
-
-    it('records every return to an earlier progress value', async () => {
-      const userId = await newUser();
-
-      for (const progress of [10, 50, 30, 50, 30]) {
-        await setProgress(userId, progress);
-      }
-
-      expect(await countEvents(userId, EventType.QUEST_STARTED)).toBe(1);
-      expect(await countEvents(userId, EventType.QUEST_UPDATED)).toBe(4);
-    });
-
-    it('records one change when the same progress arrives several times at once', async () => {
-      const userId = await newUser();
-      await setProgress(userId, 10);
-
-      await Promise.all(times(PARALLEL, () => setProgress(userId, 60)));
-
-      expect(await countEvents(userId, EventType.QUEST_UPDATED)).toBe(1);
-    });
-
-    it('records nothing when a recompute lands on the value the API just wrote', async () => {
-      const userId = await newUser();
-      const mission = await prisma.mission.findUniqueOrThrow({
-        where: { code: MISSION },
-      });
-      await prisma.missionProgress.create({
-        data: {
-          userId,
-          missionId: mission.id,
-          progress: 100,
-          completed: true,
-          status: 'COMPLETED',
-        },
-      });
-      await setProgress(userId, 50);
-
-      await quests.recomputeForUser(userId);
-
-      expect(await countEvents(userId, EventType.QUEST_UPDATED)).toBe(0);
-    });
-  });
+  const LABELS = ['A', 'B', 'C'] as const;
+  const PROGRESS = [10, 50, 30];
 
   describe.each([
     {
+      kind: 'quiz',
+      started: EventType.QUIZ_ANSWERED,
+      updated: EventType.QUIZ_UPDATED,
+      set: (userId: string, step: number) =>
+        learning.upsertQuizProgress(userId, QUIZ, {
+          selectedLabel: LABELS[step],
+        }),
+    },
+    {
+      kind: 'quest',
+      started: EventType.QUEST_STARTED,
+      updated: EventType.QUEST_UPDATED,
+      set: (userId: string, step: number) =>
+        learning.upsertQuestProgress(userId, QUEST, {
+          progress: PROGRESS[step],
+        }),
+    },
+    {
       kind: 'mission',
-      code: MISSION,
       started: EventType.MISSION_STARTED,
       updated: EventType.MISSION_UPDATED,
-      update: (userId: string, progress: number) =>
-        missions.update(MISSION, { progress }, userId),
+      set: (userId: string, step: number) =>
+        missions.update(MISSION, { progress: PROGRESS[step] }, userId),
     },
     {
       kind: 'challenge',
-      code: CHALLENGE,
       started: EventType.CHALLENGE_STARTED,
       updated: EventType.CHALLENGE_UPDATED,
-      update: (userId: string, progress: number) =>
-        challenges.update(CHALLENGE, { progress }, userId),
+      set: (userId: string, step: number) =>
+        challenges.update(CHALLENGE, { progress: PROGRESS[step] }, userId),
     },
-  ])('$kind', ({ started, updated, update }) => {
-    it('records every return to an earlier progress value', async () => {
+  ])('$kind', ({ started, updated, set }) => {
+    it('records every return to an earlier value', async () => {
       const userId = await newUser();
 
-      for (const progress of [10, 50, 30, 50, 30]) {
-        await update(userId, progress);
+      for (const step of [0, 1, 2, 1, 2]) {
+        await set(userId, step);
       }
 
       expect(await countEvents(userId, started)).toBe(1);
       expect(await countEvents(userId, updated)).toBe(4);
     });
 
-    it('records one change when the same progress arrives several times at once', async () => {
+    it('records one change when the same value arrives several times at once', async () => {
       const userId = await newUser();
-      await update(userId, 10);
+      await set(userId, 0);
 
-      await Promise.all(times(PARALLEL, () => update(userId, 60)));
+      await Promise.all(times(PARALLEL, () => set(userId, 1)));
 
       expect(await countEvents(userId, updated)).toBe(1);
     });
 
     it('records both changes when different values arrive at once', async () => {
       const userId = await newUser();
-      await update(userId, 10);
+      await set(userId, 0);
 
-      await Promise.all([update(userId, 40), update(userId, 70)]);
+      await Promise.all([set(userId, 1), set(userId, 2)]);
 
       expect(await countEvents(userId, updated)).toBe(2);
     });
+  });
+
+  it('records no QUEST_UPDATED when a recompute lands on the value the API just wrote', async () => {
+    const userId = await newUser();
+    const mission = await prisma.mission.findUniqueOrThrow({
+      where: { code: MISSION },
+    });
+    await prisma.missionProgress.create({
+      data: {
+        userId,
+        missionId: mission.id,
+        progress: 100,
+        completed: true,
+        status: 'COMPLETED',
+      },
+    });
+    await learning.upsertQuestProgress(userId, QUEST, { progress: 50 });
+
+    await quests.recomputeForUser(userId);
+
+    expect(await countEvents(userId, EventType.QUEST_UPDATED)).toBe(0);
   });
 });

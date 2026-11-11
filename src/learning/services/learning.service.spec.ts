@@ -932,51 +932,9 @@ describe('LearningService', () => {
       expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
         'idempotencyKey',
       );
-    });
-
-    it('locks the quest progress row before reading it', async () => {
-      prisma.questProgress.findUnique.mockResolvedValue(null);
-      prisma.questProgress.upsert.mockResolvedValue({
-        userId: 'u1',
-        questId: quest.id,
-        completed: false,
-        progress: 0,
-        unlockedAt: new Date(),
-      });
-
-      await service.upsertQuestProgress('u1', quest.code, { progress: 0 });
-
       expect(prisma.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
         prisma.questProgress.findUnique.mock.invocationCallOrder[0],
       );
-    });
-
-    it('emits QUEST_UPDATED every time progress returns to an earlier value', async () => {
-      let stored = {
-        userId: 'u1',
-        questId: quest.id,
-        completed: false,
-        progress: 10,
-      };
-      prisma.questProgress.findUnique.mockImplementation(() =>
-        Promise.resolve(stored),
-      );
-      prisma.questProgress.upsert.mockImplementation(
-        ({ update }: { update: { progress: number } }) => {
-          stored = { ...stored, progress: update.progress };
-          return Promise.resolve({ ...stored, unlockedAt: new Date() });
-        },
-      );
-
-      for (const progress of [50, 30, 50, 30]) {
-        await service.upsertQuestProgress('u1', quest.code, { progress });
-      }
-
-      expect(
-        userEventService.record.mock.calls.filter(
-          ([input]) => input.eventType === EventType.QUEST_UPDATED,
-        ),
-      ).toHaveLength(4);
     });
 
     it('emits UPDATED and COMPLETED when completing an in-progress quest', async () => {
@@ -1139,67 +1097,9 @@ describe('LearningService', () => {
       expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
         'idempotencyKey',
       );
-    });
-
-    it('locks the quiz progress row before reading it', async () => {
-      prisma.quizProgress.findUnique.mockResolvedValue(null);
-      prisma.quizProgress.upsert.mockResolvedValue({
-        id: 'p1',
-        userId: 'u1',
-        quizId: quiz.id,
-        selectedOptionId: 'opt-a',
-        isCorrect: false,
-        completed: true,
-        answeredAt: new Date(),
-      });
-
-      await service.upsertQuizProgress('u1', quiz.code, { selectedLabel: 'A' });
-
       expect(prisma.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
         prisma.quizProgress.findUnique.mock.invocationCallOrder[0],
       );
-    });
-
-    it('emits QUIZ_UPDATED every time the answer switches back', async () => {
-      let stored: { selectedOptionId: string; isCorrect: boolean } | null =
-        null;
-      prisma.quizProgress.findUnique.mockImplementation(() =>
-        Promise.resolve(stored),
-      );
-      prisma.quizProgress.upsert.mockImplementation(
-        ({
-          update,
-        }: {
-          update: { selectedOptionId: string; isCorrect: boolean };
-        }) => {
-          stored = {
-            selectedOptionId: update.selectedOptionId,
-            isCorrect: update.isCorrect,
-          };
-          return Promise.resolve({
-            id: 'p1',
-            userId: 'u1',
-            quizId: quiz.id,
-            ...stored,
-            completed: true,
-            answeredAt: new Date(),
-          });
-        },
-      );
-
-      for (const selectedLabel of ['A', 'B', 'A', 'B'] as const) {
-        await service.upsertQuizProgress('u1', quiz.code, { selectedLabel });
-      }
-
-      const eventTypes = userEventService.record.mock.calls.map(
-        ([input]) => input.eventType,
-      );
-      expect(eventTypes).toEqual([
-        EventType.QUIZ_ANSWERED,
-        EventType.QUIZ_UPDATED,
-        EventType.QUIZ_UPDATED,
-        EventType.QUIZ_UPDATED,
-      ]);
     });
 
     it('does not emit when the same option is submitted again', async () => {

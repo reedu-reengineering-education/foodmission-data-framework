@@ -266,15 +266,13 @@ export class RulesService implements OnModuleInit {
       if (!row || isResolved(row.status)) {
         continue;
       }
-      const completion = await this.inTransaction(tx, (itemTx) =>
-        this.syncProgress(
-          itemTx,
-          events,
-          userId,
-          catalogItem,
-          entry,
-          'mission',
-        ),
+      const completion = await this.syncProgress(
+        tx,
+        events,
+        userId,
+        catalogItem,
+        entry,
+        'mission',
       );
       if (completion) {
         completions.push(completion);
@@ -291,15 +289,13 @@ export class RulesService implements OnModuleInit {
       if (isResolved(challengeProgress.get(catalogItem.id)?.status)) {
         continue;
       }
-      const completion = await this.inTransaction(tx, (itemTx) =>
-        this.syncProgress(
-          itemTx,
-          events,
-          userId,
-          catalogItem,
-          entry,
-          'challenge',
-        ),
+      const completion = await this.syncProgress(
+        tx,
+        events,
+        userId,
+        catalogItem,
+        entry,
+        'challenge',
       );
       if (completion) {
         completions.push(completion);
@@ -516,21 +512,19 @@ export class RulesService implements OnModuleInit {
     return rows;
   }
 
-  private inTransaction<T>(
-    tx: Prisma.TransactionClient | undefined,
-    work: (tx: Prisma.TransactionClient) => Promise<T>,
-  ): Promise<T> {
-    return tx ? work(tx) : this.prisma.$transaction(work);
-  }
-
   private async syncProgress(
-    tx: Prisma.TransactionClient,
+    tx: Prisma.TransactionClient | undefined,
     events: UserEventRow[],
     userId: string,
     catalogItem: CatalogItem,
     entry: RuleEntry,
     kind: 'mission' | 'challenge',
   ): Promise<CompletionAward | null> {
+    if (!tx) {
+      return this.prisma.$transaction((ownTx) =>
+        this.syncProgress(ownTx, events, userId, catalogItem, entry, kind),
+      );
+    }
     await lockProgressRow(tx, kind, userId, catalogItem.id);
     const previous =
       kind === 'mission'

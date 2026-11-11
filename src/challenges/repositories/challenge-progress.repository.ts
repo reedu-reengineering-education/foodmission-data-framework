@@ -70,14 +70,13 @@ export class ChallengeProgressRepository {
 
     // Creating the progress row is starting the challenge, even at progress 0
     // (clients start it that way), so it always gets a start time.
+    const where = { userId_challengeId: { userId, challengeId } };
     return this.prisma.$transaction(async (tx) => {
       await lockProgressRow(tx, 'challenge', userId, challengeId);
-      const previous = await tx.challengeProgress.findUnique({
-        where: { userId_challengeId: { userId, challengeId } },
-      });
+      const previous = await tx.challengeProgress.findUnique({ where });
       assertUpdatable(previous);
       const updated = await tx.challengeProgress.upsert({
-        where: { userId_challengeId: { userId, challengeId } },
+        where,
         create: {
           userId,
           challengeId,

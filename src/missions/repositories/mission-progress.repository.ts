@@ -71,14 +71,13 @@ export class MissionProgressRepository {
 
     // Creating the progress row is starting the mission, even at progress 0
     // (clients start it that way), so it always gets a start time.
+    const where = { userId_missionId: { userId, missionId } };
     return this.prisma.$transaction(async (tx) => {
       await lockProgressRow(tx, 'mission', userId, missionId);
-      const previous = await tx.missionProgress.findUnique({
-        where: { userId_missionId: { userId, missionId } },
-      });
+      const previous = await tx.missionProgress.findUnique({ where });
       assertUpdatable(previous);
       const updated = await tx.missionProgress.upsert({
-        where: { userId_missionId: { userId, missionId } },
+        where,
         create: {
           userId,
           missionId,

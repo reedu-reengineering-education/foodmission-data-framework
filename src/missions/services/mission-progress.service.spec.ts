@@ -216,10 +216,7 @@ describe('MissionProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'm1',
-        {
-          completed: true,
-          progress: 1,
-        },
+        { completed: true, progress: 1 },
         expect.any(Function),
       );
       expect(result).toEqual({
@@ -327,9 +324,7 @@ describe('MissionProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'm1',
-        {
-          progress: 10,
-        },
+        { progress: 10 },
         expect.any(Function),
       );
       expect(userEventService.record).toHaveBeenCalledWith(
@@ -524,9 +519,7 @@ describe('MissionProgressService', () => {
         expect(repository.upsert).toHaveBeenCalledWith(
           'u1',
           'm1',
-          {
-            failed: true,
-          },
+          { failed: true },
           expect.any(Function),
         );
         expect(result.status).toBe('FAILED');

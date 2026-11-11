@@ -222,10 +222,7 @@ describe('ChallengeProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'c1',
-        {
-          completed: true,
-          progress: 1,
-        },
+        { completed: true, progress: 1 },
         expect.any(Function),
       );
       expect(result).toEqual({
@@ -334,9 +331,7 @@ describe('ChallengeProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'c1',
-        {
-          progress: 10,
-        },
+        { progress: 10 },
         expect.any(Function),
       );
     });
@@ -522,9 +517,7 @@ describe('ChallengeProgressService', () => {
         expect(repository.upsert).toHaveBeenCalledWith(
           'u1',
           'c1',
-          {
-            failed: true,
-          },
+          { failed: true },
           expect.any(Function),
         );
         expect(result.status).toBe('FAILED');
