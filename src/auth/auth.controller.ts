@@ -15,6 +15,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { ApiCrudErrorResponses } from '../common/decorators/api-error-responses.decorator';
+import { ApiErrorResponseDto } from '../common/dto/api-response.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { extractKeycloakRoles } from '../common/utils/keycloak-roles.util';
 import { Public } from 'nest-keycloak-connect';
@@ -148,6 +149,25 @@ export class AuthController {
   @Public()
   @ApiOperation({
     summary: 'Register a new user in Keycloak and create local user',
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Validation failed, or Keycloak rejected the password. The message is the Keycloak error description, for example when the password is shorter than the realm minimum.',
+    type: ApiErrorResponseDto,
+    examples: {
+      passwordRejected: {
+        summary: 'Password rejected by the Keycloak realm policy',
+        value: {
+          statusCode: 400,
+          message: 'Invalid password: minimum length 6.',
+          error: 'HttpException',
+          timestamp: '2026-01-15T10:30:00.000Z',
+          path: '/api/v1/auth/register',
+          traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
+        },
+      },
+    },
   })
   async register(@Body() dto: RegisterDto) {
     return await this.authService.register(dto);

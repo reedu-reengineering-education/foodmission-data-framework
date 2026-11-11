@@ -13,7 +13,10 @@ export class RegisterDto {
   @IsNotEmpty()
   username: string;
 
-  @ApiProperty({ description: 'Password' })
+  @ApiProperty({
+    description:
+      'Password. The Keycloak realm password policy is the only check; a rejected password is returned with the Keycloak message.',
+  })
   @IsString()
   @IsNotEmpty()
   password: string;
