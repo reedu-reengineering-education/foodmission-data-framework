@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { ChallengeProgress, RewardSourceType } from '@prisma/client';
+import { RewardSourceType } from '@prisma/client';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { overlayTitles } from '../../learning/utils/overlay-titles';
@@ -14,6 +14,10 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { ProgressStatus } from '../../common/progress-status';
+import {
+  assertProgressUpdatable,
+  assertValidProgressUpdate,
+} from '../../common/progress-update-guard';
 import { progressEventKey } from '../../common/progress-event-keys';
 import {
   RecordUserEventInput,
@@ -124,11 +128,12 @@ export class ChallengeProgressService {
       );
     }
 
+    assertValidProgressUpdate('challenge', updateDto);
     const { previous, updated } = await this.challengeProgressRepository.upsert(
       userId,
       challenge.id,
       updateDto,
-      (current) => assertChallengeUpdatable(current, updateDto),
+      (current) => assertProgressUpdatable('challenge', current, updateDto),
     );
 
     const wasIdle =
@@ -327,24 +332,5 @@ export class ChallengeProgressService {
       challengeTitle: titles[row.challengeId] ?? row.challenge?.title ?? '',
       startedAt: row.startedAt ?? null,
     }));
-  }
-}
-
-function assertChallengeUpdatable(
-  current: ChallengeProgress | null,
-  updateDto: UpdateChallengeProgressDto,
-): void {
-  if (updateDto.failed && updateDto.completed) {
-    throw new BadRequestException(
-      'A challenge cannot be failed and completed at once',
-    );
-  }
-  if (current?.status === ProgressStatus.FAILED) {
-    throw new BadRequestException(
-      'This challenge has failed; restart it to try again',
-    );
-  }
-  if (updateDto.failed && current?.completed) {
-    throw new BadRequestException('A completed challenge cannot be failed');
   }
 }

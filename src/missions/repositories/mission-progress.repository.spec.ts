@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MissionProgressRepository } from './mission-progress.repository';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
+import { withInteractiveTransaction } from '../../common/testing';
 
 describe('MissionProgressRepository', () => {
   let repository: MissionProgressRepository;
@@ -13,7 +14,7 @@ describe('MissionProgressRepository', () => {
         MissionProgressRepository,
         {
           provide: PrismaService,
-          useValue: {
+          useValue: withInteractiveTransaction({
             mission: {
               findFirst: jest.fn(),
             },
@@ -25,9 +26,7 @@ describe('MissionProgressRepository', () => {
               upsert: jest.fn(),
               update: jest.fn(),
             },
-            $queryRaw: jest.fn().mockResolvedValue([]),
-            $transaction: jest.fn(),
-          },
+          }),
         },
       ],
     }).compile();
@@ -36,9 +35,6 @@ describe('MissionProgressRepository', () => {
       MissionProgressRepository,
     );
     prisma = module.get<PrismaService>(PrismaService);
-    (prisma.$transaction as jest.Mock).mockImplementation(
-      (work: (tx: PrismaService) => Promise<unknown>) => work(prisma),
-    );
   });
 
   it('should be defined', () => {

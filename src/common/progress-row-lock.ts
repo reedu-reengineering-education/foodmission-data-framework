@@ -7,7 +7,7 @@ const PROGRESS_TABLES = {
   challenge: { table: 'challenge_progress', column: 'challengeId' },
 } as const;
 
-export type ProgressRowKind = keyof typeof PROGRESS_TABLES;
+type ProgressRowKind = keyof typeof PROGRESS_TABLES;
 
 export async function lockProgressRow(
   tx: Prisma.TransactionClient,

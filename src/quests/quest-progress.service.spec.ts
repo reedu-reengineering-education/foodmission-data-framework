@@ -7,6 +7,7 @@ import { UserEventService } from '../events/services/user-event.service';
 import { CompletionRewardService } from '../gamification/services/completion-reward.service';
 import { DimensionLevelService } from '../gamification/services/dimension-level.service';
 import { QuestProgressService } from './quest-progress.service';
+import { withInteractiveTransaction } from '../common/testing';
 
 type Item = { contentType: QuestContentType; contentCode: string };
 
@@ -28,7 +29,7 @@ const MICRO = (code: string): Item => ({
 });
 
 function buildPrisma(items: Item[]) {
-  const prisma = {
+  return withInteractiveTransaction({
     user: {
       findUnique: jest.fn().mockResolvedValue({ currentQuestId: 'q1' }),
     },
@@ -53,13 +54,7 @@ function buildPrisma(items: Item[]) {
     quizProgress: { findMany: jest.fn().mockResolvedValue([]) },
     foodFactProgress: { findMany: jest.fn().mockResolvedValue([]) },
     userEvent: { findUnique: jest.fn().mockResolvedValue({ id: 'evt-1' }) },
-    $queryRaw: jest.fn().mockResolvedValue([]),
-    $transaction: jest.fn(),
-  };
-  prisma.$transaction.mockImplementation(
-    (work: (tx: typeof prisma) => Promise<unknown>) => work(prisma),
-  );
-  return prisma;
+  });
 }
 
 describe('QuestProgressService', () => {

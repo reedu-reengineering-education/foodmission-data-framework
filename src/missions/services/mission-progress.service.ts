@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { MissionProgress, RewardSourceType } from '@prisma/client';
+import { RewardSourceType } from '@prisma/client';
 import { PaginatedResponseDto } from '../../common/dto/api-response.dto';
 import { PaginatedLangQueryDto } from '../../learning/dto/paginated-lang-query.dto';
 import { overlayTitles } from '../../learning/utils/overlay-titles';
@@ -14,6 +14,10 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { CompletionRewardService } from '../../gamification/services/completion-reward.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { ProgressStatus } from '../../common/progress-status';
+import {
+  assertProgressUpdatable,
+  assertValidProgressUpdate,
+} from '../../common/progress-update-guard';
 import { progressEventKey } from '../../common/progress-event-keys';
 import {
   RecordUserEventInput,
@@ -117,11 +121,12 @@ export class MissionProgressService {
 
     const mission = await this.requireMission(codeOrId);
 
+    assertValidProgressUpdate('mission', updateDto);
     const { previous, updated } = await this.missionProgressRepository.upsert(
       userId,
       mission.id,
       updateDto,
-      (current) => assertMissionUpdatable(current, updateDto),
+      (current) => assertProgressUpdatable('mission', current, updateDto),
     );
 
     const wasIdle =
@@ -436,23 +441,4 @@ function isNumberRecord(value: unknown): value is Record<string, number> {
     !Array.isArray(value) &&
     Object.values(value).every((v) => typeof v === 'number')
   );
-}
-
-function assertMissionUpdatable(
-  current: MissionProgress | null,
-  updateDto: UpdateMissionProgressDto,
-): void {
-  if (updateDto.failed && updateDto.completed) {
-    throw new BadRequestException(
-      'A mission cannot be failed and completed at once',
-    );
-  }
-  if (current?.status === ProgressStatus.FAILED) {
-    throw new BadRequestException(
-      'This mission has failed; restart it to try again',
-    );
-  }
-  if (updateDto.failed && current?.completed) {
-    throw new BadRequestException('A completed mission cannot be failed');
-  }
 }

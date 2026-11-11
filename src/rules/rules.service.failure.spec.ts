@@ -11,6 +11,7 @@ import { CompletionRewardAwarder } from '../gamification/completion-reward.types
 import { RulesCoverageDoc } from './rule-schema';
 import { RulesService } from './rules.service';
 import { RulesDeadlineScheduler } from './rules-deadline.scheduler';
+import { withInteractiveTransaction } from '../common/testing';
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -43,7 +44,7 @@ const RULES = {
 } as unknown as RulesCoverageDoc;
 
 function buildDb() {
-  const db = {
+  return withInteractiveTransaction({
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -69,13 +70,7 @@ function buildDb() {
       findUnique: jest.fn().mockResolvedValue(null),
       upsert: jest.fn().mockResolvedValue({}),
     },
-    $queryRaw: jest.fn().mockResolvedValue([]),
-    $transaction: jest.fn(),
-  };
-  db.$transaction.mockImplementation(
-    (work: (tx: typeof db) => Promise<unknown>) => work(db),
-  );
-  return db;
+  });
 }
 
 describe('RulesService failure', () => {

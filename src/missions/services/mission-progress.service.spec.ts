@@ -544,7 +544,7 @@ describe('MissionProgressService', () => {
         await expect(
           service.update('m1', { failed: true, completed: true }, 'u1'),
         ).rejects.toThrow(BadRequestException);
-        expect(userEventService.record).not.toHaveBeenCalled();
+        expect(repository.upsert).not.toHaveBeenCalled();
       });
 
       it('rejects any update to a failed mission', async () => {

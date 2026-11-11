@@ -524,17 +524,17 @@ export class RulesService implements OnModuleInit {
   }
 
   private async syncProgress(
-    db: Prisma.TransactionClient,
+    tx: Prisma.TransactionClient,
     events: UserEventRow[],
     userId: string,
     catalogItem: CatalogItem,
     entry: RuleEntry,
     kind: 'mission' | 'challenge',
   ): Promise<CompletionAward | null> {
-    await lockProgressRow(db, kind, userId, catalogItem.id);
+    await lockProgressRow(tx, kind, userId, catalogItem.id);
     const previous =
       kind === 'mission'
-        ? await db.missionProgress.findUnique({
+        ? await tx.missionProgress.findUnique({
             where: { userId_missionId: { userId, missionId: catalogItem.id } },
             select: {
               progress: true,
@@ -543,7 +543,7 @@ export class RulesService implements OnModuleInit {
               inputs: true,
             },
           })
-        : await db.challengeProgress.findUnique({
+        : await tx.challengeProgress.findUnique({
             where: {
               userId_challengeId: { userId, challengeId: catalogItem.id },
             },
@@ -610,7 +610,7 @@ export class RulesService implements OnModuleInit {
     if (kind === 'mission') {
       // Never creates the row. It may have been removed since it was read
       // (e.g. a quest switch).
-      const { count } = await db.missionProgress.updateMany({
+      const { count } = await tx.missionProgress.updateMany({
         where: { userId, missionId: catalogItem.id },
         data,
       });
@@ -618,7 +618,7 @@ export class RulesService implements OnModuleInit {
         return null;
       }
     } else {
-      await db.challengeProgress.upsert({
+      await tx.challengeProgress.upsert({
         where: { userId_challengeId: { userId, challengeId: catalogItem.id } },
         create: { userId, challengeId: catalogItem.id, ...data },
         update: data,
@@ -626,7 +626,7 @@ export class RulesService implements OnModuleInit {
     }
 
     if (started) {
-      await this.emitDerivedEvent(db, {
+      await this.emitDerivedEvent(tx, {
         userId,
         kind,
         event:
@@ -641,7 +641,7 @@ export class RulesService implements OnModuleInit {
         startedAt,
       });
     } else if (updated) {
-      await this.emitDerivedEvent(db, {
+      await this.emitDerivedEvent(tx, {
         userId,
         kind,
         event:
@@ -659,7 +659,7 @@ export class RulesService implements OnModuleInit {
 
     if (failed) {
       // Rows reach here at most once as FAILED: resolved rows are skipped.
-      await this.emitDerivedEvent(db, {
+      await this.emitDerivedEvent(tx, {
         userId,
         kind,
         event:
@@ -680,7 +680,7 @@ export class RulesService implements OnModuleInit {
       return null;
     }
 
-    await this.emitDerivedEvent(db, {
+    await this.emitDerivedEvent(tx, {
       userId,
       kind,
       event:
@@ -712,7 +712,7 @@ export class RulesService implements OnModuleInit {
    * evaluation.
    */
   private async emitDerivedEvent(
-    db: Prisma.TransactionClient,
+    tx: Prisma.TransactionClient,
     input: {
       userId: string;
       kind: 'mission' | 'challenge';
@@ -752,7 +752,7 @@ export class RulesService implements OnModuleInit {
       },
       // The transaction that wrote the progress row, so the event lands
       // atomically with the row it describes.
-      db,
+      tx,
     );
   }
 

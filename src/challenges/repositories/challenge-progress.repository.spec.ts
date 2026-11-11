@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressRepository } from './challenge-progress.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { isInCurrentQuest } from '../../quests/current-quest-membership';
+import { withInteractiveTransaction } from '../../common/testing';
 
 jest.mock('../../quests/current-quest-membership', () => ({
   isInCurrentQuest: jest.fn().mockResolvedValue(true),
@@ -17,7 +18,7 @@ describe('ChallengeProgressRepository', () => {
         ChallengeProgressRepository,
         {
           provide: PrismaService,
-          useValue: {
+          useValue: withInteractiveTransaction({
             challenge: {
               findFirst: jest.fn(),
             },
@@ -27,9 +28,7 @@ describe('ChallengeProgressRepository', () => {
               upsert: jest.fn(),
               update: jest.fn(),
             },
-            $queryRaw: jest.fn().mockResolvedValue([]),
-            $transaction: jest.fn(),
-          },
+          }),
         },
       ],
     }).compile();
@@ -38,9 +37,6 @@ describe('ChallengeProgressRepository', () => {
       ChallengeProgressRepository,
     );
     prisma = module.get<PrismaService>(PrismaService);
-    (prisma.$transaction as jest.Mock).mockImplementation(
-      (work: (tx: PrismaService) => Promise<unknown>) => work(prisma),
-    );
   });
 
   it('should be defined', () => {

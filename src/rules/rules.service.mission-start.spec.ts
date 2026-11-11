@@ -9,6 +9,7 @@ import {
 import { CompletionRewardAwarder } from '../gamification/completion-reward.types';
 import { RulesCoverageDoc } from './rule-schema';
 import { RulesService } from './rules.service';
+import { withInteractiveTransaction } from '../common/testing';
 
 /** One mission that completes on a single MEAL_LOGGED. */
 const RULES = {
@@ -41,7 +42,7 @@ const RULES = {
 const STARTED_AT = new Date(Date.now() - 60 * 60 * 1000);
 
 function buildDb() {
-  const db = {
+  return withInteractiveTransaction({
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -71,13 +72,7 @@ function buildDb() {
       findMany: jest.fn().mockResolvedValue([]),
       findUnique: jest.fn().mockResolvedValue(null),
     },
-    $queryRaw: jest.fn().mockResolvedValue([]),
-    $transaction: jest.fn(),
-  };
-  db.$transaction.mockImplementation(
-    (work: (tx: typeof db) => Promise<unknown>) => work(db),
-  );
-  return db;
+  });
 }
 
 describe('RulesService missions need an explicit start', () => {

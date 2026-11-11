@@ -8,6 +8,10 @@ import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
+import {
+  InteractiveTransactionMock,
+  withInteractiveTransaction,
+} from '../../common/testing';
 
 describe('LearningService', () => {
   let service: LearningService;
@@ -40,9 +44,7 @@ describe('LearningService', () => {
     mission: { findMany: jest.Mock };
     challenge: { findMany: jest.Mock };
     microLearning: { findMany: jest.Mock };
-    $transaction: jest.Mock;
-    $queryRaw: jest.Mock;
-  };
+  } & InteractiveTransactionMock;
 
   const mockTranslations = {
     resolveLocale: jest.fn((lang?: string) => lang ?? DEFAULT_LOCALE),
@@ -69,7 +71,7 @@ describe('LearningService', () => {
   };
 
   beforeEach(async () => {
-    prisma = {
+    prisma = withInteractiveTransaction({
       dimension: {
         findMany: jest.fn(),
         findFirst: jest.fn(),
@@ -105,14 +107,6 @@ describe('LearningService', () => {
       mission: { findMany: jest.fn().mockResolvedValue([]) },
       challenge: { findMany: jest.fn().mockResolvedValue([]) },
       microLearning: { findMany: jest.fn().mockResolvedValue([]) },
-      $transaction: jest.fn(),
-      $queryRaw: jest.fn().mockResolvedValue([]),
-    };
-    prisma.$transaction.mockImplementation(async (arg: unknown) => {
-      if (typeof arg === 'function') {
-        return (arg as (tx: typeof prisma) => Promise<unknown>)(prisma);
-      }
-      return Promise.all(arg as Promise<unknown>[]);
     });
 
     userEventService = {

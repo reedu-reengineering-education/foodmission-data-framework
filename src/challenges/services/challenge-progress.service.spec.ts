@@ -195,7 +195,7 @@ describe('ChallengeProgressService', () => {
         service.update('CH.A1.1', { completed: true }, 'u1'),
       ).rejects.toThrow(BadRequestException);
       expect(repository.isInCurrentQuest).toHaveBeenCalledWith('u1', 'CH.A1.1');
-      expect(userEventService.record).not.toHaveBeenCalled();
+      expect(repository.upsert).not.toHaveBeenCalled();
       expect(userEventService.record).not.toHaveBeenCalled();
       expect(walletService.award).not.toHaveBeenCalled();
     });
@@ -542,7 +542,7 @@ describe('ChallengeProgressService', () => {
         await expect(
           service.update('c1', { failed: true, completed: true }, 'u1'),
         ).rejects.toThrow(BadRequestException);
-        expect(userEventService.record).not.toHaveBeenCalled();
+        expect(repository.upsert).not.toHaveBeenCalled();
       });
 
       it('rejects any update to a failed challenge', async () => {

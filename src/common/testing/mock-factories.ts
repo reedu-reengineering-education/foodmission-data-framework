@@ -33,3 +33,23 @@ export const createMockLoggingService = (
 
   return mockLoggingService;
 };
+
+export type InteractiveTransactionMock = {
+  $queryRaw: jest.Mock;
+  $transaction: jest.Mock;
+};
+
+export function withInteractiveTransaction<T extends object>(
+  db: T,
+): T & InteractiveTransactionMock {
+  const mocked = Object.assign(db, {
+    $queryRaw: jest.fn().mockResolvedValue([]),
+    $transaction: jest.fn(),
+  });
+  mocked.$transaction.mockImplementation((work: unknown) =>
+    typeof work === 'function'
+      ? (work as (tx: typeof mocked) => Promise<unknown>)(mocked)
+      : Promise.all(work as Promise<unknown>[]),
+  );
+  return mocked;
+}
