@@ -5,6 +5,7 @@ import { seedRecipes } from './prod/themealdb';
 import { seedFoodKeeper } from './prod/foodkeeper';
 import { linkShelfLife } from './prod/link-shelf-life';
 import { backfillIngredientUnits } from './prod/backfill-ingredient-units';
+import { backfillRecipeNutrition } from './prod/backfill-recipe-nutrition';
 import { seedDimensionsAndTopics } from './shared/dimensions-topics';
 import { seedStandardRewards } from './shared/rewards';
 import { seedFoodFacts } from './shared/food-facts';
@@ -81,6 +82,7 @@ async function main() {
     }
 
     await backfillIngredientUnits(prisma);
+    await backfillRecipeNutrition(prisma);
 
     const shelfLifeRes = await seedFoodKeeper(prisma, { skipExisting: true });
     if (shelfLifeRes.errors > 0) {

@@ -21,6 +21,7 @@ import { seedMeals } from '../scripts/seeds/dev/meals';
 import { seedFoodKeeper } from '../scripts/seeds/prod/foodkeeper';
 import { linkShelfLife } from '../scripts/seeds/prod/link-shelf-life';
 import { backfillIngredientUnits } from '../scripts/seeds/prod/backfill-ingredient-units';
+import { backfillRecipeNutrition } from '../scripts/seeds/prod/backfill-recipe-nutrition';
 import { seedSurveys } from '../scripts/seeds/prod/surveys';
 import { seedDimensionsAndTopics } from '../scripts/seeds/shared/dimensions-topics';
 import { seedStandardRewards } from '../scripts/seeds/shared/rewards';
@@ -71,6 +72,7 @@ async function seedProduction() {
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
   const recipes = await seedRecipes(prisma);
   await backfillIngredientUnits(prisma);
+  await backfillRecipeNutrition(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
   const surveys = await seedSurveys(prisma);
@@ -184,6 +186,7 @@ async function seedDevelopment() {
   // --- Recipes then meals (meals attach to seeded recipes) ---
   const recipes = await seedRecipes(prisma, { skipExisting });
   await backfillIngredientUnits(prisma);
+  await backfillRecipeNutrition(prisma);
   const meals = await seedMeals(prisma);
 
   // --- Shelf-life reference data, then link rows onto FoodProduct / GenericFood ---
