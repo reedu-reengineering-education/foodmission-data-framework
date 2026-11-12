@@ -178,10 +178,8 @@ function toRecipeCreateData(
     dietaryLabels: recipe.dietaryLabels ?? [],
     servings: recipe.servings ?? 4,
     allergens: mapAllergensToEnum(recipe.allergens),
-    nutritionalInfo:
-      recipe.nutritionalInfo != null
-        ? (recipe.nutritionalInfo as Prisma.InputJsonValue)
-        : undefined,
+    // Nutrition is calculated later by backfillRecipeNutrition. The JSON
+    // values predate the NEVO links and are not copied.
     sustainabilityScore: recipe.sustainabilityScore ?? undefined,
     isPublic: true,
     userId: null,
@@ -207,13 +205,11 @@ export async function seedRecipes(
   console.log(`   📄 ${recipes.length} recipes`);
   console.log(`   🥕 ${ingredientCount} ingredient entries`);
   console.log(`   🔗 ${data.ingredientMappings.length} ingredient mappings`);
-  const enrichedCount = recipes.filter(
-    (r) => r.nutritionalInfo != null || (r.allergens?.length ?? 0) > 0,
+  const withAllergens = recipes.filter(
+    (r) => (r.allergens?.length ?? 0) > 0,
   ).length;
-  if (enrichedCount > 0) {
-    console.log(
-      `   📊 ${enrichedCount} recipes with nutritionalInfo/allergens/sustainability`,
-    );
+  if (withAllergens > 0) {
+    console.log(`   📊 ${withAllergens} recipes with allergens`);
   }
 
   const genericFoodByNevoCode = new Map<number, string>();

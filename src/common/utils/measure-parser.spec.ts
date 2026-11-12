@@ -3,6 +3,7 @@ import {
   parseFraction,
   getAverageWeight,
   parseQuantityUnit,
+  quantityToGrams,
   MAX_MEASURE_LENGTH,
 } from './measure-parser';
 
@@ -508,5 +509,61 @@ describe('parseQuantityUnit', () => {
     '0',
   ])('returns null for %s', (measure) => {
     expect(parseQuantityUnit(measure)).toBeNull();
+  });
+});
+
+describe('quantityToGrams', () => {
+  it('converts a cup of milk as 240 ml at water density', () => {
+    const result = quantityToGrams(
+      { quantity: 240, unit: 'ML' },
+      'Milk',
+      '1 cup',
+    );
+    expect(result?.grams).toBe(240);
+    expect(result?.confidence).toBe('medium');
+  });
+
+  it('converts a cup of flour with flour density', () => {
+    const result = quantityToGrams(
+      { quantity: 240, unit: 'ML' },
+      'Flour',
+      '1 cup',
+    );
+    expect(result?.grams).toBeCloseTo(127.2, 1);
+  });
+
+  it('converts oil by density rather than 1 g per ml', () => {
+    const result = quantityToGrams(
+      { quantity: 30, unit: 'ML' },
+      'Olive oil',
+      '2 tablespoons',
+    );
+    expect(result?.grams).toBeCloseTo(27.3, 1);
+  });
+
+  it('uses a count word from the original measure', () => {
+    const result = quantityToGrams(
+      { quantity: 1, unit: 'PIECES' },
+      'Tomatoes',
+      '1 can',
+    );
+    expect(result?.grams).toBe(400);
+  });
+
+  it('uses the piece-weight table for a known food', () => {
+    const result = quantityToGrams({ quantity: 2, unit: 'PIECES' }, 'Egg', '2');
+    expect(result?.grams).toBe(100);
+  });
+
+  it('returns null for a piece with no known weight', () => {
+    expect(
+      quantityToGrams({ quantity: 1, unit: 'PIECES' }, 'Dragon fruit', '1'),
+    ).toBeNull();
+  });
+
+  it('does not treat black pepper as a 150 g vegetable', () => {
+    expect(
+      quantityToGrams({ quantity: 1, unit: 'PIECES' }, 'Black pepper', '1'),
+    ).toBeNull();
   });
 });

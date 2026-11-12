@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Prisma } from '@prisma/client';
 import { RecipeNutritionService } from './recipe-nutrition.service';
 import { PrismaService } from '../../database/prisma.service';
 import { RECIPE_INGREDIENT_APPLE_GENERIC_FOOD } from '../../../test/fixtures/food-ref.fixtures';
@@ -34,10 +35,7 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('non-existent');
 
-      expect(result).toEqual({
-        confidence: 0,
-        missingIngredients: [],
-      });
+      expect(result).toBeNull();
     });
 
     it('should return empty nutrition for recipe with no ingredients', async () => {
@@ -49,8 +47,10 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('recipe-1');
 
-      expect(result.confidence).toBe(0);
-      expect(result.missingIngredients).toEqual([]);
+      expect(result).toMatchObject({
+        confidence: 0,
+        missingIngredients: [],
+      });
     });
 
     it('should aggregate nutrition from GenericFood', async () => {
@@ -89,12 +89,12 @@ describe('RecipeNutritionService', () => {
       const result = await service.calculateNutrition('recipe-1');
 
       // 200g of chicken: 120kcal/100g * 2 = 240kcal
-      expect(result.energyKcal).toBe(240);
-      expect(result.proteins).toBe(44);
-      expect(result.fat).toBe(6);
-      expect(result.confidence).toBeGreaterThan(0.9); // high confidence for gram measure
-      expect(result.servings).toBe(2);
-      expect(result.perServing?.energyKcal).toBe(120);
+      expect(result?.energyKcal).toBe(240);
+      expect(result?.proteins).toBe(44);
+      expect(result?.fat).toBe(6);
+      expect(result?.confidence).toBeGreaterThan(0.9);
+      expect(result?.servings).toBe(2);
+      expect(result?.perServing?.energyKcal).toBe(120);
     });
 
     it('should aggregate nutrition from FoodProduct', async () => {
@@ -132,10 +132,10 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('recipe-1');
 
-      // 2 tbsp = 30g, so 884kcal/100g * 0.3 = 265.2 → 265.2
-      expect(result.energyKcal).toBeCloseTo(265.2, 0);
-      expect(result.fat).toBe(30);
-      expect(result.confidence).toBeGreaterThan(0.6); // medium confidence for volume
+      // 2 tbsp = 30 ml × 0.91 g/ml = 27.3 g. 884 kcal/100g × 0.273 = 241.3
+      expect(result?.energyKcal).toBeCloseTo(241.3, 0);
+      expect(result?.fat).toBeCloseTo(27.3, 0);
+      expect(result?.confidence).toBeGreaterThan(0.6);
     });
 
     it('should handle multiple ingredients', async () => {
@@ -201,10 +201,10 @@ describe('RecipeNutritionService', () => {
       // Rice: 100g = 130kcal
       // Egg: 2 eggs = 100g (50g each), 155kcal
       // Total: 285kcal
-      expect(result.energyKcal).toBe(285);
-      expect(result.proteins).toBeCloseTo(15.7, 0); // 2.7 + 13
-      expect(result.servings).toBe(2);
-      expect(result.perServing?.energyKcal).toBe(142.5);
+      expect(result?.energyKcal).toBe(285);
+      expect(result?.proteins).toBeCloseTo(15.7, 0);
+      expect(result?.servings).toBe(2);
+      expect(result?.perServing?.energyKcal).toBe(142.5);
     });
 
     it('should track missing ingredients', async () => {
@@ -236,8 +236,9 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('recipe-1');
 
-      expect(result.missingIngredients).toContain('Secret Spice');
-      expect(result.confidence).toBeLessThan(1); // reduced due to missing ingredient
+      expect(result?.missingIngredients).toContain('Secret Spice');
+      expect(result?.energyKcal).toBe(165);
+      expect(result?.confidence).toBe(1);
     });
 
     it('should skip qualitative measures', async () => {
@@ -278,9 +279,10 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('recipe-1');
 
-      // Salt "to taste" should be skipped, so sodium should only be from chicken
-      expect(result.sodium).toBe(74);
-      expect(result.energyKcal).toBe(165);
+      // 1 g of salt (38758 mg sodium / 100 g) plus the chicken.
+      expect(result?.sodium).toBe(461.6);
+      expect(result?.energyKcal).toBe(165);
+      expect(result?.missingIngredients).toContain('Salt');
     });
 
     it('should not include perServing when servings is null', async () => {
@@ -309,8 +311,8 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('recipe-1');
 
-      expect(result.servings).toBeUndefined();
-      expect(result.perServing).toBeUndefined();
+      expect(result?.servings).toBeUndefined();
+      expect(result?.perServing).toBeUndefined();
     });
 
     it('should handle ingredient without measure', async () => {
@@ -329,8 +331,7 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('recipe-1');
 
-      // Defaults to 100g when measure is null
-      expect(result.energyKcal).toBe(52);
+      expect(result).toBeNull();
     });
   });
 
@@ -371,8 +372,34 @@ describe('RecipeNutritionService', () => {
       });
 
       // 500g of beef = 1250kcal
-      expect(result.energyKcal).toBe(1250);
-      expect(result.perServing?.energyKcal).toBe(312.5);
+      expect(result?.energyKcal).toBe(1250);
+      expect(result?.perServing?.energyKcal).toBe(312.5);
+    });
+
+    it('should clear nutrition when an ingredient cannot be weighed', async () => {
+      mockPrismaService.recipe.findUnique.mockResolvedValue({
+        id: 'recipe-1',
+        servings: 1,
+        ingredients: [
+          {
+            name: 'Apple',
+            measure: null,
+            quantity: null,
+            unit: null,
+            foodProduct: null,
+            genericFood: RECIPE_INGREDIENT_APPLE_GENERIC_FOOD,
+          },
+        ],
+      });
+      mockPrismaService.recipe.update.mockResolvedValue({});
+
+      const result = await service.updateRecipeNutrition('recipe-1');
+
+      expect(result).toBeNull();
+      expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
+        where: { id: 'recipe-1' },
+        data: { nutritionalInfo: Prisma.JsonNull },
+      });
     });
   });
 });
