@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressRepository } from './challenge-progress.repository';
 import { PrismaService } from '../../database/prisma.service';
 import { isInCurrentQuest } from '../../quests/current-quest-membership';
-import { withInteractiveTransaction } from '../../common/testing';
 
 jest.mock('../../quests/current-quest-membership', () => ({
   isInCurrentQuest: jest.fn().mockResolvedValue(true),
@@ -18,7 +17,7 @@ describe('ChallengeProgressRepository', () => {
         ChallengeProgressRepository,
         {
           provide: PrismaService,
-          useValue: withInteractiveTransaction({
+          useValue: {
             challenge: {
               findFirst: jest.fn(),
             },
@@ -28,7 +27,7 @@ describe('ChallengeProgressRepository', () => {
               upsert: jest.fn(),
               update: jest.fn(),
             },
-          }),
+          },
         },
       ],
     }).compile();
@@ -123,44 +122,6 @@ describe('ChallengeProgressRepository', () => {
   });
 
   describe('upsert', () => {
-    const assertNothing = jest.fn();
-
-    it('locks the row, then checks the locked row before writing', async () => {
-      const locked = { progress: 10, completed: false };
-      (prisma.challengeProgress.findUnique as jest.Mock).mockResolvedValue(
-        locked,
-      );
-      const guard = jest.fn(() => {
-        throw new Error('not updatable');
-      });
-
-      await expect(
-        repository.upsert('u1', 'c1', { progress: 40 }, guard),
-      ).rejects.toThrow('not updatable');
-
-      expect(guard).toHaveBeenCalledWith(locked);
-      expect(
-        (prisma.$queryRaw as jest.Mock).mock.invocationCallOrder[0],
-      ).toBeLessThan(
-        (prisma.challengeProgress.findUnique as jest.Mock).mock
-          .invocationCallOrder[0],
-      );
-      expect(prisma.challengeProgress.upsert).not.toHaveBeenCalled();
-    });
-
-    it('returns the locked previous row with the written one', async () => {
-      const previous = { progress: 10, completed: false };
-      const updated = { progress: 40, completed: false };
-      (prisma.challengeProgress.findUnique as jest.Mock).mockResolvedValue(
-        previous,
-      );
-      (prisma.challengeProgress.upsert as jest.Mock).mockResolvedValue(updated);
-
-      await expect(
-        repository.upsert('u1', 'c1', { progress: 40 }, assertNothing),
-      ).resolves.toEqual({ previous, updated });
-    });
-
     it('should call prisma.challengeProgress.upsert', async () => {
       const mockReturn = {
         userId: 'u1',
@@ -179,7 +140,7 @@ describe('ChallengeProgressRepository', () => {
           completed: true,
           progress: 1,
         },
-        assertNothing,
+        prisma,
       );
       expect(prisma.challengeProgress.upsert).toHaveBeenCalledWith({
         where: { userId_challengeId: { userId: 'u1', challengeId: 'c1' } },
@@ -200,7 +161,7 @@ describe('ChallengeProgressRepository', () => {
         },
         include: { challenge: true },
       });
-      expect(result.updated).toBe(mockReturn);
+      expect(result).toBe(mockReturn);
     });
 
     it('marks the challenge FAILED and not completed when given up', async () => {
@@ -212,7 +173,7 @@ describe('ChallengeProgressRepository', () => {
         'u1',
         'c1',
         { failed: true, progress: 40 },
-        assertNothing,
+        prisma,
       );
 
       const call = (prisma.challengeProgress.upsert as jest.Mock).mock
@@ -230,7 +191,7 @@ describe('ChallengeProgressRepository', () => {
         startedAt: new Date(),
       });
 
-      await repository.upsert('u1', 'c1', { progress: 0 }, assertNothing);
+      await repository.upsert('u1', 'c1', { progress: 0 }, prisma);
 
       const call = (prisma.challengeProgress.upsert as jest.Mock).mock
         .calls[0][0];

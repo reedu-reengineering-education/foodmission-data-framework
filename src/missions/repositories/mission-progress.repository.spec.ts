@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MissionProgressRepository } from './mission-progress.repository';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { withInteractiveTransaction } from '../../common/testing';
 
 describe('MissionProgressRepository', () => {
   let repository: MissionProgressRepository;
@@ -14,7 +13,7 @@ describe('MissionProgressRepository', () => {
         MissionProgressRepository,
         {
           provide: PrismaService,
-          useValue: withInteractiveTransaction({
+          useValue: {
             mission: {
               findFirst: jest.fn(),
             },
@@ -26,7 +25,7 @@ describe('MissionProgressRepository', () => {
               upsert: jest.fn(),
               update: jest.fn(),
             },
-          }),
+          },
         },
       ],
     }).compile();
@@ -111,44 +110,6 @@ describe('MissionProgressRepository', () => {
   });
 
   describe('upsert', () => {
-    const assertNothing = jest.fn();
-
-    it('locks the row, then checks the locked row before writing', async () => {
-      const locked = { progress: 10, completed: false };
-      (prisma.missionProgress.findUnique as jest.Mock).mockResolvedValue(
-        locked,
-      );
-      const guard = jest.fn(() => {
-        throw new Error('not updatable');
-      });
-
-      await expect(
-        repository.upsert('u1', 'm1', { progress: 40 }, guard),
-      ).rejects.toThrow('not updatable');
-
-      expect(guard).toHaveBeenCalledWith(locked);
-      expect(
-        (prisma.$queryRaw as jest.Mock).mock.invocationCallOrder[0],
-      ).toBeLessThan(
-        (prisma.missionProgress.findUnique as jest.Mock).mock
-          .invocationCallOrder[0],
-      );
-      expect(prisma.missionProgress.upsert).not.toHaveBeenCalled();
-    });
-
-    it('returns the locked previous row with the written one', async () => {
-      const previous = { progress: 10, completed: false };
-      const updated = { progress: 40, completed: false };
-      (prisma.missionProgress.findUnique as jest.Mock).mockResolvedValue(
-        previous,
-      );
-      (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue(updated);
-
-      await expect(
-        repository.upsert('u1', 'm1', { progress: 40 }, assertNothing),
-      ).resolves.toEqual({ previous, updated });
-    });
-
     it('should call prisma.missionProgress.upsert with create defaults', async () => {
       const mockReturn = { id: '1', startedAt: new Date() };
       (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue(
@@ -161,7 +122,7 @@ describe('MissionProgressRepository', () => {
           completed: true,
           progress: 50,
         },
-        assertNothing,
+        prisma,
       );
       expect(prisma.missionProgress.upsert).toHaveBeenCalledWith({
         where: { userId_missionId: { userId: 'u1', missionId: 'm1' } },
@@ -182,7 +143,7 @@ describe('MissionProgressRepository', () => {
         },
         include: { mission: true },
       });
-      expect(result.updated).toBe(mockReturn);
+      expect(result).toBe(mockReturn);
     });
 
     it('marks the mission FAILED and not completed when given up', async () => {
@@ -194,7 +155,7 @@ describe('MissionProgressRepository', () => {
         'u1',
         'm1',
         { failed: true, progress: 40 },
-        assertNothing,
+        prisma,
       );
 
       const call = (prisma.missionProgress.upsert as jest.Mock).mock
@@ -212,7 +173,7 @@ describe('MissionProgressRepository', () => {
         startedAt: new Date(),
       });
 
-      await repository.upsert('u1', 'm1', { progress: 0 }, assertNothing);
+      await repository.upsert('u1', 'm1', { progress: 0 }, prisma);
 
       const call = (prisma.missionProgress.upsert as jest.Mock).mock
         .calls[0][0];

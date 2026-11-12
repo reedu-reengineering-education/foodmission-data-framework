@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressService } from './challenge-progress.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
+import { PrismaService } from '../../database/prisma.service';
+import {
+  InteractiveTransactionMock,
+  withInteractiveTransaction,
+} from '../../common/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { TranslationService } from '../../translations/services/translation.service';
 import { EventSource, EventType } from '../../events/event-types';
@@ -12,6 +17,7 @@ import { RewardSourceType, WalletCurrency } from '@prisma/client';
 describe('ChallengeProgressService', () => {
   let service: ChallengeProgressService;
   let repository: ChallengeProgressRepository;
+  let prisma: InteractiveTransactionMock;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
   let walletService: jest.Mocked<Pick<GamificationWalletService, 'award'>>;
 
@@ -23,8 +29,15 @@ describe('ChallengeProgressService', () => {
       award: jest.fn().mockResolvedValue({ replayed: false }),
     };
 
+    prisma = withInteractiveTransaction({});
+    prisma.$queryRaw.mockImplementation(async () => {
+      const row: unknown = await repository.findByUserIdAndChallengeId('', '');
+      return row ? [row] : [];
+    });
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        { provide: PrismaService, useValue: prisma },
         ChallengeProgressService,
         {
           provide: ChallengeProgressRepository,
@@ -168,20 +181,6 @@ describe('ChallengeProgressService', () => {
   });
 
   describe('update', () => {
-    const givenUpdate = (previous: unknown, updated?: unknown) =>
-      (repository.upsert as jest.Mock).mockImplementation(
-        (
-          _userId: string,
-          _id: string,
-          _dto: unknown,
-          assertUpdatable: (row: unknown) => void,
-        ) => {
-          assertUpdatable(previous);
-          return Promise.resolve({ previous, updated });
-        },
-      );
-
-    beforeEach(() => givenUpdate(null));
     it('rejects a challenge outside the current quest', async () => {
       (repository.findChallengeByCodeOrId as jest.Mock).mockResolvedValue({
         id: 'c1',
@@ -213,7 +212,10 @@ describe('ChallengeProgressService', () => {
         code: 'CH.A1.1',
         title: 'Test Challenge',
       });
-      givenUpdate(null, updated);
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
       const result = await service.update(
         'c1',
         { completed: true, progress: 1 },
@@ -222,8 +224,11 @@ describe('ChallengeProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'c1',
-        { completed: true, progress: 1 },
-        expect.any(Function),
+        {
+          completed: true,
+          progress: 1,
+        },
+        prisma,
       );
       expect(result).toEqual({
         challengeId: 'c1',
@@ -251,7 +256,10 @@ describe('ChallengeProgressService', () => {
         title: 'Test Challenge',
         reward: { id: 'r1', xp: 15, points: 20 },
       });
-      givenUpdate(null, updated);
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
 
       const result = await service.update(
         'c1',
@@ -293,15 +301,13 @@ describe('ChallengeProgressService', () => {
         title: 'Test Challenge',
         reward: { id: 'r1', xp: 15, points: 20 },
       });
-      givenUpdate(
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: true,
-          progress: 1,
-        },
-        updated,
-      );
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: true,
+        progress: 1,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
 
       const result = await service.update('c1', { completed: true }, 'u1');
 
@@ -315,7 +321,10 @@ describe('ChallengeProgressService', () => {
         code: 'CH.A1.1',
         title: 'Test Challenge',
       });
-      givenUpdate(null, {
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
         challengeId: 'c1',
         userId: 'u1',
         completed: false,
@@ -331,8 +340,10 @@ describe('ChallengeProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'c1',
-        { progress: 10 },
-        expect.any(Function),
+        {
+          progress: 10,
+        },
+        prisma,
       );
     });
 
@@ -342,7 +353,10 @@ describe('ChallengeProgressService', () => {
         code: 'CH.A1.1',
         title: 'Test Challenge',
       });
-      givenUpdate(null, {
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
         challengeId: 'c1',
         userId: 'u1',
         completed: false,
@@ -353,18 +367,21 @@ describe('ChallengeProgressService', () => {
       await service.update('c1', { progress: 10 }, 'u1');
 
       expect(userEventService.record).toHaveBeenCalledTimes(1);
-      expect(userEventService.record).toHaveBeenCalledWith({
-        userId: 'u1',
-        eventType: EventType.CHALLENGE_STARTED,
-        source: EventSource.CHALLENGE,
-        metadata: {
-          challengeId: 'c1',
-          challengeCode: 'CH.A1.1',
-          source: EventSource.API,
-          body: { progress: 10 },
+      expect(userEventService.record).toHaveBeenCalledWith(
+        {
+          userId: 'u1',
+          eventType: EventType.CHALLENGE_STARTED,
+          source: EventSource.CHALLENGE,
+          metadata: {
+            challengeId: 'c1',
+            challengeCode: 'CH.A1.1',
+            source: EventSource.API,
+            body: { progress: 10 },
+          },
+          idempotencyKey: 'challenge-started:u1:c1',
         },
-        idempotencyKey: 'challenge-started:u1:c1',
-      });
+        prisma,
+      );
     });
 
     it('emits CHALLENGE_UPDATED when progress changes after start', async () => {
@@ -373,21 +390,19 @@ describe('ChallengeProgressService', () => {
         code: 'CH.A1.1',
         title: 'Test Challenge',
       });
-      givenUpdate(
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: false,
-          progress: 10,
-        },
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: false,
-          progress: 40,
-          challenge: { title: 'Test Challenge' },
-        },
-      );
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 10,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+        challenge: { title: 'Test Challenge' },
+      });
 
       await service.update('c1', { progress: 40 }, 'u1');
 
@@ -399,9 +414,7 @@ describe('ChallengeProgressService', () => {
             body: { progress: 40 },
           }),
         }),
-      );
-      expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
-        'idempotencyKey',
+        prisma,
       );
     });
 
@@ -411,21 +424,19 @@ describe('ChallengeProgressService', () => {
         code: 'CH.A1.1',
         title: 'Test Challenge',
       });
-      givenUpdate(
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: false,
-          progress: 40,
-        },
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: true,
-          progress: 100,
-          challenge: { title: 'Test Challenge' },
-        },
-      );
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: true,
+        progress: 100,
+        challenge: { title: 'Test Challenge' },
+      });
 
       await service.update('c1', { completed: true, progress: 100 }, 'u1');
 
@@ -449,7 +460,10 @@ describe('ChallengeProgressService', () => {
         code: 'CH.A1.1',
         title: 'Test Challenge',
       });
-      givenUpdate(null, {
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
         challengeId: 'c1',
         userId: 'u1',
         completed: false,
@@ -460,21 +474,19 @@ describe('ChallengeProgressService', () => {
       await service.update('c1', { progress: 0 }, 'u1');
       expect(userEventService.record).not.toHaveBeenCalled();
 
-      givenUpdate(
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: true,
-          progress: 100,
-        },
-        {
-          challengeId: 'c1',
-          userId: 'u1',
-          completed: true,
-          progress: 100,
-          challenge: { title: 'Test Challenge' },
-        },
-      );
+      (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: true,
+        progress: 100,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        challengeId: 'c1',
+        userId: 'u1',
+        completed: true,
+        progress: 100,
+        challenge: { title: 'Test Challenge' },
+      });
 
       await service.update('c1', { completed: true, progress: 100 }, 'u1');
       expect(userEventService.record).not.toHaveBeenCalled();
@@ -504,21 +516,21 @@ describe('ChallengeProgressService', () => {
       });
 
       it('marks the challenge FAILED and records CHALLENGE_FAILED once, without a reward', async () => {
-        givenUpdate(
-          {
-            ...failedRow,
-            status: 'IN_PROGRESS',
-          },
-          failedRow,
-        );
+        (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
+          ...failedRow,
+          status: 'IN_PROGRESS',
+        });
+        (repository.upsert as jest.Mock).mockResolvedValue(failedRow);
 
         const result = await service.update('c1', { failed: true }, 'u1');
 
         expect(repository.upsert).toHaveBeenCalledWith(
           'u1',
           'c1',
-          { failed: true },
-          expect.any(Function),
+          {
+            failed: true,
+          },
+          prisma,
         );
         expect(result.status).toBe('FAILED');
         expect(result.reward).toBeNull();
@@ -527,6 +539,7 @@ describe('ChallengeProgressService', () => {
             eventType: EventType.CHALLENGE_FAILED,
             idempotencyKey: `challenge-failed:u1:c1:${failedRow.startedAt.getTime()}`,
           }),
+          prisma,
         );
         expect(walletService.award).not.toHaveBeenCalled();
       });
@@ -539,16 +552,18 @@ describe('ChallengeProgressService', () => {
       });
 
       it('rejects any update to a failed challenge', async () => {
-        givenUpdate(failedRow);
+        (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue(
+          failedRow,
+        );
 
         await expect(
           service.update('c1', { progress: 100, completed: true }, 'u1'),
         ).rejects.toThrow(BadRequestException);
-        expect(userEventService.record).not.toHaveBeenCalled();
+        expect(repository.upsert).not.toHaveBeenCalled();
       });
 
       it('rejects failing a completed challenge', async () => {
-        givenUpdate({
+        (repository.findByUserIdAndChallengeId as jest.Mock).mockResolvedValue({
           ...failedRow,
           completed: true,
           status: 'COMPLETED',

@@ -63,9 +63,8 @@
  * - **Mission / challenge link** — optional `{ missionId? }` / `{ challengeId? }`
  *   on behavioural events; emit STARTED / UPDATED / COMPLETED / FAILED on real
  *   progress transitions (do not double-count the same action). `*_UPDATED`
- *   fires on every change of progress/completed after start, carries no
- *   idempotency key, and is deduplicated by a row lock (`progress-row-lock.ts`)
- *   rather than by key. `*_FAILED` fires once,
+ *   fires on every change of progress/completed after start and carries no
+ *   idempotency key, since values can repeat. `*_FAILED` fires once,
  *   when the rule window ends without the target, the rule's `fail` condition
  *   holds, or the user gives up. A failed item changes only through a restart
  *   (`*_RESTARTED`), which begins a new attempt from progress 0.

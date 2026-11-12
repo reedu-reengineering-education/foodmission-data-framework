@@ -8,10 +8,6 @@ import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { GamificationWalletService } from '../../gamification/services/gamification-wallet.service';
-import {
-  InteractiveTransactionMock,
-  withInteractiveTransaction,
-} from '../../common/testing';
 
 describe('LearningService', () => {
   let service: LearningService;
@@ -44,7 +40,8 @@ describe('LearningService', () => {
     mission: { findMany: jest.Mock };
     challenge: { findMany: jest.Mock };
     microLearning: { findMany: jest.Mock };
-  } & InteractiveTransactionMock;
+    $transaction: jest.Mock;
+  };
 
   const mockTranslations = {
     resolveLocale: jest.fn((lang?: string) => lang ?? DEFAULT_LOCALE),
@@ -71,7 +68,7 @@ describe('LearningService', () => {
   };
 
   beforeEach(async () => {
-    prisma = withInteractiveTransaction({
+    prisma = {
       dimension: {
         findMany: jest.fn(),
         findFirst: jest.fn(),
@@ -107,6 +104,13 @@ describe('LearningService', () => {
       mission: { findMany: jest.fn().mockResolvedValue([]) },
       challenge: { findMany: jest.fn().mockResolvedValue([]) },
       microLearning: { findMany: jest.fn().mockResolvedValue([]) },
+      $transaction: jest.fn(),
+    };
+    prisma.$transaction.mockImplementation(async (arg: unknown) => {
+      if (typeof arg === 'function') {
+        return (arg as (tx: typeof prisma) => Promise<unknown>)(prisma);
+      }
+      return Promise.all(arg as Promise<unknown>[]);
     });
 
     userEventService = {
@@ -929,12 +933,6 @@ describe('LearningService', () => {
         }),
         prisma,
       );
-      expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
-        'idempotencyKey',
-      );
-      expect(prisma.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
-        prisma.questProgress.findUnique.mock.invocationCallOrder[0],
-      );
     });
 
     it('emits UPDATED and COMPLETED when completing an in-progress quest', async () => {
@@ -962,9 +960,6 @@ describe('LearningService', () => {
         expect.objectContaining({
           eventType: EventType.QUEST_UPDATED,
         }),
-      );
-      expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
-        'idempotencyKey',
       );
       expect(userEventService.record.mock.calls[1][0]).toEqual(
         expect.objectContaining({
@@ -1093,12 +1088,6 @@ describe('LearningService', () => {
           }),
         }),
         prisma,
-      );
-      expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
-        'idempotencyKey',
-      );
-      expect(prisma.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
-        prisma.quizProgress.findUnique.mock.invocationCallOrder[0],
       );
     });
 

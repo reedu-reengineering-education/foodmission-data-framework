@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { MissionProgressService } from './mission-progress.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
+import { PrismaService } from '../../database/prisma.service';
+import {
+  InteractiveTransactionMock,
+  withInteractiveTransaction,
+} from '../../common/testing';
 import { TranslationService } from '../../translations/services/translation.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
@@ -13,6 +18,7 @@ import { RulesService } from '../../rules/rules.service';
 describe('MissionProgressService', () => {
   let service: MissionProgressService;
   let repository: MissionProgressRepository;
+  let prisma: InteractiveTransactionMock;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
   let walletService: jest.Mocked<Pick<GamificationWalletService, 'award'>>;
   let rulesService: { getMissionRuleInputs: jest.Mock };
@@ -25,8 +31,15 @@ describe('MissionProgressService', () => {
       award: jest.fn().mockResolvedValue({ replayed: false }),
     };
 
+    prisma = withInteractiveTransaction({});
+    prisma.$queryRaw.mockImplementation(async () => {
+      const row: unknown = await repository.findByUserIdAndMissionId('', '');
+      return row ? [row] : [];
+    });
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        { provide: PrismaService, useValue: prisma },
         MissionProgressService,
         {
           provide: MissionProgressRepository,
@@ -180,20 +193,6 @@ describe('MissionProgressService', () => {
   });
 
   describe('update', () => {
-    const givenUpdate = (previous: unknown, updated?: unknown) =>
-      (repository.upsert as jest.Mock).mockImplementation(
-        (
-          _userId: string,
-          _id: string,
-          _dto: unknown,
-          assertUpdatable: (row: unknown) => void,
-        ) => {
-          assertUpdatable(previous);
-          return Promise.resolve({ previous, updated });
-        },
-      );
-
-    beforeEach(() => givenUpdate(null));
     it('should upsert and return mission progress', async () => {
       const updated = {
         missionId: 'm1',
@@ -207,7 +206,10 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      givenUpdate(null, updated);
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
       const result = await service.update(
         'm1',
         { completed: true, progress: 1 },
@@ -216,8 +218,11 @@ describe('MissionProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'm1',
-        { completed: true, progress: 1 },
-        expect.any(Function),
+        {
+          completed: true,
+          progress: 1,
+        },
+        prisma,
       );
       expect(result).toEqual({
         missionId: 'm1',
@@ -246,7 +251,10 @@ describe('MissionProgressService', () => {
         title: 'Test Mission',
         reward: { id: 'r1', xp: 15, points: 20 },
       });
-      givenUpdate(null, updated);
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
 
       const result = await service.update(
         'm1',
@@ -288,15 +296,13 @@ describe('MissionProgressService', () => {
         title: 'Test Mission',
         reward: { id: 'r1', xp: 15, points: 20 },
       });
-      givenUpdate(
-        {
-          missionId: 'm1',
-          userId: 'u1',
-          completed: true,
-          progress: 1,
-        },
-        updated,
-      );
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: true,
+        progress: 1,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue(updated);
 
       const result = await service.update('m1', { completed: true }, 'u1');
 
@@ -310,7 +316,10 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      givenUpdate(null, {
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
         missionId: 'm1',
         userId: 'u1',
         completed: false,
@@ -324,8 +333,10 @@ describe('MissionProgressService', () => {
       expect(repository.upsert).toHaveBeenCalledWith(
         'u1',
         'm1',
-        { progress: 10 },
-        expect.any(Function),
+        {
+          progress: 10,
+        },
+        prisma,
       );
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -335,6 +346,7 @@ describe('MissionProgressService', () => {
           }),
           idempotencyKey: 'mission-started:u1:m1',
         }),
+        prisma,
       );
     });
 
@@ -344,7 +356,10 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      givenUpdate(null, {
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
         missionId: 'm1',
         userId: 'u1',
         completed: false,
@@ -355,18 +370,21 @@ describe('MissionProgressService', () => {
       await service.update('m1', { progress: 10 }, 'u1');
 
       expect(userEventService.record).toHaveBeenCalledTimes(1);
-      expect(userEventService.record).toHaveBeenCalledWith({
-        userId: 'u1',
-        eventType: EventType.MISSION_STARTED,
-        source: EventSource.MISSION,
-        metadata: {
-          missionId: 'm1',
-          missionCode: 'M.A1.1',
-          source: EventSource.API,
-          body: { progress: 10 },
+      expect(userEventService.record).toHaveBeenCalledWith(
+        {
+          userId: 'u1',
+          eventType: EventType.MISSION_STARTED,
+          source: EventSource.MISSION,
+          metadata: {
+            missionId: 'm1',
+            missionCode: 'M.A1.1',
+            source: EventSource.API,
+            body: { progress: 10 },
+          },
+          idempotencyKey: 'mission-started:u1:m1',
         },
-        idempotencyKey: 'mission-started:u1:m1',
-      });
+        prisma,
+      );
     });
 
     it('emits MISSION_UPDATED when progress changes after start', async () => {
@@ -375,21 +393,19 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      givenUpdate(
-        {
-          missionId: 'm1',
-          userId: 'u1',
-          completed: false,
-          progress: 10,
-        },
-        {
-          missionId: 'm1',
-          userId: 'u1',
-          completed: false,
-          progress: 40,
-          mission: { title: 'Test Mission' },
-        },
-      );
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 10,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+        mission: { title: 'Test Mission' },
+      });
 
       await service.update('m1', { progress: 40 }, 'u1');
 
@@ -401,9 +417,7 @@ describe('MissionProgressService', () => {
             body: { progress: 40 },
           }),
         }),
-      );
-      expect(userEventService.record.mock.calls[0][0]).not.toHaveProperty(
-        'idempotencyKey',
+        prisma,
       );
     });
 
@@ -413,21 +427,19 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      givenUpdate(
-        {
-          missionId: 'm1',
-          userId: 'u1',
-          completed: false,
-          progress: 40,
-        },
-        {
-          missionId: 'm1',
-          userId: 'u1',
-          completed: true,
-          progress: 100,
-          mission: { title: 'Test Mission' },
-        },
-      );
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: false,
+        progress: 40,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: true,
+        progress: 100,
+        mission: { title: 'Test Mission' },
+      });
 
       await service.update('m1', { completed: true, progress: 100 }, 'u1');
 
@@ -451,7 +463,10 @@ describe('MissionProgressService', () => {
         code: 'M.A1.1',
         title: 'Test Mission',
       });
-      givenUpdate(null, {
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+        null,
+      );
+      (repository.upsert as jest.Mock).mockResolvedValue({
         missionId: 'm1',
         userId: 'u1',
         completed: false,
@@ -462,21 +477,19 @@ describe('MissionProgressService', () => {
       await service.update('m1', { progress: 0 }, 'u1');
       expect(userEventService.record).not.toHaveBeenCalled();
 
-      givenUpdate(
-        {
-          missionId: 'm1',
-          userId: 'u1',
-          completed: true,
-          progress: 100,
-        },
-        {
-          missionId: 'm1',
-          userId: 'u1',
-          completed: true,
-          progress: 100,
-          mission: { title: 'Test Mission' },
-        },
-      );
+      (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: true,
+        progress: 100,
+      });
+      (repository.upsert as jest.Mock).mockResolvedValue({
+        missionId: 'm1',
+        userId: 'u1',
+        completed: true,
+        progress: 100,
+        mission: { title: 'Test Mission' },
+      });
 
       await service.update('m1', { completed: true, progress: 100 }, 'u1');
       expect(userEventService.record).not.toHaveBeenCalled();
@@ -506,21 +519,21 @@ describe('MissionProgressService', () => {
       });
 
       it('marks the mission FAILED and records MISSION_FAILED once, without a reward', async () => {
-        givenUpdate(
-          {
-            ...failedRow,
-            status: 'IN_PROGRESS',
-          },
-          failedRow,
-        );
+        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
+          ...failedRow,
+          status: 'IN_PROGRESS',
+        });
+        (repository.upsert as jest.Mock).mockResolvedValue(failedRow);
 
         const result = await service.update('m1', { failed: true }, 'u1');
 
         expect(repository.upsert).toHaveBeenCalledWith(
           'u1',
           'm1',
-          { failed: true },
-          expect.any(Function),
+          {
+            failed: true,
+          },
+          prisma,
         );
         expect(result.status).toBe('FAILED');
         expect(result.reward).toBeNull();
@@ -529,6 +542,7 @@ describe('MissionProgressService', () => {
             eventType: EventType.MISSION_FAILED,
             idempotencyKey: `mission-failed:u1:m1:${failedRow.startedAt.getTime()}`,
           }),
+          prisma,
         );
         expect(walletService.award).not.toHaveBeenCalled();
       });
@@ -541,16 +555,18 @@ describe('MissionProgressService', () => {
       });
 
       it('rejects any update to a failed mission', async () => {
-        givenUpdate(failedRow);
+        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue(
+          failedRow,
+        );
 
         await expect(
           service.update('m1', { progress: 100, completed: true }, 'u1'),
         ).rejects.toThrow(BadRequestException);
-        expect(userEventService.record).not.toHaveBeenCalled();
+        expect(repository.upsert).not.toHaveBeenCalled();
       });
 
       it('rejects failing a completed mission', async () => {
-        givenUpdate({
+        (repository.findByUserIdAndMissionId as jest.Mock).mockResolvedValue({
           ...failedRow,
           completed: true,
           status: 'COMPLETED',

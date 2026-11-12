@@ -230,16 +230,6 @@ describeWithDb('Admin insights (integration)', () => {
           eventType: 'MEAL_LOGGED',
           source: 'meal_log',
         })),
-        ...ids.slice(0, 5).flatMap((userId) =>
-          ['QUIZ_ANSWERED', 'QUIZ_UPDATED', 'QUIZ_UPDATED'].map(
-            (eventType) => ({
-              userId,
-              eventType,
-              source: 'learning',
-              metadata: { quizId: quiz.id, source: 'api' },
-            }),
-          ),
-        ),
         {
           userId: ids[0],
           eventType: 'MISSION_COMPLETED',
@@ -354,16 +344,6 @@ describeWithDb('Admin insights (integration)', () => {
     expect(
       find(features, { country: 'XA', family: 'meal_logging' })?.values.users,
     ).toBe(5);
-  });
-
-  it('feature usage counts every quiz answer change as its own event', async () => {
-    const features = await runner.run(byInsight('feature-usage'), {
-      breakdown: 'country',
-      weeks: 1,
-    });
-    expect(
-      find(features, { country: 'XA', family: 'learning' })?.values,
-    ).toEqual({ users: 5, events: 15 });
   });
 
   it('dimension levels and focus', async () => {

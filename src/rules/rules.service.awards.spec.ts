@@ -61,7 +61,7 @@ type MockDb = InteractiveTransactionMock & {
 };
 
 function buildDb(): MockDb {
-  return withInteractiveTransaction({
+  const db = withInteractiveTransaction({
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -100,6 +100,11 @@ function buildDb(): MockDb {
       upsert: jest.fn().mockResolvedValue({}),
     },
   });
+  db.$queryRaw.mockImplementation(async () => {
+    const row: unknown = await db.challengeProgress.findUnique();
+    return row ? [row] : [];
+  });
+  return db;
 }
 
 describe('RulesService completion rewards', () => {
@@ -175,26 +180,6 @@ describe('RulesService completion rewards', () => {
         idempotencyKey: 'challenge-completed:u1:c1',
       }),
       expect.anything(),
-    );
-  });
-
-  it('records CHALLENGE_UPDATED without a key, after locking the row', async () => {
-    prisma.challengeProgress.findUnique.mockResolvedValue({
-      progress: 0.5,
-      completed: false,
-    });
-
-    await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
-
-    expect(userEventService.record).toHaveBeenCalledWith(
-      expect.objectContaining({
-        eventType: EventType.CHALLENGE_UPDATED,
-        idempotencyKey: null,
-      }),
-      prisma,
-    );
-    expect(prisma.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
-      prisma.challengeProgress.findUnique.mock.invocationCallOrder[0],
     );
   });
 

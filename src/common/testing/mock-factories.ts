@@ -42,14 +42,13 @@ export type InteractiveTransactionMock = {
 export function withInteractiveTransaction<T extends object>(
   db: T,
 ): T & InteractiveTransactionMock {
-  const mocked = Object.assign(db, {
+  const mocked = {
+    ...db,
     $queryRaw: jest.fn().mockResolvedValue([]),
     $transaction: jest.fn(),
-  });
-  mocked.$transaction.mockImplementation((work: unknown) =>
-    typeof work === 'function'
-      ? (work as (tx: typeof mocked) => Promise<unknown>)(mocked)
-      : Promise.all(work as Promise<unknown>[]),
+  };
+  mocked.$transaction.mockImplementation(
+    (work: (tx: typeof mocked) => Promise<unknown>) => work(mocked),
   );
   return mocked;
 }

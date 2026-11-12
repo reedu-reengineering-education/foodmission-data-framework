@@ -17,6 +17,7 @@ import { CompletionRewardService } from '../src/gamification/services/completion
 import { QuestProgressService } from '../src/quests/quest-progress.service';
 import { AfterCommitQueue } from '../src/common/after-commit/after-commit.queue';
 import { DimensionLevelService } from '../src/gamification/services/dimension-level.service';
+import { USER_EVENT_RECORDER } from '../src/events/user-event-recorder.types';
 
 const testDbUrl = process.env.TEST_DATABASE_URL;
 const describeWithDb = testDbUrl ? describe : describe.skip;
@@ -27,8 +28,12 @@ const PARALLEL = 5;
 const times = <T>(n: number, make: () => T): T[] =>
   Array.from({ length: n }, make);
 
+const RATIO_MISSION = 'M.A1.2';
+
 async function cleanup(prisma: PrismaClient) {
   await prisma.user.deleteMany({ where: { keycloakId: { startsWith: P } } });
+  await prisma.quest.deleteMany({ where: { code: { startsWith: P } } });
+  await prisma.mission.deleteMany({ where: { code: RATIO_MISSION } });
   await prisma.dimension.deleteMany({ where: { code: { startsWith: P } } });
 }
 
@@ -38,6 +43,9 @@ describeWithDb('progress UPDATED events (integration)', () => {
   let missions: MissionProgressService;
   let challenges: ChallengeProgressService;
   let quests: QuestProgressService;
+  let rules: RulesService;
+  let ratioQuestId: string;
+  let ratioMissionId: string;
   let questId: string;
   let userCount = 0;
 
@@ -172,6 +180,7 @@ describeWithDb('progress UPDATED events (integration)', () => {
       recorder,
     );
     missions = new MissionProgressService(
+      db,
       new MissionProgressRepository(db),
       translations as unknown as TranslationService,
       recorder,
@@ -179,11 +188,52 @@ describeWithDb('progress UPDATED events (integration)', () => {
       { getMissionRuleInputs: () => null } as unknown as RulesService,
     );
     challenges = new ChallengeProgressService(
+      db,
       new ChallengeProgressRepository(db),
       translations as unknown as TranslationService,
       recorder,
       completionRewards,
     );
+    rules = new RulesService(
+      db,
+      {
+        get: (token: unknown) => {
+          if (token === USER_EVENT_RECORDER) return recorder;
+          throw new Error('not mounted');
+        },
+      } as unknown as ModuleRef,
+      new AfterCommitQueue(),
+    );
+    const ratioMission = await prisma.mission.create({
+      data: {
+        code: RATIO_MISSION,
+        dimensionId: dimension.id,
+        level: 'BEGINNER',
+        title: 'Ratio mission',
+        duration: '7 days',
+        goal: 'goal',
+        whyItMatters: 'why',
+      },
+    });
+    ratioMissionId = ratioMission.id;
+    const ratioQuest = await prisma.quest.create({
+      data: {
+        code: `${P}_RATIO_QUEST`,
+        dimensionId: dimension.id,
+        level: 'BEGINNER',
+        items: {
+          create: [
+            {
+              contentType: 'MISSION',
+              contentCode: RATIO_MISSION,
+              sortOrder: 0,
+            },
+          ],
+        },
+      },
+    });
+    ratioQuestId = ratioQuest.id;
+
     quests = new QuestProgressService(
       db,
       recorder,
@@ -209,6 +259,7 @@ describeWithDb('progress UPDATED events (integration)', () => {
   describe.each([
     {
       kind: 'quiz',
+      locked: false,
       started: EventType.QUIZ_ANSWERED,
       updated: EventType.QUIZ_UPDATED,
       set: (userId: string, step: number) =>
@@ -218,6 +269,7 @@ describeWithDb('progress UPDATED events (integration)', () => {
     },
     {
       kind: 'quest',
+      locked: false,
       started: EventType.QUEST_STARTED,
       updated: EventType.QUEST_UPDATED,
       set: (userId: string, step: number) =>
@@ -227,6 +279,7 @@ describeWithDb('progress UPDATED events (integration)', () => {
     },
     {
       kind: 'mission',
+      locked: true,
       started: EventType.MISSION_STARTED,
       updated: EventType.MISSION_UPDATED,
       set: (userId: string, step: number) =>
@@ -234,12 +287,13 @@ describeWithDb('progress UPDATED events (integration)', () => {
     },
     {
       kind: 'challenge',
+      locked: true,
       started: EventType.CHALLENGE_STARTED,
       updated: EventType.CHALLENGE_UPDATED,
       set: (userId: string, step: number) =>
         challenges.update(CHALLENGE, { progress: PROGRESS[step] }, userId),
     },
-  ])('$kind', ({ started, updated, set }) => {
+  ])('$kind', ({ locked, started, updated, set }) => {
     it('records every return to an earlier value', async () => {
       const userId = await newUser();
 
@@ -251,14 +305,17 @@ describeWithDb('progress UPDATED events (integration)', () => {
       expect(await countEvents(userId, updated)).toBe(4);
     });
 
-    it('records one change when the same value arrives several times at once', async () => {
-      const userId = await newUser();
-      await set(userId, 0);
+    (locked ? it : it.skip)(
+      'records one change when the same value arrives several times at once',
+      async () => {
+        const userId = await newUser();
+        await set(userId, 0);
 
-      await Promise.all(times(PARALLEL, () => set(userId, 1)));
+        await Promise.all(times(PARALLEL, () => set(userId, 1)));
 
-      expect(await countEvents(userId, updated)).toBe(1);
-    });
+        expect(await countEvents(userId, updated)).toBe(1);
+      },
+    );
 
     it('records both changes when different values arrive at once', async () => {
       const userId = await newUser();
@@ -289,5 +346,44 @@ describeWithDb('progress UPDATED events (integration)', () => {
     await quests.recomputeForUser(userId);
 
     expect(await countEvents(userId, EventType.QUEST_UPDATED)).toBe(0);
+  });
+
+  it('records every MISSION_UPDATED when an M.A1.2 ratio returns to an earlier value', async () => {
+    const userId = await newUser();
+    await prisma.user.update({
+      where: { id: userId },
+      data: { currentQuestId: ratioQuestId },
+    });
+    await prisma.missionProgress.create({
+      data: {
+        userId,
+        missionId: ratioMissionId,
+        progress: 0,
+        completed: false,
+        status: 'IN_PROGRESS',
+        startedAt: new Date(Date.now() - 60_000),
+      },
+    });
+
+    const meals = [
+      'MEAL_LEGUME_CONSUMED',
+      'MEAL_MEAT_CONSUMED',
+      'MEAL_LEGUME_CONSUMED',
+      'MEAL_MEAT_CONSUMED',
+    ];
+    for (const [index, eventType] of meals.entries()) {
+      await prisma.userEvent.create({
+        data: {
+          userId,
+          eventType,
+          source: 'meal_log',
+          metadata: { mealLogId: `${P}-meal-${index}` },
+        },
+      });
+      await rules.evaluateUser(userId);
+    }
+
+    expect(await countEvents(userId, EventType.MISSION_STARTED)).toBe(1);
+    expect(await countEvents(userId, EventType.MISSION_UPDATED)).toBe(3);
   });
 });

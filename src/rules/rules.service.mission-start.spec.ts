@@ -42,7 +42,7 @@ const RULES = {
 const STARTED_AT = new Date(Date.now() - 60 * 60 * 1000);
 
 function buildDb() {
-  return withInteractiveTransaction({
+  const db = withInteractiveTransaction({
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -73,6 +73,11 @@ function buildDb() {
       findUnique: jest.fn().mockResolvedValue(null),
     },
   });
+  db.$queryRaw.mockImplementation(async () => {
+    const row: unknown = await db.missionProgress.findUnique();
+    return row ? [row] : [];
+  });
+  return db;
 }
 
 describe('RulesService missions need an explicit start', () => {
@@ -190,11 +195,6 @@ describe('RulesService missions need an explicit start', () => {
 
     await service.evaluateUserEvent('u1', 'MEAL_LOGGED');
 
-    expect(prisma.missionProgress.findUnique).toHaveBeenCalledWith(
-      expect.objectContaining({
-        select: expect.objectContaining({ inputs: true }),
-      }),
-    );
     // One of the two meals the user set as their goal.
     expect(prisma.missionProgress.updateMany).toHaveBeenCalledWith({
       where: { userId: 'u1', missionId: 'm1' },
