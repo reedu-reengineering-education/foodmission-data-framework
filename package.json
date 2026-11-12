@@ -58,6 +58,8 @@
     "db:translations:prod": "node dist/scripts/seeds/seed-translations.js",
     "db:backfill:ingredient-units": "ts-node scripts/seeds/prod/backfill-ingredient-units.ts",
     "db:backfill:ingredient-units:prod": "node dist/scripts/seeds/prod/backfill-ingredient-units.js",
+    "db:backfill:recipe-nutrition": "ts-node scripts/seeds/prod/backfill-recipe-nutrition.ts",
+    "db:backfill:recipe-nutrition:prod": "node dist/scripts/seeds/prod/backfill-recipe-nutrition.js",
     "db:import:nevo-translations": "ts-node scripts/seeds/import-nevo-translations.ts",
     "db:seed:test": "ts-node scripts/dev/seed-test.ts",
     "db:seed:foods": "ts-node scripts/seeds/seed-food-products-only.ts",

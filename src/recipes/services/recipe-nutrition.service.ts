@@ -1,93 +1,28 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { parseMeasure } from '../../common/utils/measure-parser';
 import { NutritionalInfo } from '../interfaces/nutrition.interface';
+import {
+  calculateRecipeNutrition,
+  NUTRITION_VALUE_SELECT,
+} from '../nutrition/calculate-recipe-nutrition';
 
-/**
- * Nutrient field names we aggregate from recipe ingredients (per 100g basis).
- * FOOD_NUTRITION_SELECT and FOOD_CATEGORY_NUTRITION_SELECT must each include
- * every field from this list that exists on the corresponding model, or those
- * nutrients will be zero in aggregated recipe nutrition.
- */
-const NUTRIENT_FIELDS = [
-  'energyKcal',
-  'energyKj',
-  'proteins',
-  'fat',
-  'saturatedFat',
-  'transFat',
-  'carbohydrates',
-  'sugars',
-  'fiber',
-  'sodium',
-  'salt',
-  'vitaminA',
-  'vitaminC',
-  'vitaminD',
-  'calcium',
-  'iron',
-  'potassium',
-] as const;
-
-/**
- * Select fields for Food model nutrition data.
- * Must include all NUTRIENT_FIELDS that exist on Food (e.g. salt, vitaminD).
- */
 const FOOD_NUTRITION_SELECT = {
   id: true,
   name: true,
-  energyKcal: true,
-  energyKj: true,
-  proteins: true,
-  fat: true,
-  saturatedFat: true,
-  transFat: true,
-  carbohydrates: true,
-  sugars: true,
-  fiber: true,
-  sodium: true,
-  salt: true,
-  vitaminA: true,
-  vitaminC: true,
-  vitaminD: true,
-  calcium: true,
-  iron: true,
-  potassium: true,
+  ...NUTRITION_VALUE_SELECT,
 } as const;
 
-/**
- * Select fields for GenericFood model nutrition data.
- * Must include all NUTRIENT_FIELDS that exist on GenericFood (e.g. vitaminA, vitaminD).
- * Note: GenericFood does not have a `salt` field; use `sodium` instead.
- */
-const FOOD_CATEGORY_NUTRITION_SELECT = {
+const GENERIC_FOOD_NUTRITION_SELECT = {
   id: true,
   foodName: true,
-  energyKcal: true,
-  energyKj: true,
-  proteins: true,
-  fat: true,
-  saturatedFat: true,
-  transFat: true,
-  carbohydrates: true,
-  sugars: true,
-  fiber: true,
-  sodium: true,
-  salt: true,
-  vitaminA: true,
-  vitaminC: true,
-  vitaminD: true,
-  calcium: true,
-  iron: true,
-  potassium: true,
+  ...NUTRITION_VALUE_SELECT,
 } as const;
 
 /**
- * Service for calculating aggregated nutritional information for recipes.
- *
- * Aggregates nutrient values from linked FoodProduct (OpenFoodFacts) and
- * GenericFood (NEVO) sources, scaling by ingredient weight.
+ * Aggregates recipe nutrition from linked foods.
+ * MealDB totals are filled by the nutrition backfill. This service is the
+ * same calculation, for one recipe. See docs/RECIPE_NUTRITION.md.
  */
 @Injectable()
 export class RecipeNutritionService {
@@ -96,19 +31,11 @@ export class RecipeNutritionService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Calculate aggregated nutrition for a recipe by summing ingredient nutrients.
-   *
-   * Algorithm:
-   * 1. Fetch recipe with ingredients + linked FoodProduct/GenericFood nutrient data
-   * 2. For each ingredient:
-   *    a. Parse measure string to grams using parseMeasure()
-   *    b. Get nutrient source (FoodProduct or GenericFood)
-   *    c. Scale nutrients: (nutrientPer100g * grams / 100)
-   * 3. Sum all scaled nutrients
-   * 4. Calculate per-serving if recipe.servings is set
-   * 5. Track confidence and missing ingredients
+   * Null when the recipe does not exist, or when the totals would be
+   * misleading (an unweighed non-condiment, or condiment guesses over 10%
+   * of energy). An empty ingredient list returns an empty result.
    */
-  async calculateNutrition(recipeId: string): Promise<NutritionalInfo> {
+  async calculateNutrition(recipeId: string): Promise<NutritionalInfo | null> {
     const recipe = await this.prisma.recipe.findUnique({
       where: { id: recipeId },
       include: {
@@ -116,132 +43,45 @@ export class RecipeNutritionService {
           orderBy: { order: 'asc' },
           include: {
             foodProduct: { select: FOOD_NUTRITION_SELECT },
-            genericFood: { select: FOOD_CATEGORY_NUTRITION_SELECT },
+            genericFood: { select: GENERIC_FOOD_NUTRITION_SELECT },
           },
         },
       },
     });
 
-    if (!recipe) {
-      return { confidence: 0, missingIngredients: [] };
-    }
-
-    // Initialize aggregated nutrients
-    const totals: Record<string, number> = {};
-    for (const field of NUTRIENT_FIELDS) {
-      totals[field] = 0;
-    }
-
-    const missingIngredients: string[] = [];
-    let parsedCount = 0;
-    let confidenceSum = 0;
-
-    for (const ingredient of recipe.ingredients) {
-      // Get nutrient source (prefer FoodProduct over GenericFood)
-      const nutrientSource = ingredient.foodProduct || ingredient.genericFood;
-
-      if (!nutrientSource) {
-        missingIngredients.push(ingredient.name);
-        continue;
-      }
-
-      // Parse measure to grams
-      const parsed = parseMeasure(
-        ingredient.measure || '100g',
-        ingredient.name,
-      );
-
-      // Skip if unparseable (unknown confidence = qualitative like "to taste")
-      if (parsed.confidence === 'unknown') {
-        this.logger.debug(
-          `Skipping qualitative measure: ${ingredient.name} (${ingredient.measure})`,
-        );
-        continue;
-      }
-
-      // Scale and sum nutrients
-      const scaleFactor = parsed.grams / 100;
-      for (const field of NUTRIENT_FIELDS) {
-        const value = (nutrientSource as Record<string, unknown>)[field];
-        if (typeof value === 'number' && !isNaN(value)) {
-          totals[field] += value * scaleFactor;
-        }
-      }
-
-      parsedCount++;
-      confidenceSum +=
-        parsed.confidence === 'high'
-          ? 1
-          : parsed.confidence === 'medium'
-            ? 0.7
-            : 0.4;
-    }
-
-    // Calculate overall confidence
-    // confidence = (% parsed) × (avg parse quality)
-    const totalIngredients = recipe.ingredients.length;
-    const confidence =
-      totalIngredients > 0
-        ? (parsedCount / totalIngredients) *
-          (confidenceSum / Math.max(parsedCount, 1))
-        : 0;
-
-    // Build result with rounded values
-    const result: NutritionalInfo = {
-      energyKcal: round(totals.energyKcal),
-      energyKj: round(totals.energyKj),
-      proteins: round(totals.proteins),
-      fat: round(totals.fat),
-      saturatedFat: round(totals.saturatedFat),
-      carbohydrates: round(totals.carbohydrates),
-      sugars: round(totals.sugars),
-      fiber: round(totals.fiber),
-      sodium: round(totals.sodium),
-      confidence: round(confidence, 2),
-      missingIngredients,
-    };
-
-    // Calculate per-serving if servings is defined
-    if (recipe.servings && recipe.servings > 0) {
-      result.servings = recipe.servings;
-      result.perServing = {
-        energyKcal: round(totals.energyKcal / recipe.servings),
-        energyKj: round(totals.energyKj / recipe.servings),
-        proteins: round(totals.proteins / recipe.servings),
-        fat: round(totals.fat / recipe.servings),
-        saturatedFat: round(totals.saturatedFat / recipe.servings),
-        carbohydrates: round(totals.carbohydrates / recipe.servings),
-        sugars: round(totals.sugars / recipe.servings),
-        fiber: round(totals.fiber / recipe.servings),
-        sodium: round(totals.sodium / recipe.servings),
-      };
-    }
-
-    return result;
+    if (!recipe) return null;
+    return calculateRecipeNutrition(recipe);
   }
 
   /**
-   * Calculate and persist nutrition to the recipe's nutritionalInfo field.
+   * Persist nutrition, or clear it when the recipe cannot be totalled.
+   * Returns null when the recipe does not exist or the total was refused.
    */
-  async updateRecipeNutrition(recipeId: string): Promise<NutritionalInfo> {
-    const nutrition = await this.calculateNutrition(recipeId);
+  async updateRecipeNutrition(
+    recipeId: string,
+  ): Promise<NutritionalInfo | null> {
+    const recipe = await this.prisma.recipe.findUnique({
+      where: { id: recipeId },
+      select: { id: true },
+    });
+    if (!recipe) return null;
 
+    const nutrition = await this.calculateNutrition(recipeId);
     await this.prisma.recipe.update({
       where: { id: recipeId },
-      data: { nutritionalInfo: nutrition as unknown as Prisma.InputJsonValue },
+      data: {
+        nutritionalInfo:
+          nutrition === null
+            ? Prisma.JsonNull
+            : (nutrition as unknown as Prisma.InputJsonValue),
+      },
     });
 
     this.logger.log(
-      `Updated nutrition for recipe ${recipeId} (confidence: ${nutrition.confidence})`,
+      nutrition
+        ? `Updated nutrition for recipe ${recipeId} (confidence: ${nutrition.confidence})`
+        : `Cleared nutrition for recipe ${recipeId}`,
     );
     return nutrition;
   }
-}
-
-/**
- * Round a number to the specified decimal places.
- */
-function round(value: number, decimals = 1): number {
-  const factor = Math.pow(10, decimals);
-  return Math.round(value * factor) / factor;
 }

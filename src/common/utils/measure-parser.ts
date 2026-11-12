@@ -259,7 +259,173 @@ function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+const GRAMS_PER_ML: Record<string, number> = {
+  'icing sugar': 0.56,
+  'powdered sugar': 0.56,
+  'brown sugar': 0.9,
+  'cocoa powder': 0.41,
+  'baking powder': 0.9,
+  'peanut butter': 1.07,
+  cornstarch: 0.54,
+  cornflour: 0.54,
+  breadcrumbs: 0.45,
+  flour: 0.53,
+  sugar: 0.85,
+  salt: 1.2,
+  butter: 0.96,
+  oil: 0.91,
+  honey: 1.42,
+  syrup: 1.37,
+  cocoa: 0.41,
+  rice: 0.85,
+  oats: 0.35,
+  yogurt: 1.03,
+  yoghurt: 1.03,
+};
+
+const LIQUID_NAMES = [
+  'water',
+  'milk',
+  'cream',
+  'stock',
+  'broth',
+  'juice',
+  'vinegar',
+  'sauce',
+  'wine',
+  'beer',
+  'extract',
+];
+
+/**
+ * Grams per millilitre for a food name. Unknown foods use water density (1).
+ * Longer names win, so "peanut butter" is not treated as butter.
+ */
+export function lookupGramsPerMl(foodName: string): number {
+  const name = foodName.toLowerCase();
+  let best: { key: string; grams: number } | null = null;
+  for (const [key, grams] of Object.entries(GRAMS_PER_ML)) {
+    if (!new RegExp(`\\b${key}\\b`).test(name)) continue;
+    if (!best || key.length > best.key.length) best = { key, grams };
+  }
+  if (best) return best.grams;
+  if (LIQUID_NAMES.some((key) => new RegExp(`\\b${key}\\b`).test(name))) {
+    return 1;
+  }
+  return 1;
+}
+
+/**
+ * Convert a parsed quantity into grams.
+ * Returns null for a piece count that has no count-word weight and no
+ * average weight. Callers must not substitute 100 g.
+ */
+export function quantityToGrams(
+  parsed: ParsedQuantity,
+  foodName: string,
+  measure?: string | null,
+): ParsedMeasure | null {
+  const original = measure?.trim() || `${parsed.quantity} ${parsed.unit}`;
+  switch (parsed.unit) {
+    case Unit.G:
+      return {
+        grams: parsed.quantity,
+        original,
+        confidence: 'high',
+        method: 'weight',
+      };
+    case Unit.KG:
+      return {
+        grams: parsed.quantity * 1000,
+        original,
+        confidence: 'high',
+        method: 'weight',
+      };
+    case Unit.ML:
+      return {
+        grams: parsed.quantity * lookupGramsPerMl(foodName),
+        original,
+        confidence: 'medium',
+        method: 'volume',
+      };
+    case Unit.L:
+      return {
+        grams: parsed.quantity * 1000 * lookupGramsPerMl(foodName),
+        original,
+        confidence: 'medium',
+        method: 'volume',
+      };
+    case Unit.CUPS:
+      return {
+        grams: parsed.quantity * ML_PER_CUP * lookupGramsPerMl(foodName),
+        original,
+        confidence: 'medium',
+        method: 'volume',
+      };
+    case Unit.PIECES:
+      return pieceGrams(parsed.quantity, foodName, measure, original);
+    default:
+      return null;
+  }
+}
+
+function pieceGrams(
+  quantity: number,
+  foodName: string,
+  measure: string | null | undefined,
+  original: string,
+): ParsedMeasure | null {
+  const perCountWord = countWordGrams(measure);
+  if (perCountWord != null) {
+    return {
+      grams: quantity * perCountWord,
+      original,
+      confidence: 'medium',
+      method: 'count',
+    };
+  }
+
+  const weight = lookupAverageWeight(foodName);
+  if (weight == null) return null;
+
+  const size = measure?.toLowerCase().match(/\b(small|medium|large)\b/);
+  const modifier = size ? SIZE_MODIFIERS[size[1]] : 1;
+  return {
+    grams: quantity * weight * modifier,
+    original,
+    confidence: 'low',
+    method: 'count',
+  };
+}
+
+function countWordGrams(measure: string | null | undefined): number | null {
+  if (!measure) return null;
+  const normalized = measure.toLowerCase();
+  const tokens = Object.keys(COUNT_GRAMS).sort((a, b) => b.length - a.length);
+  for (const token of tokens) {
+    if (new RegExp(`\\b${token}\\b`).test(normalized))
+      return COUNT_GRAMS[token];
+  }
+  return null;
+}
+
+const SPICE_PEPPER =
+  /\b(black|white|cayenne|ground|cracked)\s+peppers?\b|\bpeppercorns?\b/;
+
+/**
+ * Average weight of one piece, or null when this food is not in the table.
+ * Spice peppers are not the vegetable "pepper" row (150 g).
+ */
+export function lookupAverageWeight(foodName: string): number | null {
+  if (SPICE_PEPPER.test(foodName.toLowerCase())) return null;
+  return matchAverageWeight(foodName);
+}
+
 export function getAverageWeight(foodName: string): number {
+  return matchAverageWeight(foodName) ?? 100;
+}
+
+function matchAverageWeight(foodName: string): number | null {
   const name = foodName.toLowerCase();
 
   const weights: Record<string, number> = {
@@ -333,5 +499,5 @@ export function getAverageWeight(foodName: string): number {
     }
   }
 
-  return 100;
+  return null;
 }
