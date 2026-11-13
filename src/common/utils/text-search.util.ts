@@ -15,7 +15,7 @@ export function searchWords(search: string | undefined): string[] {
   ].slice(0, MAX_SEARCH_WORDS);
 }
 
-export function searchStem(term: string): string {
+function searchStem(term: string): string {
   const lower = term.toLowerCase();
   return lower.length >= MIN_PARTIAL_MATCH_LENGTH
     ? lower.replace(/[aeiouàèéìòù]$/u, '')

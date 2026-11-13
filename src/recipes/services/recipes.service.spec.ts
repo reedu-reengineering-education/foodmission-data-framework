@@ -199,8 +199,8 @@ describe('RecipesService', () => {
       expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
         { OR: [{ userId }, { isPublic: true }] },
         [
-          { prefix: 'curry', genericFoodIds: [] },
-          { prefix: 'chicken', genericFoodIds: [] },
+          { word: 'curry', prefix: 'curry', genericFoodIds: [] },
+          { word: 'chicken', prefix: 'chicken', genericFoodIds: [] },
         ],
       );
       expect(pageIds()).toEqual(['curry', 'kebabs', 'rice']);
@@ -210,19 +210,24 @@ describe('RecipesService', () => {
 
     it('finds an English recipe by the Italian name of its ingredient', async () => {
       mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
-        recipe('salad', 'Greek salad', [
+        recipe('salad', 'Pasta salad', [
           { name: 'Tomatoes', genericFoodId: 'tomato-food' },
         ]),
-        recipe('stew', 'Bean stew', [{ name: 'Pomodoro sauce' }]),
+        recipe('bake', 'Bean bake', [
+          { name: 'Pomodoro sauce' },
+          { name: 'Penne pasta' },
+        ]),
         recipe('pasta', 'Pasta al pomodoro'),
-        recipe('soup', 'Onion soup', [{ name: 'Onions' }]),
+        recipe('soup', 'Tomato soup', [{ name: 'Tomatoes' }]),
       ]);
-      mockPrisma.entityTranslation.findMany.mockResolvedValueOnce([
-        { entityId: 'tomato-food', value: 'Pomodori crudi' },
-      ]);
+      mockPrisma.entityTranslation.findMany
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([
+          { entityId: 'tomato-food', value: 'Pomodori crudi' },
+        ]);
 
       await service.findMine(userId, {
-        search: 'pomodoro',
+        search: 'pasta pomodoro',
         lang: 'it',
         page: 1,
         limit: 10,
@@ -230,9 +235,16 @@ describe('RecipesService', () => {
 
       expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
         expect.anything(),
-        [{ prefix: 'pomodor', genericFoodIds: ['tomato-food'] }],
+        [
+          { word: 'pasta', prefix: 'past', genericFoodIds: [] },
+          {
+            word: 'pomodoro',
+            prefix: 'pomodor',
+            genericFoodIds: ['tomato-food'],
+          },
+        ],
       );
-      expect(pageIds()).toEqual(['pasta', 'salad', 'stew']);
+      expect(pageIds()).toEqual(['pasta', 'salad', 'bake']);
     });
 
     it('does not match a different word that shares the stem', async () => {

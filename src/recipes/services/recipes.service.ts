@@ -198,26 +198,24 @@ export class RecipesService {
     words: string[],
     lang: string | undefined,
   ): Promise<SearchableRecipe[]> {
-    const translatedFoodIds = await Promise.all(
-      words.map((word) =>
-        this.translationService.findEntityIdsByWord(
+    const terms = await Promise.all(
+      words.map(async (word) => ({
+        word,
+        prefix: searchPrefix(word),
+        genericFoodIds: await this.translationService.findEntityIdsByWord(
           'GenericFood',
-          this.translationService.resolveLocale(lang),
+          lang,
           ['foodName', 'synonym'],
           word,
         ),
-      ),
+      })),
     );
     const candidates = await this.recipeRepository.findSearchCandidates(
       where,
-      words.map((word, i) => ({
-        prefix: searchPrefix(word),
-        genericFoodIds: translatedFoodIds[i],
-      })),
+      terms,
     );
-    const foodIdSets = translatedFoodIds.map((ids) => new Set(ids));
     return candidates.filter((recipe) =>
-      matchesTitleOrIngredients(recipe, words, foodIdSets),
+      matchesTitleOrIngredients(recipe, terms),
     );
   }
 

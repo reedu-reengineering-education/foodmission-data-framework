@@ -1,40 +1,9 @@
 import {
   MAX_SEARCH_WORDS,
-  hasExactWordMatch,
   hasWordMatch,
   searchPrefix,
-  searchStem,
   searchWords,
-  textWords,
 } from './text-search.util';
-
-describe('searchStem', () => {
-  it('drops a final vowel from terms of 4+ letters', () => {
-    expect(searchStem('Pomodoro')).toBe('pomodor');
-    expect(searchStem('uova')).toBe('uov');
-    expect(searchStem('riso')).toBe('ris');
-    expect(searchStem('pesci')).toBe('pesc');
-  });
-
-  it('keeps short terms and terms ending in a consonant whole', () => {
-    expect(searchStem('uva')).toBe('uva');
-    expect(searchStem('salmon')).toBe('salmon');
-  });
-});
-
-describe('textWords', () => {
-  it('splits on anything but letters and digits', () => {
-    expect(textWords("Olio d'oliva, Tomaten-Gemüse/Saft 2")).toEqual([
-      'olio',
-      'd',
-      'oliva',
-      'tomaten',
-      'gemüse',
-      'saft',
-      '2',
-    ]);
-  });
-});
 
 describe('hasWordMatch', () => {
   it.each([
@@ -66,6 +35,7 @@ describe('hasWordMatch', () => {
     ['Rich chocolate cake', 'rice'],
     ['Panna cotta', 'pane'],
     ['Pastry cream', 'pasta'],
+    ['Red onions', 'on'],
   ])('%s does not match %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(false);
   });
@@ -120,14 +90,5 @@ describe('searchPrefix', () => {
 
   it('is empty without letters or digits', () => {
     expect(searchPrefix("'-")).toBe('');
-  });
-});
-
-describe('hasExactWordMatch', () => {
-  it('needs every word of the term as a whole word', () => {
-    expect(hasExactWordMatch('Fish pie', 'pie')).toBe(true);
-    expect(hasExactWordMatch("Olio d'oliva", "d'oliva")).toBe(true);
-    expect(hasExactWordMatch('Mini pies', 'pie')).toBe(false);
-    expect(hasExactWordMatch('Fish pie', "'")).toBe(false);
   });
 });

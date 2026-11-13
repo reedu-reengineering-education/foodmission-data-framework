@@ -10,27 +10,32 @@ export type SearchableRecipe = {
   ingredients: { name: string; genericFoodId: string | null }[];
 };
 
+export type SearchTerm = {
+  word: string;
+  prefix: string;
+  genericFoodIds: string[];
+};
+
 export function matchesTitleOrIngredients(
   recipe: SearchableRecipe,
-  words: string[],
-  translatedFoodIds: ReadonlySet<string>[],
+  terms: SearchTerm[],
 ): boolean {
-  return words.every(
-    (word, i) =>
+  return terms.every(
+    ({ word, genericFoodIds }) =>
       hasWordMatch(recipe.title, word) ||
       recipe.ingredients.some(
         (ingredient) =>
           hasWordMatch(ingredient.name, word) ||
           (ingredient.genericFoodId !== null &&
-            translatedFoodIds[i].has(ingredient.genericFoodId)),
+            genericFoodIds.includes(ingredient.genericFoodId)),
       ),
   );
 }
 
-export function rankRecipes<T extends SearchableRecipe>(
-  recipes: T[],
+export function rankRecipes(
+  recipes: SearchableRecipe[],
   words: string[],
-): T[] {
+): SearchableRecipe[] {
   const scored = recipes.map((recipe) => ({
     recipe,
     titleHits: words.filter((word) => hasWordMatch(recipe.title, word)).length,

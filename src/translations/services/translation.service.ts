@@ -173,7 +173,7 @@ export class TranslationService {
 
   async findEntityIdsByWord(
     entityType: TranslatableEntityType,
-    locale: string,
+    locale: string | undefined,
     fields: string[],
     word: string,
   ): Promise<string[]> {

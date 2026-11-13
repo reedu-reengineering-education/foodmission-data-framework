@@ -13,7 +13,7 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
-import { SearchableRecipe } from '../utils/recipe-search';
+import { SearchableRecipe, SearchTerm } from '../utils/recipe-search';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
@@ -21,7 +21,7 @@ import {
   RECIPE_WITH_INGREDIENTS_INCLUDE,
 } from '../../common/types/prisma-relations';
 
-export const MAX_SEARCH_CANDIDATES = 500;
+export const MAX_SEARCH_CANDIDATES = 100;
 
 export interface CreateRecipeIngredientData {
   name: string;
@@ -207,7 +207,7 @@ export class RecipesRepository implements BaseRepository<
 
   findSearchCandidates(
     where: Prisma.RecipeWhereInput,
-    terms: { prefix: string; genericFoodIds: string[] }[],
+    terms: SearchTerm[],
   ): Promise<SearchableRecipe[]> {
     const contains = (prefix: string) => ({
       contains: prefix,

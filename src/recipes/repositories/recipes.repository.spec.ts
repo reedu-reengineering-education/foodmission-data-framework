@@ -388,7 +388,7 @@ describe('RecipesRepository', () => {
       mockPrismaService.recipe.findMany.mockResolvedValue([]);
 
       await repository.findSearchCandidates({ isPublic: true }, [
-        { prefix: 'a', genericFoodIds: [] },
+        { word: 'a', prefix: 'a', genericFoodIds: [] },
       ]);
 
       expect(mockPrismaService.recipe.findMany).toHaveBeenCalledWith(
