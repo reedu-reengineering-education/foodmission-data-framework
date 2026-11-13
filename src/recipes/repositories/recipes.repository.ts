@@ -14,6 +14,7 @@ import {
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
 import { SearchableRecipe, SearchTerm } from '../utils/recipe-search';
+import { searchPrefix } from '../../common/utils/text-search.util';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
@@ -216,21 +217,24 @@ export class RecipesRepository implements BaseRepository<
     return this.prisma.recipe.findMany({
       where: {
         ...where,
-        AND: terms.map(({ prefix, genericFoodIds }) => ({
-          OR: [
-            { title: contains(prefix) },
-            {
-              ingredients: {
-                some: {
-                  OR: [
-                    { name: contains(prefix) },
-                    { genericFoodId: { in: genericFoodIds } },
-                  ],
+        AND: terms.map(({ word, genericFoodIds }) => {
+          const prefix = searchPrefix(word);
+          return {
+            OR: [
+              { title: contains(prefix) },
+              {
+                ingredients: {
+                  some: {
+                    OR: [
+                      { name: contains(prefix) },
+                      { genericFoodId: { in: genericFoodIds } },
+                    ],
+                  },
                 },
               },
-            },
-          ],
-        })),
+            ],
+          };
+        }),
       },
       orderBy: { createdAt: 'desc' },
       take: MAX_SEARCH_CANDIDATES,

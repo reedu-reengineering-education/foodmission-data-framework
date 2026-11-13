@@ -384,15 +384,36 @@ describe('RecipesRepository', () => {
   });
 
   describe('findSearchCandidates', () => {
-    it('caps the rows loaded, so a one-letter search cannot load every recipe', async () => {
+    it('narrows by the stem of each word and caps the rows loaded', async () => {
       mockPrismaService.recipe.findMany.mockResolvedValue([]);
 
       await repository.findSearchCandidates({ isPublic: true }, [
-        { word: 'a', prefix: 'a', genericFoodIds: [] },
+        { word: 'pomodoro', genericFoodIds: ['tomato-food'] },
       ]);
 
+      const stem = { contains: 'pomodor', mode: 'insensitive' };
       expect(mockPrismaService.recipe.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
+          where: {
+            isPublic: true,
+            AND: [
+              {
+                OR: [
+                  { title: stem },
+                  {
+                    ingredients: {
+                      some: {
+                        OR: [
+                          { name: stem },
+                          { genericFoodId: { in: ['tomato-food'] } },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
           take: MAX_SEARCH_CANDIDATES,
           orderBy: { createdAt: 'desc' },
         }),

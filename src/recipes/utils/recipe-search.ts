@@ -1,8 +1,4 @@
-import {
-  hasExactWordMatch,
-  hasWordMatch,
-  textWords,
-} from '../../common/utils/text-search.util';
+import { hasWordMatch, textWords } from '../../common/utils/text-search.util';
 
 export type SearchableRecipe = {
   id: string;
@@ -12,7 +8,6 @@ export type SearchableRecipe = {
 
 export type SearchTerm = {
   word: string;
-  prefix: string;
   genericFoodIds: string[];
 };
 
@@ -39,15 +34,10 @@ export function rankRecipes(
   const scored = recipes.map((recipe) => ({
     recipe,
     titleHits: words.filter((word) => hasWordMatch(recipe.title, word)).length,
-    exactHits: words.filter((word) => hasExactWordMatch(recipe.title, word))
-      .length,
     titleWords: textWords(recipe.title).length,
   }));
   scored.sort(
-    (a, b) =>
-      b.titleHits - a.titleHits ||
-      b.exactHits - a.exactHits ||
-      a.titleWords - b.titleWords,
+    (a, b) => b.titleHits - a.titleHits || a.titleWords - b.titleWords,
   );
   return scored.map(({ recipe }) => recipe);
 }

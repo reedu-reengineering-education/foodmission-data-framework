@@ -49,12 +49,6 @@ export function hasWordMatch(text: string, term: string): boolean {
   );
 }
 
-export function hasExactWordMatch(text: string, term: string): boolean {
-  const words = new Set(textWords(text));
-  const parts = textWords(term);
-  return parts.length > 0 && parts.every((part) => words.has(part));
-}
-
 export function searchPrefix(term: string): string {
   const [longest] = textWords(term).sort((a, b) => b.length - a.length);
   return longest ? searchStem(longest) : '';

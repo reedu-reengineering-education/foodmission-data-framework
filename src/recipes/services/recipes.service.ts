@@ -19,7 +19,7 @@ import {
 import { Prisma, Recipe, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
 import { handlePrismaError } from '../../common/utils/error.utils';
-import { searchPrefix, searchWords } from '../../common/utils/text-search.util';
+import { searchWords } from '../../common/utils/text-search.util';
 import {
   SearchableRecipe,
   matchesTitleOrIngredients,
@@ -201,7 +201,6 @@ export class RecipesService {
     const terms = await Promise.all(
       words.map(async (word) => ({
         word,
-        prefix: searchPrefix(word),
         genericFoodIds: await this.translationService.findEntityIdsByWord(
           'GenericFood',
           lang,

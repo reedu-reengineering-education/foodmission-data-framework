@@ -94,7 +94,7 @@ export class QueryRecipeDto extends PaginationQueryDto {
       'Every word must match a word in the title or in an ingredient (its name, or its food name in `lang`), in any order: ' +
       'its start ("chick" finds "Chicken") or a form with a different ending ("pie" finds "pies", "pomodoro" finds "pomodori"). ' +
       'Results are ordered by relevance: more words in the title first (so title matches before ingredient-only ones), ' +
-      'then exact words, then shorter titles.',
+      'then shorter titles. Only the 100 newest matching recipes are ranked; use more words to narrow the search.',
     example: 'chicken curry',
   })
   @IsOptional()

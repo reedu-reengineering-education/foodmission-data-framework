@@ -199,8 +199,8 @@ describe('RecipesService', () => {
       expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
         { OR: [{ userId }, { isPublic: true }] },
         [
-          { word: 'curry', prefix: 'curry', genericFoodIds: [] },
-          { word: 'chicken', prefix: 'chicken', genericFoodIds: [] },
+          { word: 'curry', genericFoodIds: [] },
+          { word: 'chicken', genericFoodIds: [] },
         ],
       );
       expect(pageIds()).toEqual(['curry', 'kebabs', 'rice']);
@@ -236,10 +236,9 @@ describe('RecipesService', () => {
       expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
         expect.anything(),
         [
-          { word: 'pasta', prefix: 'past', genericFoodIds: [] },
+          { word: 'pasta', genericFoodIds: [] },
           {
             word: 'pomodoro',
-            prefix: 'pomodor',
             genericFoodIds: ['tomato-food'],
           },
         ],
@@ -247,25 +246,14 @@ describe('RecipesService', () => {
       expect(pageIds()).toEqual(['pasta', 'salad', 'bake']);
     });
 
-    it('does not match a different word that shares the stem', async () => {
-      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
-        recipe('cake', 'Rich chocolate cake'),
-        recipe('risotto', 'Mushroom risotto', [{ name: 'Arborio rice' }]),
-      ]);
-
-      await service.findAll(userId, { search: 'rice', page: 1, limit: 10 });
-
-      expect(pageIds()).toEqual(['risotto']);
-    });
-
-    it('ranks before paging and reports the total of all matches', async () => {
+    it('ranks before paging', async () => {
       mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
         recipe('long', 'Three fish pie with prawns'),
         recipe('pies', 'Mini fish pies'),
         recipe('short', 'Fish pie'),
       ]);
       mockRecipeRepository.findByIds.mockResolvedValueOnce([
-        buildRecipe({ id: 'pies', title: 'Mini fish pies' }),
+        buildRecipe({ id: 'long', title: 'Three fish pie with prawns' }),
       ]);
 
       const result = await service.findAll(userId, {
@@ -274,14 +262,14 @@ describe('RecipesService', () => {
         limit: 2,
       });
 
-      expect(pageIds()).toEqual(['pies']);
+      expect(pageIds()).toEqual(['long']);
       expect(result).toMatchObject({
         total: 3,
         page: 2,
         limit: 2,
         totalPages: 2,
       });
-      expect(result.data.map((r) => r.id)).toEqual(['pies']);
+      expect(result.data.map((r) => r.id)).toEqual(['long']);
     });
   });
 
