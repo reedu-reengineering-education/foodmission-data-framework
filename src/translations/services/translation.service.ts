@@ -1,9 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import {
-  hasWordMatch,
-  searchPrefix,
-} from '../../common/utils/text-search.util';
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../i18n/constants';
 import {
   ENTITY_TRANSLATABLE_FIELDS,
@@ -169,36 +165,6 @@ export class TranslationService {
     });
 
     return rows.map((r) => r.entityId);
-  }
-
-  async findEntityIdsByWord(
-    entityType: TranslatableEntityType,
-    locale: string | undefined,
-    fields: string[],
-    word: string,
-  ): Promise<string[]> {
-    this.assertEntityAndFields(entityType, fields);
-    const resolvedLocale = this.resolveLocale(locale);
-    const prefix = searchPrefix(word);
-    if (resolvedLocale === DEFAULT_LOCALE || !prefix) return [];
-
-    const rows = await this.prisma.entityTranslation.findMany({
-      where: {
-        entityType,
-        locale: resolvedLocale,
-        field: { in: fields },
-        value: { contains: prefix, mode: 'insensitive' },
-      },
-      select: { entityId: true, value: true },
-    });
-
-    return [
-      ...new Set(
-        rows
-          .filter((row) => hasWordMatch(row.value, word))
-          .map((row) => row.entityId),
-      ),
-    ];
   }
 
   async listDistinct(

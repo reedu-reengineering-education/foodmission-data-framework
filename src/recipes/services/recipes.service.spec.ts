@@ -34,6 +34,7 @@ describe('RecipesService', () => {
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
     findSearchCandidates: jest.fn(),
+    findGenericFoodIdsByWord: jest.fn(),
     findByIds: jest.fn(),
   };
 
@@ -175,8 +176,14 @@ describe('RecipesService', () => {
     });
     const pageIds = () => mockRecipeRepository.findByIds.mock.calls[0][0];
 
+    const foodIdsByWord = (ids: Record<string, string[]>) =>
+      mockRecipeRepository.findGenericFoodIdsByWord.mockImplementation(
+        (word: string) => Promise.resolve(ids[word] ?? []),
+      );
+
     beforeEach(() => {
       mockRecipeRepository.findByIds.mockResolvedValue([]);
+      foodIdsByWord({});
     });
 
     it('keeps recipes where every word starts a word of the title or an ingredient', async () => {
@@ -205,7 +212,22 @@ describe('RecipesService', () => {
       );
       expect(pageIds()).toEqual(['curry', 'kebabs', 'rice']);
       expect(mockRecipeRepository.findWithPagination).not.toHaveBeenCalled();
-      expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
+    });
+
+    it('matches an ingredient by its generic food name in English too', async () => {
+      foodIdsByWord({ curry: ['curry-powder'] });
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('dal', 'Dal fry', [
+          { name: 'Garam masala', genericFoodId: 'curry-powder' },
+        ]),
+      ]);
+
+      await service.findAll(userId, { search: 'curry', page: 1, limit: 10 });
+
+      expect(
+        mockRecipeRepository.findGenericFoodIdsByWord,
+      ).toHaveBeenCalledWith('curry', 'en');
+      expect(pageIds()).toEqual(['dal']);
     });
 
     it('finds an English recipe by the Italian name of its ingredient', async () => {
@@ -220,11 +242,7 @@ describe('RecipesService', () => {
         recipe('pasta', 'Pasta al pomodoro'),
         recipe('soup', 'Tomato soup', [{ name: 'Tomatoes' }]),
       ]);
-      mockPrisma.entityTranslation.findMany
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([
-          { entityId: 'tomato-food', value: 'Pomodori crudi' },
-        ]);
+      foodIdsByWord({ pomodoro: ['tomato-food'] });
 
       await service.findMine(userId, {
         search: 'pasta pomodoro',
@@ -243,6 +261,9 @@ describe('RecipesService', () => {
           },
         ],
       );
+      expect(
+        mockRecipeRepository.findGenericFoodIdsByWord,
+      ).toHaveBeenCalledWith('pomodoro', 'it');
       expect(pageIds()).toEqual(['pasta', 'salad', 'bake']);
     });
 

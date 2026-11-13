@@ -198,14 +198,13 @@ export class RecipesService {
     words: string[],
     lang: string | undefined,
   ): Promise<SearchableRecipe[]> {
+    const locale = this.translationService.resolveLocale(lang);
     const terms = await Promise.all(
       words.map(async (word) => ({
         word,
-        genericFoodIds: await this.translationService.findEntityIdsByWord(
-          'GenericFood',
-          lang,
-          ['foodName', 'synonym'],
+        genericFoodIds: await this.recipeRepository.findGenericFoodIdsByWord(
           word,
+          locale,
         ),
       })),
     );

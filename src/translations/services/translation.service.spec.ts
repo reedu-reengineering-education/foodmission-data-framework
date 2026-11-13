@@ -177,39 +177,4 @@ describe('TranslationService', () => {
       );
     });
   });
-
-  describe('findEntityIdsByWord', () => {
-    it('narrows by the stem in SQL, then keeps values with a matching word', async () => {
-      prisma.entityTranslation.findMany.mockResolvedValue([
-        { entityId: 'raw', value: 'Pomodori crudi' },
-        { entityId: 'puree', value: 'Concentrato di pomodoro' },
-        { entityId: 'puree', value: 'Passata di pomodoro' },
-        { entityId: 'made-up', value: 'Pomodorinoso inventato' },
-      ]);
-
-      const ids = await service.findEntityIdsByWord(
-        'GenericFood',
-        'it',
-        ['foodName'],
-        'pomodoro',
-      );
-
-      expect(ids).toEqual(['raw', 'puree']);
-      expect(prisma.entityTranslation.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            locale: 'it',
-            value: { contains: 'pomodor', mode: 'insensitive' },
-          }),
-        }),
-      );
-    });
-
-    it('skips the lookup for the default locale', async () => {
-      await expect(
-        service.findEntityIdsByWord('GenericFood', 'en', ['foodName'], 'egg'),
-      ).resolves.toEqual([]);
-      expect(prisma.entityTranslation.findMany).not.toHaveBeenCalled();
-    });
-  });
 });

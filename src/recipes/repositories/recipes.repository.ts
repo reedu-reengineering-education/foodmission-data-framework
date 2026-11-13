@@ -14,7 +14,11 @@ import {
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
 import { SearchableRecipe, SearchTerm } from '../utils/recipe-search';
-import { searchPrefix } from '../../common/utils/text-search.util';
+import {
+  hasWordMatch,
+  searchPrefix,
+} from '../../common/utils/text-search.util';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
@@ -244,6 +248,46 @@ export class RecipesRepository implements BaseRepository<
         ingredients: { select: { name: true, genericFoodId: true } },
       },
     });
+  }
+
+  async findGenericFoodIdsByWord(
+    word: string,
+    locale: string,
+  ): Promise<string[]> {
+    const contains = {
+      contains: searchPrefix(word),
+      mode: 'insensitive' as const,
+    };
+    if (locale === DEFAULT_LOCALE) {
+      const foods = await this.prisma.genericFood.findMany({
+        where: { OR: [{ foodName: contains }, { synonym: contains }] },
+        select: { id: true, foodName: true, synonym: true },
+      });
+      return foods
+        .filter(
+          (food) =>
+            hasWordMatch(food.foodName, word) ||
+            hasWordMatch(food.synonym ?? '', word),
+        )
+        .map((food) => food.id);
+    }
+
+    const translations = await this.prisma.entityTranslation.findMany({
+      where: {
+        entityType: 'GenericFood',
+        locale,
+        field: { in: ['foodName', 'synonym'] },
+        value: contains,
+      },
+      select: { entityId: true, value: true },
+    });
+    return [
+      ...new Set(
+        translations
+          .filter((row) => hasWordMatch(row.value, word))
+          .map((row) => row.entityId),
+      ),
+    ];
   }
 
   async findByIds(ids: string[]): Promise<Recipe[]> {
