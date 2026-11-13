@@ -57,6 +57,16 @@ describe('RecipeIngredient DTOs', () => {
       expect(await validate(dto)).toHaveLength(0);
     });
 
+    it('should reject a zero quantity', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'Flour',
+        quantity: 0,
+        unit: 'G',
+      });
+      const errors = await validate(dto);
+      expect(errors.some((e) => e.property === 'quantity')).toBe(true);
+    });
+
     it('should reject an unknown unit with a unit message', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         name: 'Flour',

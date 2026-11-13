@@ -3,6 +3,7 @@ import { Unit } from '@prisma/client';
 import {
   IsEnum,
   IsNumber,
+  IsPositive,
   IsString,
   IsNotEmpty,
   MaxLength,
@@ -62,7 +63,8 @@ export class CreateRecipeIngredientDto {
 
   @ApiPropertyOptional({
     description:
-      'Free-text amount as written in the recipe, stored as sent and never parsed',
+      'Free-text amount as written in the recipe. Not converted into quantity/unit. ' +
+      'Nutrition is calculated from it when present, otherwise from quantity + unit',
     example: '500g',
     maxLength: MAX_MEASURE_LENGTH,
   })
@@ -75,10 +77,11 @@ export class CreateRecipeIngredientDto {
     description: 'Amount in the given unit, stored as sent. Required with unit',
     example: 500,
     minimum: 0,
+    exclusiveMinimum: true,
   })
   @ValidateIf(hasQuantityOrUnit)
   @IsNumber({}, { message: quantityUnitMessage('quantity must be a number') })
-  @Min(0)
+  @IsPositive()
   quantity?: number;
 
   @ApiPropertyOptional({

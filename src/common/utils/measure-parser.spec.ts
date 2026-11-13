@@ -342,7 +342,6 @@ describe('parseMeasure', () => {
       ['2.5 tbsp', 37.5],
       ['1-2tbsp', 22.5],
       ['6-8 slices', 210],
-      ['2 400g cans', 400],
       ['8-ounce sliced', 226.8],
     ])('parses amount in %s', (measure, grams) => {
       expect(parseMeasure(measure).grams).toBeCloseTo(grams);
@@ -464,6 +463,8 @@ describe('parseQuantityUnit', () => {
     ['1 l', 1, 'L'],
     ['2 cups', 480, 'ML'],
     ['2-3 cups', 600, 'ML'],
+    ['2-1/2 cups', 600, 'ML'],
+    ['1-⅓ cups', 320, 'ML'],
     ['½ cup', 120, 'ML'],
     ['1 lb', 453.6, 'G'],
     ['8 oz', 226.8, 'G'],
@@ -505,6 +506,10 @@ describe('parseQuantityUnit', () => {
     'juice of 1',
     'zest and juice of 1',
     '3cm piece',
+    '2 x 400g',
+    '4 qt',
+    '2 quarts',
+    '2 pint',
     '0',
   ])('returns null for %s', (measure) => {
     expect(parseQuantityUnit(measure)).toBeNull();

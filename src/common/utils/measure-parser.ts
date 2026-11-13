@@ -19,7 +19,7 @@ const GRAMS_PER_OZ = 28.35;
 const ML_PER_CUP = 240;
 const GRAMS_PER_CUP = 150;
 
-const AMOUNT = String.raw`(\d+(?:[.,]\d+)?(?:\s+\d+\/\d+|\/\d+|\s*-\s*\d+(?:[.,]\d+)?)?)`;
+const AMOUNT = String.raw`(\d+(?:[.,]\d+)?(?:[\s-]+\d+\/\d+|\/\d+|\s*-\s*\d+(?:[.,]\d+)?)?)`;
 
 const QUALITATIVE_MEASURE =
   /to taste|pinch|dash|splash|drizzle|bunch|garnish|handful|sprigs? of fresh/i;
@@ -96,7 +96,16 @@ const COUNT_PATTERN = amountWith(anyOf(Object.keys(COUNT_GRAMS)));
 const SIZE_PATTERN = amountWith(anyOf(Object.keys(SIZE_MODIFIERS)));
 const BARE_COUNT_PATTERN = new RegExp(`^${AMOUNT}(?:\\s+\\w+)?$`);
 
-const LENGTH_TOKENS = new Set(['cm', 'inch']);
+const NOT_A_COUNT_TOKENS = new Set([
+  'cm',
+  'inch',
+  'x',
+  'qt',
+  'quart',
+  'quarts',
+  'pint',
+  'pints',
+]);
 
 const UNICODE_FRACTIONS: Record<string, string> = {
   '½': '1/2',
@@ -195,7 +204,7 @@ export function parseMeasure(
 export function parseFraction(str: string): number {
   const trimmed = str.trim();
 
-  const mixedMatch = trimmed.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+  const mixedMatch = trimmed.match(/^(\d+)[\s-]+(\d+)\/(\d+)$/);
   if (mixedMatch) {
     return (
       parseInt(mixedMatch[1]) +
@@ -236,7 +245,7 @@ export function parseQuantityUnit(measure: string): ParsedQuantity | null {
     return { quantity: round2(amount * factor), unit };
   }
 
-  if (LENGTH_TOKENS.has(token)) return null;
+  if (NOT_A_COUNT_TOKENS.has(token)) return null;
 
   return { quantity: round2(amount), unit: Unit.PIECES };
 }
