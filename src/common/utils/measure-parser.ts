@@ -1,3 +1,5 @@
+import { Unit } from '@prisma/client';
+
 export interface ParsedMeasure {
   grams: number;
   original: string;
@@ -5,124 +7,190 @@ export interface ParsedMeasure {
   method: 'weight' | 'volume' | 'count' | 'default';
 }
 
+export interface ParsedQuantity {
+  quantity: number;
+  unit: Unit;
+}
+
+export const MAX_MEASURE_LENGTH = 100;
+
+const GRAMS_PER_LB = 453.6;
+const GRAMS_PER_OZ = 28.35;
+const ML_PER_CUP = 240;
+const GRAMS_PER_CUP = 150;
+
+const AMOUNT = String.raw`(\d+(?:[.,]\d+)?(?:[\s-]+\d+\/\d+|\/\d+|\s*-\s*\d+(?:[.,]\d+)?)?)`;
+
+const QUALITATIVE_MEASURE =
+  /to taste|pinch|dash|splash|drizzle|bunch|garnish|handful|sprigs? of fresh/i;
+
+const SPOON_ML: Record<string, number> = {
+  tablespoon: 15,
+  tablespoons: 15,
+  tbsp: 15,
+  tbs: 15,
+  tbls: 15,
+  tblsp: 15,
+  teaspoon: 5,
+  teaspoons: 5,
+  tsp: 5,
+};
+
+const METRIC_UNIT_TOKENS: Record<string, [Unit, number]> = {
+  g: [Unit.G, 1],
+  grams: [Unit.G, 1],
+  kg: [Unit.KG, 1],
+  ml: [Unit.ML, 1],
+  l: [Unit.L, 1],
+  litre: [Unit.L, 1],
+  litres: [Unit.L, 1],
+  cup: [Unit.ML, ML_PER_CUP],
+  cups: [Unit.ML, ML_PER_CUP],
+  lb: [Unit.G, GRAMS_PER_LB],
+  lbs: [Unit.G, GRAMS_PER_LB],
+  pound: [Unit.G, GRAMS_PER_LB],
+  pounds: [Unit.G, GRAMS_PER_LB],
+  oz: [Unit.G, GRAMS_PER_OZ],
+  ounce: [Unit.G, GRAMS_PER_OZ],
+  ounces: [Unit.G, GRAMS_PER_OZ],
+  ...Object.fromEntries(
+    Object.entries(SPOON_ML).map(([token, ml]) => [token, [Unit.ML, ml]]),
+  ),
+};
+
+const COUNT_GRAMS: Record<string, number> = {
+  clove: 3,
+  cloves: 3,
+  slice: 30,
+  slices: 30,
+  sprig: 2,
+  can: 400,
+  rasher: 25,
+  rashers: 25,
+  piece: 50,
+  pieces: 50,
+  strip: 20,
+  strips: 20,
+  leaf: 0.5,
+  leaves: 0.5,
+};
+
+const SIZE_MODIFIERS: Record<string, number> = {
+  small: 0.7,
+  medium: 1,
+  large: 1.3,
+};
+
+const amountWith = (units: string) => new RegExp(`${AMOUNT}\\s*(${units})\\b`);
+
+const anyOf = (tokens: string[]) =>
+  [...tokens].sort((a, b) => b.length - a.length).join('|');
+
+const WEIGHT_PATTERN = amountWith('kg|g');
+const LB_PATTERN = new RegExp(`${AMOUNT}(?:-|\\s*)(?:lb|lbs|pound|pounds)\\b`);
+const OZ_PATTERN = new RegExp(`${AMOUNT}(?:-|\\s*)(?:oz|ounces?)\\b`);
+const VOLUME_PATTERN = amountWith('ml|l');
+const CUP_PATTERN = amountWith('cups?');
+const SPOON_PATTERN = amountWith(anyOf(Object.keys(SPOON_ML)));
+const COUNT_PATTERN = amountWith(anyOf(Object.keys(COUNT_GRAMS)));
+const SIZE_PATTERN = amountWith(anyOf(Object.keys(SIZE_MODIFIERS)));
+const BARE_COUNT_PATTERN = new RegExp(`^${AMOUNT}(?:\\s+\\w+)?$`);
+
+const NOT_A_COUNT_TOKENS = new Set([
+  'cm',
+  'inch',
+  'x',
+  'qt',
+  'quart',
+  'quarts',
+  'pint',
+  'pints',
+]);
+
+const UNICODE_FRACTIONS: Record<string, string> = {
+  '½': '1/2',
+  '¼': '1/4',
+  '¾': '3/4',
+  '⅓': '1/3',
+  '⅔': '2/3',
+  '⅛': '1/8',
+};
+
+const LEADING_QUANTITY = new RegExp(`^${AMOUNT}\\s*([a-z]+)?`);
+
 export function parseMeasure(
   measure: string,
   foodName?: string,
 ): ParsedMeasure {
   const original = measure;
-  const normalized = measure.toLowerCase().trim();
+  const normalized = normalizeUnicodeFractions(measure.toLowerCase().trim());
 
   if (
-    /to taste|pinch|dash|splash|drizzle|bunch|garnish|handful|sprigs? of fresh/i.test(
-      normalized,
-    )
+    normalized.length > MAX_MEASURE_LENGTH ||
+    QUALITATIVE_MEASURE.test(normalized)
   ) {
     return { grams: 0, original, confidence: 'unknown', method: 'default' };
   }
 
-  const metricMatch = normalized.match(/(\d+(?:[.,]\d+)?)\s*(kg|g)\b/);
-  if (metricMatch) {
-    const value = parseFloat(metricMatch[1].replace(',', '.'));
-    const grams = metricMatch[2] === 'kg' ? value * 1000 : value;
+  const weightMatch = normalized.match(WEIGHT_PATTERN);
+  if (weightMatch) {
+    const value = parseAmount(weightMatch[1]);
+    const grams = weightMatch[2] === 'kg' ? value * 1000 : value;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
 
-  const lbMatch = normalized.match(/([\d\s/.-]+)\s*(?:lb|lbs|pound|pounds)\b/);
+  const lbMatch = normalized.match(LB_PATTERN);
   if (lbMatch) {
-    const grams = parseFraction(lbMatch[1]) * 453.6;
+    const grams = parseAmount(lbMatch[1]) * GRAMS_PER_LB;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
-  const ozMatch = normalized.match(/([\d\s/.-]+)\s*(?:oz|ounces?)\b/);
+
+  const ozMatch = normalized.match(OZ_PATTERN);
   if (ozMatch) {
-    const grams = parseFraction(ozMatch[1]) * 28.35;
+    const grams = parseAmount(ozMatch[1]) * GRAMS_PER_OZ;
     return { grams, original, confidence: 'high', method: 'weight' };
   }
 
-  const mlMatch = normalized.match(/(\d+(?:[.,]\d+)?)\s*ml\b/);
-  if (mlMatch) {
-    const grams = parseFloat(mlMatch[1].replace(',', '.'));
+  const volumeMatch = normalized.match(VOLUME_PATTERN);
+  if (volumeMatch) {
+    const grams =
+      parseAmount(volumeMatch[1]) * (volumeMatch[2] === 'l' ? 1000 : 1);
     return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
-  const literMatch = normalized.match(/(\d+(?:[.,]\d+)?)\s*l\b/);
-  if (literMatch) {
-    const grams = parseFloat(literMatch[1].replace(',', '.')) * 1000;
+  const cupMatch = normalized.match(CUP_PATTERN);
+  if (cupMatch) {
+    const grams = parseAmount(cupMatch[1]) * GRAMS_PER_CUP;
     return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
-  const volumeUnits: Record<string, number> = {
-    cup: 150,
-    cups: 150,
-    tablespoon: 15,
-    tablespoons: 15,
-    tbsp: 15,
-    tbs: 15,
-    tblsp: 15,
-    teaspoon: 5,
-    teaspoons: 5,
-    tsp: 5,
-  };
-  for (const [unit, gramsPerUnit] of Object.entries(volumeUnits)) {
-    const regex = new RegExp(`([\\d\\s/]+)\\s*${unit}\\b`, 'i');
-    const match = normalized.match(regex);
-    if (match) {
-      const grams = parseFraction(match[1]) * gramsPerUnit;
-      return { grams, original, confidence: 'medium', method: 'volume' };
-    }
+  const spoonMatch = normalized.match(SPOON_PATTERN);
+  if (spoonMatch) {
+    const grams = parseAmount(spoonMatch[1]) * SPOON_ML[spoonMatch[2]];
+    return { grams, original, confidence: 'medium', method: 'volume' };
   }
 
-  const countUnits: Record<string, number> = {
-    clove: 3,
-    cloves: 3,
-    slice: 30,
-    slices: 30,
-    sprig: 2,
-    can: 400,
-    rasher: 25,
-    rashers: 25,
-    piece: 50,
-    pieces: 50,
-    strip: 20,
-    strips: 20,
-    leaf: 0.5,
-    leaves: 0.5,
-  };
-  for (const [unit, gramsPerUnit] of Object.entries(countUnits)) {
-    const regex = new RegExp(`([\\d\\s/]+)\\s*${unit}\\b`, 'i');
-    const match = normalized.match(regex);
-    if (match) {
-      const grams = parseFraction(match[1]) * gramsPerUnit;
-      return { grams, original, confidence: 'medium', method: 'count' };
-    }
+  const countMatch = normalized.match(COUNT_PATTERN);
+  if (countMatch) {
+    const grams = parseAmount(countMatch[1]) * COUNT_GRAMS[countMatch[2]];
+    return { grams, original, confidence: 'medium', method: 'count' };
   }
 
-  const sizeModifiers: Record<string, number> = {
-    small: 0.7,
-    medium: 1,
-    large: 1.3,
-  };
-  const modifierMatch = normalized.match(
-    /([\d\s/]+)\s*(small|medium|large)\b/i,
-  );
-  if (modifierMatch && foodName) {
-    const count = parseFraction(modifierMatch[1]);
-    const modifier = sizeModifiers[modifierMatch[2].toLowerCase()] || 1;
-    const avgWeight = getAverageWeight(foodName);
-    return {
-      grams: count * avgWeight * modifier,
-      original,
-      confidence: 'low',
-      method: 'count',
-    };
+  const sizeMatch = normalized.match(SIZE_PATTERN);
+  if (sizeMatch && foodName) {
+    const grams =
+      parseAmount(sizeMatch[1]) *
+      getAverageWeight(foodName) *
+      SIZE_MODIFIERS[sizeMatch[2]];
+    return { grams, original, confidence: 'low', method: 'count' };
   }
 
-  const bareCountMatch = normalized.match(/^([\d\s/]+)(?:\s+\w+)?$/);
+  const bareCountMatch = normalized.match(BARE_COUNT_PATTERN);
   if (bareCountMatch && foodName) {
-    const count = parseFraction(bareCountMatch[1]);
+    const count = parseAmount(bareCountMatch[1]);
     if (count > 0) {
-      const avgWeight = getAverageWeight(foodName);
       return {
-        grams: count * avgWeight,
+        grams: count * getAverageWeight(foodName),
         original,
         confidence: 'low',
         method: 'count',
@@ -136,7 +204,7 @@ export function parseMeasure(
 export function parseFraction(str: string): number {
   const trimmed = str.trim();
 
-  const mixedMatch = trimmed.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+  const mixedMatch = trimmed.match(/^(\d+)[\s-]+(\d+)\/(\d+)$/);
   if (mixedMatch) {
     return (
       parseInt(mixedMatch[1]) +
@@ -155,6 +223,49 @@ export function parseFraction(str: string): number {
   }
 
   return parseFloat(trimmed) || 0;
+}
+
+export function parseQuantityUnit(measure: string): ParsedQuantity | null {
+  if (measure.length > MAX_MEASURE_LENGTH) return null;
+  const normalized = normalizeUnicodeFractions(measure.toLowerCase().trim());
+  if (QUALITATIVE_MEASURE.test(normalized)) return null;
+
+  const match = normalized.match(LEADING_QUANTITY);
+  if (!match) return null;
+
+  const [, amountText, token] = match;
+  const amount = parseAmount(amountText);
+  if (amount <= 0) return null;
+
+  if (!token) return { quantity: round2(amount), unit: Unit.PIECES };
+
+  const metricUnit = METRIC_UNIT_TOKENS[token];
+  if (metricUnit) {
+    const [unit, factor] = metricUnit;
+    return { quantity: round2(amount * factor), unit };
+  }
+
+  if (NOT_A_COUNT_TOKENS.has(token)) return null;
+
+  return { quantity: round2(amount), unit: Unit.PIECES };
+}
+
+function normalizeUnicodeFractions(text: string): string {
+  return text.replace(
+    /(?:(\d)\s*)?([½¼¾⅓⅔⅛])/g,
+    (_, whole: string | undefined, frac) =>
+      whole
+        ? `${whole} ${UNICODE_FRACTIONS[frac as string]}`
+        : UNICODE_FRACTIONS[frac as string],
+  );
+}
+
+function parseAmount(text: string): number {
+  return parseFraction(text.replace(',', '.'));
+}
+
+function round2(value: number): number {
+  return Math.round(value * 100) / 100;
 }
 
 export function getAverageWeight(foodName: string): number {

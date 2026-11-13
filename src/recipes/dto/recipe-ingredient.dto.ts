@@ -1,7 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Unit } from '@prisma/client';
 import {
+  IsEnum,
+  IsNumber,
+  IsPositive,
   IsString,
   IsNotEmpty,
+  MaxLength,
   IsInt,
   IsOptional,
   IsUUID,
@@ -13,6 +18,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { MAX_MEASURE_LENGTH } from '../../common/utils/measure-parser';
 
 /**
  * Validator: ensures 0 or 1 of foodProductId/genericFoodId is provided (not both)
@@ -32,6 +38,16 @@ class OptionalExclusiveFoodReferenceConstraint implements ValidatorConstraintInt
   }
 }
 
+const hasQuantityOrUnit = (o: { quantity?: number; unit?: Unit }) =>
+  o.quantity != null || o.unit != null;
+
+const quantityUnitMessage =
+  (invalidValueMessage: string) =>
+  ({ value }: ValidationArguments) =>
+    value == null
+      ? 'quantity and unit must be provided together'
+      : invalidValueMessage;
+
 /**
  * DTO for creating a recipe ingredient
  */
@@ -46,12 +62,40 @@ export class CreateRecipeIngredientDto {
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Measurement/amount',
+    description:
+      'Free-text amount as written in the recipe. Not converted into quantity/unit. ' +
+      'Nutrition is calculated from it when present, otherwise from quantity + unit',
     example: '500g',
+    maxLength: MAX_MEASURE_LENGTH,
   })
   @IsString()
+  @MaxLength(MAX_MEASURE_LENGTH)
   @IsOptional()
   measure?: string;
+
+  @ApiPropertyOptional({
+    description: 'Amount in the given unit, stored as sent. Required with unit',
+    example: 500,
+    minimum: 0,
+    exclusiveMinimum: true,
+  })
+  @ValidateIf(hasQuantityOrUnit)
+  @IsNumber({}, { message: quantityUnitMessage('quantity must be a number') })
+  @IsPositive()
+  quantity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Catalog unit (see /catalog/units). Required with quantity',
+    enum: Unit,
+    example: Unit.G,
+  })
+  @ValidateIf(hasQuantityOrUnit)
+  @IsEnum(Unit, {
+    message: quantityUnitMessage(
+      `unit must be one of: ${Object.values(Unit).join(', ')}`,
+    ),
+  })
+  unit?: Unit;
 
   @ApiPropertyOptional({
     description: 'Order in the recipe',
@@ -146,9 +190,32 @@ export class RecipeIngredientResponseDto {
   @Expose()
   name: string;
 
-  @ApiPropertyOptional({ description: 'Measurement/amount' })
+  @ApiPropertyOptional({
+    description: 'Free-text amount as written in the recipe',
+    example: '2 tbsp',
+  })
   @Expose()
   measure?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Amount in unit. For TheMealDB recipes parsed from measure into metric units; null when not parseable',
+    type: Number,
+    nullable: true,
+    example: 30,
+  })
+  @Expose()
+  quantity?: number | null;
+
+  @ApiPropertyOptional({
+    description:
+      'Catalog unit (see /catalog/units). TheMealDB recipes use only G, KG, ML, L or PIECES; null when not parseable',
+    enum: Unit,
+    nullable: true,
+    example: Unit.ML,
+  })
+  @Expose()
+  unit?: Unit | null;
 
   @ApiProperty({ description: 'Order in recipe' })
   @Expose()

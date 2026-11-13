@@ -30,6 +30,65 @@ describe('RecipeIngredient DTOs', () => {
       expect(errors.length).toBe(0);
     });
 
+    it.each([
+      [{ quantity: 2 }, 'unit'],
+      [{ unit: 'G' }, 'quantity'],
+    ])(
+      'should require quantity and unit together (%o)',
+      async (fields, missing) => {
+        const dto = plainToInstance(CreateRecipeIngredientDto, {
+          name: 'Flour',
+          ...fields,
+        });
+        const errors = await validate(dto);
+        const error = errors.find((e) => e.property === missing);
+        expect(Object.values(error?.constraints ?? {})).toContain(
+          'quantity and unit must be provided together',
+        );
+      },
+    );
+
+    it('should accept quantity and unit together', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'Flour',
+        quantity: 200,
+        unit: 'G',
+      });
+      expect(await validate(dto)).toHaveLength(0);
+    });
+
+    it('should reject a zero quantity', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'Flour',
+        quantity: 0,
+        unit: 'G',
+      });
+      const errors = await validate(dto);
+      expect(errors.some((e) => e.property === 'quantity')).toBe(true);
+    });
+
+    it('should reject an unknown unit with a unit message', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'Flour',
+        quantity: 2,
+        unit: 'SPOON',
+      });
+      const errors = await validate(dto);
+      const error = errors.find((e) => e.property === 'unit');
+      expect(Object.values(error?.constraints ?? {})[0]).toMatch(
+        /^unit must be one of/,
+      );
+    });
+
+    it('should fail validation when measure is too long', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'Salt',
+        measure: 'x'.repeat(101),
+      });
+      const errors = await validate(dto);
+      expect(errors.some((e) => e.property === 'measure')).toBe(true);
+    });
+
     it('should fail validation when name is missing', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         measure: '500g',

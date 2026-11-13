@@ -332,6 +332,27 @@ describe('RecipeNutritionService', () => {
       // Defaults to 100g when measure is null
       expect(result.energyKcal).toBe(52);
     });
+
+    it('should use quantity and unit when there is no measure', async () => {
+      mockPrismaService.recipe.findUnique.mockResolvedValue({
+        id: 'recipe-1',
+        servings: 1,
+        ingredients: [
+          {
+            name: 'Apple',
+            measure: null,
+            quantity: 500,
+            unit: 'G',
+            foodProduct: null,
+            genericFood: RECIPE_INGREDIENT_APPLE_GENERIC_FOOD,
+          },
+        ],
+      });
+
+      const result = await service.calculateNutrition('recipe-1');
+
+      expect(result.energyKcal).toBe(260);
+    });
   });
 
   describe('updateRecipeNutrition', () => {
