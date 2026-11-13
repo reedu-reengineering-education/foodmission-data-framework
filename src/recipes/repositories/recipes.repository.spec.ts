@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RecipesRepository } from './recipes.repository';
+import { MAX_SEARCH_CANDIDATES, RecipesRepository } from './recipes.repository';
 import { PrismaService } from '../../database/prisma.service';
 import {
   buildRecipe,
@@ -54,6 +54,8 @@ describe('RecipesRepository', () => {
       recipeIngredient: {
         deleteMany: jest.fn(),
       },
+      genericFood: { findMany: jest.fn() },
+      entityTranslation: { findMany: jest.fn() },
       recipeRating: {
         findUnique: jest.fn(),
         upsert: jest.fn(),
@@ -380,6 +382,83 @@ describe('RecipesRepository', () => {
       expect(mockPrismaService.recipe.delete).toHaveBeenCalledWith({
         where: { id: 'recipe-1' },
       });
+    });
+  });
+
+  describe('findSearchCandidates', () => {
+    it('narrows by the stem of each word and caps the rows loaded', async () => {
+      mockPrismaService.recipe.findMany.mockResolvedValue([]);
+
+      await repository.findSearchCandidates({ isPublic: true }, [
+        { word: 'pomodoro', genericFoodIds: ['tomato-food'] },
+      ]);
+
+      const stem = { contains: 'pomodor', mode: 'insensitive' };
+      expect(mockPrismaService.recipe.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            isPublic: true,
+            AND: [
+              {
+                OR: [
+                  { title: stem },
+                  {
+                    ingredients: {
+                      some: {
+                        OR: [
+                          { name: stem },
+                          { genericFoodId: { in: ['tomato-food'] } },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          take: MAX_SEARCH_CANDIDATES,
+          orderBy: { createdAt: 'desc' },
+        }),
+      );
+    });
+  });
+
+  describe('findGenericFoodIdsByWord', () => {
+    it('matches English food names and synonyms by word', async () => {
+      mockPrismaService.genericFood.findMany.mockResolvedValue([
+        { id: 'powder', foodName: 'Curry powder djawa', synonym: null },
+        { id: 'ketchup', foodName: 'Ketchup', synonym: 'Curry ketchup' },
+        { id: 'scurry', foodName: 'Scurrying', synonym: null },
+      ]);
+
+      await expect(
+        repository.findGenericFoodIdsByWord('curry', 'en'),
+      ).resolves.toEqual(['powder', 'ketchup']);
+      expect(
+        mockPrismaService.entityTranslation.findMany,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('matches translated food names by word in other locales', async () => {
+      mockPrismaService.entityTranslation.findMany.mockResolvedValue([
+        { entityId: 'raw', value: 'Pomodori crudi' },
+        { entityId: 'puree', value: 'Concentrato di pomodoro' },
+        { entityId: 'puree', value: 'Passata di pomodoro' },
+        { entityId: 'made-up', value: 'Pomodorinoso inventato' },
+      ]);
+
+      await expect(
+        repository.findGenericFoodIdsByWord('pomodoro', 'it'),
+      ).resolves.toEqual(['raw', 'puree']);
+      expect(mockPrismaService.entityTranslation.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            locale: 'it',
+            value: { contains: 'pomodor', mode: 'insensitive' },
+          }),
+        }),
+      );
+      expect(mockPrismaService.genericFood.findMany).not.toHaveBeenCalled();
     });
   });
 
