@@ -27,6 +27,7 @@ import {
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { TranslationService } from '../../translations/services/translation.service';
+import { RecipeNutritionService } from './recipe-nutrition.service';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 type LocalizableIngredient = {
@@ -34,6 +35,14 @@ type LocalizableIngredient = {
   genericFoodId?: string | null;
   genericFood?: { foodName: string } | null;
 };
+
+function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
+  return (
+    typeof nutritionalInfo === 'object' &&
+    nutritionalInfo !== null &&
+    !('confidence' in nutritionalInfo)
+  );
+}
 
 @Injectable()
 export class RecipesService {
@@ -43,6 +52,7 @@ export class RecipesService {
     private readonly recipeRepository: RecipesRepository,
     private readonly userEventService: UserEventService,
     private readonly translationService: TranslationService,
+    private readonly recipeNutritionService: RecipeNutritionService,
   ) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
@@ -69,7 +79,11 @@ export class RecipesService {
         origin: RecipeOrigin.USER,
         userId,
       });
-      return this.toResponse(recipe);
+      return this.toResponse(
+        createRecipeDto.nutritionalInfo === undefined
+          ? await this.withEstimatedNutrition(recipe)
+          : recipe,
+      );
     } catch (error) {
       throw handlePrismaError(error, 'create recipe', 'Recipe');
     }
@@ -364,11 +378,20 @@ export class RecipesService {
     updateRecipeDto: UpdateRecipeDto,
     userId: string,
   ): Promise<RecipeResponseDto> {
-    await this.getOwnedRecipeOrThrow(id, userId);
+    const existing = await this.getOwnedRecipeOrThrow(id, userId);
+    const amountsChanged =
+      updateRecipeDto.ingredients !== undefined ||
+      updateRecipeDto.servings !== undefined;
+    const estimate =
+      amountsChanged &&
+      updateRecipeDto.nutritionalInfo === undefined &&
+      !isUserProvidedNutrition(existing.nutritionalInfo);
 
     try {
       const updated = await this.recipeRepository.update(id, updateRecipeDto);
-      return this.toResponse(updated);
+      return this.toResponse(
+        estimate ? await this.withEstimatedNutrition(updated) : updated,
+      );
     } catch (error) {
       throw handlePrismaError(error, 'update recipe', 'Recipe');
     }
@@ -392,6 +415,17 @@ export class RecipesService {
     return plainToInstance(RecipeRatingResponseDto, rating, {
       excludeExtraneousValues: true,
     });
+  }
+
+  private async withEstimatedNutrition<T extends { id: string }>(
+    recipe: T,
+  ): Promise<T & { nutritionalInfo: unknown }> {
+    return {
+      ...recipe,
+      nutritionalInfo: await this.recipeNutritionService.updateRecipeNutrition(
+        recipe.id,
+      ),
+    };
   }
 
   private toResponse(recipe: any): RecipeResponseDto {

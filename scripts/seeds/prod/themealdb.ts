@@ -2,6 +2,10 @@ import { Allergens, Prisma, PrismaClient, RecipeOrigin } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
+import {
+  calculateRecipeNutrition,
+  NUTRITION_VALUE_SELECT,
+} from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
@@ -179,10 +183,6 @@ function toRecipeCreateData(
     dietaryLabels: recipe.dietaryLabels ?? [],
     servings: recipe.servings ?? 4,
     allergens: mapAllergensToEnum(recipe.allergens),
-    nutritionalInfo:
-      recipe.nutritionalInfo != null
-        ? (recipe.nutritionalInfo as Prisma.InputJsonValue)
-        : undefined,
     sustainabilityScore: recipe.sustainabilityScore ?? undefined,
     isPublic: true,
     userId: null,
@@ -218,6 +218,46 @@ async function reparseIngredientUnits(prisma: PrismaClient): Promise<void> {
   );
 }
 
+async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
+  const recipes = await prisma.recipe.findMany({
+    where: { origin: RecipeOrigin.THEMEALDB },
+    select: {
+      id: true,
+      servings: true,
+      ingredients: {
+        orderBy: { order: 'asc' },
+        select: {
+          name: true,
+          measure: true,
+          quantity: true,
+          unit: true,
+          foodProduct: { select: NUTRITION_VALUE_SELECT },
+          genericFood: { select: NUTRITION_VALUE_SELECT },
+        },
+      },
+    },
+  });
+
+  let stored = 0;
+  for (const recipe of recipes) {
+    const nutrition = calculateRecipeNutrition(recipe);
+    if (nutrition) stored++;
+    await prisma.recipe.update({
+      where: { id: recipe.id },
+      data: {
+        nutritionalInfo:
+          nutrition === null
+            ? Prisma.JsonNull
+            : (nutrition as unknown as Prisma.InputJsonValue),
+      },
+    });
+  }
+
+  console.log(
+    `   🥗 Recipe nutrition: stored ${stored}, withheld ${recipes.length - stored}`,
+  );
+}
+
 export async function seedRecipes(
   prisma: PrismaClient,
   options: SeedOptions = {},
@@ -236,13 +276,11 @@ export async function seedRecipes(
   console.log(`   📄 ${recipes.length} recipes`);
   console.log(`   🥕 ${ingredientCount} ingredient entries`);
   console.log(`   🔗 ${data.ingredientMappings.length} ingredient mappings`);
-  const enrichedCount = recipes.filter(
-    (r) => r.nutritionalInfo != null || (r.allergens?.length ?? 0) > 0,
+  const withAllergens = recipes.filter(
+    (r) => (r.allergens?.length ?? 0) > 0,
   ).length;
-  if (enrichedCount > 0) {
-    console.log(
-      `   📊 ${enrichedCount} recipes with nutritionalInfo/allergens/sustainability`,
-    );
+  if (withAllergens > 0) {
+    console.log(`   📊 ${withAllergens} recipes with allergens`);
   }
 
   const genericFoodByNevoCode = new Map<number, string>();
@@ -342,7 +380,10 @@ export async function seedRecipes(
       ? 0
       : await relinkExistingIngredients(prisma, genericFoodIdByIngredient);
 
-  if (!dryRun) await reparseIngredientUnits(prisma);
+  if (!dryRun) {
+    await reparseIngredientUnits(prisma);
+    await recalculateNutrition(prisma);
+  }
 
   console.log(`\n✅ TheMealDB seeding complete:`);
   console.log(`   📥 Created: ${created}`);
