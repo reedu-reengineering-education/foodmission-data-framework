@@ -179,7 +179,7 @@ describe('RecipesService', () => {
       mockRecipeRepository.findByIds.mockResolvedValue([]);
     });
 
-    it('narrows candidates in SQL by title or ingredient, then checks whole words', async () => {
+    it('keeps recipes where every word starts a word of the title or an ingredient', async () => {
       mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
         recipe('kebabs', 'Red curry chicken kebabs'),
         recipe('curry', 'Nutty Chicken Curry'),
@@ -196,35 +196,19 @@ describe('RecipesService', () => {
         limit: 10,
       });
 
-      const titleOrIngredient = (prefix: string) => ({
-        OR: [
-          { title: { contains: prefix, mode: 'insensitive' } },
-          {
-            ingredients: {
-              some: {
-                OR: [
-                  { name: { contains: prefix, mode: 'insensitive' } },
-                  { genericFoodId: { in: [] } },
-                ],
-              },
-            },
-          },
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
+        { OR: [{ userId }, { isPublic: true }] },
+        [
+          { prefix: 'curry', genericFoodIds: [] },
+          { prefix: 'chicken', genericFoodIds: [] },
         ],
-      });
-      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith({
-        OR: [{ userId }, { isPublic: true }],
-        AND: [titleOrIngredient('curry'), titleOrIngredient('chicken')],
-      });
-      // "Scurrying" contains "curry" but no word starts with it. Title
-      // matches come first, the shorter title before the longer one; the
-      // ingredient-only match comes last.
+      );
       expect(pageIds()).toEqual(['curry', 'kebabs', 'rice']);
       expect(mockRecipeRepository.findWithPagination).not.toHaveBeenCalled();
-      // English: no translation lookup.
       expect(mockPrisma.entityTranslation.findMany).not.toHaveBeenCalled();
     });
 
-    it('matches ingredients through their translated food name in lang', async () => {
+    it('finds an English recipe by the Italian name of its ingredient', async () => {
       mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
         recipe('salad', 'Greek salad', [
           { name: 'Tomatoes', genericFoodId: 'tomato-food' },
@@ -244,37 +228,22 @@ describe('RecipesService', () => {
         limit: 10,
       });
 
-      expect(mockPrisma.entityTranslation.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            entityType: 'GenericFood',
-            locale: 'it',
-            field: { in: ['foodName', 'synonym'] },
-            value: { contains: 'pomodor', mode: 'insensitive' },
-          }),
-        }),
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
+        expect.anything(),
+        [{ prefix: 'pomodor', genericFoodIds: ['tomato-food'] }],
       );
-      expect(
-        mockRecipeRepository.findSearchCandidates.mock.calls[0][0],
-      ).toMatchObject({
-        userId,
-        AND: [
-          {
-            OR: [
-              {},
-              {
-                ingredients: {
-                  some: {
-                    OR: [{}, { genericFoodId: { in: ['tomato-food'] } }],
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      });
-      // The title match first, then ingredient matches (newest first).
       expect(pageIds()).toEqual(['pasta', 'salad', 'stew']);
+    });
+
+    it('does not match a different word that shares the stem', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('cake', 'Rich chocolate cake'),
+        recipe('risotto', 'Mushroom risotto', [{ name: 'Arborio rice' }]),
+      ]);
+
+      await service.findAll(userId, { search: 'rice', page: 1, limit: 10 });
+
+      expect(pageIds()).toEqual(['risotto']);
     });
 
     it('ranks before paging and reports the total of all matches', async () => {
@@ -293,7 +262,6 @@ describe('RecipesService', () => {
         limit: 2,
       });
 
-      // Ranked: Fish pie, Three fish pie with prawns (exact "pie"), Mini fish pies.
       expect(pageIds()).toEqual(['pies']);
       expect(result).toMatchObject({
         total: 3,

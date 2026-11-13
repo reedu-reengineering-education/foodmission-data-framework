@@ -21,6 +21,8 @@ import {
   RECIPE_WITH_INGREDIENTS_INCLUDE,
 } from '../../common/types/prisma-relations';
 
+export const MAX_SEARCH_CANDIDATES = 500;
+
 export interface CreateRecipeIngredientData {
   name: string;
   measure?: string;
@@ -203,13 +205,35 @@ export class RecipesRepository implements BaseRepository<
     await this.prisma.recipe.delete({ where: { id } });
   }
 
-  /** Recipes matching `where`, newest first, with only what a search looks at. */
   findSearchCandidates(
     where: Prisma.RecipeWhereInput,
+    terms: { prefix: string; genericFoodIds: string[] }[],
   ): Promise<SearchableRecipe[]> {
+    const contains = (prefix: string) => ({
+      contains: prefix,
+      mode: 'insensitive' as const,
+    });
     return this.prisma.recipe.findMany({
-      where,
+      where: {
+        ...where,
+        AND: terms.map(({ prefix, genericFoodIds }) => ({
+          OR: [
+            { title: contains(prefix) },
+            {
+              ingredients: {
+                some: {
+                  OR: [
+                    { name: contains(prefix) },
+                    { genericFoodId: { in: genericFoodIds } },
+                  ],
+                },
+              },
+            },
+          ],
+        })),
+      },
       orderBy: { createdAt: 'desc' },
+      take: MAX_SEARCH_CANDIDATES,
       select: {
         id: true,
         title: true,
@@ -218,7 +242,6 @@ export class RecipesRepository implements BaseRepository<
     });
   }
 
-  /** Recipes with ingredients, in the order of `ids`. */
   async findByIds(ids: string[]): Promise<Recipe[]> {
     if (ids.length === 0) return [];
     const rows = await this.prisma.recipe.findMany({

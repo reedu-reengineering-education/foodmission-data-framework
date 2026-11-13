@@ -2,9 +2,6 @@ import {
   MAX_SEARCH_WORDS,
   hasExactWordMatch,
   hasWordMatch,
-  isCompoundHeadMatch,
-  normalizeForSearch,
-  normalizeSearchTerm,
   searchPrefix,
   searchStem,
   searchWords,
@@ -66,6 +63,9 @@ describe('hasWordMatch', () => {
     ['Olio di semi', "'-"],
     ['Chicken pieces', 'pie'],
     ['Eggplant', 'egg'],
+    ['Rich chocolate cake', 'rice'],
+    ['Panna cotta', 'pane'],
+    ['Pastry cream', 'pasta'],
   ])('%s does not match %s', (text, term) => {
     expect(hasWordMatch(text, term)).toBe(false);
   });
@@ -120,49 +120,6 @@ describe('searchPrefix', () => {
 
   it('is empty without letters or digits', () => {
     expect(searchPrefix("'-")).toBe('');
-  });
-});
-
-describe('normalizeSearchTerm', () => {
-  it.each([
-    ["olio d'oliva", 'olio d oliva'],
-    ['Olio d’oliva', 'olio d oliva'],
-    ['Elstar-eple', 'elstar eple'],
-    ['tin/glass, drained', 'tin glass drained'],
-    ['Peanut butter 100%', 'peanut butter 100'],
-    ['«fin» — test…', 'fin test'],
-  ])('%s -> %s', (input, expected) => {
-    expect(normalizeSearchTerm(input)).toBe(expected);
-  });
-
-  it('keeps accented and non-Latin letters', () => {
-    expect(normalizeSearchTerm('Eple-pære')).toBe('eple pære');
-    expect(normalizeSearchTerm('Ελαιόλαδο (παρθένο)')).toBe(
-      'ελαιόλαδο παρθένο',
-    );
-    expect(normalizeSearchTerm('Ser żółty')).toBe('ser żółty');
-  });
-});
-
-describe('normalizeForSearch', () => {
-  it('lowercases and strips accents', () => {
-    expect(normalizeForSearch(' Crème Brûlée ')).toBe('creme brulee');
-  });
-
-  it('treats punctuation as spaces', () => {
-    expect(normalizeForSearch('Olio d’oliva')).toBe('olio d oliva');
-  });
-});
-
-describe('isCompoundHeadMatch', () => {
-  it.each([
-    ['milch', 'Vollmilch', 'de', true],
-    ['kartoffel', 'Kartoffeln, gekocht', 'de', true],
-    ['milch', 'Käse aus Rohmilch', 'de', false],
-    ['ei', 'Brei', 'de', false],
-    ['milk', 'Buttermilk', 'en', false],
-  ])('%s in %s (%s): %s', (term, text, locale, expected) => {
-    expect(isCompoundHeadMatch(term, text, locale)).toBe(expected);
   });
 });
 

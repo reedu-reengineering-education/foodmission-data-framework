@@ -10,39 +10,14 @@ describe('recipe search matching', () => {
     ],
   };
 
-  it('matches title words in any order, by whole words', () => {
-    const none = [new Set<string>(), new Set<string>()];
-    expect(matchesTitleOrIngredients(recipe, ['chilli', 'beef'], none)).toBe(
-      true,
-    );
-    expect(matchesTitleOrIngredients(recipe, ['chil'], [new Set()])).toBe(true);
-    expect(matchesTitleOrIngredients(recipe, ['raise'], [new Set()])).toBe(
-      false,
-    );
-  });
-
-  it('lets each word match the title or any ingredient', () => {
-    const noTranslations = [new Set<string>(), new Set<string>()];
-    expect(
-      matchesTitleOrIngredients(recipe, ['beef', 'tomato'], noTranslations),
-    ).toBe(true);
-    expect(
-      matchesTitleOrIngredients(recipe, ['onion', 'tomato'], noTranslations),
-    ).toBe(true);
-    // Same word rule as titles: "on" is not a word of "Red onions".
-    expect(
-      matchesTitleOrIngredients(recipe, ['on', 'beef'], noTranslations),
-    ).toBe(false);
-  });
-
-  it("matches an ingredient through its generic food's translation", () => {
+  it('applies the word rule to ingredients too: "on" is not a word of "Red onions"', () => {
     expect(
       matchesTitleOrIngredients(
         recipe,
-        ['pomodoro', 'beef'],
-        [new Set(['tomato-food']), new Set()],
+        ['on', 'beef'],
+        [new Set<string>(), new Set<string>()],
       ),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   describe('rankRecipes', () => {

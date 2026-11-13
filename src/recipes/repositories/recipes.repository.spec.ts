@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RecipesRepository } from './recipes.repository';
+import { MAX_SEARCH_CANDIDATES, RecipesRepository } from './recipes.repository';
 import { PrismaService } from '../../database/prisma.service';
 import {
   buildRecipe,
@@ -380,6 +380,23 @@ describe('RecipesRepository', () => {
       expect(mockPrismaService.recipe.delete).toHaveBeenCalledWith({
         where: { id: 'recipe-1' },
       });
+    });
+  });
+
+  describe('findSearchCandidates', () => {
+    it('caps the rows loaded, so a one-letter search cannot load every recipe', async () => {
+      mockPrismaService.recipe.findMany.mockResolvedValue([]);
+
+      await repository.findSearchCandidates({ isPublic: true }, [
+        { prefix: 'a', genericFoodIds: [] },
+      ]);
+
+      expect(mockPrismaService.recipe.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          take: MAX_SEARCH_CANDIDATES,
+          orderBy: { createdAt: 'desc' },
+        }),
+      );
     });
   });
 

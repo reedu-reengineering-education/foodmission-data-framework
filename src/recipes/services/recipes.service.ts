@@ -112,7 +112,6 @@ export class RecipesService {
     );
   }
 
-  /** One page of the recipes matching `where` and the search. */
   private async listRecipes(
     where: Prisma.RecipeWhereInput,
     query: QueryRecipeDto,
@@ -137,10 +136,6 @@ export class RecipesService {
     }
   }
 
-  /**
-   * Without a search: newest first, paged in SQL. With one: best match first
-   * (see rankRecipes), paged here, since the ranking runs in code.
-   */
   private async findPage(
     where: Prisma.RecipeWhereInput,
     query: QueryRecipeDto,
@@ -158,7 +153,7 @@ export class RecipesService {
     }
 
     const ranked = rankRecipes(
-      await this.searchRecipes(where, words, query),
+      await this.searchRecipes(where, words, query.lang),
       words,
     );
     const pageIds = ranked.slice(skip, skip + limit).map((recipe) => recipe.id);
@@ -198,53 +193,28 @@ export class RecipesService {
     };
   }
 
-  /**
-   * The recipes matching `where` and the search words, newest first. Every
-   * word must appear in the title or in an ingredient: by its name, or by its
-   * generic food's name in `lang` ("pomodoro" finds "Pomodori crudi"). Titles
-   * and ingredients use the same word rule (see hasWordMatch); rankRecipes
-   * then puts title matches first. SQL only narrows the candidates by
-   * searchPrefix.
-   */
   private async searchRecipes(
     where: Prisma.RecipeWhereInput,
     words: string[],
-    query: QueryRecipeDto,
+    lang: string | undefined,
   ): Promise<SearchableRecipe[]> {
-    const locale = this.translationService.resolveLocale(query.lang);
     const translatedFoodIds = await Promise.all(
       words.map((word) =>
-        this.translationService.findEntityIdsByValue(
+        this.translationService.findEntityIdsByWord(
           'GenericFood',
-          locale,
+          this.translationService.resolveLocale(lang),
           ['foodName', 'synonym'],
           word,
-          'word',
         ),
       ),
     );
-    const contains = (prefix: string) => ({
-      contains: prefix,
-      mode: 'insensitive' as const,
-    });
-    const candidates = await this.recipeRepository.findSearchCandidates({
-      ...where,
-      AND: words.map(searchPrefix).map((prefix, i) => ({
-        OR: [
-          { title: contains(prefix) },
-          {
-            ingredients: {
-              some: {
-                OR: [
-                  { name: contains(prefix) },
-                  { genericFoodId: { in: translatedFoodIds[i] } },
-                ],
-              },
-            },
-          },
-        ],
+    const candidates = await this.recipeRepository.findSearchCandidates(
+      where,
+      words.map((word, i) => ({
+        prefix: searchPrefix(word),
+        genericFoodIds: translatedFoodIds[i],
       })),
-    });
+    );
     const foodIdSets = translatedFoodIds.map((ids) => new Set(ids));
     return candidates.filter((recipe) =>
       matchesTitleOrIngredients(recipe, words, foodIdSets),
