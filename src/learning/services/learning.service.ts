@@ -638,7 +638,6 @@ export class LearningService {
             eventType: EventType.QUIZ_UPDATED,
             source: EventSource.LEARNING,
             metadata,
-            idempotencyKey: `quiz-updated:${userId}:${quiz.id}:${next.selectedOptionId}`,
           },
           tx,
         );
@@ -1009,7 +1008,6 @@ export class LearningService {
             eventType: EventType.QUEST_UPDATED,
             source: EventSource.QUEST,
             metadata,
-            idempotencyKey: `quest-updated:${userId}:${quest.id}:${next.progress}:${next.completed}`,
           },
           tx,
         );

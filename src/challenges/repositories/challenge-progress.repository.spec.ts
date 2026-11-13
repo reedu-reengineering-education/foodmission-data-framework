@@ -133,10 +133,15 @@ describe('ChallengeProgressRepository', () => {
       (prisma.challengeProgress.upsert as jest.Mock).mockResolvedValue(
         mockReturn,
       );
-      const result = await repository.upsert('u1', 'c1', {
-        completed: true,
-        progress: 1,
-      });
+      const result = await repository.upsert(
+        'u1',
+        'c1',
+        {
+          completed: true,
+          progress: 1,
+        },
+        prisma,
+      );
       expect(prisma.challengeProgress.upsert).toHaveBeenCalledWith({
         where: { userId_challengeId: { userId: 'u1', challengeId: 'c1' } },
         create: {
@@ -164,7 +169,12 @@ describe('ChallengeProgressRepository', () => {
         startedAt: new Date(),
       });
 
-      await repository.upsert('u1', 'c1', { failed: true, progress: 40 });
+      await repository.upsert(
+        'u1',
+        'c1',
+        { failed: true, progress: 40 },
+        prisma,
+      );
 
       const call = (prisma.challengeProgress.upsert as jest.Mock).mock
         .calls[0][0];
@@ -181,7 +191,7 @@ describe('ChallengeProgressRepository', () => {
         startedAt: new Date(),
       });
 
-      await repository.upsert('u1', 'c1', { progress: 0 });
+      await repository.upsert('u1', 'c1', { progress: 0 }, prisma);
 
       const call = (prisma.challengeProgress.upsert as jest.Mock).mock
         .calls[0][0];

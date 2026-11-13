@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChallengeProgressService } from './challenge-progress.service';
 import { ChallengeProgressRepository } from '../repositories/challenge-progress.repository';
+import { PrismaService } from '../../database/prisma.service';
+import {
+  InteractiveTransactionMock,
+  withInteractiveTransaction,
+} from '../../common/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { TranslationService } from '../../translations/services/translation.service';
 import { EventSource, EventType } from '../../events/event-types';
@@ -12,6 +17,7 @@ import { RewardSourceType, WalletCurrency } from '@prisma/client';
 describe('ChallengeProgressService', () => {
   let service: ChallengeProgressService;
   let repository: ChallengeProgressRepository;
+  let prisma: InteractiveTransactionMock;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
   let walletService: jest.Mocked<Pick<GamificationWalletService, 'award'>>;
 
@@ -23,8 +29,15 @@ describe('ChallengeProgressService', () => {
       award: jest.fn().mockResolvedValue({ replayed: false }),
     };
 
+    prisma = withInteractiveTransaction({});
+    prisma.$queryRaw.mockImplementation(async () => {
+      const row: unknown = await repository.findByUserIdAndChallengeId('', '');
+      return row ? [row] : [];
+    });
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        { provide: PrismaService, useValue: prisma },
         ChallengeProgressService,
         {
           provide: ChallengeProgressRepository,
@@ -208,10 +221,15 @@ describe('ChallengeProgressService', () => {
         { completed: true, progress: 1 },
         'u1',
       );
-      expect(repository.upsert).toHaveBeenCalledWith('u1', 'c1', {
-        completed: true,
-        progress: 1,
-      });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        'u1',
+        'c1',
+        {
+          completed: true,
+          progress: 1,
+        },
+        prisma,
+      );
       expect(result).toEqual({
         challengeId: 'c1',
         userId: 'u1',
@@ -319,9 +337,14 @@ describe('ChallengeProgressService', () => {
       expect(repository.findChallengeByCodeOrId).toHaveBeenCalledWith(
         'CH.A1.1',
       );
-      expect(repository.upsert).toHaveBeenCalledWith('u1', 'c1', {
-        progress: 10,
-      });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        'u1',
+        'c1',
+        {
+          progress: 10,
+        },
+        prisma,
+      );
     });
 
     it('emits CHALLENGE_STARTED on first active progress', async () => {
@@ -344,18 +367,21 @@ describe('ChallengeProgressService', () => {
       await service.update('c1', { progress: 10 }, 'u1');
 
       expect(userEventService.record).toHaveBeenCalledTimes(1);
-      expect(userEventService.record).toHaveBeenCalledWith({
-        userId: 'u1',
-        eventType: EventType.CHALLENGE_STARTED,
-        source: EventSource.CHALLENGE,
-        metadata: {
-          challengeId: 'c1',
-          challengeCode: 'CH.A1.1',
-          source: EventSource.API,
-          body: { progress: 10 },
+      expect(userEventService.record).toHaveBeenCalledWith(
+        {
+          userId: 'u1',
+          eventType: EventType.CHALLENGE_STARTED,
+          source: EventSource.CHALLENGE,
+          metadata: {
+            challengeId: 'c1',
+            challengeCode: 'CH.A1.1',
+            source: EventSource.API,
+            body: { progress: 10 },
+          },
+          idempotencyKey: 'challenge-started:u1:c1',
         },
-        idempotencyKey: 'challenge-started:u1:c1',
-      });
+        prisma,
+      );
     });
 
     it('emits CHALLENGE_UPDATED when progress changes after start', async () => {
@@ -384,11 +410,11 @@ describe('ChallengeProgressService', () => {
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: EventType.CHALLENGE_UPDATED,
-          idempotencyKey: 'challenge-updated:u1:c1:40:false',
           metadata: expect.objectContaining({
             body: { progress: 40 },
           }),
         }),
+        prisma,
       );
     });
 
@@ -498,9 +524,14 @@ describe('ChallengeProgressService', () => {
 
         const result = await service.update('c1', { failed: true }, 'u1');
 
-        expect(repository.upsert).toHaveBeenCalledWith('u1', 'c1', {
-          failed: true,
-        });
+        expect(repository.upsert).toHaveBeenCalledWith(
+          'u1',
+          'c1',
+          {
+            failed: true,
+          },
+          prisma,
+        );
         expect(result.status).toBe('FAILED');
         expect(result.reward).toBeNull();
         expect(userEventService.record).toHaveBeenCalledWith(
@@ -508,6 +539,7 @@ describe('ChallengeProgressService', () => {
             eventType: EventType.CHALLENGE_FAILED,
             idempotencyKey: `challenge-failed:u1:c1:${failedRow.startedAt.getTime()}`,
           }),
+          prisma,
         );
         expect(walletService.award).not.toHaveBeenCalled();
       });

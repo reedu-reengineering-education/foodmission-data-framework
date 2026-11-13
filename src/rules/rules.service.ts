@@ -10,6 +10,7 @@ import {
 } from '../common/after-commit/after-commit.queue';
 import { ProgressStatus } from '../common/progress-status';
 import { progressEventKey } from '../common/progress-event-keys';
+import { findProgressForUpdate } from '../common/progress-row-lock';
 import { EventSource, EventType, EventTypeValue } from '../events/event-types';
 import {
   USER_EVENT_RECORDER,
@@ -252,54 +253,18 @@ export class RulesService implements OnModuleInit {
         activeScope.challengeCodes.has(entry.code),
     );
 
-    const completions: CompletionAward[] = [];
-
-    for (const entry of missionRules) {
-      const catalogItem = missionCatalog.find(
-        (item) => item.code === entry.code,
-      );
-      if (!catalogItem || !entry.rule) {
-        continue;
-      }
-      const row = missionProgress.get(catalogItem.id);
-      if (!row || isResolved(row.status)) {
-        continue;
-      }
-      const completion = await this.syncProgress(
-        db,
-        events,
-        userId,
-        catalogItem,
-        entry,
-        'mission',
-      );
-      if (completion) {
-        completions.push(completion);
-      }
-    }
-
-    for (const entry of challengeRules) {
-      const catalogItem = challengeCatalog.find(
-        (item) => item.code === entry.code,
-      );
-      if (!catalogItem || !entry.rule) {
-        continue;
-      }
-      if (isResolved(challengeProgress.get(catalogItem.id)?.status)) {
-        continue;
-      }
-      const completion = await this.syncProgress(
-        db,
-        events,
-        userId,
-        catalogItem,
-        entry,
-        'challenge',
-      );
-      if (completion) {
-        completions.push(completion);
-      }
-    }
+    const sync = (syncTx: Prisma.TransactionClient) =>
+      this.syncItems(syncTx, events, userId, {
+        missionRules,
+        challengeRules,
+        missionCatalog,
+        challengeCatalog,
+        missionProgress,
+        challengeProgress,
+      });
+    const completions = tx
+      ? await sync(tx)
+      : await this.prisma.$transaction(sync);
 
     if (completions.length === 0) {
       return;
@@ -511,35 +476,96 @@ export class RulesService implements OnModuleInit {
     return rows;
   }
 
+  private async syncItems(
+    tx: Prisma.TransactionClient,
+    events: UserEventRow[],
+    userId: string,
+    scope: {
+      missionRules: RuleEntry[];
+      challengeRules: RuleEntry[];
+      missionCatalog: CatalogItem[];
+      challengeCatalog: CatalogItem[];
+      missionProgress: Map<string, { status: string }>;
+      challengeProgress: Map<string, { status: string }>;
+    },
+  ): Promise<CompletionAward[]> {
+    const {
+      missionRules,
+      challengeRules,
+      missionCatalog,
+      challengeCatalog,
+      missionProgress,
+      challengeProgress,
+    } = scope;
+    const completions: CompletionAward[] = [];
+
+    for (const entry of missionRules) {
+      const catalogItem = missionCatalog.find(
+        (item) => item.code === entry.code,
+      );
+      if (!catalogItem || !entry.rule) {
+        continue;
+      }
+      const row = missionProgress.get(catalogItem.id);
+      if (!row || isResolved(row.status)) {
+        continue;
+      }
+      const completion = await this.syncProgress(
+        tx,
+        events,
+        userId,
+        catalogItem,
+        entry,
+        'mission',
+      );
+      if (completion) {
+        completions.push(completion);
+      }
+    }
+
+    for (const entry of challengeRules) {
+      const catalogItem = challengeCatalog.find(
+        (item) => item.code === entry.code,
+      );
+      if (!catalogItem || !entry.rule) {
+        continue;
+      }
+      if (isResolved(challengeProgress.get(catalogItem.id)?.status)) {
+        continue;
+      }
+      const completion = await this.syncProgress(
+        tx,
+        events,
+        userId,
+        catalogItem,
+        entry,
+        'challenge',
+      );
+      if (completion) {
+        completions.push(completion);
+      }
+    }
+
+    return completions;
+  }
+
   private async syncProgress(
-    db: Prisma.TransactionClient | PrismaService,
+    tx: Prisma.TransactionClient,
     events: UserEventRow[],
     userId: string,
     catalogItem: CatalogItem,
     entry: RuleEntry,
     kind: 'mission' | 'challenge',
   ): Promise<CompletionAward | null> {
-    const previous =
-      kind === 'mission'
-        ? await db.missionProgress.findUnique({
-            where: { userId_missionId: { userId, missionId: catalogItem.id } },
-            select: {
-              progress: true,
-              completed: true,
-              startedAt: true,
-              inputs: true,
-            },
-          })
-        : await db.challengeProgress.findUnique({
-            where: {
-              userId_challengeId: { userId, challengeId: catalogItem.id },
-            },
-            select: {
-              progress: true,
-              completed: true,
-              startedAt: true,
-            },
-          });
+    const previous = await findProgressForUpdate(
+      tx,
+      kind,
+      userId,
+      catalogItem.id,
+    );
+    if (previous && isResolved(previous.status)) {
+      return null;
+    }
 
     // A mission only counts once the user started it, which creates its row;
     // the engine never starts one. Challenges of the current quest are scored
@@ -555,7 +581,7 @@ export class RulesService implements OnModuleInit {
       events,
       new Date(),
       previous?.startedAt,
-      previous && 'inputs' in previous ? previous.inputs : undefined,
+      previous?.inputs,
     );
     const ruleHash = hashRule(entry.rule);
     // A scored mission has been started, so it runs as IN_PROGRESS even at 0;
@@ -597,7 +623,7 @@ export class RulesService implements OnModuleInit {
     if (kind === 'mission') {
       // Never creates the row. It may have been removed since it was read
       // (e.g. a quest switch).
-      const { count } = await db.missionProgress.updateMany({
+      const { count } = await tx.missionProgress.updateMany({
         where: { userId, missionId: catalogItem.id },
         data,
       });
@@ -605,7 +631,7 @@ export class RulesService implements OnModuleInit {
         return null;
       }
     } else {
-      await db.challengeProgress.upsert({
+      await tx.challengeProgress.upsert({
         where: { userId_challengeId: { userId, challengeId: catalogItem.id } },
         create: { userId, challengeId: catalogItem.id, ...data },
         update: data,
@@ -613,52 +639,60 @@ export class RulesService implements OnModuleInit {
     }
 
     if (started) {
-      await this.emitDerivedEvent(db, {
+      await this.emitDerivedEvent(tx, {
         userId,
         kind,
         event:
           kind === 'mission'
             ? EventType.MISSION_STARTED
             : EventType.CHALLENGE_STARTED,
-        transition: 'started',
+        idempotencyKey: progressEventKey({
+          kind,
+          transition: 'started',
+          userId,
+          id: catalogItem.id,
+          startedAt,
+        }),
         code: entry.code,
         id: catalogItem.id,
         progress,
         completed,
-        startedAt,
       });
     } else if (updated) {
-      await this.emitDerivedEvent(db, {
+      await this.emitDerivedEvent(tx, {
         userId,
         kind,
         event:
           kind === 'mission'
             ? EventType.MISSION_UPDATED
             : EventType.CHALLENGE_UPDATED,
-        transition: 'updated',
         code: entry.code,
         id: catalogItem.id,
         progress,
         completed,
-        startedAt,
       });
     }
 
     if (failed) {
       // Rows reach here at most once as FAILED: resolved rows are skipped.
-      await this.emitDerivedEvent(db, {
+      await this.emitDerivedEvent(tx, {
         userId,
         kind,
         event:
           kind === 'mission'
             ? EventType.MISSION_FAILED
             : EventType.CHALLENGE_FAILED,
-        transition: 'failed',
+        idempotencyKey: progressEventKey({
+          kind,
+          transition: 'failed',
+          userId,
+          id: catalogItem.id,
+          startedAt,
+        }),
         code: entry.code,
         id: catalogItem.id,
         progress,
         completed,
-        startedAt,
       });
       return null;
     }
@@ -667,19 +701,23 @@ export class RulesService implements OnModuleInit {
       return null;
     }
 
-    await this.emitDerivedEvent(db, {
+    await this.emitDerivedEvent(tx, {
       userId,
       kind,
       event:
         kind === 'mission'
           ? EventType.MISSION_COMPLETED
           : EventType.CHALLENGE_COMPLETED,
-      transition: 'completed',
+      idempotencyKey: progressEventKey({
+        kind,
+        transition: 'completed',
+        userId,
+        id: catalogItem.id,
+      }),
       code: entry.code,
       id: catalogItem.id,
       progress,
       completed,
-      startedAt,
     });
 
     return { userId, kind, id: catalogItem.id, code: entry.code };
@@ -699,25 +737,19 @@ export class RulesService implements OnModuleInit {
    * evaluation.
    */
   private async emitDerivedEvent(
-    db: Prisma.TransactionClient | PrismaService,
+    tx: Prisma.TransactionClient,
     input: {
       userId: string;
       kind: 'mission' | 'challenge';
       event: EventTypeValue;
-      transition: 'started' | 'updated' | 'completed' | 'failed';
       code: string;
       id: string;
       progress: number;
       completed: boolean;
-      /** The attempt's start time; scopes the key to this attempt. */
-      startedAt: Date | null;
+      idempotencyKey?: string;
     },
   ): Promise<void> {
     const isMission = input.kind === 'mission';
-    // The same helper mission-/challenge-progress.service.ts use, so the two
-    // paths deduplicate against each other.
-    const idempotencyKey = progressEventKey(input);
-
     await this.getRecorder().record(
       {
         userId: input.userId,
@@ -732,12 +764,11 @@ export class RulesService implements OnModuleInit {
             completed: input.completed,
           },
         },
-        idempotencyKey,
+        idempotencyKey: input.idempotencyKey,
       },
-      // Whatever client the evaluation is running on — the caller's transaction
-      // when there is one, so the event lands atomically with the progress row
-      // it describes.
-      db,
+      // The transaction that wrote the progress row, so the event lands
+      // atomically with the row it describes.
+      tx,
     );
   }
 
