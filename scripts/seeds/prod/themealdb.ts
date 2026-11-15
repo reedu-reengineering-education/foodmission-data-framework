@@ -1,4 +1,10 @@
-import { Allergens, Prisma, PrismaClient, RecipeOrigin } from '@prisma/client';
+import {
+  Allergens,
+  Prisma,
+  PrismaClient,
+  RecipeOrigin,
+  Unit,
+} from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
@@ -10,6 +16,10 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
+const INGREDIENT_GRAMS_PATH = path.join(
+  DATA_DIR,
+  'themealdb-ingredient-grams.json',
+);
 
 const SOURCE_NEVO = 'nevo';
 
@@ -191,18 +201,39 @@ function toRecipeCreateData(
   };
 }
 
+const ingredientKey = (name: string, measure: string | null) =>
+  `${name}|${measure ?? ''}`.toLowerCase().replace(/\s+/g, ' ').trim();
+
+function loadIngredientGrams(): Map<string, number> {
+  const rows = JSON.parse(fs.readFileSync(INGREDIENT_GRAMS_PATH, 'utf-8')) as {
+    name: string;
+    measure: string;
+    grams: number;
+  }[];
+  return new Map(
+    rows.map((row) => [ingredientKey(row.name, row.measure), row.grams]),
+  );
+}
+
 async function reparseIngredientUnits(prisma: PrismaClient): Promise<void> {
+  const gramsByIngredient = loadIngredientGrams();
   const ingredients = await prisma.recipeIngredient.findMany({
     where: { recipe: { origin: RecipeOrigin.THEMEALDB } },
-    select: { id: true, measure: true, quantity: true, unit: true },
+    select: { id: true, name: true, measure: true, quantity: true, unit: true },
   });
 
   let updated = 0;
   let unparsed = 0;
   for (const ingredient of ingredients) {
-    const parsed = ingredient.measure
-      ? parseQuantityUnit(ingredient.measure)
-      : null;
+    const grams = gramsByIngredient.get(
+      ingredientKey(ingredient.name, ingredient.measure),
+    );
+    const parsed =
+      grams !== undefined
+        ? { quantity: grams, unit: Unit.G }
+        : ingredient.measure
+          ? parseQuantityUnit(ingredient.measure)
+          : null;
     if (!parsed) unparsed++;
     const quantity = parsed?.quantity ?? null;
     const unit = parsed?.unit ?? null;
