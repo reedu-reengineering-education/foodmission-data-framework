@@ -128,6 +128,53 @@ describe('calculateRecipeNutrition', () => {
     expect(result?.missingIngredients).toEqual(['Bird chilli pods']);
   });
 
+  it('leaves out what is served alongside the dish', () => {
+    const result = calculateRecipeNutrition({
+      ingredients: [
+        food('Beef', '500g', { energyKcal: 200 }),
+        food('Rice', 'To serve', { energyKcal: 352 }),
+      ],
+    });
+
+    expect(result?.energyKcal).toBe(1000);
+    expect(result?.per100g?.energyKcal).toBe(200);
+    expect(result?.missingIngredients).toEqual(['Rice']);
+  });
+
+  it.each([
+    ['Pinch', 0.5],
+    ['1 dash', 1],
+    ['Sprinkling', 5],
+    ['Dusting', 5],
+    ['Garnish', 5],
+    ['For Greasing', 10],
+    ['Drizzle', 10],
+    ['Splash', 15],
+    ['To Glaze', 20],
+    ['Topping', 20],
+  ])('counts "%s" as %d g', (measure, grams) => {
+    const result = calculateRecipeNutrition({
+      ingredients: [
+        food('Beef', '1kg', { energyKcal: 200 }),
+        food('Butter', measure, { energyKcal: 700 }),
+      ],
+    });
+
+    expect(result?.energyKcal).toBe(2000 + grams * 7);
+    expect(result?.missingIngredients).toEqual(['Butter']);
+  });
+
+  it('still withholds a dense food whose amount is simply missing', () => {
+    expect(
+      calculateRecipeNutrition({
+        ingredients: [
+          food('Beef', '500g', { energyKcal: 200 }),
+          food('Butter', 'To taste', { energyKcal: 740 }),
+        ],
+      }),
+    ).toBeNull();
+  });
+
   it('returns null when an unweighable food is energy-dense', () => {
     expect(
       calculateRecipeNutrition({
@@ -162,13 +209,12 @@ describe('calculateRecipeNutrition', () => {
   it('keeps a recipe when the condiment guess is under 10% of energy', () => {
     const result = calculateRecipeNutrition({
       ingredients: [
-        food('Chicken', '100g', { energyKcal: 500 }),
+        food('Chicken', '200g', { energyKcal: 500 }),
         food('Olive oil', 'drizzle', { energyKcal: 900 }),
       ],
     });
 
-    // 5 g oil = 45 kcal of 545, about 8%.
-    expect(result?.energyKcal).toBe(545);
+    expect(result?.energyKcal).toBe(1090);
     expect(result?.missingIngredients).toEqual(['Olive oil']);
   });
 

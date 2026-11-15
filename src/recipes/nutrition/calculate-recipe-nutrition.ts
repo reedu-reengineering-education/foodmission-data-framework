@@ -54,6 +54,22 @@ export interface NutritionIngredient {
   genericFood?: NutrientSource | null;
 }
 
+const SERVED_ALONGSIDE = /\b(to serve|for serving|serve with)\b/i;
+
+const FINISHING_TOUCH_GRAMS: [RegExp, number][] = [
+  [/\b(pinch|drops?)\b/i, 0.5],
+  [/\bdash\b/i, 1],
+  [/\b(sprinkling|spinkling|sprinking|dusting|garnish)\b/i, 5],
+  [/\b(greasing|drizzle)\b/i, 10],
+  [/\bsplash\b/i, 15],
+  [/\b(glaze|topping|top)\b/i, 20],
+];
+
+function finishingTouchGrams(measure: string): number | null {
+  const match = FINISHING_TOUCH_GRAMS.find(([phrase]) => phrase.test(measure));
+  return match ? match[1] : null;
+}
+
 const PLAIN_WATER = /^(?:cold |hot |boiling |warm )?waters?$/;
 
 const FRESH_HERB =
@@ -91,9 +107,12 @@ function measuredAmount(ingredient: NutritionIngredient): WeighedAmount | null {
 }
 
 function guessedGrams(
-  name: string,
+  { name, measure }: NutritionIngredient,
   source: NutrientSource | null,
 ): number | null {
+  if (measure && SERVED_ALONGSIDE.test(measure)) return 0;
+  const finishingTouch = measure ? finishingTouchGrams(measure) : null;
+  if (finishingTouch != null) return finishingTouch;
   const condiment = condimentGrams(name);
   if (condiment != null) return condiment;
   const kcal = source?.energyKcal;
@@ -163,7 +182,7 @@ export function calculateRecipeNutrition(recipe: {
     const amount = measuredAmount(ingredient);
 
     if (!amount) {
-      const grams = guessedGrams(ingredient.name, source);
+      const grams = guessedGrams(ingredient, source);
       if (grams == null) return null;
       missingIngredients.push(ingredient.name);
       totalGrams += grams;

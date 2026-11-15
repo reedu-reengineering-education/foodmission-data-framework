@@ -544,5 +544,11 @@
     "measure": "Handful",
     "grams": 30,
     "basis": "1 handful = 30 g"
+  },
+  {
+    "name": "icing sugar",
+    "measure": "To Glaze",
+    "grams": 100,
+    "basis": "icing for one cake = 100 g icing sugar"
   }
 ]
