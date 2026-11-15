@@ -167,6 +167,21 @@ describe('calculateRecipeNutrition', () => {
     },
   );
 
+  it('uses the linked product over the generic food when both are set', () => {
+    const result = calculateRecipeNutrition({
+      ingredients: [
+        {
+          name: 'Yoghurt',
+          measure: '100g',
+          foodProduct: { energyKcal: 90 },
+          genericFood: { energyKcal: 60 },
+        },
+      ],
+    });
+
+    expect(result?.energyKcal).toBe(90);
+  });
+
   it('leaves out what is served alongside the dish', () => {
     const result = calculateRecipeNutrition({
       ingredients: [

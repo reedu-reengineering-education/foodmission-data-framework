@@ -23,11 +23,6 @@ export class RecipeNutritionService {
     });
   }
 
-  async calculateNutrition(recipeId: string): Promise<NutritionalInfo | null> {
-    const recipe = await this.findRecipeWithNutrientSources(recipeId);
-    return recipe ? calculateRecipeNutrition(recipe) : null;
-  }
-
   async updateRecipeNutrition(
     recipeId: string,
   ): Promise<NutritionalInfo | null> {
