@@ -5,7 +5,10 @@ import {
   parseQuantityUnit,
   quantityToGrams,
 } from '../../common/utils/measure-parser';
-import { NutritionalInfo } from '../interfaces/nutrition.interface';
+import {
+  NutrientValues,
+  NutritionalInfo,
+} from '../interfaces/nutrition.interface';
 
 export const MAX_ESTIMATED_ENERGY_SHARE = 0.1;
 
@@ -126,19 +129,35 @@ function round(value: number, decimals = 1): number {
   return Math.round(value * factor) / factor;
 }
 
+function scaled(
+  totals: Record<NutrientField, number>,
+  factor: number,
+): NutrientValues {
+  return Object.fromEntries(
+    NUTRIENT_FIELDS.map((field) => [field, round(totals[field] * factor)]),
+  );
+}
+
+export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
+  return (
+    typeof nutritionalInfo === 'object' &&
+    nutritionalInfo !== null &&
+    !('confidence' in nutritionalInfo)
+  );
+}
+
 export function calculateRecipeNutrition(recipe: {
   servings?: number | null;
   ingredients: NutritionIngredient[];
 }): NutritionalInfo | null {
-  if (recipe.ingredients.length === 0) {
-    return { confidence: 0, missingIngredients: [] };
-  }
+  if (recipe.ingredients.length === 0) return null;
 
   const measured = emptyTotals();
   const estimated = emptyTotals();
   const missingIngredients: string[] = [];
   let measuredEnergyQuality = 0;
   let measuredRows = 0;
+  let totalGrams = 0;
 
   for (const ingredient of recipe.ingredients) {
     const source = nutrientSource(ingredient);
@@ -148,9 +167,12 @@ export function calculateRecipeNutrition(recipe: {
       const grams = guessedGrams(ingredient.name, source);
       if (grams == null) return null;
       missingIngredients.push(ingredient.name);
+      totalGrams += grams;
       if (source) addNutrients(estimated, source, grams);
       continue;
     }
+
+    totalGrams += amount.grams;
 
     if (!source) {
       const smallCondiment =
@@ -180,10 +202,7 @@ export function calculateRecipeNutrition(recipe: {
     totals[field] = measured[field] + estimated[field];
   }
 
-  const result: NutritionalInfo = {};
-  for (const field of NUTRIENT_FIELDS) {
-    result[field] = round(totals[field]);
-  }
+  const result: NutritionalInfo = scaled(totals, 1);
   result.missingIngredients = missingIngredients;
   result.confidence = round(
     totalEnergy > 0
@@ -196,12 +215,9 @@ export function calculateRecipeNutrition(recipe: {
 
   if (recipe.servings && recipe.servings > 0) {
     result.servings = recipe.servings;
-    const perServing: NutritionalInfo = {};
-    for (const field of NUTRIENT_FIELDS) {
-      perServing[field] = round(totals[field] / recipe.servings);
-    }
-    result.perServing = perServing;
+    result.perServing = scaled(totals, 1 / recipe.servings);
   }
+  if (totalGrams > 0) result.per100g = scaled(totals, 100 / totalGrams);
 
   return result;
 }

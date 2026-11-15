@@ -24,14 +24,13 @@ function food(
 }
 
 describe('calculateRecipeNutrition', () => {
-  it('returns an empty result when there are no ingredients', () => {
-    expect(calculateRecipeNutrition({ servings: 4, ingredients: [] })).toEqual({
-      confidence: 0,
-      missingIngredients: [],
-    });
+  it('returns null when there are no ingredients', () => {
+    expect(
+      calculateRecipeNutrition({ servings: 4, ingredients: [] }),
+    ).toBeNull();
   });
 
-  it('scales a weighed ingredient and divides by servings', () => {
+  it('scales a weighed ingredient, per serving and per 100 g', () => {
     const result = calculateRecipeNutrition({
       servings: 2,
       ingredients: [
@@ -46,6 +45,7 @@ describe('calculateRecipeNutrition', () => {
 
     expect(result?.energyKcal).toBe(240);
     expect(result?.perServing?.energyKcal).toBe(120);
+    expect(result?.per100g?.energyKcal).toBe(120);
     expect(result?.confidence).toBe(1);
   });
 

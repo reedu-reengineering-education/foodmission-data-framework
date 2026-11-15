@@ -17,10 +17,13 @@ export interface NutritionalInfo {
   potassium?: number;
 
   servings?: number;
-  perServing?: Omit<
-    NutritionalInfo,
-    'servings' | 'perServing' | 'confidence' | 'missingIngredients'
-  >;
+  perServing?: NutrientValues;
+  per100g?: NutrientValues;
   confidence?: number;
   missingIngredients?: string[];
 }
+
+export type NutrientValues = Omit<
+  NutritionalInfo,
+  'servings' | 'perServing' | 'per100g' | 'confidence' | 'missingIngredients'
+>;

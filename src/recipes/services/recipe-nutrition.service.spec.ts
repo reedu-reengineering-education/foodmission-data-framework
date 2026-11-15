@@ -38,7 +38,7 @@ describe('RecipeNutritionService', () => {
       expect(result).toBeNull();
     });
 
-    it('should return empty nutrition for recipe with no ingredients', async () => {
+    it('should return no nutrition for recipe with no ingredients', async () => {
       mockPrismaService.recipe.findUnique.mockResolvedValue({
         id: 'recipe-1',
         servings: 4,
@@ -47,10 +47,7 @@ describe('RecipeNutritionService', () => {
 
       const result = await service.calculateNutrition('recipe-1');
 
-      expect(result).toMatchObject({
-        confidence: 0,
-        missingIngredients: [],
-      });
+      expect(result).toBeNull();
     });
 
     it('should aggregate nutrition from GenericFood', async () => {

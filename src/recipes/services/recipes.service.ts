@@ -28,6 +28,7 @@ import {
 import { UserEventService } from '../../events/services/user-event.service';
 import { TranslationService } from '../../translations/services/translation.service';
 import { RecipeNutritionService } from './recipe-nutrition.service';
+import { isUserProvidedNutrition } from '../nutrition/calculate-recipe-nutrition';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 type LocalizableIngredient = {
@@ -35,14 +36,6 @@ type LocalizableIngredient = {
   genericFoodId?: string | null;
   genericFood?: { foodName: string } | null;
 };
-
-function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
-  return (
-    typeof nutritionalInfo === 'object' &&
-    nutritionalInfo !== null &&
-    !('confidence' in nutritionalInfo)
-  );
-}
 
 @Injectable()
 export class RecipesService {

@@ -4,6 +4,7 @@ import * as path from 'path';
 import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
 import {
   calculateRecipeNutrition,
+  isUserProvidedNutrition,
   NUTRITION_VALUE_SELECT,
 } from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
 
@@ -220,9 +221,10 @@ async function reparseIngredientUnits(prisma: PrismaClient): Promise<void> {
 
 async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
   const recipes = await prisma.recipe.findMany({
-    where: { origin: RecipeOrigin.THEMEALDB },
     select: {
       id: true,
+      origin: true,
+      nutritionalInfo: true,
       servings: true,
       ingredients: {
         orderBy: { order: 'asc' },
@@ -239,7 +241,15 @@ async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
   });
 
   let stored = 0;
+  let keptFromUser = 0;
   for (const recipe of recipes) {
+    if (
+      recipe.origin !== RecipeOrigin.THEMEALDB &&
+      isUserProvidedNutrition(recipe.nutritionalInfo)
+    ) {
+      keptFromUser++;
+      continue;
+    }
     const nutrition = calculateRecipeNutrition(recipe);
     if (nutrition) stored++;
     await prisma.recipe.update({
@@ -254,7 +264,7 @@ async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
   }
 
   console.log(
-    `   🥗 Recipe nutrition: stored ${stored}, withheld ${recipes.length - stored}`,
+    `   🥗 Recipe nutrition: stored ${stored}, withheld ${recipes.length - stored - keptFromUser}, kept from users ${keptFromUser}`,
   );
 }
 
