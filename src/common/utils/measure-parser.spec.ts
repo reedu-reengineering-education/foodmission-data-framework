@@ -175,6 +175,18 @@ describe('quantityToGrams', () => {
     expect(result).toBeCloseTo(141.6, 1);
   });
 
+  it('weighs egg yolks and whites as parts of an egg', () => {
+    expect(
+      quantityToGrams({ quantity: 6, unit: 'PIECES' }, ['Egg Yolks'], '6'),
+    ).toBe(102);
+    expect(
+      quantityToGrams({ quantity: 2, unit: 'PIECES' }, ['Egg White'], '2'),
+    ).toBe(66);
+    expect(
+      quantityToGrams({ quantity: 2, unit: 'PIECES' }, ['Eggs'], '2'),
+    ).toBe(100);
+  });
+
   it('weighs grams as they are', () => {
     expect(quantityToGrams({ quantity: 500, unit: 'G' }, ['Beef'])).toBe(500);
   });

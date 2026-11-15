@@ -64,7 +64,7 @@ export class CreateRecipeIngredientDto {
   @ApiPropertyOptional({
     description:
       'Free-text amount as written in the recipe. Not converted into quantity/unit. ' +
-      'Nutrition is calculated from it when present, otherwise from quantity + unit',
+      'Nutrition is estimated from quantity + unit when both are set, otherwise from this text',
     example: '500g',
     maxLength: MAX_MEASURE_LENGTH,
   })

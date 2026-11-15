@@ -18,7 +18,10 @@ import {
 } from '../dto/recipe-rating.dto';
 import { Prisma, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
-import { handlePrismaError } from '../../common/utils/error.utils';
+import {
+  describeError,
+  handlePrismaError,
+} from '../../common/utils/error.utils';
 import { plainToInstance } from 'class-transformer';
 import {
   EventSource,
@@ -409,13 +412,17 @@ export class RecipesService {
 
   private async withEstimatedNutrition<T extends { id: string }>(
     recipe: T,
-  ): Promise<T & { nutritionalInfo: unknown }> {
-    return {
-      ...recipe,
-      nutritionalInfo: await this.recipeNutritionService.updateRecipeNutrition(
-        recipe.id,
-      ),
-    };
+  ): Promise<T> {
+    try {
+      const nutritionalInfo =
+        await this.recipeNutritionService.updateRecipeNutrition(recipe.id);
+      return { ...recipe, nutritionalInfo };
+    } catch (error) {
+      this.logger.warn(
+        `Nutrition estimate failed for recipe ${recipe.id}: ${describeError(error)}`,
+      );
+      return recipe;
+    }
   }
 
   private toResponse(recipe: any): RecipeResponseDto {

@@ -98,7 +98,7 @@ describe('RecipesService', () => {
 
   describe('nutrition estimate', () => {
     const estimate = {
-      energyKcal: 520,
+      per100g: { energyKcal: 130 },
       estimated: true,
       missingIngredients: [],
     };
@@ -117,6 +117,19 @@ describe('RecipesService', () => {
         mockRecipeNutritionService.updateRecipeNutrition,
       ).toHaveBeenCalledWith('r1');
       expect(result.nutritionalInfo).toEqual(estimate);
+    });
+
+    it('still returns the new recipe when the estimate fails', async () => {
+      mockRecipeRepository.create.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId }),
+      );
+      mockRecipeNutritionService.updateRecipeNutrition.mockRejectedValueOnce(
+        new Error('database unavailable'),
+      );
+
+      const result = await service.create({ title: 'Test Recipe' }, userId);
+
+      expect(result.id).toBe('r1');
     });
 
     it('keeps nutrition the user sent with a new recipe', async () => {

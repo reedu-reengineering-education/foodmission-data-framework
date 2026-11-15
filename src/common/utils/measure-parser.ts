@@ -242,6 +242,8 @@ const LIQUID_NAME =
 const AVERAGE_PIECE_GRAMS: Record<string, number> = {
   egg: 50,
   eggs: 50,
+  'egg yolk': 17,
+  'egg white': 33,
   onion: 150,
   onions: 150,
   'red onion': 150,

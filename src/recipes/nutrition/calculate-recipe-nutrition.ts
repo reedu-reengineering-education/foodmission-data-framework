@@ -4,12 +4,9 @@ import {
   parseQuantityUnit,
   quantityToGrams,
 } from '../../common/utils/measure-parser';
-import {
-  NutrientValues,
-  NutritionalInfo,
-} from '../interfaces/nutrition.interface';
+import { NutritionalInfo } from '../interfaces/nutrition.interface';
 
-export const MAX_ESTIMATED_ENERGY_SHARE = 0.1;
+const MAX_ESTIMATED_ENERGY_SHARE = 0.1;
 
 const MAX_UNLINKED_CONDIMENT_GRAMS = 15;
 const LOW_ENERGY_KCAL_PER_100G = 100;
@@ -18,7 +15,7 @@ const OIL_DRIZZLE_GRAMS = 5;
 const FRESH_HERB_GRAMS = 2;
 const PINCH_GRAMS = 1;
 
-export const NUTRITION_VALUE_SELECT = {
+const NUTRITION_VALUE_SELECT = {
   energyKcal: true,
   energyKj: true,
   proteins: true,
@@ -38,11 +35,9 @@ export const NUTRITION_VALUE_SELECT = {
 
 type NutrientField = keyof typeof NUTRITION_VALUE_SELECT;
 
-export const NUTRIENT_FIELDS = Object.keys(
-  NUTRITION_VALUE_SELECT,
-) as NutrientField[];
+const NUTRIENT_FIELDS = Object.keys(NUTRITION_VALUE_SELECT) as NutrientField[];
 
-export type NutrientSource = Partial<Record<NutrientField, number | null>>;
+type NutrientSource = Partial<Record<NutrientField, number | null>>;
 
 export const NUTRITION_INGREDIENT_SELECT = {
   name: true,
@@ -71,7 +66,7 @@ const ABSORBED_WATER_PER_GRAM: [RegExp, number][] = [
 ];
 
 const COOKING_LIQUID =
-  /\b(water|stock|broth|milk|buttermilk|cream|wine|beer|cider|juice|passata)\b|\btomatoes tinned\b/i;
+  /^(water|stock|milk|buttermilk|cream|creme fraiche|coconut milk|drink soya|wine|sherry|beer|cider|juice|tomatoes tinned)\b/i;
 
 const SERVED_ALONGSIDE = /\b(to serve|for serving|serve with)\b/i;
 
@@ -94,8 +89,57 @@ const PLAIN_WATER = /^(?:cold |hot |boiling |warm )?waters?$/;
 const FRESH_HERB =
   /\b(parsley|cilantro|coriander|basil|mint|dill|chives?|sage|herbs)\b/;
 
-const CONDIMENT_NAME =
-  /\b(salts?|peppercorns?|paprika|cumin|cinnamon|nutmeg|cloves?|allspice|cardamoms?|cardomom|caraway|fenugreek|sumac|annatto|juniper|turmeric|saffron|oregano|thyme|rosemary|marjoram|tarragon|seasonings?|spices?|masalas?|extracts?|vanilla|yeast|vinegar|worcestershire|tabasco|oil)\b|\bbay(?:\s+leaves?)?\b|\b(baking powder|bicarbonate of soda|baking soda|fish sauce|hot sauce|curry powder|cream of tartar|food colou?ring|chilli powder|chili powder|chilli flakes|chili flakes|pepper flakes|stock cubes?)\b|^peppers?$/;
+const CONDIMENT_WORDS = [
+  'salts?',
+  'peppercorns?',
+  'pepper flakes',
+  'paprika',
+  'cumin',
+  'cinnamon',
+  'nutmeg',
+  'cloves?',
+  'allspice',
+  'cardamoms?',
+  'cardomom',
+  'caraway',
+  'fenugreek',
+  'sumac',
+  'annatto',
+  'juniper',
+  'turmeric',
+  'saffron',
+  'oregano',
+  'thyme',
+  'rosemary',
+  'marjoram',
+  'tarragon',
+  'bay',
+  'seasonings?',
+  'spices?',
+  'masalas?',
+  'curry powder',
+  'chill?i powder',
+  'chill?i flakes',
+  'extracts?',
+  'vanilla',
+  'yeast',
+  'baking powder',
+  'baking soda',
+  'bicarbonate of soda',
+  'cream of tartar',
+  'food colou?ring',
+  'stock cubes?',
+  'vinegar',
+  'worcestershire',
+  'tabasco',
+  'fish sauce',
+  'hot sauce',
+  'oil',
+];
+
+const CONDIMENT_NAME = new RegExp(
+  `\\b(${CONDIMENT_WORDS.join('|')})\\b|^peppers?$`,
+);
 
 function nutrientSource(
   ingredient: NutritionIngredient,
@@ -153,7 +197,7 @@ function absorbedWaterGrams(
 }
 
 function isCookingLiquid(ingredient: NutritionIngredient): boolean {
-  return foodNames(ingredient).some((name) => COOKING_LIQUID.test(name));
+  return COOKING_LIQUID.test(ingredient.genericFood?.foodName ?? '');
 }
 
 function guessedGrams(
@@ -192,18 +236,8 @@ function addNutrients(
   }
 }
 
-function round(value: number, decimals = 1): number {
-  const factor = 10 ** decimals;
-  return Math.round(value * factor) / factor;
-}
-
-function scaled(
-  totals: Record<NutrientField, number>,
-  factor: number,
-): NutrientValues {
-  return Object.fromEntries(
-    NUTRIENT_FIELDS.map((field) => [field, round(totals[field] * factor)]),
-  );
+function round(value: number): number {
+  return Math.round(value * 10) / 10;
 }
 
 export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
@@ -219,9 +253,9 @@ export function calculateRecipeNutrition(recipe: {
 }): NutritionalInfo | null {
   if (recipe.ingredients.length === 0) return null;
 
-  const measured = emptyTotals();
-  const estimated = emptyTotals();
+  const totals = emptyTotals();
   const missingIngredients: string[] = [];
+  let estimatedKcal = 0;
   let totalGrams = 0;
   let waterToAbsorb = 0;
   let cookingLiquid = 0;
@@ -235,7 +269,10 @@ export function calculateRecipeNutrition(recipe: {
       if (grams == null) return null;
       missingIngredients.push(ingredient.name);
       totalGrams += grams;
-      if (source) addNutrients(estimated, source, grams);
+      if (source) {
+        addNutrients(totals, source, grams);
+        estimatedKcal += ((source.energyKcal ?? 0) * grams) / 100;
+      }
       continue;
     }
 
@@ -252,29 +289,27 @@ export function calculateRecipeNutrition(recipe: {
       continue;
     }
 
-    addNutrients(measured, source, measuredWeight);
+    addNutrients(totals, source, measuredWeight);
   }
 
-  const estimatedEnergy = estimated.energyKcal;
-  const totalEnergy = measured.energyKcal + estimatedEnergy;
   if (
-    totalEnergy > 0 &&
-    estimatedEnergy / totalEnergy > MAX_ESTIMATED_ENERGY_SHARE
+    totals.energyKcal > 0 &&
+    estimatedKcal / totals.energyKcal > MAX_ESTIMATED_ENERGY_SHARE
   ) {
     return null;
   }
 
-  const totals = emptyTotals();
-  for (const field of NUTRIENT_FIELDS) {
-    totals[field] = measured[field] + estimated[field];
-  }
-
-  const result: NutritionalInfo = scaled(totals, 1);
-  result.missingIngredients = missingIngredients;
-  result.estimated = true;
-
   const dishGrams = totalGrams + Math.max(0, waterToAbsorb - cookingLiquid);
-  if (dishGrams > 0) result.per100g = scaled(totals, 100 / dishGrams);
+  if (dishGrams <= 0) return null;
 
-  return result;
+  return {
+    per100g: Object.fromEntries(
+      NUTRIENT_FIELDS.map((field) => [
+        field,
+        round((totals[field] * 100) / dishGrams),
+      ]),
+    ),
+    estimated: true,
+    missingIngredients,
+  };
 }

@@ -74,9 +74,7 @@ describe('RecipeNutritionService', () => {
         data: { nutritionalInfo: expect.any(Object) },
       });
 
-      // 500g of beef = 1250kcal
-      expect(result?.energyKcal).toBe(1250);
-      expect(result?.per100g?.energyKcal).toBe(250);
+      expect(result?.per100g.energyKcal).toBe(250);
     });
 
     it('should clear nutrition when an ingredient cannot be weighed', async () => {
