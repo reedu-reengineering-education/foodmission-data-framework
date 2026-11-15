@@ -25,14 +25,11 @@ function food(
 
 describe('calculateRecipeNutrition', () => {
   it('returns null when there are no ingredients', () => {
-    expect(
-      calculateRecipeNutrition({ servings: 4, ingredients: [] }),
-    ).toBeNull();
+    expect(calculateRecipeNutrition({ ingredients: [] })).toBeNull();
   });
 
-  it('scales a weighed ingredient, per serving and per 100 g', () => {
+  it('scales a weighed ingredient and reports it per 100 g', () => {
     const result = calculateRecipeNutrition({
-      servings: 2,
       ingredients: [
         food(
           'Chicken',
@@ -44,14 +41,12 @@ describe('calculateRecipeNutrition', () => {
     });
 
     expect(result?.energyKcal).toBe(240);
-    expect(result?.perServing?.energyKcal).toBe(120);
     expect(result?.per100g?.energyKcal).toBe(120);
     expect(result?.confidence).toBe(1);
   });
 
   it('estimates a vague condiment and records its name', () => {
     const result = calculateRecipeNutrition({
-      servings: 1,
       ingredients: [
         food('Chicken', '100g', { energyKcal: 165, sodium: 74 }),
         food('Salt', 'to taste', { energyKcal: 0, sodium: 38758 }),
@@ -65,7 +60,6 @@ describe('calculateRecipeNutrition', () => {
 
   it('ignores a small unmapped condiment that did parse', () => {
     const result = calculateRecipeNutrition({
-      servings: 1,
       ingredients: [
         food('Chicken', '100g', { energyKcal: 165 }),
         {
@@ -84,7 +78,6 @@ describe('calculateRecipeNutrition', () => {
   it('returns null when an unlinked condiment is more than a tablespoon', () => {
     expect(
       calculateRecipeNutrition({
-        servings: 1,
         ingredients: [
           food('Chicken', '100g', { energyKcal: 165 }),
           {
@@ -100,7 +93,6 @@ describe('calculateRecipeNutrition', () => {
 
   it('treats an unmapped condiment as zero and still totals the recipe', () => {
     const result = calculateRecipeNutrition({
-      servings: 1,
       ingredients: [
         food('Chicken', '100g', { energyKcal: 165 }),
         {
@@ -119,7 +111,6 @@ describe('calculateRecipeNutrition', () => {
   it('returns null when a non-condiment has no amount', () => {
     expect(
       calculateRecipeNutrition({
-        servings: 1,
         ingredients: [food('Flour', null, { energyKcal: 345 })],
       }),
     ).toBeNull();
@@ -127,7 +118,6 @@ describe('calculateRecipeNutrition', () => {
 
   it('guesses an unweighable low-energy food so one chilli does not drop the recipe', () => {
     const result = calculateRecipeNutrition({
-      servings: 1,
       ingredients: [
         food('Beef', '500g', { energyKcal: 200 }),
         food('Bird chilli pods', 'a few', { energyKcal: 40 }),
@@ -141,7 +131,6 @@ describe('calculateRecipeNutrition', () => {
   it('returns null when an unweighable food is energy-dense', () => {
     expect(
       calculateRecipeNutrition({
-        servings: 1,
         ingredients: [
           food('Beef', '500g', { energyKcal: 200 }),
           food('Bacon', 'some', { energyKcal: 400 }),
@@ -153,7 +142,6 @@ describe('calculateRecipeNutrition', () => {
   it('returns null when a piece has no known weight', () => {
     expect(
       calculateRecipeNutrition({
-        servings: 1,
         ingredients: [food('Dragon fruit', '2', { energyKcal: 260 })],
       }),
     ).toBeNull();
@@ -161,7 +149,6 @@ describe('calculateRecipeNutrition', () => {
 
   it('returns null when guessed condiments are more than 10% of energy', () => {
     const result = calculateRecipeNutrition({
-      servings: 1,
       ingredients: [
         food('Chicken', '100g', { energyKcal: 100 }),
         food('Olive oil', 'drizzle', { energyKcal: 900, fat: 100 }),
@@ -174,7 +161,6 @@ describe('calculateRecipeNutrition', () => {
 
   it('keeps a recipe when the condiment guess is under 10% of energy', () => {
     const result = calculateRecipeNutrition({
-      servings: 1,
       ingredients: [
         food('Chicken', '100g', { energyKcal: 500 }),
         food('Olive oil', 'drizzle', { energyKcal: 900 }),
@@ -189,7 +175,6 @@ describe('calculateRecipeNutrition', () => {
   it('does not guess a vegetable pepper as a pinch of spice', () => {
     expect(
       calculateRecipeNutrition({
-        servings: 1,
         ingredients: [food('Green pepper', 'to taste', { energyKcal: 20 })],
       }),
     ).toBeNull();

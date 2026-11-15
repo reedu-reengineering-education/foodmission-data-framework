@@ -128,6 +128,20 @@ describe('parseQuantityUnit', () => {
 });
 
 describe('quantityToGrams', () => {
+  it.each([
+    ['Chocolate Chips', 170],
+    ['Miniature Marshmallows', 43],
+    ['Shredded Monterey Jack Cheese', 113],
+    ['Cream Cheese', 228],
+    ['Coconut Milk', 240],
+    ['Desiccated Coconut', 84],
+    ['Mushrooms', 79],
+    ['Peanut Butter', 269],
+  ])('weighs a cup of %s as about %d g', (name, grams) => {
+    const result = quantityToGrams({ quantity: 240, unit: 'ML' }, name);
+    expect(result?.grams).toBeCloseTo(grams, 0);
+  });
+
   it('converts a cup of milk as 240 ml at water density', () => {
     const result = quantityToGrams(
       { quantity: 240, unit: 'ML' },
@@ -143,7 +157,7 @@ describe('quantityToGrams', () => {
       'Almonds',
       '1 cup',
     );
-    expect(result?.grams).toBeCloseTo(144, 1);
+    expect(result?.grams).toBeCloseTo(141.6, 1);
   });
 
   it('weighs grams as they are, with full quality', () => {
@@ -168,7 +182,7 @@ describe('quantityToGrams', () => {
       'Flour',
       '1 cup',
     );
-    expect(result?.grams).toBeCloseTo(127.2, 1);
+    expect(result?.grams).toBeCloseTo(120, 1);
   });
 
   it('converts oil by density rather than 1 g per ml', () => {

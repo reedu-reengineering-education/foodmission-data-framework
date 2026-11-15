@@ -15,7 +15,6 @@ export class RecipeNutritionService {
     return this.prisma.recipe.findUnique({
       where: { id: recipeId },
       select: {
-        servings: true,
         ingredients: {
           orderBy: { order: 'asc' },
           select: {

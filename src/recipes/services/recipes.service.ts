@@ -372,11 +372,8 @@ export class RecipesService {
     userId: string,
   ): Promise<RecipeResponseDto> {
     const existing = await this.getOwnedRecipeOrThrow(id, userId);
-    const amountsChanged =
-      updateRecipeDto.ingredients !== undefined ||
-      updateRecipeDto.servings !== undefined;
     const estimate =
-      amountsChanged &&
+      updateRecipeDto.ingredients !== undefined &&
       updateRecipeDto.nutritionalInfo === undefined &&
       !isUserProvidedNutrition(existing.nutritionalInfo);
 

@@ -90,8 +90,7 @@ describe('RecipeNutritionService', () => {
       expect(result?.proteins).toBe(44);
       expect(result?.fat).toBe(6);
       expect(result?.confidence).toBeGreaterThan(0.9);
-      expect(result?.servings).toBe(2);
-      expect(result?.perServing?.energyKcal).toBe(120);
+      expect(result?.per100g?.energyKcal).toBe(120);
     });
 
     it('should aggregate nutrition from FoodProduct', async () => {
@@ -200,8 +199,7 @@ describe('RecipeNutritionService', () => {
       // Total: 285kcal
       expect(result?.energyKcal).toBe(285);
       expect(result?.proteins).toBeCloseTo(15.7, 0);
-      expect(result?.servings).toBe(2);
-      expect(result?.perServing?.energyKcal).toBe(142.5);
+      expect(result?.per100g?.energyKcal).toBe(142.5);
     });
 
     it('should track missing ingredients', async () => {
@@ -280,36 +278,6 @@ describe('RecipeNutritionService', () => {
       expect(result?.sodium).toBe(461.6);
       expect(result?.energyKcal).toBe(165);
       expect(result?.missingIngredients).toContain('Salt');
-    });
-
-    it('should not include perServing when servings is null', async () => {
-      mockPrismaService.recipe.findUnique.mockResolvedValue({
-        id: 'recipe-1',
-        servings: null,
-        ingredients: [
-          {
-            name: 'Pasta',
-            measure: '200g',
-            foodProduct: null,
-            genericFood: {
-              id: 'fc-1',
-              foodName: 'Pasta',
-              energyKcal: 350,
-              proteins: 12,
-              fat: 1.5,
-              carbohydrates: 72,
-              sugars: 2,
-              fiber: 3,
-              sodium: 5,
-            },
-          },
-        ],
-      });
-
-      const result = await service.calculateNutrition('recipe-1');
-
-      expect(result?.servings).toBeUndefined();
-      expect(result?.perServing).toBeUndefined();
     });
 
     it('should handle ingredient without measure', async () => {
@@ -391,7 +359,7 @@ describe('RecipeNutritionService', () => {
 
       // 500g of beef = 1250kcal
       expect(result?.energyKcal).toBe(1250);
-      expect(result?.perServing?.energyKcal).toBe(312.5);
+      expect(result?.per100g?.energyKcal).toBe(250);
     });
 
     it('should clear nutrition when an ingredient cannot be weighed', async () => {

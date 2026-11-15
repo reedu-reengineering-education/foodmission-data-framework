@@ -16,8 +16,6 @@ export interface NutritionalInfo {
   iron?: number;
   potassium?: number;
 
-  servings?: number;
-  perServing?: NutrientValues;
   per100g?: NutrientValues;
   confidence?: number;
   missingIngredients?: string[];
@@ -25,5 +23,5 @@ export interface NutritionalInfo {
 
 export type NutrientValues = Omit<
   NutritionalInfo,
-  'servings' | 'perServing' | 'per100g' | 'confidence' | 'missingIngredients'
+  'per100g' | 'confidence' | 'missingIngredients'
 >;

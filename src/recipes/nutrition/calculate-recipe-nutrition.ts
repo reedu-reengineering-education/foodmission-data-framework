@@ -147,7 +147,6 @@ export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
 }
 
 export function calculateRecipeNutrition(recipe: {
-  servings?: number | null;
   ingredients: NutritionIngredient[];
 }): NutritionalInfo | null {
   if (recipe.ingredients.length === 0) return null;
@@ -213,10 +212,6 @@ export function calculateRecipeNutrition(recipe: {
     2,
   );
 
-  if (recipe.servings && recipe.servings > 0) {
-    result.servings = recipe.servings;
-    result.perServing = scaled(totals, 1 / recipe.servings);
-  }
   if (totalGrams > 0) result.per100g = scaled(totals, 100 / totalGrams);
 
   return result;

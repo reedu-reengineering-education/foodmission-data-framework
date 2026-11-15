@@ -225,7 +225,6 @@ async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
       id: true,
       origin: true,
       nutritionalInfo: true,
-      servings: true,
       ingredients: {
         orderBy: { order: 'asc' },
         select: {

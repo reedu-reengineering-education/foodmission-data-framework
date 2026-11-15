@@ -135,11 +135,11 @@ describe('RecipesService', () => {
 
     it.each([
       ['ingredients change', { ingredients: [{ name: 'Rice' }] }, estimate, 1],
-      ['servings change', { servings: 2 }, null, 1],
+      ['only servings change', { servings: 2 }, null, 0],
       ['only the title changes', { title: 'New title' }, estimate, 0],
       [
         'the stored nutrition came from the user',
-        { servings: 2 },
+        { ingredients: [{ name: 'Rice' }] },
         { energyKcal: 300 },
         0,
       ],
