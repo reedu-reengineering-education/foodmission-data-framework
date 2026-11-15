@@ -11,7 +11,7 @@ import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
 import {
   calculateRecipeNutrition,
   isUserProvidedNutrition,
-  NUTRITION_VALUE_SELECT,
+  NUTRITION_INGREDIENT_SELECT,
 } from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
@@ -258,14 +258,7 @@ async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
       nutritionalInfo: true,
       ingredients: {
         orderBy: { order: 'asc' },
-        select: {
-          name: true,
-          measure: true,
-          quantity: true,
-          unit: true,
-          foodProduct: { select: NUTRITION_VALUE_SELECT },
-          genericFood: { select: NUTRITION_VALUE_SELECT },
-        },
+        select: NUTRITION_INGREDIENT_SELECT,
       },
     },
   });

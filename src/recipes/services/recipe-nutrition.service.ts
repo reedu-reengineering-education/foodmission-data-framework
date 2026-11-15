@@ -4,7 +4,7 @@ import { PrismaService } from '../../database/prisma.service';
 import { NutritionalInfo } from '../interfaces/nutrition.interface';
 import {
   calculateRecipeNutrition,
-  NUTRITION_VALUE_SELECT,
+  NUTRITION_INGREDIENT_SELECT,
 } from '../nutrition/calculate-recipe-nutrition';
 
 @Injectable()
@@ -17,14 +17,7 @@ export class RecipeNutritionService {
       select: {
         ingredients: {
           orderBy: { order: 'asc' },
-          select: {
-            name: true,
-            measure: true,
-            quantity: true,
-            unit: true,
-            foodProduct: { select: NUTRITION_VALUE_SELECT },
-            genericFood: { select: NUTRITION_VALUE_SELECT },
-          },
+          select: NUTRITION_INGREDIENT_SELECT,
         },
       },
     });

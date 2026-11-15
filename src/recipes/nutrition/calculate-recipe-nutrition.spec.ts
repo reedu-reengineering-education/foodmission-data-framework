@@ -128,6 +128,45 @@ describe('calculateRecipeNutrition', () => {
     expect(result?.missingIngredients).toEqual(['Bird chilli pods']);
   });
 
+  it('recognises a condiment by its linked food when the name is not English', () => {
+    const result = calculateRecipeNutrition({
+      ingredients: [
+        food('Rindfleisch', '500g', { energyKcal: 200 }),
+        {
+          name: 'Salz',
+          measure: null,
+          genericFood: {
+            foodName: 'Salt not fortified w iodine',
+            energyKcal: 0,
+          },
+        },
+        {
+          name: 'Pfeffer',
+          measure: null,
+          genericFood: { foodName: 'Pepper black/white', energyKcal: 250 },
+        },
+      ],
+    });
+
+    expect(result?.energyKcal).toBe(1002.5);
+    expect(result?.missingIngredients).toEqual(['Salz', 'Pfeffer']);
+  });
+
+  it.each(['Caraway Seed', 'Cream of Tartar', 'Sumac'])(
+    'disregards a small amount of an unlinked spice or flavouring (%s)',
+    (name) => {
+      const result = calculateRecipeNutrition({
+        ingredients: [
+          food('Beef', '500g', { energyKcal: 200 }),
+          { name, measure: '1 tbsp' },
+        ],
+      });
+
+      expect(result?.energyKcal).toBe(1000);
+      expect(result?.missingIngredients).toEqual([name]);
+    },
+  );
+
   it('leaves out what is served alongside the dish', () => {
     const result = calculateRecipeNutrition({
       ingredients: [

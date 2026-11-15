@@ -45,13 +45,22 @@ export const NUTRIENT_FIELDS = Object.keys(
 
 export type NutrientSource = Partial<Record<NutrientField, number | null>>;
 
+export const NUTRITION_INGREDIENT_SELECT = {
+  name: true,
+  measure: true,
+  quantity: true,
+  unit: true,
+  foodProduct: { select: { ...NUTRITION_VALUE_SELECT, name: true } },
+  genericFood: { select: { ...NUTRITION_VALUE_SELECT, foodName: true } },
+} as const;
+
 export interface NutritionIngredient {
   name: string;
   measure?: string | null;
   quantity?: number | null;
   unit?: Unit | null;
-  foodProduct?: NutrientSource | null;
-  genericFood?: NutrientSource | null;
+  foodProduct?: (NutrientSource & { name?: string }) | null;
+  genericFood?: (NutrientSource & { foodName?: string }) | null;
 }
 
 const SERVED_ALONGSIDE = /\b(to serve|for serving|serve with)\b/i;
@@ -73,10 +82,10 @@ function finishingTouchGrams(measure: string): number | null {
 const PLAIN_WATER = /^(?:cold |hot |boiling |warm )?waters?$/;
 
 const FRESH_HERB =
-  /\b(parsley|cilantro|coriander|basil|mint|dill|chives?|sage)\b/;
+  /\b(parsley|cilantro|coriander|basil|mint|dill|chives?|sage|herbs)\b/;
 
 const CONDIMENT_NAME =
-  /\b(salts?|peppercorns?|paprika|cumin|cinnamon|nutmeg|cloves?|allspice|cardamoms?|turmeric|saffron|oregano|thyme|rosemary|marjoram|tarragon|seasonings?|spices?|masalas?|extracts?|vanilla|yeast|vinegar|worcestershire|tabasco|oil)\b|\bbay(?:\s+leaves?)?\b|\b(baking powder|bicarbonate of soda|baking soda|fish sauce|hot sauce|curry powder|chilli powder|chili powder|chilli flakes|chili flakes|pepper flakes|stock cubes?)\b|^peppers?$/;
+  /\b(salts?|peppercorns?|paprika|cumin|cinnamon|nutmeg|cloves?|allspice|cardamoms?|cardomom|caraway|fenugreek|sumac|annatto|juniper|turmeric|saffron|oregano|thyme|rosemary|marjoram|tarragon|seasonings?|spices?|masalas?|extracts?|vanilla|yeast|vinegar|worcestershire|tabasco|oil)\b|\bbay(?:\s+leaves?)?\b|\b(baking powder|bicarbonate of soda|baking soda|fish sauce|hot sauce|curry powder|cream of tartar|food colou?ring|chilli powder|chili powder|chilli flakes|chili flakes|pepper flakes|stock cubes?)\b|^peppers?$/;
 
 function nutrientSource(
   ingredient: NutritionIngredient,
@@ -84,7 +93,23 @@ function nutrientSource(
   return ingredient.foodProduct || ingredient.genericFood || null;
 }
 
-export function condimentGrams(name: string): number | null {
+function foodNames(ingredient: NutritionIngredient): string[] {
+  return [
+    ingredient.name,
+    ingredient.genericFood?.foodName,
+    ingredient.foodProduct?.name,
+  ].filter((name): name is string => !!name);
+}
+
+function condimentGrams(ingredient: NutritionIngredient): number | null {
+  for (const name of foodNames(ingredient)) {
+    const grams = condimentGramsByName(name);
+    if (grams != null) return grams;
+  }
+  return null;
+}
+
+function condimentGramsByName(name: string): number | null {
   const normalized = name.toLowerCase().trim();
   if (PLAIN_WATER.test(normalized)) return 0;
   if (FRESH_HERB.test(normalized)) return FRESH_HERB_GRAMS;
@@ -102,18 +127,19 @@ function measuredAmount(ingredient: NutritionIngredient): WeighedAmount | null {
         ? parseQuantityUnit(ingredient.measure)
         : null;
   return parsed
-    ? quantityToGrams(parsed, ingredient.name, ingredient.measure)
+    ? quantityToGrams(parsed, foodNames(ingredient), ingredient.measure)
     : null;
 }
 
 function guessedGrams(
-  { name, measure }: NutritionIngredient,
+  ingredient: NutritionIngredient,
   source: NutrientSource | null,
 ): number | null {
+  const { measure } = ingredient;
   if (measure && SERVED_ALONGSIDE.test(measure)) return 0;
   const finishingTouch = measure ? finishingTouchGrams(measure) : null;
   if (finishingTouch != null) return finishingTouch;
-  const condiment = condimentGrams(name);
+  const condiment = condimentGrams(ingredient);
   if (condiment != null) return condiment;
   const kcal = source?.energyKcal;
   return kcal != null && kcal <= LOW_ENERGY_KCAL_PER_100G
@@ -194,7 +220,7 @@ export function calculateRecipeNutrition(recipe: {
 
     if (!source) {
       const smallCondiment =
-        condimentGrams(ingredient.name) != null &&
+        condimentGrams(ingredient) != null &&
         amount.grams <= MAX_UNLINKED_CONDIMENT_GRAMS;
       if (!smallCondiment) return null;
       missingIngredients.push(ingredient.name);

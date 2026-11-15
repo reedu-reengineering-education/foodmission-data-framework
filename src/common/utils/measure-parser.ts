@@ -317,30 +317,43 @@ const AVERAGE_PIECE_KEYS = Object.keys(AVERAGE_PIECE_GRAMS).sort(
 );
 
 export const SPICE_PEPPER =
-  /\b(black|white|cayenne|ground|cracked)\s+peppers?\b|\bpeppercorns?\b/;
+  /\b(black|white|cayenne|ground|cracked)\s+peppers?\b|\bpeppercorns?\b|\bpepper (black|white|red cayenne)\b/;
 
 const hasWord = (text: string, word: string) =>
   new RegExp(`\\b${word}\\b`).test(text);
 
-function gramsPerMl(foodName: string): number {
+function knownGramsPerMl(foodName: string): number | null {
   const name = foodName.toLowerCase();
   const [key] = Object.keys(GRAMS_PER_ML)
     .filter((candidate) => hasWord(name, candidate))
     .sort((a, b) => b.length - a.length);
   if (key) return GRAMS_PER_ML[key];
-  return LIQUID_NAME.test(name) ? 1 : DEFAULT_SOLID_GRAMS_PER_ML;
+  return LIQUID_NAME.test(name) ? 1 : null;
 }
 
-function averagePieceGrams(foodName: string): number | null {
-  const name = foodName.toLowerCase();
-  if (SPICE_PEPPER.test(name)) return null;
-  const key = AVERAGE_PIECE_KEYS.find((candidate) => name.includes(candidate));
-  return key ? AVERAGE_PIECE_GRAMS[key] : null;
+function gramsPerMl(foodNames: string[]): number {
+  for (const name of foodNames) {
+    const known = knownGramsPerMl(name);
+    if (known != null) return known;
+  }
+  return DEFAULT_SOLID_GRAMS_PER_ML;
+}
+
+function averagePieceGrams(foodNames: string[]): number | null {
+  const names = foodNames.map((name) => name.toLowerCase());
+  if (names.some((name) => SPICE_PEPPER.test(name))) return null;
+  for (const name of names) {
+    const key = AVERAGE_PIECE_KEYS.find((candidate) =>
+      name.includes(candidate),
+    );
+    if (key) return AVERAGE_PIECE_GRAMS[key];
+  }
+  return null;
 }
 
 function pieceGrams(
   quantity: number,
-  foodName: string,
+  foodNames: string[],
   measure: string,
 ): WeighedAmount | null {
   const countWord = COUNT_WORDS.find((word) => hasWord(measure, word));
@@ -351,7 +364,7 @@ function pieceGrams(
     };
   }
 
-  const average = averagePieceGrams(foodName);
+  const average = averagePieceGrams(foodNames);
   if (average == null) return null;
   const size = measure.match(/\b(small|medium|large)\b/);
   return {
@@ -362,7 +375,7 @@ function pieceGrams(
 
 export function quantityToGrams(
   { quantity, unit }: ParsedQuantity,
-  foodName: string,
+  foodNames: string[],
   measure?: string | null,
 ): WeighedAmount | null {
   switch (unit) {
@@ -372,21 +385,21 @@ export function quantityToGrams(
       return { grams: quantity * 1000, quality: WEIGHT_QUALITY };
     case Unit.ML:
       return {
-        grams: quantity * gramsPerMl(foodName),
+        grams: quantity * gramsPerMl(foodNames),
         quality: VOLUME_QUALITY,
       };
     case Unit.L:
       return {
-        grams: quantity * 1000 * gramsPerMl(foodName),
+        grams: quantity * 1000 * gramsPerMl(foodNames),
         quality: VOLUME_QUALITY,
       };
     case Unit.CUPS:
       return {
-        grams: quantity * ML_PER_CUP * gramsPerMl(foodName),
+        grams: quantity * ML_PER_CUP * gramsPerMl(foodNames),
         quality: VOLUME_QUALITY,
       };
     case Unit.PIECES:
-      return pieceGrams(quantity, foodName, (measure ?? '').toLowerCase());
+      return pieceGrams(quantity, foodNames, (measure ?? '').toLowerCase());
     default:
       return null;
   }

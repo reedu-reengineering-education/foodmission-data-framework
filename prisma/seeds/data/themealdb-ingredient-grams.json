@@ -2,7 +2,7 @@
   {
     "name": "almonds",
     "measure": "10",
-    "grams": 12.0,
+    "grams": 12,
     "basis": "1 almond = 1.2 g"
   },
   {
@@ -248,13 +248,13 @@
   {
     "name": "cashew nuts",
     "measure": "12",
-    "grams": 18.0,
+    "grams": 18,
     "basis": "1 cashew = 1.5 g"
   },
   {
     "name": "shelled hazelnuts",
     "measure": "10",
-    "grams": 14.0,
+    "grams": 14,
     "basis": "1 hazelnut = 1.4 g"
   },
   {
@@ -550,5 +550,11 @@
     "measure": "To Glaze",
     "grams": 100,
     "basis": "icing for one cake = 100 g icing sugar"
+  },
+  {
+    "name": "sauerkraut",
+    "measure": "1 Jar",
+    "grams": 700,
+    "basis": "1 jar = 700 g"
   }
 ]
