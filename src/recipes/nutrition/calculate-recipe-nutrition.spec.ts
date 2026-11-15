@@ -182,6 +182,58 @@ describe('calculateRecipeNutrition', () => {
     expect(result?.energyKcal).toBe(90);
   });
 
+  describe('water absorbed by dry pasta and rice', () => {
+    const dryPasta = (measure: string): NutritionIngredient => ({
+      name: 'Spaghetti',
+      measure,
+      genericFood: { foodName: 'Pasta white raw', energyKcal: 350 },
+    });
+    const water = (measure: string): NutritionIngredient => ({
+      name: 'Water',
+      measure,
+      genericFood: { foodName: 'Water av', energyKcal: 0 },
+    });
+
+    it('adds the cooking water to the dish weight when the recipe lists none', () => {
+      const result = calculateRecipeNutrition({
+        ingredients: [dryPasta('100g')],
+      });
+
+      expect(result?.energyKcal).toBe(350);
+      expect(result?.per100g?.energyKcal).toBeCloseTo(152.2, 1);
+    });
+
+    it('adds only the shortfall when the recipe lists some liquid', () => {
+      const result = calculateRecipeNutrition({
+        ingredients: [dryPasta('100g'), water('100ml')],
+      });
+
+      expect(result?.per100g?.energyKcal).toBeCloseTo(152.2, 1);
+    });
+
+    it('adds nothing when the listed liquid already covers it', () => {
+      const result = calculateRecipeNutrition({
+        ingredients: [dryPasta('100g'), water('400ml')],
+      });
+
+      expect(result?.per100g?.energyKcal).toBe(70);
+    });
+
+    it('uses a higher factor for rice', () => {
+      const result = calculateRecipeNutrition({
+        ingredients: [
+          {
+            name: 'Jasmine Rice',
+            measure: '100g',
+            genericFood: { foodName: 'Rice white raw', energyKcal: 350 },
+          },
+        ],
+      });
+
+      expect(result?.per100g?.energyKcal).toBe(125);
+    });
+  });
+
   it('leaves out what is served alongside the dish', () => {
     const result = calculateRecipeNutrition({
       ingredients: [

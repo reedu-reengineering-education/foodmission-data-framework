@@ -62,6 +62,17 @@ export interface NutritionIngredient {
   genericFood?: (NutrientSource & { foodName?: string }) | null;
 }
 
+const ABSORBED_WATER_PER_GRAM: [RegExp, number][] = [
+  [/^pasta\b.*\braw\b/i, 1.3],
+  [/^rice\b.*\braw\b/i, 1.8],
+  [/^couscous\b.*\bunprepared\b/i, 1.5],
+  [/^(bulgur|quinoa)\b.*\braw\b/i, 1.7],
+  [/^lentils\b.*\bdried\b/i, 1.5],
+];
+
+const COOKING_LIQUID =
+  /\b(water|stock|broth|milk|buttermilk|cream|wine|beer|cider|juice|passata)\b|\btomatoes tinned\b/i;
+
 const SERVED_ALONGSIDE = /\b(to serve|for serving|serve with)\b/i;
 
 const FINISHING_TOUCH_GRAMS: [RegExp, number][] = [
@@ -128,6 +139,21 @@ function measuredGrams(ingredient: NutritionIngredient): number | null {
   return parsed
     ? quantityToGrams(parsed, foodNames(ingredient), ingredient.measure)
     : null;
+}
+
+function absorbedWaterGrams(
+  ingredient: NutritionIngredient,
+  grams: number,
+): number {
+  const food = ingredient.genericFood?.foodName ?? '';
+  const match = ABSORBED_WATER_PER_GRAM.find(([dryStaple]) =>
+    dryStaple.test(food),
+  );
+  return match ? grams * match[1] : 0;
+}
+
+function isCookingLiquid(ingredient: NutritionIngredient): boolean {
+  return foodNames(ingredient).some((name) => COOKING_LIQUID.test(name));
 }
 
 function guessedGrams(
@@ -197,6 +223,8 @@ export function calculateRecipeNutrition(recipe: {
   const estimated = emptyTotals();
   const missingIngredients: string[] = [];
   let totalGrams = 0;
+  let waterToAbsorb = 0;
+  let cookingLiquid = 0;
 
   for (const ingredient of recipe.ingredients) {
     const source = nutrientSource(ingredient);
@@ -212,6 +240,8 @@ export function calculateRecipeNutrition(recipe: {
     }
 
     totalGrams += measuredWeight;
+    waterToAbsorb += absorbedWaterGrams(ingredient, measuredWeight);
+    if (isCookingLiquid(ingredient)) cookingLiquid += measuredWeight;
 
     if (!source) {
       const smallCondiment =
@@ -243,7 +273,8 @@ export function calculateRecipeNutrition(recipe: {
   result.missingIngredients = missingIngredients;
   result.estimated = true;
 
-  if (totalGrams > 0) result.per100g = scaled(totals, 100 / totalGrams);
+  const dishGrams = totalGrams + Math.max(0, waterToAbsorb - cookingLiquid);
+  if (dishGrams > 0) result.per100g = scaled(totals, 100 / dishGrams);
 
   return result;
 }
