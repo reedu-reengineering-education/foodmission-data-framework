@@ -97,7 +97,11 @@ describe('RecipesService', () => {
   });
 
   describe('nutrition estimate', () => {
-    const estimate = { energyKcal: 520, confidence: 1, missingIngredients: [] };
+    const estimate = {
+      energyKcal: 520,
+      estimated: true,
+      missingIngredients: [],
+    };
 
     it('estimates nutrition for a new recipe and returns it', async () => {
       mockRecipeRepository.create.mockResolvedValue(

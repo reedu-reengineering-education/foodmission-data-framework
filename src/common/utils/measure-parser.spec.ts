@@ -133,13 +133,13 @@ describe('quantityToGrams', () => {
       quantityToGrams({ quantity: 240, unit: 'ML' }, [
         'Mandeln',
         'Almonds w skin unsalted',
-      ])?.grams,
+      ]),
     ).toBeCloseTo(141.6, 1);
     expect(
       quantityToGrams({ quantity: 2, unit: 'PIECES' }, [
         'Zwiebel',
         'Onions raw',
-      ])?.grams,
+      ]),
     ).toBe(300);
   });
 
@@ -154,7 +154,7 @@ describe('quantityToGrams', () => {
     ['Peanut Butter', 269],
   ])('weighs a cup of %s as about %d g', (name, grams) => {
     const result = quantityToGrams({ quantity: 240, unit: 'ML' }, [name]);
-    expect(result?.grams).toBeCloseTo(grams, 0);
+    expect(result).toBeCloseTo(grams, 0);
   });
 
   it('converts a cup of milk as 240 ml at water density', () => {
@@ -163,7 +163,7 @@ describe('quantityToGrams', () => {
       ['Milk'],
       '1 cup',
     );
-    expect(result).toEqual({ grams: 240, quality: 0.7 });
+    expect(result).toBe(240);
   });
 
   it('does not weigh a cup of nuts like a cup of water', () => {
@@ -172,14 +172,11 @@ describe('quantityToGrams', () => {
       ['Almonds'],
       '1 cup',
     );
-    expect(result?.grams).toBeCloseTo(141.6, 1);
+    expect(result).toBeCloseTo(141.6, 1);
   });
 
-  it('weighs grams as they are, with full quality', () => {
-    expect(quantityToGrams({ quantity: 500, unit: 'G' }, ['Beef'])).toEqual({
-      grams: 500,
-      quality: 1,
-    });
+  it('weighs grams as they are', () => {
+    expect(quantityToGrams({ quantity: 500, unit: 'G' }, ['Beef'])).toBe(500);
   });
 
   it('scales a known food by small, medium or large', () => {
@@ -188,7 +185,7 @@ describe('quantityToGrams', () => {
       ['Onion'],
       '2 large',
     );
-    expect(result).toEqual({ grams: 390, quality: 0.4 });
+    expect(result).toBe(390);
   });
 
   it('converts a cup of flour with flour density', () => {
@@ -197,7 +194,7 @@ describe('quantityToGrams', () => {
       ['Flour'],
       '1 cup',
     );
-    expect(result?.grams).toBeCloseTo(120, 1);
+    expect(result).toBeCloseTo(120, 1);
   });
 
   it('converts oil by density rather than 1 g per ml', () => {
@@ -206,7 +203,7 @@ describe('quantityToGrams', () => {
       ['Olive oil'],
       '2 tablespoons',
     );
-    expect(result?.grams).toBeCloseTo(27.3, 1);
+    expect(result).toBeCloseTo(27.3, 1);
   });
 
   it('uses a count word from the original measure', () => {
@@ -215,7 +212,7 @@ describe('quantityToGrams', () => {
       ['Tomatoes'],
       '1 can',
     );
-    expect(result?.grams).toBe(400);
+    expect(result).toBe(400);
   });
 
   it('uses the piece-weight table for a known food', () => {
@@ -224,7 +221,7 @@ describe('quantityToGrams', () => {
       ['Egg'],
       '2',
     );
-    expect(result?.grams).toBe(100);
+    expect(result).toBe(100);
   });
 
   it('returns null for a piece with no known weight', () => {

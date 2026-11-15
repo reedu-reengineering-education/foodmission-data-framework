@@ -17,11 +17,11 @@ export interface NutritionalInfo {
   potassium?: number;
 
   per100g?: NutrientValues;
-  confidence?: number;
+  estimated?: boolean;
   missingIngredients?: string[];
 }
 
 export type NutrientValues = Omit<
   NutritionalInfo,
-  'per100g' | 'confidence' | 'missingIngredients'
+  'per100g' | 'estimated' | 'missingIngredients'
 >;

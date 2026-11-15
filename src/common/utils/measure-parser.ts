@@ -5,11 +5,6 @@ export interface ParsedQuantity {
   unit: Unit;
 }
 
-export interface WeighedAmount {
-  grams: number;
-  quality: number;
-}
-
 export const MAX_MEASURE_LENGTH = 100;
 
 const GRAMS_PER_LB = 453.6;
@@ -170,11 +165,6 @@ function parseAmount(text: string): number {
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
-
-const WEIGHT_QUALITY = 1;
-const VOLUME_QUALITY = 0.7;
-const COUNT_WORD_QUALITY = 0.7;
-const AVERAGE_PIECE_QUALITY = 0.4;
 
 const DEFAULT_SOLID_GRAMS_PER_ML = 0.6;
 
@@ -355,49 +345,32 @@ function pieceGrams(
   quantity: number,
   foodNames: string[],
   measure: string,
-): WeighedAmount | null {
+): number | null {
   const countWord = COUNT_WORDS.find((word) => hasWord(measure, word));
-  if (countWord) {
-    return {
-      grams: quantity * COUNT_GRAMS[countWord],
-      quality: COUNT_WORD_QUALITY,
-    };
-  }
+  if (countWord) return quantity * COUNT_GRAMS[countWord];
 
   const average = averagePieceGrams(foodNames);
   if (average == null) return null;
   const size = measure.match(/\b(small|medium|large)\b/);
-  return {
-    grams: quantity * average * (size ? SIZE_MODIFIERS[size[1]] : 1),
-    quality: AVERAGE_PIECE_QUALITY,
-  };
+  return quantity * average * (size ? SIZE_MODIFIERS[size[1]] : 1);
 }
 
 export function quantityToGrams(
   { quantity, unit }: ParsedQuantity,
   foodNames: string[],
   measure?: string | null,
-): WeighedAmount | null {
+): number | null {
   switch (unit) {
     case Unit.G:
-      return { grams: quantity, quality: WEIGHT_QUALITY };
+      return quantity;
     case Unit.KG:
-      return { grams: quantity * 1000, quality: WEIGHT_QUALITY };
+      return quantity * 1000;
     case Unit.ML:
-      return {
-        grams: quantity * gramsPerMl(foodNames),
-        quality: VOLUME_QUALITY,
-      };
+      return quantity * gramsPerMl(foodNames);
     case Unit.L:
-      return {
-        grams: quantity * 1000 * gramsPerMl(foodNames),
-        quality: VOLUME_QUALITY,
-      };
+      return quantity * 1000 * gramsPerMl(foodNames);
     case Unit.CUPS:
-      return {
-        grams: quantity * ML_PER_CUP * gramsPerMl(foodNames),
-        quality: VOLUME_QUALITY,
-      };
+      return quantity * ML_PER_CUP * gramsPerMl(foodNames);
     case Unit.PIECES:
       return pieceGrams(quantity, foodNames, (measure ?? '').toLowerCase());
     default:

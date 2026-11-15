@@ -42,7 +42,7 @@ describe('calculateRecipeNutrition', () => {
 
     expect(result?.energyKcal).toBe(240);
     expect(result?.per100g?.energyKcal).toBe(120);
-    expect(result?.confidence).toBe(1);
+    expect(result?.estimated).toBe(true);
   });
 
   it('estimates a vague condiment and records its name', () => {

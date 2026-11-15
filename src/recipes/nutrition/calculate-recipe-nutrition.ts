@@ -1,7 +1,6 @@
 import { Unit } from '@prisma/client';
 import {
   SPICE_PEPPER,
-  WeighedAmount,
   parseQuantityUnit,
   quantityToGrams,
 } from '../../common/utils/measure-parser';
@@ -119,7 +118,7 @@ function condimentGramsByName(name: string): number | null {
   return /\boil\b/.test(normalized) ? OIL_DRIZZLE_GRAMS : PINCH_GRAMS;
 }
 
-function measuredAmount(ingredient: NutritionIngredient): WeighedAmount | null {
+function measuredGrams(ingredient: NutritionIngredient): number | null {
   const parsed =
     ingredient.quantity != null && ingredient.unit != null
       ? { quantity: ingredient.quantity, unit: ingredient.unit }
@@ -157,7 +156,7 @@ function addNutrients(
   totals: Record<NutrientField, number>,
   source: NutrientSource,
   grams: number,
-): number {
+): void {
   const scale = grams / 100;
   for (const field of NUTRIENT_FIELDS) {
     const value = source[field];
@@ -165,8 +164,6 @@ function addNutrients(
       totals[field] += value * scale;
     }
   }
-  const kcal = source.energyKcal;
-  return typeof kcal === 'number' && !Number.isNaN(kcal) ? kcal * scale : 0;
 }
 
 function round(value: number, decimals = 1): number {
@@ -187,7 +184,7 @@ export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
   return (
     typeof nutritionalInfo === 'object' &&
     nutritionalInfo !== null &&
-    !('confidence' in nutritionalInfo)
+    (nutritionalInfo as NutritionalInfo).estimated !== true
   );
 }
 
@@ -199,15 +196,13 @@ export function calculateRecipeNutrition(recipe: {
   const measured = emptyTotals();
   const estimated = emptyTotals();
   const missingIngredients: string[] = [];
-  let measuredEnergyQuality = 0;
-  let measuredRows = 0;
   let totalGrams = 0;
 
   for (const ingredient of recipe.ingredients) {
     const source = nutrientSource(ingredient);
-    const amount = measuredAmount(ingredient);
+    const measuredWeight = measuredGrams(ingredient);
 
-    if (!amount) {
+    if (measuredWeight == null) {
       const grams = guessedGrams(ingredient, source);
       if (grams == null) return null;
       missingIngredients.push(ingredient.name);
@@ -216,20 +211,18 @@ export function calculateRecipeNutrition(recipe: {
       continue;
     }
 
-    totalGrams += amount.grams;
+    totalGrams += measuredWeight;
 
     if (!source) {
       const smallCondiment =
         condimentGrams(ingredient) != null &&
-        amount.grams <= MAX_UNLINKED_CONDIMENT_GRAMS;
+        measuredWeight <= MAX_UNLINKED_CONDIMENT_GRAMS;
       if (!smallCondiment) return null;
       missingIngredients.push(ingredient.name);
       continue;
     }
 
-    const energy = addNutrients(measured, source, amount.grams);
-    measuredEnergyQuality += energy * amount.quality;
-    measuredRows++;
+    addNutrients(measured, source, measuredWeight);
   }
 
   const estimatedEnergy = estimated.energyKcal;
@@ -248,14 +241,7 @@ export function calculateRecipeNutrition(recipe: {
 
   const result: NutritionalInfo = scaled(totals, 1);
   result.missingIngredients = missingIngredients;
-  result.confidence = round(
-    totalEnergy > 0
-      ? measuredEnergyQuality / totalEnergy
-      : measuredRows > 0
-        ? 1
-        : 0.4,
-    2,
-  );
+  result.estimated = true;
 
   if (totalGrams > 0) result.per100g = scaled(totals, 100 / totalGrams);
 
