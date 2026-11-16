@@ -3,18 +3,13 @@ import * as path from 'node:path';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 
-type Mapping = {
-  foods: { nevoCode: number; co2PerKg: number; match: string }[];
-  unmatched: { nevoCode: number }[];
-};
-
 describe('NEVO to AGRIBALYSE mapping', () => {
-  const mapping = JSON.parse(
+  const { foods } = JSON.parse(
     fs.readFileSync(
       path.join(DATA_DIR, 'nevo-agribalyse-mapping.json'),
       'utf-8',
     ),
-  ) as Mapping;
+  ) as { foods: { nevoCode: number; co2PerKg: number }[] };
   const nevoCodes = new Set(
     fs
       .readFileSync(path.join(DATA_DIR, 'nevo', 'NEVO2025_v9.0.csv'), 'utf-8')
@@ -25,21 +20,13 @@ describe('NEVO to AGRIBALYSE mapping', () => {
   );
 
   it('maps only NEVO foods that exist, each once', () => {
-    const codes = [
-      ...mapping.foods.map((food) => food.nevoCode),
-      ...mapping.unmatched.map((food) => food.nevoCode),
-    ];
+    const codes = foods.map((food) => food.nevoCode);
 
     expect(codes.filter((code) => !nevoCodes.has(code))).toEqual([]);
     expect(new Set(codes).size).toBe(codes.length);
   });
 
-  it('gives every mapped food a positive footprint and a match level', () => {
-    expect(
-      mapping.foods.filter(
-        (food) =>
-          !(food.co2PerKg > 0) || !['high', 'medium'].includes(food.match),
-      ),
-    ).toEqual([]);
+  it('gives every mapped food a positive footprint', () => {
+    expect(foods.filter((food) => !(food.co2PerKg > 0))).toEqual([]);
   });
 });

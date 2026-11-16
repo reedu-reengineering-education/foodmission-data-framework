@@ -157,7 +157,7 @@ const CONDIMENTS: WordTable = [
   [/^peppers?$/i, CONDIMENT_GRAMS],
 ];
 
-type WeighedIngredient = {
+export type WeighedIngredient = {
   ingredient: NutritionIngredient;
   source: NutrientSource | null;
   grams: number;
@@ -275,14 +275,9 @@ export function weighIngredients(
   return weighed;
 }
 
-export function calculateRecipeNutrition({
-  ingredients,
-}: {
-  ingredients: NutritionIngredient[];
-}): NutritionalInfo | null {
-  const weighed = weighIngredients(ingredients);
-  if (!weighed) return null;
-
+export function calculateRecipeNutrition(
+  weighed: WeighedIngredient[],
+): NutritionalInfo | null {
   const guessed = weighed.filter((item) => item.guessed);
   const totalKcal = sum(weighed.map(kcalOf));
   if (

@@ -1,8 +1,6 @@
 import { parseQuantityUnit } from '../../../scripts/seeds/prod/measure-parser';
-import {
-  calculateRecipeNutrition,
-  NutritionIngredient,
-} from './calculate-recipe-nutrition';
+import { NutritionIngredient } from './calculate-recipe-nutrition';
+import { estimateRecipe } from './estimate-recipe';
 
 type Food = NonNullable<NutritionIngredient['genericFood']>;
 
@@ -18,7 +16,7 @@ const item = (
 });
 
 const nutritionOf = (...ingredients: NutritionIngredient[]) =>
-  calculateRecipeNutrition({ ingredients });
+  estimateRecipe({ ingredients }).nutritionalInfo;
 
 const kcalPer100g = (...ingredients: NutritionIngredient[]) =>
   nutritionOf(...ingredients)?.per100g.energyKcal;

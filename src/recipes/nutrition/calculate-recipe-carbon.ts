@@ -1,17 +1,8 @@
-import {
-  NutritionIngredient,
-  dishGrams,
-  weighIngredients,
-} from './calculate-recipe-nutrition';
+import { WeighedIngredient, dishGrams } from './calculate-recipe-nutrition';
 
-export function calculateRecipeCarbonFootprint({
-  ingredients,
-}: {
-  ingredients: NutritionIngredient[];
-}): number | null {
-  const weighed = weighIngredients(ingredients);
-  if (!weighed) return null;
-
+export function calculateRecipeCarbonFootprint(
+  weighed: WeighedIngredient[],
+): number | null {
   let gramsCo2 = 0;
   for (const { ingredient, source, grams } of weighed) {
     if (grams === 0 || !source) continue;

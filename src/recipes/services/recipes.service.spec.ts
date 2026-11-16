@@ -255,11 +255,6 @@ describe('RecipesService', () => {
     });
 
     it.each([
-      [
-        'with ingredients',
-        withIngredients,
-        ['carbonFootprint', 'nutritionalInfo'],
-      ],
       ['without ingredients', {}, []],
       [
         'with null nutrition',

@@ -34,11 +34,10 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { rankSearchCandidates } from '../../generic-foods/utils/search-ranking';
 import {
-  calculateRecipeNutrition,
   isUserProvidedNutrition,
   markedAsEntered,
 } from '../nutrition/calculate-recipe-nutrition';
-import { calculateRecipeCarbonFootprint } from '../nutrition/calculate-recipe-carbon';
+import { estimateRecipe } from '../nutrition/estimate-recipe';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 type LocalizableIngredient = {
@@ -454,11 +453,12 @@ export class RecipesService {
       const ingredients = await this.recipeRepository.findNutritionIngredients(
         recipe.id,
       );
+      const { nutritionalInfo, carbonFootprint } = estimateRecipe({
+        ingredients,
+      });
       const estimates = {
-        carbonFootprint: calculateRecipeCarbonFootprint({ ingredients }),
-        ...(needsNutrition && {
-          nutritionalInfo: calculateRecipeNutrition({ ingredients }),
-        }),
+        carbonFootprint,
+        ...(needsNutrition && { nutritionalInfo }),
       };
       await this.recipeRepository.updateEstimates(recipe.id, estimates);
       return { ...recipe, ...estimates };

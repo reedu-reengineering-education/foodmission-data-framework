@@ -224,7 +224,7 @@ export class RecipesRepository implements BaseRepository<
       carbonFootprint,
     }: {
       nutritionalInfo?: NutritionalInfo | null;
-      carbonFootprint?: number | null;
+      carbonFootprint: number | null;
     },
   ): Promise<void> {
     await this.prisma.recipe.update({

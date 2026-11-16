@@ -1,6 +1,6 @@
 import { parseQuantityUnit } from '../../../scripts/seeds/prod/measure-parser';
-import { calculateRecipeCarbonFootprint } from './calculate-recipe-carbon';
 import { NutritionIngredient } from './calculate-recipe-nutrition';
+import { estimateRecipe } from './estimate-recipe';
 
 type Food = NonNullable<NutritionIngredient['genericFood']>;
 
@@ -16,7 +16,7 @@ const item = (
 });
 
 const carbonOf = (...ingredients: NutritionIngredient[]) =>
-  calculateRecipeCarbonFootprint({ ingredients });
+  estimateRecipe({ ingredients }).carbonFootprint;
 
 const beef = item('Beef', '500g', { energyKcal: 250, carbonFootprint: 28.9 });
 const onion = item('Onion', '100g', { energyKcal: 40, carbonFootprint: 0.421 });

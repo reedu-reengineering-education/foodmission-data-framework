@@ -9,11 +9,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { parseQuantityUnit } from './measure-parser';
 import {
-  calculateRecipeNutrition,
   NUTRITION_INGREDIENT_SELECT,
   toNutritionJson,
 } from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
-import { calculateRecipeCarbonFootprint } from '../../../src/recipes/nutrition/calculate-recipe-carbon';
+import { estimateRecipe } from '../../../src/recipes/nutrition/estimate-recipe';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 
@@ -217,10 +216,7 @@ async function applyCarbonFootprints(prisma: PrismaClient): Promise<void> {
     foods: { nevoCode: number; co2PerKg: number }[];
   }>('nevo-agribalyse-mapping.json');
   await prisma.genericFood.updateMany({
-    where: {
-      nevoCode: { notIn: foods.map((food) => food.nevoCode) },
-      carbonFootprint: { not: null },
-    },
+    where: { nevoCode: { notIn: foods.map((food) => food.nevoCode) } },
     data: { carbonFootprint: null },
   });
   for (const { nevoCode, co2PerKg } of foods) {
@@ -249,16 +245,17 @@ async function recalculateEstimates(prisma: PrismaClient): Promise<void> {
   let withCarbon = 0;
   for (const recipe of recipes) {
     const isSeeded = recipe.origin === RecipeOrigin.THEMEALDB;
-    const nutrition = isSeeded ? calculateRecipeNutrition(recipe) : null;
-    const carbonFootprint = calculateRecipeCarbonFootprint(recipe);
+    const { nutritionalInfo, carbonFootprint } = estimateRecipe(recipe);
     if (isSeeded) seeded++;
-    if (nutrition) withNutrition++;
+    if (isSeeded && nutritionalInfo) withNutrition++;
     if (carbonFootprint !== null) withCarbon++;
     await prisma.recipe.update({
       where: { id: recipe.id },
       data: {
         carbonFootprint,
-        ...(isSeeded && { nutritionalInfo: toNutritionJson(nutrition) }),
+        ...(isSeeded && {
+          nutritionalInfo: toNutritionJson(nutritionalInfo),
+        }),
       },
     });
   }

@@ -302,7 +302,7 @@ describe('RecipesRepository', () => {
       ],
       [{ carbonFootprint: null }, { carbonFootprint: null }],
     ])(
-      'writes only the estimates it is given (%o)',
+      'writes nutrition only when it is given (%o)',
       async (estimates, data) => {
         mockPrismaService.recipe.update.mockResolvedValueOnce(mockRecipe);
 
