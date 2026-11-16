@@ -53,6 +53,7 @@ describe('RecipesRepository', () => {
       },
       recipeIngredient: {
         deleteMany: jest.fn(),
+        groupBy: jest.fn(),
       },
       recipeRating: {
         findUnique: jest.fn(),
@@ -425,6 +426,31 @@ describe('RecipesRepository', () => {
       expect(mockPrismaService.recipe.delete).toHaveBeenCalledWith({
         where: { id: 'recipe-1' },
       });
+    });
+  });
+
+  describe('findCuratedGenericFoodIds', () => {
+    it('picks the food most seeded lines with that name link to, ignoring case', async () => {
+      mockPrismaService.recipeIngredient.groupBy.mockResolvedValue([
+        {
+          name: 'Olive Oil',
+          genericFoodId: 'oil-olive',
+          _count: { _all: 100 },
+        },
+        { name: 'olive oil', genericFoodId: 'oil-olive', _count: { _all: 60 } },
+        { name: 'Olive Oil', genericFoodId: 'oil-av', _count: { _all: 120 } },
+      ]);
+
+      const ids = await repository.findCuratedGenericFoodIds(['Olive Oil']);
+
+      expect(ids).toEqual(new Map([['olive oil', 'oil-olive']]));
+    });
+
+    it('does not query for an empty list', async () => {
+      await expect(repository.findCuratedGenericFoodIds([])).resolves.toEqual(
+        new Map(),
+      );
+      expect(mockPrismaService.recipeIngredient.groupBy).not.toHaveBeenCalled();
     });
   });
 

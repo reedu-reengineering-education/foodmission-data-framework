@@ -9,9 +9,16 @@ import { CommonModule } from '../common/common.module';
 import { PantryModule } from '../pantry/pantry.module';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { EventsModule } from '../events/events.module';
+import { GenericFoodsModule } from '../generic-foods/generic-foods.module';
 
 @Module({
-  imports: [DatabaseModule, CommonModule, PantryModule, EventsModule],
+  imports: [
+    DatabaseModule,
+    CommonModule,
+    PantryModule,
+    EventsModule,
+    GenericFoodsModule,
+  ],
   controllers: [RecipeController, RecommendationsController],
   providers: [
     RecipesService,

@@ -19,6 +19,7 @@ import {
 } from '../../../test/fixtures/recipe.fixtures';
 import { UserEventService } from '../../events/services/user-event.service';
 import { TranslationService } from '../../translations/services/translation.service';
+import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 
 describe('RecipesService', () => {
   let service: RecipesService;
@@ -34,7 +35,12 @@ describe('RecipesService', () => {
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
     findNutritionIngredients: jest.fn().mockResolvedValue([]),
+    findCuratedGenericFoodIds: jest.fn().mockResolvedValue(new Map()),
     updateNutrition: jest.fn().mockResolvedValue(undefined),
+  };
+
+  const mockGenericFoodRepository = {
+    findSearchCandidates: jest.fn().mockResolvedValue([]),
   };
 
   const mockPrisma = {
@@ -63,6 +69,7 @@ describe('RecipesService', () => {
           provide: TranslationService,
           useValue: new TranslationService(mockPrisma as any),
         },
+        { provide: GenericFoodRepository, useValue: mockGenericFoodRepository },
       ],
     }).compile();
 
@@ -86,6 +93,90 @@ describe('RecipesService', () => {
       allergens: [],
       isPublic: false,
       origin: RecipeOrigin.USER,
+    });
+  });
+
+  describe('linking ingredients to generic foods', () => {
+    const candidate = (id: string, foodName: string) => ({
+      id,
+      nevoCode: 1,
+      foodName,
+      synonym: null,
+      foodGroup: 'Cereal products',
+      foodex2Codes: [],
+      translatedNames: [],
+      substringMatch: true,
+    });
+    const createdIngredients = () =>
+      mockRecipeRepository.create.mock.calls[0][0].ingredients;
+
+    beforeEach(() => {
+      mockRecipeRepository.create.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId }),
+      );
+    });
+
+    it('uses the food the seeded recipes link that name to', async () => {
+      mockRecipeRepository.findCuratedGenericFoodIds.mockResolvedValueOnce(
+        new Map([['olive oil', 'oil-olive']]),
+      );
+
+      await service.create(
+        { title: 'Salad', ingredients: [{ name: ' Olive Oil ' }] },
+        userId,
+      );
+
+      expect(
+        mockRecipeRepository.findCuratedGenericFoodIds,
+      ).toHaveBeenCalledWith(['Olive Oil']);
+      expect(createdIngredients()).toEqual([
+        { name: ' Olive Oil ', genericFoodId: 'oil-olive' },
+      ]);
+    });
+
+    it('falls back to a generic food whose name starts with the ingredient name', async () => {
+      mockGenericFoodRepository.findSearchCandidates.mockResolvedValueOnce([
+        candidate('pasta-white', 'Pasta white raw'),
+      ]);
+
+      await service.create(
+        { title: 'Pasta', ingredients: [{ name: 'Pasta' }] },
+        userId,
+      );
+
+      expect(createdIngredients()).toEqual([
+        { name: 'Pasta', genericFoodId: 'pasta-white' },
+      ]);
+    });
+
+    it('does not link a food that only shares the start of a word', async () => {
+      mockGenericFoodRepository.findSearchCandidates.mockResolvedValueOnce([
+        candidate('buttermilk', 'Buttermilk'),
+      ]);
+
+      await service.create(
+        { title: 'Toast', ingredients: [{ name: 'Butter' }] },
+        userId,
+      );
+
+      expect(createdIngredients()).toEqual([{ name: 'Butter' }]);
+    });
+
+    it('keeps a food the user linked', async () => {
+      await service.create(
+        {
+          title: 'Toast',
+          ingredients: [{ name: 'Butter', genericFoodId: 'chosen' }],
+        },
+        userId,
+      );
+
+      expect(
+        mockRecipeRepository.findCuratedGenericFoodIds,
+      ).not.toHaveBeenCalled();
+      expect(createdIngredients()).toEqual([
+        { name: 'Butter', genericFoodId: 'chosen' },
+      ]);
     });
   });
 

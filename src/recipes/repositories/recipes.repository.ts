@@ -209,6 +209,35 @@ export class RecipesRepository implements BaseRepository<
     await this.prisma.recipe.delete({ where: { id } });
   }
 
+  async findCuratedGenericFoodIds(
+    names: string[],
+  ): Promise<Map<string, string>> {
+    if (names.length === 0) return new Map();
+    const rows = await this.prisma.recipeIngredient.groupBy({
+      by: ['name', 'genericFoodId'],
+      where: {
+        recipe: { origin: RecipeOrigin.THEMEALDB },
+        genericFoodId: { not: null },
+        name: { in: names, mode: 'insensitive' },
+      },
+      _count: { _all: true },
+    });
+
+    const linesByName = new Map<string, Map<string, number>>();
+    for (const { name, genericFoodId, _count } of rows) {
+      const key = name.toLowerCase();
+      const lines = linesByName.get(key) ?? new Map<string, number>();
+      lines.set(genericFoodId!, (lines.get(genericFoodId!) ?? 0) + _count._all);
+      linesByName.set(key, lines);
+    }
+    return new Map(
+      [...linesByName].map(([name, lines]) => [
+        name,
+        [...lines].sort((a, b) => b[1] - a[1])[0][0],
+      ]),
+    );
+  }
+
   findNutritionIngredients(recipeId: string) {
     return this.prisma.recipeIngredient.findMany({
       where: { recipeId },

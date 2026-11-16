@@ -30,6 +30,8 @@ import {
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { TranslationService } from '../../translations/services/translation.service';
+import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
+import { rankSearchCandidates } from '../../generic-foods/utils/search-ranking';
 import {
   calculateRecipeNutrition,
   isUserProvidedNutrition,
@@ -50,6 +52,7 @@ export class RecipesService {
     private readonly recipeRepository: RecipesRepository,
     private readonly userEventService: UserEventService,
     private readonly translationService: TranslationService,
+    private readonly genericFoodRepository: GenericFoodRepository,
   ) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
@@ -71,6 +74,7 @@ export class RecipesService {
     try {
       const recipe = await this.recipeRepository.create({
         ...createRecipeDto,
+        ingredients: await this.linkToGenericFoods(createRecipeDto.ingredients),
         allergens: createRecipeDto.allergens ?? [],
         isPublic: createRecipeDto.isPublic ?? false,
         origin: RecipeOrigin.USER,
@@ -382,7 +386,10 @@ export class RecipesService {
       !isUserProvidedNutrition(existing.nutritionalInfo);
 
     try {
-      const updated = await this.recipeRepository.update(id, updateRecipeDto);
+      const updated = await this.recipeRepository.update(id, {
+        ...updateRecipeDto,
+        ingredients: await this.linkToGenericFoods(updateRecipeDto.ingredients),
+      });
       return this.toResponse(
         estimate ? await this.withEstimatedNutrition(updated) : updated,
       );
@@ -409,6 +416,46 @@ export class RecipesService {
     return plainToInstance(RecipeRatingResponseDto, rating, {
       excludeExtraneousValues: true,
     });
+  }
+
+  private async linkToGenericFoods<
+    T extends { name: string; foodProductId?: string; genericFoodId?: string },
+  >(ingredients: T[] | undefined): Promise<T[] | undefined> {
+    const isUnlinked = (ingredient: T) =>
+      !ingredient.foodProductId && !ingredient.genericFoodId;
+    if (!ingredients?.some(isUnlinked)) return ingredients;
+
+    const curated = await this.recipeRepository.findCuratedGenericFoodIds(
+      ingredients
+        .filter(isUnlinked)
+        .map((ingredient) => ingredient.name.trim()),
+    );
+    return Promise.all(
+      ingredients.map(async (ingredient) => {
+        if (!isUnlinked(ingredient)) return ingredient;
+        const name = ingredient.name.trim();
+        const genericFoodId =
+          curated.get(name.toLowerCase()) ??
+          (await this.findGenericFoodNamed(name));
+        return genericFoodId ? { ...ingredient, genericFoodId } : ingredient;
+      }),
+    );
+  }
+
+  private async findGenericFoodNamed(
+    name: string,
+  ): Promise<string | undefined> {
+    const candidates = await this.genericFoodRepository.findSearchCandidates(
+      name,
+      DEFAULT_LOCALE,
+    );
+    const startsWithName = new RegExp(
+      `^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
+      'i',
+    );
+    return rankSearchCandidates(name, candidates).find((candidate) =>
+      startsWithName.test(candidate.foodName),
+    )?.id;
   }
 
   private async withEstimatedNutrition<T extends { id: string }>(
