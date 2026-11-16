@@ -47,7 +47,16 @@ export class RecipeResponseDto {
   @Expose()
   tags?: string[];
 
-  @ApiPropertyOptional({ description: 'Nutritional info payload' })
+  @ApiPropertyOptional({
+    description:
+      'Estimated from the ingredients: { per100g: { energyKcal, proteins, … }, estimated: true, missingIngredients: [names] }. ' +
+      'Entered by the user: the object they sent, plus estimated: false. Null when nothing is known',
+    example: {
+      per100g: { energyKcal: 154.8, proteins: 5.4, fat: 0.9 },
+      estimated: true,
+      missingIngredients: [],
+    },
+  })
   @Expose()
   nutritionalInfo?: Record<string, any>;
 

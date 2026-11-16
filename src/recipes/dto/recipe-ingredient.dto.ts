@@ -89,7 +89,9 @@ export class CreateRecipeIngredientDto {
   quantity?: number;
 
   @ApiPropertyOptional({
-    description: 'Catalog unit (see /catalog/units). Required with quantity',
+    description:
+      'Catalog unit (see /catalog/units). Required with quantity. ' +
+      'PIECES counts toward nutrition only for foods with a known piece weight (an egg, an onion)',
     enum: Unit,
     example: Unit.G,
   })
@@ -112,8 +114,9 @@ export class CreateRecipeIngredientDto {
   order?: number;
 
   @ApiPropertyOptional({
-    description: 'ID of linked food product (OpenFoodFacts product)',
-    example: 'uuid-food-product-id',
+    description:
+      'ID of linked food product (OpenFoodFacts product). Cannot be combined with genericFoodId',
+    example: '550e8400-e29b-41d4-a716-446655440000',
   })
   @IsUUID()
   @IsOptional()
@@ -123,60 +126,13 @@ export class CreateRecipeIngredientDto {
 
   @ApiPropertyOptional({
     description:
-      'ID of linked generic food (NEVO generic food). If neither genericFoodId nor foodProductId is sent, ' +
-      'the ingredient is linked by name when a match is found',
-    example: 'uuid-generic-food-id',
+      'ID of linked generic food (NEVO generic food). Cannot be combined with foodProductId. ' +
+      'If neither is sent, the ingredient is linked by name when a match is found',
+    example: '550e8400-e29b-41d4-a716-446655440001',
   })
   @IsUUID()
   @IsOptional()
   @ValidateIf((o) => !o.foodProductId)
-  genericFoodId?: string;
-}
-
-/**
- * DTO for updating a recipe ingredient
- */
-export class UpdateRecipeIngredientDto {
-  @ApiPropertyOptional({
-    description: 'Ingredient name',
-    example: 'Chicken Thigh',
-  })
-  @IsString()
-  @IsOptional()
-  name?: string;
-
-  @ApiPropertyOptional({
-    description: 'Measurement/amount',
-    example: '600g',
-  })
-  @IsString()
-  @IsOptional()
-  measure?: string;
-
-  @ApiPropertyOptional({
-    description: 'Order in the recipe',
-    example: 2,
-    minimum: 0,
-  })
-  @IsInt()
-  @Min(0)
-  @IsOptional()
-  order?: number;
-
-  @ApiPropertyOptional({
-    description: 'ID of linked food product (OpenFoodFacts product)',
-    example: 'uuid-food-product-id',
-  })
-  @IsUUID()
-  @IsOptional()
-  foodProductId?: string;
-
-  @ApiPropertyOptional({
-    description: 'ID of linked generic food (NEVO generic food)',
-    example: 'uuid-generic-food-id',
-  })
-  @IsUUID()
-  @IsOptional()
   genericFoodId?: string;
 }
 

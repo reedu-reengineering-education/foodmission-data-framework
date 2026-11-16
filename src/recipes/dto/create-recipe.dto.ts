@@ -175,8 +175,9 @@ export class CreateRecipeDto {
       {
         name: 'Olive Oil',
         measure: '2 tbsp',
+        quantity: 30,
+        unit: 'ML',
         order: 2,
-        genericFoodId: 'uuid',
       },
     ],
   })

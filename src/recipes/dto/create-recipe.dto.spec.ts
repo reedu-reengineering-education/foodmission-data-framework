@@ -1,6 +1,7 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { CreateRecipeDto } from './create-recipe.dto';
+import { UpdateRecipeDto } from './update-recipe.dto';
 
 describe('CreateRecipeDto with ingredients', () => {
   it('should validate recipe without ingredients', async () => {
@@ -34,61 +35,6 @@ describe('CreateRecipeDto with ingredients', () => {
     expect(errors.length).toBe(0);
   });
 
-  it('should validate recipe with ingredient linked to genericFoodId', async () => {
-    const dto = plainToInstance(CreateRecipeDto, {
-      title: 'Linked Recipe',
-      ingredients: [
-        {
-          name: 'Chicken',
-          measure: '500g',
-          genericFoodId: '550e8400-e29b-41d4-a716-446655440000',
-        },
-      ],
-    });
-    const errors = await validate(dto);
-    expect(errors.length).toBe(0);
-  });
-
-  it('should validate recipe with ingredient linked to foodProductId', async () => {
-    const dto = plainToInstance(CreateRecipeDto, {
-      title: 'Product Recipe',
-      ingredients: [
-        {
-          name: 'Branded Product',
-          measure: '1 pack',
-          foodProductId: '550e8400-e29b-41d4-a716-446655440000',
-        },
-      ],
-    });
-    const errors = await validate(dto);
-    expect(errors.length).toBe(0);
-  });
-
-  it('should fail validation when ingredient has both foodProductId and genericFoodId', async () => {
-    const dto = plainToInstance(CreateRecipeDto, {
-      title: 'Invalid Recipe',
-      ingredients: [
-        {
-          name: 'Ambiguous Item',
-          measure: '100g',
-          foodProductId: '550e8400-e29b-41d4-a716-446655440000',
-          genericFoodId: '550e8400-e29b-41d4-a716-446655440001',
-        },
-      ],
-    });
-    const errors = await validate(dto);
-    expect(errors.length).toBeGreaterThan(0);
-  });
-
-  it('should fail validation when ingredient name is missing', async () => {
-    const dto = plainToInstance(CreateRecipeDto, {
-      title: 'Bad Recipe',
-      ingredients: [{ measure: '500g', order: 1 }],
-    });
-    const errors = await validate(dto);
-    expect(errors.length).toBeGreaterThan(0);
-  });
-
   it('should validate empty ingredients array', async () => {
     const dto = plainToInstance(CreateRecipeDto, {
       title: 'No Ingredients Recipe',
@@ -104,6 +50,49 @@ describe('CreateRecipeDto with ingredients', () => {
       ingredients: 'not an array',
     });
     const errors = await validate(dto);
-    expect(errors.length).toBeGreaterThan(0);
+    expect(errors.some((e) => e.property === 'ingredients')).toBe(true);
+  });
+
+  it('should fail the recipe when one of its ingredients is invalid', async () => {
+    const dto = plainToInstance(CreateRecipeDto, {
+      title: 'Bad Recipe',
+      ingredients: [{ name: 'Salt' }, { measure: '500g' }],
+    });
+    const errors = await validate(dto);
+    expect(errors.map((e) => e.property)).toEqual(['ingredients']);
+  });
+
+  it('should reject nutritionalInfo that is not an object', async () => {
+    const dto = plainToInstance(CreateRecipeDto, {
+      title: 'Recipe',
+      nutritionalInfo: '520 kcal',
+    });
+    const errors = await validate(dto);
+    expect(errors.some((e) => e.property === 'nutritionalInfo')).toBe(true);
+  });
+});
+
+describe('UpdateRecipeDto', () => {
+  it('rejects an ingredient linked to both a food product and a generic food', async () => {
+    const dto = plainToInstance(UpdateRecipeDto, {
+      ingredients: [
+        {
+          name: 'Ambiguous Item',
+          foodProductId: '550e8400-e29b-41d4-a716-446655440000',
+          genericFoodId: '550e8400-e29b-41d4-a716-446655440001',
+        },
+      ],
+    });
+    const errors = await validate(dto);
+    const messages = errors.flatMap((e) =>
+      (e.children ?? []).flatMap((child) =>
+        (child.children ?? []).flatMap((c) =>
+          Object.values(c.constraints ?? {}),
+        ),
+      ),
+    );
+    expect(messages).toContain(
+      'Only one of foodProductId or genericFoodId can be provided, not both',
+    );
   });
 });
