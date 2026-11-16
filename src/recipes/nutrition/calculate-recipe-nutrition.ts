@@ -287,9 +287,9 @@ export function calculateRecipeNutrition({
 }
 
 export function markedAsEntered(
-  nutritionalInfo: Record<string, any> | undefined,
+  nutritionalInfo: Record<string, any> | null | undefined,
 ): Record<string, any> | undefined {
-  return nutritionalInfo && { ...nutritionalInfo, estimated: false };
+  return nutritionalInfo ? { ...nutritionalInfo, estimated: false } : undefined;
 }
 
 export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {

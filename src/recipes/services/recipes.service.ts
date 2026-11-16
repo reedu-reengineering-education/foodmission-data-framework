@@ -445,9 +445,10 @@ export class RecipesService {
     storedNutrition?: unknown,
   ): Promise<T> {
     const needsEstimate =
-      dto.ingredients !== undefined &&
-      dto.nutritionalInfo === undefined &&
-      !isUserProvidedNutrition(storedNutrition);
+      dto.nutritionalInfo === null ||
+      (dto.ingredients !== undefined &&
+        dto.nutritionalInfo === undefined &&
+        !isUserProvidedNutrition(storedNutrition));
     if (!needsEstimate) return recipe;
 
     try {

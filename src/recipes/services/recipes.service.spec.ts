@@ -244,6 +244,18 @@ describe('RecipesService', () => {
       expect(result.id).toBe('r1');
     });
 
+    it('estimates a new recipe when the user sends null nutrition', async () => {
+      await service.create(
+        { title: 'Test Recipe', ...withIngredients, nutritionalInfo: null },
+        userId,
+      );
+
+      expect(mockRecipeRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({ nutritionalInfo: undefined }),
+      );
+      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledTimes(1);
+    });
+
     it.each([
       ['has no ingredients', {}],
       [
@@ -287,6 +299,12 @@ describe('RecipesService', () => {
         { ingredients: [{ name: 'Rice' }] },
         { energyKcal: 300 },
         0,
+      ],
+      [
+        'the user sends null to drop their own nutrition',
+        { nutritionalInfo: null },
+        { energyKcal: 300, estimated: false },
+        1,
       ],
       [
         'the user sends new nutrition with the ingredients',

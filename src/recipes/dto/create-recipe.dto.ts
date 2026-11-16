@@ -70,12 +70,14 @@ export class CreateRecipeDto {
   @ApiPropertyOptional({
     description:
       'Nutrition entered by the user. Stored as sent with estimated: false, and never replaced by an estimate. ' +
-      'If omitted, nutrition is estimated from the ingredients and marked estimated: true',
+      'If omitted, nutrition is estimated from the ingredients and marked estimated: true. ' +
+      'Send null to drop user-entered nutrition and use the estimate again',
     example: { energyKcal: 520, proteins: 30 },
+    nullable: true,
   })
   @IsOptional()
   @IsObject()
-  nutritionalInfo?: Record<string, any>;
+  nutritionalInfo?: Record<string, any> | null;
 
   @ApiPropertyOptional({
     description: 'Sustainability score',

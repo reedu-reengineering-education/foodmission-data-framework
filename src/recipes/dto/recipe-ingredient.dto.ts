@@ -48,8 +48,8 @@ const quantityUnitMessage =
       : invalidValueMessage;
 
 export const MAX_RECIPE_INGREDIENTS = 100;
-export const MAX_MEASURE_LENGTH = 100;
-export const MAX_INGREDIENT_NAME_LENGTH = 100;
+const MAX_MEASURE_LENGTH = 100;
+const MAX_INGREDIENT_NAME_LENGTH = 100;
 
 /**
  * DTO for creating a recipe ingredient
