@@ -16,6 +16,11 @@ import {
 import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
+  NUTRITION_INGREDIENT_SELECT,
+  NutritionalInfo,
+  toNutritionJson,
+} from '../nutrition/calculate-recipe-nutrition';
+import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_INCLUDE,
@@ -69,7 +74,6 @@ export interface UpdateRecipeData extends Partial<
 > {
   rating?: number;
   ratingCount?: number;
-  ingredients?: CreateRecipeIngredientData[];
 }
 
 function toIngredientCreateInput(
@@ -159,11 +163,9 @@ export class RecipesRepository implements BaseRepository<
     return this.prisma.recipe.create({
       data: {
         ...recipeData,
-        ingredients: ingredients?.length
-          ? {
-              create: ingredients.map(toIngredientCreateInput),
-            }
-          : undefined,
+        ingredients: ingredients && {
+          create: ingredients.map(toIngredientCreateInput),
+        },
       },
       include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
@@ -171,38 +173,61 @@ export class RecipesRepository implements BaseRepository<
 
   async update(id: string, data: UpdateRecipeData): Promise<Recipe> {
     const { ingredients, ...recipeData } = data;
-
-    // If ingredients are provided, replace them all
-    if (ingredients !== undefined) {
-      return this.prisma.$transaction(async (tx) => {
-        // Delete existing ingredients
-        await tx.recipeIngredient.deleteMany({ where: { recipeId: id } });
-
-        // Update recipe and create new ingredients
-        return tx.recipe.update({
-          where: { id },
-          data: {
-            ...recipeData,
-            ingredients: ingredients?.length
-              ? {
-                  create: ingredients.map(toIngredientCreateInput),
-                }
-              : undefined,
-          },
-          include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
-        });
-      });
-    }
-
     return this.prisma.recipe.update({
       where: { id },
-      data: recipeData,
+      data: {
+        ...recipeData,
+        ...(ingredients && {
+          ingredients: {
+            deleteMany: {},
+            create: ingredients.map(toIngredientCreateInput),
+          },
+        }),
+      },
       include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
   }
 
   async delete(id: string): Promise<void> {
     await this.prisma.recipe.delete({ where: { id } });
+  }
+
+  async findCuratedGenericFoodIds(
+    names: string[],
+  ): Promise<Map<string, string>> {
+    if (names.length === 0) return new Map();
+    const rows = await this.prisma.recipeIngredient.findMany({
+      where: {
+        recipe: { origin: RecipeOrigin.THEMEALDB },
+        genericFoodId: { not: null },
+        name: { in: names, mode: 'insensitive' },
+      },
+      select: { name: true, genericFoodId: true },
+      distinct: ['name'],
+    });
+    return new Map(
+      rows.map((row) => [row.name.toLowerCase(), row.genericFoodId!]),
+    );
+  }
+
+  findNutritionIngredients(recipeId: string) {
+    return this.prisma.recipeIngredient.findMany({
+      where: { recipeId },
+      orderBy: { order: 'asc' },
+      select: NUTRITION_INGREDIENT_SELECT,
+    });
+  }
+
+  async updateNutrition(
+    recipeId: string,
+    nutrition: NutritionalInfo | null,
+  ): Promise<void> {
+    await this.prisma.recipe.update({
+      where: { id: recipeId },
+      data: {
+        nutritionalInfo: toNutritionJson(nutrition),
+      },
+    });
   }
 
   async count(where?: Prisma.RecipeWhereInput): Promise<number> {

@@ -12,13 +12,17 @@ import {
   RecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
+import { CreateRecipeIngredientDto } from '../dto/recipe-ingredient.dto';
 import {
   RateRecipeDto,
   RecipeRatingResponseDto,
 } from '../dto/recipe-rating.dto';
 import { Prisma, RecipeOrigin } from '@prisma/client';
 import { getOwnedEntityOrThrow } from '../../common/services/ownership-helpers';
-import { handlePrismaError } from '../../common/utils/error.utils';
+import {
+  describeError,
+  handlePrismaError,
+} from '../../common/utils/error.utils';
 import { plainToInstance } from 'class-transformer';
 import {
   EventSource,
@@ -27,6 +31,13 @@ import {
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { TranslationService } from '../../translations/services/translation.service';
+import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
+import { rankSearchCandidates } from '../../generic-foods/utils/search-ranking';
+import {
+  calculateRecipeNutrition,
+  isUserProvidedNutrition,
+  markedAsEntered,
+} from '../nutrition/calculate-recipe-nutrition';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 type LocalizableIngredient = {
@@ -43,6 +54,7 @@ export class RecipesService {
     private readonly recipeRepository: RecipesRepository,
     private readonly userEventService: UserEventService,
     private readonly translationService: TranslationService,
+    private readonly genericFoodRepository: GenericFoodRepository,
   ) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
@@ -63,13 +75,15 @@ export class RecipesService {
 
     try {
       const recipe = await this.recipeRepository.create({
-        ...createRecipeDto,
+        ...(await this.toRecipeData(createRecipeDto)),
         allergens: createRecipeDto.allergens ?? [],
         isPublic: createRecipeDto.isPublic ?? false,
         origin: RecipeOrigin.USER,
         userId,
       });
-      return this.toResponse(recipe);
+      return this.toResponse(
+        await this.withNutritionIfNeeded(recipe, createRecipeDto),
+      );
     } catch (error) {
       throw handlePrismaError(error, 'create recipe', 'Recipe');
     }
@@ -79,46 +93,14 @@ export class RecipesService {
     userId: string,
     query: QueryRecipeDto,
   ): Promise<MultipleRecipeResponseDto> {
-    const { page = 1, limit = 10 } = query;
-    const skip = (page - 1) * limit;
-
-    const where: Prisma.RecipeWhereInput = {
-      userId,
-      ...this.buildFiltersWhere(query),
-    };
-
-    try {
-      const result = await this.recipeRepository.findWithPagination({
-        skip,
-        take: limit,
-        where,
-        orderBy: { createdAt: 'desc' },
-      });
-
-      const data = await this.localizeIngredients(result.data, query.lang);
-
-      return plainToInstance(
-        MultipleRecipeResponseDto,
-        {
-          data: data.map((recipe) => this.toResponse(recipe)),
-          total: result.total,
-          page: result.page,
-          limit: result.limit,
-          totalPages: result.totalPages,
-        },
-        { excludeExtraneousValues: true },
-      );
-    } catch (error) {
-      throw handlePrismaError(error, 'find recipes', 'Recipe');
-    }
+    return this.findPage({ userId, ...this.buildFiltersWhere(query) }, query);
   }
 
   async findAll(
     userId: string,
     query: QueryRecipeDto,
   ): Promise<MultipleRecipeResponseDto> {
-    const { page = 1, limit = 10, isPublic } = query;
-    const skip = (page - 1) * limit;
+    const { isPublic } = query;
 
     // Visibility: when isPublic is explicit, use it; otherwise show user's recipes OR public
     const visibilityWhere: Prisma.RecipeWhereInput =
@@ -128,10 +110,18 @@ export class RecipesService {
           ? { userId, isPublic: false }
           : { OR: [{ userId }, { isPublic: true }] };
 
-    const where: Prisma.RecipeWhereInput = {
-      ...visibilityWhere,
-      ...this.buildFiltersWhere(query),
-    };
+    return this.findPage(
+      { ...visibilityWhere, ...this.buildFiltersWhere(query) },
+      query,
+    );
+  }
+
+  private async findPage(
+    where: Prisma.RecipeWhereInput,
+    query: QueryRecipeDto,
+  ): Promise<MultipleRecipeResponseDto> {
+    const { page = 1, limit = 10 } = query;
+    const skip = (page - 1) * limit;
 
     try {
       const result = await this.recipeRepository.findWithPagination({
@@ -364,11 +354,20 @@ export class RecipesService {
     updateRecipeDto: UpdateRecipeDto,
     userId: string,
   ): Promise<RecipeResponseDto> {
-    await this.getOwnedRecipeOrThrow(id, userId);
+    const existing = await this.getOwnedRecipeOrThrow(id, userId);
 
     try {
-      const updated = await this.recipeRepository.update(id, updateRecipeDto);
-      return this.toResponse(updated);
+      const updated = await this.recipeRepository.update(
+        id,
+        await this.toRecipeData(updateRecipeDto),
+      );
+      return this.toResponse(
+        await this.withNutritionIfNeeded(
+          updated,
+          updateRecipeDto,
+          existing.nutritionalInfo,
+        ),
+      );
     } catch (error) {
       throw handlePrismaError(error, 'update recipe', 'Recipe');
     }
@@ -392,6 +391,79 @@ export class RecipesService {
     return plainToInstance(RecipeRatingResponseDto, rating, {
       excludeExtraneousValues: true,
     });
+  }
+
+  private async linkToGenericFoods(
+    ingredients: CreateRecipeIngredientDto[] | undefined,
+  ): Promise<CreateRecipeIngredientDto[] | undefined> {
+    const isUnlinked = (ingredient: CreateRecipeIngredientDto) =>
+      !ingredient.foodProductId && !ingredient.genericFoodId;
+    if (!ingredients?.some(isUnlinked)) return ingredients;
+
+    const curated = await this.recipeRepository.findCuratedGenericFoodIds(
+      ingredients
+        .filter(isUnlinked)
+        .map((ingredient) => ingredient.name.trim()),
+    );
+    return Promise.all(
+      ingredients.map(async (ingredient) => {
+        if (!isUnlinked(ingredient)) return ingredient;
+        const name = ingredient.name.trim();
+        const genericFoodId =
+          curated.get(name.toLowerCase()) ??
+          (await this.findGenericFoodNamed(name));
+        return genericFoodId ? { ...ingredient, genericFoodId } : ingredient;
+      }),
+    );
+  }
+
+  private async findGenericFoodNamed(
+    name: string,
+  ): Promise<string | undefined> {
+    const candidates = await this.genericFoodRepository.findSearchCandidates(
+      name,
+      DEFAULT_LOCALE,
+    );
+    const lowerName = name.toLowerCase();
+    return rankSearchCandidates(name, candidates).find((candidate) => {
+      const food = candidate.foodName.toLowerCase();
+      return food === lowerName || food.startsWith(`${lowerName} `);
+    })?.id;
+  }
+
+  private async toRecipeData<T extends UpdateRecipeDto>(dto: T) {
+    return {
+      ...dto,
+      nutritionalInfo: markedAsEntered(dto.nutritionalInfo),
+      ingredients: await this.linkToGenericFoods(dto.ingredients),
+    };
+  }
+
+  private async withNutritionIfNeeded<T extends { id: string }>(
+    recipe: T,
+    dto: UpdateRecipeDto,
+    storedNutrition?: unknown,
+  ): Promise<T> {
+    const needsEstimate =
+      dto.nutritionalInfo === null ||
+      (dto.ingredients !== undefined &&
+        dto.nutritionalInfo === undefined &&
+        !isUserProvidedNutrition(storedNutrition));
+    if (!needsEstimate) return recipe;
+
+    try {
+      const ingredients = await this.recipeRepository.findNutritionIngredients(
+        recipe.id,
+      );
+      const nutritionalInfo = calculateRecipeNutrition({ ingredients });
+      await this.recipeRepository.updateNutrition(recipe.id, nutritionalInfo);
+      return { ...recipe, nutritionalInfo };
+    } catch (error) {
+      this.logger.warn(
+        `Nutrition estimate failed for recipe ${recipe.id}: ${describeError(error)}`,
+      );
+      return recipe;
+    }
   }
 
   private toResponse(recipe: any): RecipeResponseDto {

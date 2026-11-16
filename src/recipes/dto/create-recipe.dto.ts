@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   IsArray,
   IsBoolean,
   IsEnum,
@@ -13,7 +14,10 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Allergens } from '@prisma/client';
-import { CreateRecipeIngredientDto } from './recipe-ingredient.dto';
+import {
+  CreateRecipeIngredientDto,
+  MAX_RECIPE_INGREDIENTS,
+} from './recipe-ingredient.dto';
 
 export class CreateRecipeDto {
   @ApiProperty({ description: 'Recipe title', example: 'Hearty veggie pasta' })
@@ -64,12 +68,16 @@ export class CreateRecipeDto {
   tags?: string[];
 
   @ApiPropertyOptional({
-    description: 'Structured nutritional info',
-    example: { carbs: 50, fats: 10, fiber: 8 },
+    description:
+      'Nutrition entered by the user. Stored as sent with estimated: false, and never replaced by an estimate. ' +
+      'If omitted, nutrition is estimated from the ingredients and marked estimated: true. ' +
+      'Send null to drop user-entered nutrition and use the estimate again',
+    example: { energyKcal: 520, proteins: 30 },
+    nullable: true,
   })
   @IsOptional()
   @IsObject()
-  nutritionalInfo?: Record<string, any>;
+  nutritionalInfo?: Record<string, any> | null;
 
   @ApiPropertyOptional({
     description: 'Sustainability score',
@@ -163,18 +171,21 @@ export class CreateRecipeDto {
   @ApiPropertyOptional({
     description: 'Recipe ingredients',
     type: [CreateRecipeIngredientDto],
+    maxItems: MAX_RECIPE_INGREDIENTS,
     example: [
       { name: 'Chicken Breast', quantity: 500, unit: 'G', order: 1 },
       {
         name: 'Olive Oil',
         measure: '2 tbsp',
+        quantity: 30,
+        unit: 'ML',
         order: 2,
-        genericFoodId: 'uuid',
       },
     ],
   })
   @IsOptional()
   @IsArray()
+  @ArrayMaxSize(MAX_RECIPE_INGREDIENTS)
   @ValidateNested({ each: true })
   @Type(() => CreateRecipeIngredientDto)
   ingredients?: CreateRecipeIngredientDto[];

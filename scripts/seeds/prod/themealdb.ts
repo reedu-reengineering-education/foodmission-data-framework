@@ -1,10 +1,20 @@
-import { Allergens, Prisma, PrismaClient, RecipeOrigin } from '@prisma/client';
+import {
+  Allergens,
+  Prisma,
+  PrismaClient,
+  RecipeOrigin,
+  Unit,
+} from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
-import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
+import { parseQuantityUnit } from './measure-parser';
+import {
+  calculateRecipeNutrition,
+  NUTRITION_INGREDIENT_SELECT,
+  toNutritionJson,
+} from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
-const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
 
 const SOURCE_NEVO = 'nevo';
 
@@ -28,7 +38,6 @@ interface ThemealdbData {
     dietaryLabels: string[];
     servings: number;
     ingredients: { name: string; measure: string; order: number }[];
-    nutritionalInfo?: Record<string, unknown> | null;
     allergens?: string[];
     sustainabilityScore?: number | null;
   }[];
@@ -75,93 +84,45 @@ function mapAllergensToEnum(tokens?: string[]): Allergens[] {
     .filter((v, i, arr) => arr.indexOf(v) === i);
 }
 
-interface RecipeIngredientData {
-  name: string;
-  measure: string;
-  order: number;
-  genericFoodId?: string;
-}
-
 interface SeedOptions {
   limit?: number;
   dryRun?: boolean;
   skipExisting?: boolean;
 }
 
-function loadThemealdbData(): ThemealdbData {
-  if (!fs.existsSync(DATA_PATH)) {
+function readSeedJson<T>(fileName: string): T {
+  const filePath = path.join(DATA_DIR, fileName);
+  if (!fs.existsSync(filePath)) {
     throw new Error(
-      `TheMealDB data file not found: ${DATA_PATH}. Place themealdb-data.json in prisma/seeds/data/ (see prisma/seed.ts and seed scripts that import this module).`,
+      `Seed data file not found: ${filePath}. Place it in prisma/seeds/data/.`,
     );
   }
-  const content = fs.readFileSync(DATA_PATH, 'utf-8');
-  return JSON.parse(content) as ThemealdbData;
+  return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T;
 }
 
-function normalizeIngredientName(name: string): string {
-  return name.toLowerCase().trim();
-}
+const normalize = (text: string) =>
+  text.toLowerCase().replace(/\s+/g, ' ').trim();
 
-/**
- * Maps normalized ingredient name -> GenericFood id. Every mapping row points at
- * a NEVO code; rows whose code is not seeded are dropped (ingredient stays unlinked).
- */
-function buildGenericFoodIdByIngredient(
+export const ingredientKey = (name: string, measure: string | null) =>
+  `${normalize(name)}|${normalize(measure ?? '')}`;
+
+async function loadGenericFoodIdByIngredient(
+  prisma: PrismaClient,
   mappings: ThemealdbData['ingredientMappings'],
-  genericFoodByNevoCode: Map<number, string>,
-): Map<string, string> {
-  const map = new Map<string, string>();
+): Promise<Map<string, string>> {
+  const genericFoods = await prisma.genericFood.findMany({
+    select: { id: true, nevoCode: true },
+  });
+  const idByNevoCode = new Map(
+    genericFoods.map((food) => [food.nevoCode, food.id]),
+  );
+  const idByIngredient = new Map<string, string>();
   for (const row of mappings) {
     if (row.source !== SOURCE_NEVO) continue;
-    const gfId = genericFoodByNevoCode.get(parseInt(row.sourceId, 10));
-    if (gfId) map.set(normalizeIngredientName(row.ingredientName), gfId);
+    const id = idByNevoCode.get(parseInt(row.sourceId, 10));
+    if (id) idByIngredient.set(normalize(row.ingredientName), id);
   }
-  return map;
-}
-
-/**
- * Re-points ingredients of already seeded TheMealDB recipes at the current
- * mapping. Seeding skips existing recipes, so without this, mapping fixes would
- * never reach a database that was seeded before. Idempotent.
- */
-async function relinkExistingIngredients(
-  prisma: PrismaClient,
-  genericFoodIdByIngredient: Map<string, string>,
-): Promise<number> {
-  const rows = await prisma.recipeIngredient.findMany({
-    where: { recipe: { origin: RecipeOrigin.THEMEALDB } },
-    select: {
-      id: true,
-      name: true,
-      itemType: true,
-      genericFoodId: true,
-      foodProductId: true,
-    },
-  });
-
-  const idsByTarget = new Map<string | null, string[]>();
-  for (const row of rows) {
-    const target =
-      genericFoodIdByIngredient.get(normalizeIngredientName(row.name)) ?? null;
-    const upToDate =
-      row.genericFoodId === target &&
-      row.foodProductId === null &&
-      row.itemType === 'generic_food';
-    if (upToDate) continue;
-    const ids = idsByTarget.get(target) ?? [];
-    ids.push(row.id);
-    idsByTarget.set(target, ids);
-  }
-
-  let updated = 0;
-  for (const [genericFoodId, ids] of idsByTarget) {
-    const result = await prisma.recipeIngredient.updateMany({
-      where: { id: { in: ids } },
-      data: { genericFoodId, foodProductId: null, itemType: 'generic_food' },
-    });
-    updated += result.count;
-  }
-  return updated;
+  return idByIngredient;
 }
 
 function toRecipeCreateData(
@@ -179,10 +140,6 @@ function toRecipeCreateData(
     dietaryLabels: recipe.dietaryLabels ?? [],
     servings: recipe.servings ?? 4,
     allergens: mapAllergensToEnum(recipe.allergens),
-    nutritionalInfo:
-      recipe.nutritionalInfo != null
-        ? (recipe.nutritionalInfo as Prisma.InputJsonValue)
-        : undefined,
     sustainabilityScore: recipe.sustainabilityScore ?? undefined,
     isPublic: true,
     userId: null,
@@ -190,31 +147,98 @@ function toRecipeCreateData(
   };
 }
 
-async function reparseIngredientUnits(prisma: PrismaClient): Promise<void> {
+function seededAmount(
+  name: string,
+  measure: string | null,
+  gramsByLine: Map<string, number>,
+): { quantity: number | null; unit: Unit | null } {
+  const grams = gramsByLine.get(ingredientKey(name, measure));
+  if (grams !== undefined) return { quantity: grams, unit: Unit.G };
+  return (
+    (measure ? parseQuantityUnit(measure) : null) ?? {
+      quantity: null,
+      unit: null,
+    }
+  );
+}
+
+async function syncIngredients(
+  prisma: PrismaClient,
+  mappings: ThemealdbData['ingredientMappings'],
+): Promise<void> {
+  const genericFoodIdByIngredient = await loadGenericFoodIdByIngredient(
+    prisma,
+    mappings,
+  );
+  const gramsByLine = new Map(
+    readSeedJson<{ name: string; measure: string; grams: number }[]>(
+      'themealdb-ingredient-grams.json',
+    ).map((row) => [ingredientKey(row.name, row.measure), row.grams]),
+  );
   const ingredients = await prisma.recipeIngredient.findMany({
     where: { recipe: { origin: RecipeOrigin.THEMEALDB } },
-    select: { id: true, measure: true, quantity: true, unit: true },
+    select: {
+      id: true,
+      name: true,
+      measure: true,
+      quantity: true,
+      unit: true,
+      itemType: true,
+      genericFoodId: true,
+      foodProductId: true,
+    },
   });
 
   let updated = 0;
   let unparsed = 0;
-  for (const ingredient of ingredients) {
-    const parsed = ingredient.measure
-      ? parseQuantityUnit(ingredient.measure)
-      : null;
-    if (!parsed) unparsed++;
-    const quantity = parsed?.quantity ?? null;
-    const unit = parsed?.unit ?? null;
-    if (quantity === ingredient.quantity && unit === ingredient.unit) continue;
-    await prisma.recipeIngredient.update({
-      where: { id: ingredient.id },
-      data: { quantity, unit },
-    });
+  for (const { id, ...current } of ingredients) {
+    const expected = {
+      ...seededAmount(current.name, current.measure, gramsByLine),
+      itemType: 'generic_food' as const,
+      genericFoodId:
+        genericFoodIdByIngredient.get(normalize(current.name)) ?? null,
+      foodProductId: null,
+    };
+    if (expected.quantity === null) unparsed++;
+    const upToDate = (Object.keys(expected) as (keyof typeof expected)[]).every(
+      (field) => current[field] === expected[field],
+    );
+    if (upToDate) continue;
+    await prisma.recipeIngredient.update({ where: { id }, data: expected });
     updated++;
   }
 
   console.log(
-    `   📏 Ingredient units: updated ${updated}, ${unparsed} unparsed`,
+    `   🔗 Ingredients: updated ${updated}, ${unparsed} without a parsed amount`,
+  );
+}
+
+async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
+  const recipes = await prisma.recipe.findMany({
+    where: { origin: RecipeOrigin.THEMEALDB },
+    select: {
+      id: true,
+      ingredients: {
+        orderBy: { order: 'asc' },
+        select: NUTRITION_INGREDIENT_SELECT,
+      },
+    },
+  });
+
+  let stored = 0;
+  for (const recipe of recipes) {
+    const nutrition = calculateRecipeNutrition(recipe);
+    if (nutrition) stored++;
+    await prisma.recipe.update({
+      where: { id: recipe.id },
+      data: {
+        nutritionalInfo: toNutritionJson(nutrition),
+      },
+    });
+  }
+
+  console.log(
+    `   🥗 Recipe nutrition: stored ${stored}, withheld ${recipes.length - stored}`,
   );
 }
 
@@ -226,7 +250,7 @@ export async function seedRecipes(
 
   console.log('🍽️  Loading TheMealDB recipe data...');
 
-  const data = loadThemealdbData();
+  const data = readSeedJson<ThemealdbData>('themealdb-data.json');
   const recipes = data.recipes;
 
   const ingredientCount = recipes.reduce(
@@ -236,33 +260,12 @@ export async function seedRecipes(
   console.log(`   📄 ${recipes.length} recipes`);
   console.log(`   🥕 ${ingredientCount} ingredient entries`);
   console.log(`   🔗 ${data.ingredientMappings.length} ingredient mappings`);
-  const enrichedCount = recipes.filter(
-    (r) => r.nutritionalInfo != null || (r.allergens?.length ?? 0) > 0,
+  const withAllergens = recipes.filter(
+    (r) => (r.allergens?.length ?? 0) > 0,
   ).length;
-  if (enrichedCount > 0) {
-    console.log(
-      `   📊 ${enrichedCount} recipes with nutritionalInfo/allergens/sustainability`,
-    );
+  if (withAllergens > 0) {
+    console.log(`   📊 ${withAllergens} recipes with allergens`);
   }
-
-  const genericFoodByNevoCode = new Map<number, string>();
-
-  if (!dryRun) {
-    const genericFoods = await prisma.genericFood.findMany({
-      select: { id: true, nevoCode: true },
-    });
-    for (const gf of genericFoods) {
-      genericFoodByNevoCode.set(gf.nevoCode, gf.id);
-    }
-    console.log(
-      `   🥗 ${genericFoods.length} GenericFood (NEVO) records available for linking`,
-    );
-  }
-
-  const genericFoodIdByIngredient = buildGenericFoodIdByIngredient(
-    data.ingredientMappings,
-    genericFoodByNevoCode,
-  );
 
   let created = 0;
   let skipped = 0;
@@ -286,20 +289,9 @@ export async function seedRecipes(
         }
       }
 
-      const ingredientsData: RecipeIngredientData[] = recipe.ingredients.map(
-        (ing) => ({
-          name: ing.name,
-          measure: ing.measure,
-          order: ing.order,
-          genericFoodId: genericFoodIdByIngredient.get(
-            normalizeIngredientName(ing.name),
-          ),
-        }),
-      );
-
       if (dryRun) {
         console.log(
-          `  Would create: ${recipe.title} (${ingredientsData.length} ingredients)`,
+          `  Would create: ${recipe.title} (${recipe.ingredients.length} ingredients)`,
         );
         created++;
         continue;
@@ -309,15 +301,13 @@ export async function seedRecipes(
         const createdRecipe = await tx.recipe.create({
           data: toRecipeCreateData(recipe),
         });
-        if (ingredientsData.length > 0) {
+        if (recipe.ingredients.length > 0) {
           await tx.recipeIngredient.createMany({
-            data: ingredientsData.map((ing) => ({
+            data: recipe.ingredients.map((ing) => ({
               recipeId: createdRecipe.id,
               name: ing.name,
               measure: ing.measure?.trim() ?? null,
               order: ing.order,
-              itemType: 'generic_food',
-              genericFoodId: ing.genericFoodId ?? null,
             })),
           });
         }
@@ -337,17 +327,14 @@ export async function seedRecipes(
     }
   }
 
-  const relinked =
-    dryRun || skipped === 0
-      ? 0
-      : await relinkExistingIngredients(prisma, genericFoodIdByIngredient);
-
-  if (!dryRun) await reparseIngredientUnits(prisma);
+  if (!dryRun) {
+    await syncIngredients(prisma, data.ingredientMappings);
+    await recalculateNutrition(prisma);
+  }
 
   console.log(`\n✅ TheMealDB seeding complete:`);
   console.log(`   📥 Created: ${created}`);
   console.log(`   ⏭️  Skipped: ${skipped}`);
-  console.log(`   🔗 Relinked ingredients: ${relinked}`);
   console.log(`   ❌ Errors: ${errors}`);
 
   return { created, skipped, errors };

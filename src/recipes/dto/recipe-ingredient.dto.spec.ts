@@ -6,7 +6,6 @@ import {
 } from '../../../test/fixtures/food-ref.fixtures';
 import {
   CreateRecipeIngredientDto,
-  UpdateRecipeIngredientDto,
   RecipeIngredientResponseDto,
 } from './recipe-ingredient.dto';
 
@@ -80,6 +79,14 @@ describe('RecipeIngredient DTOs', () => {
       );
     });
 
+    it('should fail validation when the name is too long', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'x'.repeat(101),
+      });
+      const errors = await validate(dto);
+      expect(errors.some((e) => e.property === 'name')).toBe(true);
+    });
+
     it('should fail validation when measure is too long', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         name: 'Salt',
@@ -104,7 +111,7 @@ describe('RecipeIngredient DTOs', () => {
         name: '',
       });
       const errors = await validate(dto);
-      expect(errors.length).toBeGreaterThan(0);
+      expect(errors.some((e) => e.property === 'name')).toBe(true);
     });
 
     it('should validate dto with genericFoodId only', async () => {
@@ -132,15 +139,12 @@ describe('RecipeIngredient DTOs', () => {
         genericFoodId: '550e8400-e29b-41d4-a716-446655440001',
       });
       const errors = await validate(dto);
-      expect(errors.length).toBeGreaterThan(0);
-      const constraintError = errors.find(
-        (e) =>
-          e.constraints &&
-          Object.keys(e.constraints).some((k) =>
-            k.includes('OptionalExclusiveFoodReference'),
-          ),
+      const messages = errors.flatMap((e) =>
+        Object.values(e.constraints ?? {}),
       );
-      expect(constraintError).toBeDefined();
+      expect(messages).toContain(
+        'Only one of foodProductId or genericFoodId can be provided, not both',
+      );
     });
 
     it('should fail validation when foodProductId is not a valid UUID', async () => {
@@ -183,46 +187,6 @@ describe('RecipeIngredient DTOs', () => {
     });
   });
 
-  describe('UpdateRecipeIngredientDto', () => {
-    it('should validate an empty update dto (all optional)', async () => {
-      const dto = plainToInstance(UpdateRecipeIngredientDto, {});
-      const errors = await validate(dto);
-      expect(errors.length).toBe(0);
-    });
-
-    it('should validate partial update with name only', async () => {
-      const dto = plainToInstance(UpdateRecipeIngredientDto, {
-        name: 'New Name',
-      });
-      const errors = await validate(dto);
-      expect(errors.length).toBe(0);
-    });
-
-    it('should validate partial update with measure only', async () => {
-      const dto = plainToInstance(UpdateRecipeIngredientDto, {
-        measure: '1kg',
-      });
-      const errors = await validate(dto);
-      expect(errors.length).toBe(0);
-    });
-
-    it('should validate update with genericFoodId', async () => {
-      const dto = plainToInstance(UpdateRecipeIngredientDto, {
-        genericFoodId: '550e8400-e29b-41d4-a716-446655440000',
-      });
-      const errors = await validate(dto);
-      expect(errors.length).toBe(0);
-    });
-
-    it('should fail validation when order is negative', async () => {
-      const dto = plainToInstance(UpdateRecipeIngredientDto, {
-        order: -5,
-      });
-      const errors = await validate(dto);
-      expect(errors.length).toBeGreaterThan(0);
-    });
-  });
-
   describe('RecipeIngredientResponseDto', () => {
     it('should expose all required fields', () => {
       const data = {
@@ -230,6 +194,8 @@ describe('RecipeIngredient DTOs', () => {
         recipeId: 'recipe-1',
         name: 'Chicken',
         measure: '500g',
+        quantity: 500,
+        unit: 'G',
         order: 1,
         itemType: 'generic_food',
         genericFoodId: 'fc-1',
@@ -241,6 +207,8 @@ describe('RecipeIngredient DTOs', () => {
         excludeExtraneousValues: true,
       });
 
+      expect(dto.quantity).toBe(500);
+      expect(dto.unit).toBe('G');
       expect(dto.id).toBe('ing-1');
       expect(dto.recipeId).toBe('recipe-1');
       expect(dto.name).toBe('Chicken');
