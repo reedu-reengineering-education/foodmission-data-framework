@@ -1,6 +1,7 @@
 import { Allergens, Prisma, PrismaClient, RecipeOrigin } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
+import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
@@ -189,6 +190,34 @@ function toRecipeCreateData(
   };
 }
 
+async function reparseIngredientUnits(prisma: PrismaClient): Promise<void> {
+  const ingredients = await prisma.recipeIngredient.findMany({
+    where: { recipe: { origin: RecipeOrigin.THEMEALDB } },
+    select: { id: true, measure: true, quantity: true, unit: true },
+  });
+
+  let updated = 0;
+  let unparsed = 0;
+  for (const ingredient of ingredients) {
+    const parsed = ingredient.measure
+      ? parseQuantityUnit(ingredient.measure)
+      : null;
+    if (!parsed) unparsed++;
+    const quantity = parsed?.quantity ?? null;
+    const unit = parsed?.unit ?? null;
+    if (quantity === ingredient.quantity && unit === ingredient.unit) continue;
+    await prisma.recipeIngredient.update({
+      where: { id: ingredient.id },
+      data: { quantity, unit },
+    });
+    updated++;
+  }
+
+  console.log(
+    `   📏 Ingredient units: updated ${updated}, ${unparsed} unparsed`,
+  );
+}
+
 export async function seedRecipes(
   prisma: PrismaClient,
   options: SeedOptions = {},
@@ -312,6 +341,8 @@ export async function seedRecipes(
     dryRun || skipped === 0
       ? 0
       : await relinkExistingIngredients(prisma, genericFoodIdByIngredient);
+
+  if (!dryRun) await reparseIngredientUnits(prisma);
 
   console.log(`\n✅ TheMealDB seeding complete:`);
   console.log(`   📥 Created: ${created}`);

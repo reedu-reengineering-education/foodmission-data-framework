@@ -146,8 +146,12 @@ export class RecipeNutritionService {
       }
 
       // Parse measure to grams
+      const structuredAmount =
+        ingredient.quantity != null && ingredient.unit
+          ? `${ingredient.quantity} ${ingredient.unit}`
+          : '100g';
       const parsed = parseMeasure(
-        ingredient.measure || '100g',
+        ingredient.measure || structuredAmount,
         ingredient.name,
       );
 
