@@ -153,7 +153,7 @@ type WeighedIngredient = {
   ingredient: NutritionIngredient;
   source: NutrientSource | null;
   grams: number;
-  estimated: boolean;
+  guessed: boolean;
 };
 
 function nutrientSource(
@@ -200,12 +200,12 @@ function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
   const measured = measuredGrams(ingredient);
   if (measured != null) {
     if (!source && measured > MAX_UNLINKED_GRAMS) return null;
-    return { ingredient, source, grams: measured, estimated: !source };
+    return { ingredient, source, grams: measured, guessed: !source };
   }
   const guessed = guessedGrams(ingredient, source);
   return guessed == null
     ? null
-    : { ingredient, source, grams: guessed, estimated: true };
+    : { ingredient, source, grams: guessed, guessed: true };
 }
 
 const sum = (values: number[]) =>
@@ -266,13 +266,12 @@ export function calculateRecipeNutrition({
     if (!item) return null;
     weighed.push(item);
   }
-  if (weighed.length === 0) return null;
 
-  const estimated = weighed.filter((item) => item.estimated);
+  const guessed = weighed.filter((item) => item.guessed);
   const totalKcal = sum(weighed.map(kcalOf));
   if (
     totalKcal > 0 &&
-    sum(estimated.map(kcalOf)) / totalKcal > MAX_ESTIMATED_ENERGY_SHARE
+    sum(guessed.map(kcalOf)) / totalKcal > MAX_ESTIMATED_ENERGY_SHARE
   ) {
     return null;
   }
@@ -283,7 +282,7 @@ export function calculateRecipeNutrition({
   return {
     per100g: per100g(weighed, totalGrams),
     estimated: true,
-    missingIngredients: estimated.map(({ ingredient }) => ingredient.name),
+    missingIngredients: guessed.map(({ ingredient }) => ingredient.name),
   };
 }
 

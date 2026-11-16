@@ -1,59 +1,38 @@
-import { Unit } from '@prisma/client';
 import { parseQuantityUnit } from '../../../scripts/seeds/prod/measure-parser';
 import {
   calculateRecipeNutrition,
   NutritionIngredient,
 } from './calculate-recipe-nutrition';
 
-function food(
+type Food = NonNullable<NutritionIngredient['genericFood']>;
+
+const item = (
   name: string,
   measure: string | null,
-  per100g: { energyKcal: number; fat?: number; sodium?: number },
-  extra: Partial<NutritionIngredient> = {},
-): NutritionIngredient {
-  return {
-    name,
-    measure,
-    foodProduct: null,
-    genericFood: {
-      energyKcal: per100g.energyKcal,
-      fat: per100g.fat ?? 0,
-      sodium: per100g.sodium ?? 0,
-    },
-    ...extra,
-  };
-}
+  genericFood: Food | null = null,
+): NutritionIngredient => ({
+  name,
+  measure,
+  ...(measure ? parseQuantityUnit(measure) : null),
+  genericFood,
+});
 
-function calculateFromMeasureText(recipe: {
-  ingredients: NutritionIngredient[];
-}) {
-  return calculateRecipeNutrition({
-    ingredients: recipe.ingredients.map((ingredient) => ({
-      ...(ingredient.measure ? parseQuantityUnit(ingredient.measure) : null),
-      ...ingredient,
-    })),
-  });
-}
+const nutritionOf = (...ingredients: NutritionIngredient[]) =>
+  calculateRecipeNutrition({ ingredients });
+
+const kcalPer100g = (...ingredients: NutritionIngredient[]) =>
+  nutritionOf(...ingredients)?.per100g.energyKcal;
+
+const beef = item('Beef', '500g', { energyKcal: 200 });
 
 describe('calculateRecipeNutrition', () => {
   it('returns null when there are no ingredients', () => {
-    expect(calculateFromMeasureText({ ingredients: [] })).toBeNull();
+    expect(nutritionOf()).toBeNull();
   });
 
-  it('scales a weighed ingredient and reports it per 100 g', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food(
-          'Chicken',
-          '200g',
-          { energyKcal: 120 },
-          { quantity: 200, unit: Unit.G },
-        ),
-      ],
-    });
-
-    expect(result).toEqual({
-      per100g: expect.objectContaining({ energyKcal: 120 }),
+  it('reports a weighed ingredient per 100 g', () => {
+    expect(nutritionOf(item('Chicken', '200g', { energyKcal: 120 }))).toEqual({
+      per100g: { energyKcal: 120 },
       estimated: true,
       missingIngredients: [],
     });
@@ -61,345 +40,199 @@ describe('calculateRecipeNutrition', () => {
 
   it('does not read an amount from the measure text', () => {
     expect(
-      calculateRecipeNutrition({
-        ingredients: [
-          {
-            name: 'Flour',
-            measure: '200g',
-            genericFood: { foodName: 'Flour wheat white', energyKcal: 345 },
-          },
-        ],
+      nutritionOf({
+        name: 'Flour',
+        measure: '200g',
+        genericFood: { energyKcal: 345 },
       }),
     ).toBeNull();
-  });
-
-  it('counts a condiment without an amount as 1 g and records its name', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food('Chicken', '100g', { energyKcal: 165, sodium: 74 }),
-        food('Salt', 'to taste', { energyKcal: 0, sodium: 38758 }),
-      ],
-    });
-
-    expect(result?.per100g.energyKcal).toBe(163.4);
-    expect(result?.per100g.sodium).toBe(457);
-    expect(result?.missingIngredients).toEqual(['Salt']);
-  });
-
-  it.each([
-    ['Baking powder', '1 tsp', 157.9],
-    ['Fermented black beans', '1 tbsp', 151.4],
-  ])(
-    'counts a small unlinked ingredient (%s) by weight only',
-    (name, measure, kcalPer100g) => {
-      const result = calculateFromMeasureText({
-        ingredients: [
-          food('Chicken', '100g', { energyKcal: 165 }),
-          { name, measure },
-        ],
-      });
-
-      expect(result?.per100g.energyKcal).toBe(kcalPer100g);
-      expect(result?.missingIngredients).toEqual([name]);
-    },
-  );
-
-  it('returns null when an unlinked ingredient weighs more than a tablespoon', () => {
-    expect(
-      calculateFromMeasureText({
-        ingredients: [
-          food('Chicken', '100g', { energyKcal: 165 }),
-          {
-            name: 'Olive oil',
-            measure: '1 cup',
-            foodProduct: null,
-            genericFood: null,
-          },
-        ],
-      }),
-    ).toBeNull();
-  });
-
-  it('guesses an unweighable low-energy food so one chilli does not drop the recipe', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food('Beef', '500g', { energyKcal: 200 }),
-        food('Bird chilli pods', 'a few', { energyKcal: 40 }),
-      ],
-    });
-
-    expect(result?.per100g.energyKcal).toBe(190.9);
-    expect(result?.missingIngredients).toEqual(['Bird chilli pods']);
-  });
-
-  it('recognises a condiment by its linked food when the name is not English', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food('Rindfleisch', '500g', { energyKcal: 200 }),
-        {
-          name: 'Salz',
-          measure: null,
-          genericFood: {
-            foodName: 'Salt not fortified w iodine',
-            energyKcal: 0,
-          },
-        },
-        {
-          name: 'Pfeffer',
-          measure: null,
-          genericFood: { foodName: 'Pepper black/white', energyKcal: 250 },
-        },
-      ],
-    });
-
-    expect(result?.per100g.energyKcal).toBe(199.7);
-    expect(result?.missingIngredients).toEqual(['Salz', 'Pfeffer']);
   });
 
   it('leaves out a nutrient that a counted ingredient has no value for', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        {
-          name: 'Chicken',
-          measure: '100g',
-          genericFood: { energyKcal: 120, fat: 3, vitaminA: null },
-        },
-        {
-          name: 'Rice',
-          measure: '100g',
-          genericFood: { energyKcal: 130, fat: 1, vitaminA: 5, fiber: 2 },
-        },
-      ],
-    });
-
-    expect(result?.per100g).toEqual({ energyKcal: 125, fat: 2 });
-  });
-
-  it('treats a linked food without an energy value as not linked', () => {
     expect(
-      calculateFromMeasureText({
-        ingredients: [
-          food('Beef', '500g', { energyKcal: 200 }),
-          {
-            name: 'Protein bar',
-            measure: '100g',
-            foodProduct: { name: 'Protein bar', energyKcal: null, fat: 10 },
-          },
-        ],
-      }),
-    ).toBeNull();
+      nutritionOf(
+        item('Chicken', '100g', { energyKcal: 120, fat: 3, vitaminA: null }),
+        item('Rice', '100g', {
+          energyKcal: 130,
+          fat: 1,
+          vitaminA: 5,
+          fiber: 2,
+        }),
+      )?.per100g,
+    ).toEqual({ energyKcal: 125, fat: 2 });
   });
 
-  it('falls back to the generic food when the product has no energy value', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        {
-          name: 'Yoghurt',
-          measure: '100g',
-          foodProduct: { energyKcal: null },
-          genericFood: { energyKcal: 60 },
-        },
-      ],
+  describe('which linked food counts', () => {
+    it.each([
+      ['the product', 90, 90],
+      ['the generic food when the product has no energy value', null, 60],
+    ])('uses %s', (_, productKcal, expected) => {
+      expect(
+        kcalPer100g({
+          ...item('Yoghurt', '100g', { energyKcal: 60 }),
+          foodProduct: { energyKcal: productKcal },
+        }),
+      ).toBe(expected);
     });
 
-    expect(result?.per100g.energyKcal).toBe(60);
-  });
-
-  it('uses the linked product over the generic food when both are set', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        {
-          name: 'Yoghurt',
-          measure: '100g',
-          foodProduct: { energyKcal: 90 },
-          genericFood: { energyKcal: 60 },
-        },
-      ],
-    });
-
-    expect(result?.per100g.energyKcal).toBe(90);
-  });
-
-  describe('water absorbed by dry pasta and rice', () => {
-    const dryPasta = (measure: string): NutritionIngredient => ({
-      name: 'Spaghetti',
-      measure,
-      genericFood: { foodName: 'Pasta white raw', energyKcal: 350 },
-    });
-    const water = (measure: string): NutritionIngredient => ({
-      name: 'Water',
-      measure,
-      genericFood: { foodName: 'Water av', energyKcal: 0 },
-    });
-
-    it('adds the cooking water to the dish weight when the recipe lists none', () => {
-      const result = calculateFromMeasureText({
-        ingredients: [dryPasta('100g')],
-      });
-
-      expect(result?.per100g.energyKcal).toBeCloseTo(152.2, 1);
-    });
-
-    it('adds only the shortfall when the recipe lists some liquid', () => {
-      const result = calculateFromMeasureText({
-        ingredients: [dryPasta('100g'), water('100ml')],
-      });
-
-      expect(result?.per100g.energyKcal).toBeCloseTo(152.2, 1);
-    });
-
-    it('adds nothing when the listed liquid already covers it', () => {
-      const result = calculateFromMeasureText({
-        ingredients: [dryPasta('100g'), water('400ml')],
-      });
-
-      expect(result?.per100g.energyKcal).toBe(70);
-    });
-
-    it('does not count cheese or chocolate as cooking liquid', () => {
-      const result = calculateFromMeasureText({
-        ingredients: [
-          dryPasta('100g'),
-          {
-            name: 'Mozzarella Balls',
-            measure: '130g',
-            genericFood: {
-              foodName: "Cheese Mozzarella made from cow's milk",
-              energyKcal: 0,
-            },
-          },
-        ],
-      });
-
-      expect(result?.per100g.energyKcal).toBeCloseTo(97.2, 1);
-    });
-
-    it('uses a higher factor for rice', () => {
-      const result = calculateFromMeasureText({
-        ingredients: [
-          {
-            name: 'Jasmine Rice',
-            measure: '100g',
-            genericFood: { foodName: 'Rice white raw', energyKcal: 350 },
-          },
-        ],
-      });
-
-      expect(result?.per100g.energyKcal).toBe(125);
+    it('treats a product without an energy value as not linked', () => {
+      expect(
+        nutritionOf(beef, {
+          ...item('Protein bar', '100g'),
+          foodProduct: { energyKcal: null, fat: 10 },
+        }),
+      ).toBeNull();
     });
   });
 
-  it('leaves out what is served alongside the dish', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food('Beef', '500g', { energyKcal: 200 }),
-        food('Rice', 'To serve', { energyKcal: 352 }),
-      ],
+  describe('ingredients without a measured amount', () => {
+    it('counts a condiment as 1 g and lists it', () => {
+      const result = nutritionOf(
+        item('Chicken', '100g', { energyKcal: 165, sodium: 74 }),
+        item('Salt', 'to taste', { energyKcal: 0, sodium: 38758 }),
+      );
+
+      expect(result?.per100g).toEqual({ energyKcal: 163.4, sodium: 457 });
+      expect(result?.missingIngredients).toEqual(['Salt']);
     });
 
-    expect(result?.per100g.energyKcal).toBe(200);
-    expect(result?.missingIngredients).toEqual(['Rice']);
+    it('recognises a condiment by its linked food when the name is not English', () => {
+      const result = nutritionOf(
+        item('Rindfleisch', '500g', { energyKcal: 200 }),
+        item('Salz', null, {
+          foodName: 'Salt not fortified w iodine',
+          energyKcal: 0,
+        }),
+        item('Pfeffer', null, {
+          foodName: 'Pepper black/white',
+          energyKcal: 250,
+        }),
+      );
+
+      expect(result?.per100g.energyKcal).toBe(199.7);
+      expect(result?.missingIngredients).toEqual(['Salz', 'Pfeffer']);
+    });
+
+    it('guesses a low-energy food as 30 g, a vegetable pepper included', () => {
+      expect(
+        kcalPer100g(
+          beef,
+          item('Bird chilli pods', 'a few', { energyKcal: 40 }),
+        ),
+      ).toBe(190.9);
+      expect(
+        kcalPer100g(beef, item('Green pepper', 'to taste', { energyKcal: 20 })),
+      ).toBe(189.8);
+    });
+
+    it.each([
+      ['To serve', 0],
+      ['Pinch', 0.5],
+      ['1 dash', 1],
+      ['Sprinkling', 5],
+      ['Dusting', 5],
+      ['Garnish', 5],
+      ['For Greasing', 10],
+      ['Drizzle', 10],
+      ['Splash', 15],
+      ['To Glaze', 20],
+      ['Topping', 20],
+    ])('counts "%s" as %d g', (measure, grams) => {
+      const result = nutritionOf(
+        item('Beef', '100g', { energyKcal: 200 }),
+        item('Lemon zest', measure, { energyKcal: 0 }),
+      );
+
+      expect(result?.per100g.energyKcal).toBeCloseTo(20000 / (100 + grams), 1);
+      expect(result?.missingIngredients).toEqual(['Lemon zest']);
+    });
+
+    it.each([
+      ['Flour', null, 345],
+      ['Butter', 'To taste', 740],
+      ['Squid', 'cleaned', 73],
+      ['Bacon', 'some', 400],
+      ['Dragon fruit', '2', 260],
+    ])(
+      'withholds the recipe when %s (%s) cannot be weighed and is not low in energy',
+      (name, measure, energyKcal) => {
+        expect(
+          nutritionOf(beef, item(name, measure, { energyKcal })),
+        ).toBeNull();
+      },
+    );
+
+    it.each([
+      ['Chicken', '100g', 100, null],
+      ['Chicken', '200g', 500, 519],
+    ])(
+      'withholds the recipe only when guesses are over 10% of energy (%s %s)',
+      (name, measure, energyKcal, expected) => {
+        expect(
+          kcalPer100g(
+            item(name, measure, { energyKcal }),
+            item('Olive oil', 'drizzle', { energyKcal: 900 }),
+          ) ?? null,
+        ).toBe(expected);
+      },
+    );
   });
 
-  it.each([
-    ['Pinch', 0.5, 199],
-    ['1 dash', 1, 198],
-    ['Sprinkling', 5, 190.5],
-    ['Dusting', 5, 190.5],
-    ['Garnish', 5, 190.5],
-    ['For Greasing', 10, 181.8],
-    ['Drizzle', 10, 181.8],
-    ['Splash', 15, 173.9],
-    ['To Glaze', 20, 166.7],
-    ['Topping', 20, 166.7],
-  ])('counts "%s" as %d g', (measure, _grams, kcalPer100g) => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food('Beef', '100g', { energyKcal: 200 }),
-        food('Lemon zest', measure, { energyKcal: 0 }),
-      ],
+  describe('unlinked ingredients', () => {
+    it.each([
+      ['Baking powder', '1 tsp', 157.9],
+      ['Fermented black beans', '1 tbsp', 151.4],
+    ])('counts up to 15 g of %s by weight only', (name, measure, expected) => {
+      const result = nutritionOf(
+        item('Chicken', '100g', { energyKcal: 165 }),
+        item(name, measure),
+      );
+
+      expect(result?.per100g.energyKcal).toBe(expected);
+      expect(result?.missingIngredients).toEqual([name]);
     });
 
-    expect(result?.per100g.energyKcal).toBe(kcalPer100g);
-    expect(result?.missingIngredients).toEqual(['Lemon zest']);
+    it('withholds the recipe above 15 g', () => {
+      expect(nutritionOf(beef, item('Olive oil', '1 cup'))).toBeNull();
+    });
+  });
+
+  describe('water absorbed by dry staples', () => {
+    const pasta = item('Spaghetti', '100g', {
+      foodName: 'Pasta white raw',
+      energyKcal: 350,
+    });
+    const water = (measure: string) =>
+      item('Water', measure, { foodName: 'Water av', energyKcal: 0 });
+    const mozzarella = item('Mozzarella Balls', '130g', {
+      foodName: "Cheese Mozzarella made from cow's milk",
+      energyKcal: 0,
+    });
+    const rice = item('Jasmine Rice', '100g', {
+      foodName: 'Rice white raw',
+      energyKcal: 350,
+    });
+
+    it.each([
+      ['adds it when the recipe lists no liquid', [pasta], 152.2],
+      ['adds only the shortfall', [pasta, water('100ml')], 152.2],
+      ['adds nothing when the liquid covers it', [pasta, water('400ml')], 70],
+      ['does not count cheese as liquid', [pasta, mozzarella], 97.2],
+      ['uses a higher factor for rice', [rice], 125],
+    ])('%s', (_, ingredients, expected) => {
+      expect(kcalPer100g(...ingredients)).toBe(expected);
+    });
   });
 
   it('weighs counted prawns so the oil does not stand in for the dish', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        {
-          name: 'Raw King Prawns',
-          measure: '12',
-          genericFood: { foodName: 'Prawns cooked', energyKcal: 70 },
-        },
-        {
-          name: 'Olive Oil',
-          measure: '20 ml',
-          genericFood: { foodName: 'Oil olive', energyKcal: 900 },
-        },
-      ],
-    });
-
-    expect(result?.per100g.energyKcal).toBe(146.2);
-    expect(result?.missingIngredients).toEqual([]);
-  });
-
-  it.each([
-    ['Flour', null, 345],
-    ['Butter', 'To taste', 740],
-    ['Squid', 'cleaned', 73],
-    ['Bacon', 'some', 400],
-  ])(
-    'withholds the recipe when %s (%s) cannot be weighed and is not low in energy',
-    (name, measure, energyKcal) => {
-      expect(
-        calculateFromMeasureText({
-          ingredients: [
-            food('Beef', '500g', { energyKcal: 200 }),
-            food(name, measure, { energyKcal }),
-          ],
+    expect(
+      kcalPer100g(
+        item('Raw King Prawns', '12', {
+          foodName: 'Prawns cooked',
+          energyKcal: 70,
         }),
-      ).toBeNull();
-    },
-  );
-
-  it('returns null when a piece has no known weight', () => {
-    expect(
-      calculateFromMeasureText({
-        ingredients: [food('Dragon fruit', '2', { energyKcal: 260 })],
-      }),
-    ).toBeNull();
-  });
-
-  it('returns null when guessed condiments are more than 10% of energy', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food('Chicken', '100g', { energyKcal: 100 }),
-        food('Olive oil', 'drizzle', { energyKcal: 900, fat: 100 }),
-      ],
-    });
-
-    // 5 g oil = 45 kcal, chicken = 100 kcal, oil is 31% of energy.
-    expect(result).toBeNull();
-  });
-
-  it('keeps a recipe when the condiment guess is under 10% of energy', () => {
-    const result = calculateFromMeasureText({
-      ingredients: [
-        food('Chicken', '200g', { energyKcal: 500 }),
-        food('Olive oil', 'drizzle', { energyKcal: 900 }),
-      ],
-    });
-
-    expect(result?.per100g.energyKcal).toBe(519);
-    expect(result?.missingIngredients).toEqual(['Olive oil']);
-  });
-
-  it('does not guess a vegetable pepper as a pinch of spice', () => {
-    expect(
-      calculateFromMeasureText({
-        ingredients: [food('Green pepper', 'to taste', { energyKcal: 20 })],
-      }),
-    ).toBeNull();
+        item('Olive Oil', '20 ml', { foodName: 'Oil olive', energyKcal: 900 }),
+      ),
+    ).toBe(146.2);
   });
 });
