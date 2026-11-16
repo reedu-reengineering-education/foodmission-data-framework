@@ -1,0 +1,94 @@
+import {
+  MAX_SEARCH_WORDS,
+  hasWordMatch,
+  searchPrefix,
+  searchWords,
+} from './text-search.util';
+
+describe('hasWordMatch', () => {
+  it.each([
+    ['Pomodori crudi', 'pomodoro'],
+    ['Pomodorini ciliegini', 'pomodoro'],
+    ['Concentrato di pomodoro', 'pomodoro'],
+    ['Petto di pollo crudo', 'Pollo'],
+    ['Pomodori crudi', 'pomod'],
+    ['Paste fresche', 'pasta'],
+    ['Ei, gekocht', 'ei'],
+    ["Olio d'oliva", "d'oliva"],
+    ["Olio d'oliva", 'olio-oliva'],
+    ['Eggs, beaten', 'egg'],
+    ['Mini chilli beef pies', 'pie'],
+  ])('%s matches %s', (text, term) => {
+    expect(hasWordMatch(text, term)).toBe(true);
+  });
+
+  it.each([
+    ['Cipollotti crudi', 'pollo'],
+    ['Pastinaca cruda', 'pasta'],
+    ['Pomodori crudi', 'pomodoroso'],
+    ['Peperoni, sauer eingelegt', 'ei'],
+    ['Eigelb, roh', 'ei'],
+    ["Olio d'oliva", "l'oliva"],
+    ['Olio di semi', "'-"],
+    ['Chicken pieces', 'pie'],
+    ['Eggplant', 'egg'],
+    ['Rich chocolate cake', 'rice'],
+    ['Panna cotta', 'pane'],
+    ['Pastry cream', 'pasta'],
+    ['Red onions', 'on'],
+  ])('%s does not match %s', (text, term) => {
+    expect(hasWordMatch(text, term)).toBe(false);
+  });
+});
+
+describe('searchWords', () => {
+  it('splits on whitespace, lowercases and drops duplicates', () => {
+    expect(searchWords('  Pasta  POMODORO pasta ')).toEqual([
+      'pasta',
+      'pomodoro',
+    ]);
+  });
+
+  it('splits on punctuation between words', () => {
+    expect(searchWords('chilli,beef; rice/peas + salt.')).toEqual([
+      'chilli',
+      'beef',
+      'rice',
+      'peas',
+      'salt',
+    ]);
+  });
+
+  it('keeps apostrophes and hyphens inside a word', () => {
+    expect(searchWords("olio d'oliva coca-cola d’oliva")).toEqual([
+      'olio',
+      "d'oliva",
+      'coca-cola',
+      'd’oliva',
+    ]);
+  });
+
+  it('keeps at most MAX_SEARCH_WORDS unique words, in order', () => {
+    const words = Array.from({ length: 20 }, (_, i) => `w${i}`);
+    expect(searchWords(['w0', ...words].join(' '))).toEqual(
+      words.slice(0, MAX_SEARCH_WORDS),
+    );
+  });
+
+  it('returns no words for an empty term or punctuation only', () => {
+    expect(searchWords(undefined)).toEqual([]);
+    expect(searchWords('   ')).toEqual([]);
+    expect(searchWords(" ' - , ")).toEqual([]);
+  });
+});
+
+describe('searchPrefix', () => {
+  it('is the stem of the longest word', () => {
+    expect(searchPrefix("d'oliva")).toBe('oliv');
+    expect(searchPrefix('Egg')).toBe('egg');
+  });
+
+  it('is empty without letters or digits', () => {
+    expect(searchPrefix("'-")).toBe('');
+  });
+});

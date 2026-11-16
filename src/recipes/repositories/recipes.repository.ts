@@ -13,12 +13,20 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
+import { SearchableRecipe, SearchTerm } from '../utils/recipe-search';
+import {
+  hasWordMatch,
+  searchPrefix,
+} from '../../common/utils/text-search.util';
+import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_INCLUDE,
 } from '../../common/types/prisma-relations';
+
+export const MAX_SEARCH_CANDIDATES = 100;
 
 export interface CreateRecipeIngredientData {
   name: string;
@@ -200,6 +208,96 @@ export class RecipesRepository implements BaseRepository<
 
   async delete(id: string): Promise<void> {
     await this.prisma.recipe.delete({ where: { id } });
+  }
+
+  findSearchCandidates(
+    where: Prisma.RecipeWhereInput,
+    terms: SearchTerm[],
+  ): Promise<SearchableRecipe[]> {
+    const contains = (prefix: string) => ({
+      contains: prefix,
+      mode: 'insensitive' as const,
+    });
+    return this.prisma.recipe.findMany({
+      where: {
+        ...where,
+        AND: terms.map(({ word, genericFoodIds }) => {
+          const prefix = searchPrefix(word);
+          return {
+            OR: [
+              { title: contains(prefix) },
+              {
+                ingredients: {
+                  some: {
+                    OR: [
+                      { name: contains(prefix) },
+                      { genericFoodId: { in: genericFoodIds } },
+                    ],
+                  },
+                },
+              },
+            ],
+          };
+        }),
+      },
+      orderBy: { createdAt: 'desc' },
+      take: MAX_SEARCH_CANDIDATES,
+      select: {
+        id: true,
+        title: true,
+        ingredients: { select: { name: true, genericFoodId: true } },
+      },
+    });
+  }
+
+  async findGenericFoodIdsByWord(
+    word: string,
+    locale: string,
+  ): Promise<string[]> {
+    const contains = {
+      contains: searchPrefix(word),
+      mode: 'insensitive' as const,
+    };
+    if (locale === DEFAULT_LOCALE) {
+      const foods = await this.prisma.genericFood.findMany({
+        where: { OR: [{ foodName: contains }, { synonym: contains }] },
+        select: { id: true, foodName: true, synonym: true },
+      });
+      return foods
+        .filter(
+          (food) =>
+            hasWordMatch(food.foodName, word) ||
+            hasWordMatch(food.synonym ?? '', word),
+        )
+        .map((food) => food.id);
+    }
+
+    const translations = await this.prisma.entityTranslation.findMany({
+      where: {
+        entityType: 'GenericFood',
+        locale,
+        field: { in: ['foodName', 'synonym'] },
+        value: contains,
+      },
+      select: { entityId: true, value: true },
+    });
+    return [
+      ...new Set(
+        translations
+          .filter((row) => hasWordMatch(row.value, word))
+          .map((row) => row.entityId),
+      ),
+    ];
+  }
+
+  async findByIds(ids: string[]): Promise<Recipe[]> {
+    if (ids.length === 0) return [];
+    const rows = await this.prisma.recipe.findMany({
+      where: { id: { in: ids } },
+      include: RECIPE_WITH_INGREDIENTS_INCLUDE,
+    });
+    const byId = new Map(rows.map((row) => [row.id, row]));
+    return ids.flatMap((id) => byId.get(id) ?? []);
   }
 
   async count(where?: Prisma.RecipeWhereInput): Promise<number> {

@@ -33,6 +33,9 @@ describe('RecipesService', () => {
     findRating: jest.fn(),
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
+    findSearchCandidates: jest.fn(),
+    findGenericFoodIdsByWord: jest.fn(),
+    findByIds: jest.fn(),
   };
 
   const mockPrisma = {
@@ -138,7 +141,6 @@ describe('RecipesService', () => {
       allergens: ['TREE_NUTS'],
       dietaryLabels: [' vegan '],
       difficulty: 'easy',
-      search: 'pasta',
       page: 2,
       limit: 5,
     });
@@ -154,9 +156,141 @@ describe('RecipesService', () => {
         tags: { hasSome: ['quick'] },
         allergens: { hasSome: ['TREE_NUTS'] },
         dietaryLabels: { hasSome: ['vegan'] },
-        title: { contains: 'pasta', mode: 'insensitive' },
       },
       orderBy: { createdAt: 'desc' },
+    });
+  });
+
+  describe('search', () => {
+    const recipe = (
+      id: string,
+      title: string,
+      ingredients: { name: string; genericFoodId?: string }[] = [],
+    ) => ({
+      id,
+      title,
+      ingredients: ingredients.map((i) => ({
+        name: i.name,
+        genericFoodId: i.genericFoodId ?? null,
+      })),
+    });
+    const pageIds = () => mockRecipeRepository.findByIds.mock.calls[0][0];
+
+    const foodIdsByWord = (ids: Record<string, string[]>) =>
+      mockRecipeRepository.findGenericFoodIdsByWord.mockImplementation(
+        (word: string) => Promise.resolve(ids[word] ?? []),
+      );
+
+    beforeEach(() => {
+      mockRecipeRepository.findByIds.mockResolvedValue([]);
+      foodIdsByWord({});
+    });
+
+    it('keeps recipes where every word starts a word of the title or an ingredient', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('kebabs', 'Red curry chicken kebabs'),
+        recipe('curry', 'Nutty Chicken Curry'),
+        recipe('scurry', 'Scurrying chickens'),
+        recipe('rice', 'Fried rice', [
+          { name: 'Chicken thighs' },
+          { name: 'Curry powder' },
+        ]),
+      ]);
+
+      await service.findAll(userId, {
+        search: 'Curry  chicken',
+        page: 1,
+        limit: 10,
+      });
+
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
+        { OR: [{ userId }, { isPublic: true }] },
+        [
+          { word: 'curry', genericFoodIds: [] },
+          { word: 'chicken', genericFoodIds: [] },
+        ],
+      );
+      expect(pageIds()).toEqual(['curry', 'kebabs', 'rice']);
+      expect(mockRecipeRepository.findWithPagination).not.toHaveBeenCalled();
+    });
+
+    it('matches an ingredient by its generic food name in English too', async () => {
+      foodIdsByWord({ curry: ['curry-powder'] });
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('dal', 'Dal fry', [
+          { name: 'Garam masala', genericFoodId: 'curry-powder' },
+        ]),
+      ]);
+
+      await service.findAll(userId, { search: 'curry', page: 1, limit: 10 });
+
+      expect(
+        mockRecipeRepository.findGenericFoodIdsByWord,
+      ).toHaveBeenCalledWith('curry', 'en');
+      expect(pageIds()).toEqual(['dal']);
+    });
+
+    it('finds an English recipe by the Italian name of its ingredient', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('salad', 'Pasta salad', [
+          { name: 'Tomatoes', genericFoodId: 'tomato-food' },
+        ]),
+        recipe('bake', 'Bean bake', [
+          { name: 'Pomodoro sauce' },
+          { name: 'Penne pasta' },
+        ]),
+        recipe('pasta', 'Pasta al pomodoro'),
+        recipe('soup', 'Tomato soup', [{ name: 'Tomatoes' }]),
+      ]);
+      foodIdsByWord({ pomodoro: ['tomato-food'] });
+
+      await service.findMine(userId, {
+        search: 'pasta pomodoro',
+        lang: 'it',
+        page: 1,
+        limit: 10,
+      });
+
+      expect(mockRecipeRepository.findSearchCandidates).toHaveBeenCalledWith(
+        expect.anything(),
+        [
+          { word: 'pasta', genericFoodIds: [] },
+          {
+            word: 'pomodoro',
+            genericFoodIds: ['tomato-food'],
+          },
+        ],
+      );
+      expect(
+        mockRecipeRepository.findGenericFoodIdsByWord,
+      ).toHaveBeenCalledWith('pomodoro', 'it');
+      expect(pageIds()).toEqual(['pasta', 'salad', 'bake']);
+    });
+
+    it('ranks before paging', async () => {
+      mockRecipeRepository.findSearchCandidates.mockResolvedValueOnce([
+        recipe('long', 'Three fish pie with prawns'),
+        recipe('pies', 'Mini fish pies'),
+        recipe('short', 'Fish pie'),
+      ]);
+      mockRecipeRepository.findByIds.mockResolvedValueOnce([
+        buildRecipe({ id: 'long', title: 'Three fish pie with prawns' }),
+      ]);
+
+      const result = await service.findAll(userId, {
+        search: 'fish pie',
+        page: 2,
+        limit: 2,
+      });
+
+      expect(pageIds()).toEqual(['long']);
+      expect(result).toMatchObject({
+        total: 3,
+        page: 2,
+        limit: 2,
+        totalPages: 2,
+      });
+      expect(result.data.map((r) => r.id)).toEqual(['long']);
     });
   });
 
