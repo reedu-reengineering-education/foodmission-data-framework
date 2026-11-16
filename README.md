@@ -398,6 +398,10 @@ For local analytics testing, anonymization details, and batch publish workflow, 
 - `docs/analytics_instructions:.md`
 - `docs/Data anonymization/`
 
+### Recipe Carbon Footprint
+
+How `carbonFootprint` on recipes is calculated and where the data comes from: [docs/RECIPE_CARBON_FOOTPRINT.md](docs/RECIPE_CARBON_FOOTPRINT.md)
+
 ## 📚 API Documentation
 
 ### Swagger/OpenAPI

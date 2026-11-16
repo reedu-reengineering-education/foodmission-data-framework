@@ -51,6 +51,7 @@ npm run db:translations
 
 - `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` — nutrition + English labels
 - `prisma/seeds/data/nevo/nevo_translations.csv` — all non-English display strings
+- `prisma/seeds/data/nevo-agribalyse-mapping.json` — CO2 values per NEVO food from AGRIBALYSE (see [docs/RECIPE_CARBON_FOOTPRINT.md](../docs/RECIPE_CARBON_FOOTPRINT.md))
 
 ### Backup and Restore
 
