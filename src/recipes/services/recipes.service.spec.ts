@@ -19,7 +19,6 @@ import {
 } from '../../../test/fixtures/recipe.fixtures';
 import { UserEventService } from '../../events/services/user-event.service';
 import { TranslationService } from '../../translations/services/translation.service';
-import { RecipeNutritionService } from './recipe-nutrition.service';
 
 describe('RecipesService', () => {
   let service: RecipesService;
@@ -34,10 +33,8 @@ describe('RecipesService', () => {
     findRating: jest.fn(),
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
-  };
-
-  const mockRecipeNutritionService = {
-    updateRecipeNutrition: jest.fn().mockResolvedValue(null),
+    findNutritionIngredients: jest.fn().mockResolvedValue([]),
+    updateNutrition: jest.fn().mockResolvedValue(undefined),
   };
 
   const mockPrisma = {
@@ -65,10 +62,6 @@ describe('RecipesService', () => {
         {
           provide: TranslationService,
           useValue: new TranslationService(mockPrisma as any),
-        },
-        {
-          provide: RecipeNutritionService,
-          useValue: mockRecipeNutritionService,
         },
       ],
     }).compile();
@@ -103,27 +96,48 @@ describe('RecipesService', () => {
       missingIngredients: [],
     };
 
-    it('estimates nutrition for a new recipe and returns it', async () => {
+    it('estimates nutrition for a new recipe, stores it and returns it', async () => {
       mockRecipeRepository.create.mockResolvedValue(
         buildRecipe({ id: 'r1', userId }),
       );
-      mockRecipeNutritionService.updateRecipeNutrition.mockResolvedValueOnce(
-        estimate,
-      );
+      mockRecipeRepository.findNutritionIngredients.mockResolvedValueOnce([
+        {
+          name: 'Chicken',
+          measure: '200g',
+          quantity: 200,
+          unit: 'G',
+          foodProduct: null,
+          genericFood: { foodName: 'Chicken fillet raw', energyKcal: 130 },
+        },
+      ]);
 
       const result = await service.create({ title: 'Test Recipe' }, userId);
 
-      expect(
-        mockRecipeNutritionService.updateRecipeNutrition,
-      ).toHaveBeenCalledWith('r1');
+      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledWith(
+        'r1',
+        estimate,
+      );
       expect(result.nutritionalInfo).toEqual(estimate);
+    });
+
+    it('stores no nutrition when the ingredients cannot be weighed', async () => {
+      mockRecipeRepository.create.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId }),
+      );
+
+      await service.create({ title: 'Test Recipe' }, userId);
+
+      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledWith(
+        'r1',
+        null,
+      );
     });
 
     it('still returns the new recipe when the estimate fails', async () => {
       mockRecipeRepository.create.mockResolvedValue(
         buildRecipe({ id: 'r1', userId }),
       );
-      mockRecipeNutritionService.updateRecipeNutrition.mockRejectedValueOnce(
+      mockRecipeRepository.updateNutrition.mockRejectedValueOnce(
         new Error('database unavailable'),
       );
 
@@ -144,9 +158,7 @@ describe('RecipesService', () => {
         userId,
       );
 
-      expect(
-        mockRecipeNutritionService.updateRecipeNutrition,
-      ).not.toHaveBeenCalled();
+      expect(mockRecipeRepository.updateNutrition).not.toHaveBeenCalled();
       expect(result.nutritionalInfo).toEqual(sent);
     });
 
@@ -170,9 +182,9 @@ describe('RecipesService', () => {
 
       await service.update('r1', dto, userId);
 
-      expect(
-        mockRecipeNutritionService.updateRecipeNutrition,
-      ).toHaveBeenCalledTimes(expectedCalls);
+      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledTimes(
+        expectedCalls,
+      );
     });
   });
 

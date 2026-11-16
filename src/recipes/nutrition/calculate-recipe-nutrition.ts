@@ -1,19 +1,13 @@
 import { Unit } from '@prisma/client';
-import {
-  SPICE_PEPPER,
-  parseQuantityUnit,
-  quantityToGrams,
-} from '../../common/utils/measure-parser';
-import { NutritionalInfo } from '../interfaces/nutrition.interface';
+import { parseQuantityUnit } from '../../common/utils/measure-parser';
+import { SPICE_PEPPER, quantityToGrams } from './ingredient-grams';
 
 const MAX_ESTIMATED_ENERGY_SHARE = 0.1;
 
-const MAX_UNLINKED_CONDIMENT_GRAMS = 15;
-const LOW_ENERGY_KCAL_PER_100G = 100;
+const MAX_UNLINKED_GRAMS = 15;
+const LOW_ENERGY_KCAL_PER_100G = 50;
 const LOW_ENERGY_GUESS_GRAMS = 30;
-const OIL_DRIZZLE_GRAMS = 5;
-const FRESH_HERB_GRAMS = 2;
-const PINCH_GRAMS = 1;
+const CONDIMENT_GRAMS = 1;
 
 const NUTRITION_VALUE_SELECT = {
   energyKcal: true,
@@ -33,9 +27,15 @@ const NUTRITION_VALUE_SELECT = {
   potassium: true,
 } as const;
 
-export type NutrientField = keyof typeof NUTRITION_VALUE_SELECT;
+type NutrientField = keyof typeof NUTRITION_VALUE_SELECT;
 
 const NUTRIENT_FIELDS = Object.keys(NUTRITION_VALUE_SELECT) as NutrientField[];
+
+export interface NutritionalInfo {
+  per100g: Partial<Record<NutrientField, number>>;
+  estimated: true;
+  missingIngredients: string[];
+}
 
 type NutrientSource = Partial<Record<NutrientField, number | null>>;
 
@@ -68,9 +68,8 @@ const ABSORBED_WATER_PER_GRAM: [RegExp, number][] = [
 const COOKING_LIQUID =
   /^(water|stock|milk|buttermilk|cream|creme fraiche|coconut milk|drink soya|wine|sherry|beer|cider|juice|tomatoes tinned)\b/i;
 
-const SERVED_ALONGSIDE = /\b(to serve|for serving|serve with)\b/i;
-
-const FINISHING_TOUCH_GRAMS: [RegExp, number][] = [
+const PHRASE_GRAMS: [RegExp, number][] = [
+  [/\b(to serve|for serving|serve with)\b/i, 0],
   [/\b(pinch|drops?)\b/i, 0.5],
   [/\bdash\b/i, 1],
   [/\b(sprinkling|spinkling|sprinking|dusting|garnish)\b/i, 5],
@@ -79,15 +78,10 @@ const FINISHING_TOUCH_GRAMS: [RegExp, number][] = [
   [/\b(glaze|topping|top)\b/i, 20],
 ];
 
-function finishingTouchGrams(measure: string): number | null {
-  const match = FINISHING_TOUCH_GRAMS.find(([phrase]) => phrase.test(measure));
+function phraseGrams(measure: string): number | null {
+  const match = PHRASE_GRAMS.find(([phrase]) => phrase.test(measure));
   return match ? match[1] : null;
 }
-
-const PLAIN_WATER = /^(?:cold |hot |boiling |warm )?waters?$/;
-
-const FRESH_HERB =
-  /\b(parsley|cilantro|coriander|basil|mint|dill|chives?|sage|herbs)\b/;
 
 const CONDIMENT_WORDS = [
   'salts?',
@@ -107,6 +101,7 @@ const CONDIMENT_WORDS = [
   'annatto',
   'juniper',
   'turmeric',
+  'ginger',
   'saffron',
   'oregano',
   'thyme',
@@ -135,6 +130,16 @@ const CONDIMENT_WORDS = [
   'fish sauce',
   'hot sauce',
   'oil',
+  'water',
+  'parsley',
+  'cilantro',
+  'coriander',
+  'basil',
+  'mint',
+  'dill',
+  'chives?',
+  'sage',
+  'herbs',
 ];
 
 const CONDIMENT_NAME = new RegExp(
@@ -159,22 +164,11 @@ function foodNames(ingredient: NutritionIngredient): string[] {
   ].filter((name): name is string => !!name);
 }
 
-function condimentGrams(ingredient: NutritionIngredient): number | null {
-  for (const name of foodNames(ingredient)) {
-    const grams = condimentGramsByName(name);
-    if (grams != null) return grams;
-  }
-  return null;
-}
-
-function condimentGramsByName(name: string): number | null {
-  const normalized = name.toLowerCase().trim();
-  if (PLAIN_WATER.test(normalized)) return 0;
-  if (FRESH_HERB.test(normalized)) return FRESH_HERB_GRAMS;
-  if (!CONDIMENT_NAME.test(normalized) && !SPICE_PEPPER.test(normalized)) {
-    return null;
-  }
-  return /\boil\b/.test(normalized) ? OIL_DRIZZLE_GRAMS : PINCH_GRAMS;
+function isCondiment(ingredient: NutritionIngredient): boolean {
+  return foodNames(ingredient).some((name) => {
+    const normalized = name.toLowerCase();
+    return CONDIMENT_NAME.test(normalized) || SPICE_PEPPER.test(normalized);
+  });
 }
 
 function measuredGrams(ingredient: NutritionIngredient): number | null {
@@ -208,12 +202,11 @@ function guessedGrams(
   ingredient: NutritionIngredient,
   source: NutrientSource | null,
 ): number | null {
-  const { measure } = ingredient;
-  if (measure && SERVED_ALONGSIDE.test(measure)) return 0;
-  const finishingTouch = measure ? finishingTouchGrams(measure) : null;
-  if (finishingTouch != null) return finishingTouch;
-  const condiment = condimentGrams(ingredient);
-  if (condiment != null) return condiment;
+  const fromPhrase = ingredient.measure
+    ? phraseGrams(ingredient.measure)
+    : null;
+  if (fromPhrase != null) return fromPhrase;
+  if (isCondiment(ingredient)) return CONDIMENT_GRAMS;
   const kcal = source?.energyKcal;
   return kcal != null && kcal <= LOW_ENERGY_KCAL_PER_100G
     ? LOW_ENERGY_GUESS_GRAMS
@@ -289,10 +282,7 @@ export function calculateRecipeNutrition(recipe: {
     if (isCookingLiquid(ingredient)) cookingLiquid += measuredWeight;
 
     if (!source) {
-      const smallCondiment =
-        condimentGrams(ingredient) != null &&
-        measuredWeight <= MAX_UNLINKED_CONDIMENT_GRAMS;
-      if (!smallCondiment) return null;
+      if (measuredWeight > MAX_UNLINKED_GRAMS) return null;
       missingIngredients.push(ingredient.name);
       continue;
     }

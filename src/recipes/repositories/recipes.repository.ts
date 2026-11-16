@@ -16,6 +16,10 @@ import {
 import { PrismaService } from '../../database/prisma.service';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
+  NUTRITION_INGREDIENT_SELECT,
+  NutritionalInfo,
+} from '../nutrition/calculate-recipe-nutrition';
+import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
   RECIPE_WITH_INGREDIENTS_INCLUDE,
@@ -203,6 +207,29 @@ export class RecipesRepository implements BaseRepository<
 
   async delete(id: string): Promise<void> {
     await this.prisma.recipe.delete({ where: { id } });
+  }
+
+  findNutritionIngredients(recipeId: string) {
+    return this.prisma.recipeIngredient.findMany({
+      where: { recipeId },
+      orderBy: { order: 'asc' },
+      select: NUTRITION_INGREDIENT_SELECT,
+    });
+  }
+
+  async updateNutrition(
+    recipeId: string,
+    nutrition: NutritionalInfo | null,
+  ): Promise<void> {
+    await this.prisma.recipe.update({
+      where: { id: recipeId },
+      data: {
+        nutritionalInfo:
+          nutrition === null
+            ? Prisma.JsonNull
+            : (nutrition as unknown as Prisma.InputJsonValue),
+      },
+    });
   }
 
   async count(where?: Prisma.RecipeWhereInput): Promise<number> {

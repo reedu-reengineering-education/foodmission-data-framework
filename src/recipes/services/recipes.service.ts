@@ -30,8 +30,10 @@ import {
 } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
 import { TranslationService } from '../../translations/services/translation.service';
-import { RecipeNutritionService } from './recipe-nutrition.service';
-import { isUserProvidedNutrition } from '../nutrition/calculate-recipe-nutrition';
+import {
+  calculateRecipeNutrition,
+  isUserProvidedNutrition,
+} from '../nutrition/calculate-recipe-nutrition';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 type LocalizableIngredient = {
@@ -48,7 +50,6 @@ export class RecipesService {
     private readonly recipeRepository: RecipesRepository,
     private readonly userEventService: UserEventService,
     private readonly translationService: TranslationService,
-    private readonly recipeNutritionService: RecipeNutritionService,
   ) {}
 
   private getOwnedRecipeOrThrow(recipeId: string, userId: string) {
@@ -414,8 +415,11 @@ export class RecipesService {
     recipe: T,
   ): Promise<T> {
     try {
-      const nutritionalInfo =
-        await this.recipeNutritionService.updateRecipeNutrition(recipe.id);
+      const ingredients = await this.recipeRepository.findNutritionIngredients(
+        recipe.id,
+      );
+      const nutritionalInfo = calculateRecipeNutrition({ ingredients });
+      await this.recipeRepository.updateNutrition(recipe.id, nutritionalInfo);
       return { ...recipe, nutritionalInfo };
     } catch (error) {
       this.logger.warn(

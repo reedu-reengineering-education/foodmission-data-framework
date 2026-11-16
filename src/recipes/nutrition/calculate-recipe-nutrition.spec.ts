@@ -47,7 +47,7 @@ describe('calculateRecipeNutrition', () => {
     });
   });
 
-  it('estimates a vague condiment and records its name', () => {
+  it('counts a condiment without an amount as 1 g and records its name', () => {
     const result = calculateRecipeNutrition({
       ingredients: [
         food('Chicken', '100g', { energyKcal: 165, sodium: 74 }),
@@ -60,24 +60,25 @@ describe('calculateRecipeNutrition', () => {
     expect(result?.missingIngredients).toEqual(['Salt']);
   });
 
-  it('ignores a small unmapped condiment that did parse', () => {
-    const result = calculateRecipeNutrition({
-      ingredients: [
-        food('Chicken', '100g', { energyKcal: 165 }),
-        {
-          name: 'Baking powder',
-          measure: '1 tsp',
-          foodProduct: null,
-          genericFood: null,
-        },
-      ],
-    });
+  it.each([
+    ['Baking powder', '1 tsp', 157.9],
+    ['Fermented black beans', '1 tbsp', 151.4],
+  ])(
+    'counts a small unlinked ingredient (%s) by weight only',
+    (name, measure, kcalPer100g) => {
+      const result = calculateRecipeNutrition({
+        ingredients: [
+          food('Chicken', '100g', { energyKcal: 165 }),
+          { name, measure },
+        ],
+      });
 
-    expect(result?.per100g.energyKcal).toBe(157.9);
-    expect(result?.missingIngredients).toEqual(['Baking powder']);
-  });
+      expect(result?.per100g.energyKcal).toBe(kcalPer100g);
+      expect(result?.missingIngredients).toEqual([name]);
+    },
+  );
 
-  it('returns null when an unlinked condiment is more than a tablespoon', () => {
+  it('returns null when an unlinked ingredient weighs more than a tablespoon', () => {
     expect(
       calculateRecipeNutrition({
         ingredients: [
@@ -89,31 +90,6 @@ describe('calculateRecipeNutrition', () => {
             genericFood: null,
           },
         ],
-      }),
-    ).toBeNull();
-  });
-
-  it('treats an unmapped condiment as zero and still totals the recipe', () => {
-    const result = calculateRecipeNutrition({
-      ingredients: [
-        food('Chicken', '100g', { energyKcal: 165 }),
-        {
-          name: 'Bay leaf',
-          measure: 'to taste',
-          foodProduct: null,
-          genericFood: null,
-        },
-      ],
-    });
-
-    expect(result?.per100g.energyKcal).toBe(163.4);
-    expect(result?.missingIngredients).toEqual(['Bay leaf']);
-  });
-
-  it('returns null when a non-condiment has no amount', () => {
-    expect(
-      calculateRecipeNutrition({
-        ingredients: [food('Flour', null, { energyKcal: 345 })],
       }),
     ).toBeNull();
   });
@@ -153,25 +129,6 @@ describe('calculateRecipeNutrition', () => {
     expect(result?.per100g.energyKcal).toBe(199.7);
     expect(result?.missingIngredients).toEqual(['Salz', 'Pfeffer']);
   });
-
-  it.each([
-    ['Caraway Seed', 196.5],
-    ['Cream of Tartar', 194.2],
-    ['Sumac', 196.5],
-  ])(
-    'counts a small unlinked spice or flavouring (%s) by weight only',
-    (name, kcalPer100g) => {
-      const result = calculateRecipeNutrition({
-        ingredients: [
-          food('Beef', '500g', { energyKcal: 200 }),
-          { name, measure: '1 tbsp' },
-        ],
-      });
-
-      expect(result?.per100g.energyKcal).toBe(kcalPer100g);
-      expect(result?.missingIngredients).toEqual([name]);
-    },
-  );
 
   it('leaves out a nutrient that a counted ingredient has no value for', () => {
     const result = calculateRecipeNutrition({
@@ -341,27 +298,44 @@ describe('calculateRecipeNutrition', () => {
     expect(result?.missingIngredients).toEqual(['Lemon zest']);
   });
 
-  it('still withholds a dense food whose amount is simply missing', () => {
-    expect(
-      calculateRecipeNutrition({
-        ingredients: [
-          food('Beef', '500g', { energyKcal: 200 }),
-          food('Butter', 'To taste', { energyKcal: 740 }),
-        ],
-      }),
-    ).toBeNull();
+  it('weighs counted prawns so the oil does not stand in for the dish', () => {
+    const result = calculateRecipeNutrition({
+      ingredients: [
+        {
+          name: 'Raw King Prawns',
+          measure: '12',
+          genericFood: { foodName: 'Prawns cooked', energyKcal: 70 },
+        },
+        {
+          name: 'Olive Oil',
+          measure: '20 ml',
+          genericFood: { foodName: 'Oil olive', energyKcal: 900 },
+        },
+      ],
+    });
+
+    expect(result?.per100g.energyKcal).toBe(146.2);
+    expect(result?.missingIngredients).toEqual([]);
   });
 
-  it('returns null when an unweighable food is energy-dense', () => {
-    expect(
-      calculateRecipeNutrition({
-        ingredients: [
-          food('Beef', '500g', { energyKcal: 200 }),
-          food('Bacon', 'some', { energyKcal: 400 }),
-        ],
-      }),
-    ).toBeNull();
-  });
+  it.each([
+    ['Flour', null, 345],
+    ['Butter', 'To taste', 740],
+    ['Squid', 'cleaned', 73],
+    ['Bacon', 'some', 400],
+  ])(
+    'withholds the recipe when %s (%s) cannot be weighed and is not low in energy',
+    (name, measure, energyKcal) => {
+      expect(
+        calculateRecipeNutrition({
+          ingredients: [
+            food('Beef', '500g', { energyKcal: 200 }),
+            food(name, measure, { energyKcal }),
+          ],
+        }),
+      ).toBeNull();
+    },
+  );
 
   it('returns null when a piece has no known weight', () => {
     expect(
