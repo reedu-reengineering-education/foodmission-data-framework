@@ -282,6 +282,8 @@ model GenericFood {
   // --- Other ---
   fattyAcidsUnidentified Float? // Unknown/unidentified fatty acids (g)
 
+  carbonFootprint Float?
+
   // --- Shelf life link ---
   shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
   shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])

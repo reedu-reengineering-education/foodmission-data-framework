@@ -36,7 +36,7 @@ describe('RecipesService', () => {
     deleteRating: jest.fn(),
     findNutritionIngredients: jest.fn().mockResolvedValue([]),
     findCuratedGenericFoodIds: jest.fn().mockResolvedValue(new Map()),
-    updateNutrition: jest.fn().mockResolvedValue(undefined),
+    updateEstimates: jest.fn().mockResolvedValue(undefined),
   };
 
   const mockGenericFoodRepository = {
@@ -195,7 +195,12 @@ describe('RecipesService', () => {
       );
     });
 
-    it('estimates nutrition for a new recipe, stores it and returns it', async () => {
+    const storedFields = () =>
+      mockRecipeRepository.updateEstimates.mock.calls.map(([, fields]) =>
+        Object.keys(fields).sort(),
+      );
+
+    it('estimates nutrition and carbon for a new recipe, stores and returns them', async () => {
       mockRecipeRepository.findNutritionIngredients.mockResolvedValueOnce([
         {
           name: 'Chicken',
@@ -203,7 +208,11 @@ describe('RecipesService', () => {
           quantity: 200,
           unit: 'G',
           foodProduct: null,
-          genericFood: { foodName: 'Chicken fillet raw', energyKcal: 130 },
+          genericFood: {
+            foodName: 'Chicken fillet raw',
+            energyKcal: 130,
+            carbonFootprint: 5.58,
+          },
         },
       ]);
 
@@ -212,27 +221,28 @@ describe('RecipesService', () => {
         userId,
       );
 
-      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledWith(
-        'r1',
-        estimate,
-      );
+      expect(mockRecipeRepository.updateEstimates).toHaveBeenCalledWith('r1', {
+        nutritionalInfo: estimate,
+        carbonFootprint: 5.58,
+      });
       expect(result.nutritionalInfo).toEqual(estimate);
+      expect(result.carbonFootprint).toBe(5.58);
     });
 
-    it('stores no nutrition when the ingredients cannot be weighed', async () => {
+    it('stores neither when the ingredients cannot be weighed', async () => {
       await service.create(
         { title: 'Test Recipe', ...withIngredients },
         userId,
       );
 
-      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledWith(
-        'r1',
-        null,
-      );
+      expect(mockRecipeRepository.updateEstimates).toHaveBeenCalledWith('r1', {
+        nutritionalInfo: null,
+        carbonFootprint: null,
+      });
     });
 
     it('still returns the new recipe when the estimate fails', async () => {
-      mockRecipeRepository.updateNutrition.mockRejectedValueOnce(
+      mockRecipeRepository.updateEstimates.mockRejectedValueOnce(
         new Error('database unavailable'),
       );
 
@@ -244,7 +254,32 @@ describe('RecipesService', () => {
       expect(result.id).toBe('r1');
     });
 
-    it('estimates a new recipe when the user sends null nutrition', async () => {
+    it.each([
+      [
+        'with ingredients',
+        withIngredients,
+        ['carbonFootprint', 'nutritionalInfo'],
+      ],
+      ['without ingredients', {}, []],
+      [
+        'with null nutrition',
+        { ...withIngredients, nutritionalInfo: null },
+        ['carbonFootprint', 'nutritionalInfo'],
+      ],
+      [
+        'with nutrition from the user',
+        { ...withIngredients, nutritionalInfo: { energyKcal: 300 } },
+        ['carbonFootprint'],
+      ],
+    ])('on create %s', async (_, dto, expectedFields) => {
+      await service.create({ title: 'Test Recipe', ...dto }, userId);
+
+      expect(storedFields()).toEqual(
+        expectedFields.length ? [expectedFields] : [],
+      );
+    });
+
+    it('stores null nutrition from the user as not sent', async () => {
       await service.create(
         { title: 'Test Recipe', ...withIngredients, nutritionalInfo: null },
         userId,
@@ -253,19 +288,6 @@ describe('RecipesService', () => {
       expect(mockRecipeRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({ nutritionalInfo: undefined }),
       );
-      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledTimes(1);
-    });
-
-    it.each([
-      ['has no ingredients', {}],
-      [
-        'comes with nutrition from the user',
-        { ...withIngredients, nutritionalInfo: { energyKcal: 300 } },
-      ],
-    ])('does not estimate a new recipe that %s', async (_, dto) => {
-      await service.create({ title: 'Test Recipe', ...dto }, userId);
-
-      expect(mockRecipeRepository.updateNutrition).not.toHaveBeenCalled();
     });
 
     it('marks nutrition the user sends as entered, whatever flag they send', async () => {
@@ -285,34 +307,39 @@ describe('RecipesService', () => {
     });
 
     it.each([
-      ['ingredients change', { ingredients: [{ name: 'Rice' }] }, estimate, 1],
-      ['only servings change', { servings: 2 }, estimate, 0],
-      ['only the title changes', { title: 'New title' }, estimate, 0],
       [
-        'the stored nutrition came from the user',
+        'ingredients change',
+        { ingredients: [{ name: 'Rice' }] },
+        estimate,
+        ['carbonFootprint', 'nutritionalInfo'],
+      ],
+      ['only servings change', { servings: 2 }, estimate, []],
+      ['only the title changes', { title: 'New title' }, estimate, []],
+      [
+        'ingredients change and the stored nutrition came from the user',
         { ingredients: [{ name: 'Rice' }] },
         { energyKcal: 300, estimated: false },
-        0,
+        ['carbonFootprint'],
       ],
       [
-        'the stored nutrition predates the flag',
+        'ingredients change and the stored nutrition predates the flag',
         { ingredients: [{ name: 'Rice' }] },
         { energyKcal: 300 },
-        0,
+        ['carbonFootprint'],
       ],
       [
         'the user sends null to drop their own nutrition',
         { nutritionalInfo: null },
         { energyKcal: 300, estimated: false },
-        1,
+        ['nutritionalInfo'],
       ],
       [
         'the user sends new nutrition with the ingredients',
         { ingredients: [{ name: 'Rice' }], nutritionalInfo: { energyKcal: 1 } },
         estimate,
-        0,
+        ['carbonFootprint'],
       ],
-    ])('on update when %s', async (_, dto, storedNutrition, expectedCalls) => {
+    ])('on update when %s', async (_, dto, storedNutrition, expectedFields) => {
       const stored = {
         ...buildRecipe({ id: 'r1', userId }),
         nutritionalInfo: storedNutrition,
@@ -322,8 +349,8 @@ describe('RecipesService', () => {
 
       await service.update('r1', dto, userId);
 
-      expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledTimes(
-        expectedCalls,
+      expect(storedFields()).toEqual(
+        expectedFields.length ? [expectedFields] : [],
       );
     });
   });

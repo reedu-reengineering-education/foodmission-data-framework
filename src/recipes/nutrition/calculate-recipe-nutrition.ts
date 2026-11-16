@@ -49,7 +49,13 @@ export const NUTRITION_INGREDIENT_SELECT = {
   quantity: true,
   unit: true,
   foodProduct: { select: { ...NUTRITION_VALUE_SELECT, name: true } },
-  genericFood: { select: { ...NUTRITION_VALUE_SELECT, foodName: true } },
+  genericFood: {
+    select: {
+      ...NUTRITION_VALUE_SELECT,
+      foodName: true,
+      carbonFootprint: true,
+    },
+  },
 } as const;
 
 export interface NutritionIngredient {
@@ -58,7 +64,9 @@ export interface NutritionIngredient {
   quantity?: number | null;
   unit?: Unit | null;
   foodProduct?: (NutrientSource & { name?: string }) | null;
-  genericFood?: (NutrientSource & { foodName?: string }) | null;
+  genericFood?:
+    | (NutrientSource & { foodName?: string; carbonFootprint?: number | null })
+    | null;
 }
 
 const ABSORBED_WATER_PER_GRAM: WordTable = [
@@ -149,7 +157,7 @@ const CONDIMENTS: WordTable = [
   [/^peppers?$/i, CONDIMENT_GRAMS],
 ];
 
-type WeighedIngredient = {
+export type WeighedIngredient = {
   ingredient: NutritionIngredient;
   source: NutrientSource | null;
   grams: number;
@@ -208,7 +216,7 @@ function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
     : { ingredient, source, grams: guessed, guessed: true };
 }
 
-const sum = (values: number[]) =>
+export const sum = (values: number[]) =>
   values.reduce((total, value) => total + value, 0);
 
 const isKnown = (value: number | null | undefined): value is number =>
@@ -219,7 +227,7 @@ const round = (value: number) => Math.round(value * 10) / 10;
 const kcalOf = ({ source, grams }: WeighedIngredient) =>
   ((source?.energyKcal ?? 0) * grams) / 100;
 
-function dishGrams(weighed: WeighedIngredient[]): number {
+export function dishGrams(weighed: WeighedIngredient[]): number {
   const foodName = ({ ingredient }: WeighedIngredient) =>
     ingredient.genericFood?.foodName ?? '';
   const absorbedWater = sum(
@@ -255,17 +263,25 @@ function per100g(
   );
 }
 
-export function calculateRecipeNutrition({
-  ingredients,
-}: {
-  ingredients: NutritionIngredient[];
-}): NutritionalInfo | null {
+export function weighIngredients(
+  ingredients: NutritionIngredient[],
+): WeighedIngredient[] | null {
   const weighed: WeighedIngredient[] = [];
   for (const ingredient of ingredients) {
     const item = weigh(ingredient);
     if (!item) return null;
     weighed.push(item);
   }
+  return weighed;
+}
+
+export function calculateRecipeNutrition({
+  ingredients,
+}: {
+  ingredients: NutritionIngredient[];
+}): NutritionalInfo | null {
+  const weighed = weighIngredients(ingredients);
+  if (!weighed) return null;
 
   const guessed = weighed.filter((item) => item.guessed);
   const totalKcal = sum(weighed.map(kcalOf));

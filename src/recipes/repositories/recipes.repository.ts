@@ -47,7 +47,6 @@ export interface CreateRecipeData {
   difficulty?: string;
   tags?: string[];
   nutritionalInfo?: Prisma.InputJsonValue;
-  sustainabilityScore?: number;
   price?: number;
   allergens?: Allergens[];
   // New fields for external recipes
@@ -218,14 +217,23 @@ export class RecipesRepository implements BaseRepository<
     });
   }
 
-  async updateNutrition(
+  async updateEstimates(
     recipeId: string,
-    nutrition: NutritionalInfo | null,
+    {
+      nutritionalInfo,
+      carbonFootprint,
+    }: {
+      nutritionalInfo?: NutritionalInfo | null;
+      carbonFootprint?: number | null;
+    },
   ): Promise<void> {
     await this.prisma.recipe.update({
       where: { id: recipeId },
       data: {
-        nutritionalInfo: toNutritionJson(nutrition),
+        ...(nutritionalInfo !== undefined && {
+          nutritionalInfo: toNutritionJson(nutritionalInfo),
+        }),
+        ...(carbonFootprint !== undefined && { carbonFootprint }),
       },
     });
   }

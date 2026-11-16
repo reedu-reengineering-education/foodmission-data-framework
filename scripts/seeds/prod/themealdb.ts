@@ -13,6 +13,7 @@ import {
   NUTRITION_INGREDIENT_SELECT,
   toNutritionJson,
 } from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
+import { calculateRecipeCarbonFootprint } from '../../../src/recipes/nutrition/calculate-recipe-carbon';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 
@@ -39,7 +40,6 @@ interface ThemealdbData {
     servings: number;
     ingredients: { name: string; measure: string; order: number }[];
     allergens?: string[];
-    sustainabilityScore?: number | null;
   }[];
 }
 
@@ -140,7 +140,6 @@ function toRecipeCreateData(
     dietaryLabels: recipe.dietaryLabels ?? [],
     servings: recipe.servings ?? 4,
     allergens: mapAllergensToEnum(recipe.allergens),
-    sustainabilityScore: recipe.sustainabilityScore ?? undefined,
     isPublic: true,
     userId: null,
     origin: RecipeOrigin.THEMEALDB,
@@ -213,7 +212,27 @@ async function syncIngredients(
   );
 }
 
-async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
+async function applyCarbonFootprints(prisma: PrismaClient): Promise<void> {
+  const { foods } = readSeedJson<{
+    foods: { nevoCode: number; co2PerKg: number }[];
+  }>('nevo-agribalyse-mapping.json');
+  await prisma.genericFood.updateMany({
+    where: {
+      nevoCode: { notIn: foods.map((food) => food.nevoCode) },
+      carbonFootprint: { not: null },
+    },
+    data: { carbonFootprint: null },
+  });
+  for (const { nevoCode, co2PerKg } of foods) {
+    await prisma.genericFood.updateMany({
+      where: { nevoCode },
+      data: { carbonFootprint: co2PerKg },
+    });
+  }
+  console.log(`   🌍 Generic foods with a carbon footprint: ${foods.length}`);
+}
+
+async function recalculateEstimates(prisma: PrismaClient): Promise<void> {
   const recipes = await prisma.recipe.findMany({
     where: { origin: RecipeOrigin.THEMEALDB },
     select: {
@@ -225,20 +244,24 @@ async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
     },
   });
 
-  let stored = 0;
+  let withNutrition = 0;
+  let withCarbon = 0;
   for (const recipe of recipes) {
     const nutrition = calculateRecipeNutrition(recipe);
-    if (nutrition) stored++;
+    const carbonFootprint = calculateRecipeCarbonFootprint(recipe);
+    if (nutrition) withNutrition++;
+    if (carbonFootprint !== null) withCarbon++;
     await prisma.recipe.update({
       where: { id: recipe.id },
-      data: {
-        nutritionalInfo: toNutritionJson(nutrition),
-      },
+      data: { nutritionalInfo: toNutritionJson(nutrition), carbonFootprint },
     });
   }
 
   console.log(
-    `   🥗 Recipe nutrition: stored ${stored}, withheld ${recipes.length - stored}`,
+    `   🥗 Recipe nutrition: stored ${withNutrition}, withheld ${recipes.length - withNutrition}`,
+  );
+  console.log(
+    `   🌍 Recipe carbon footprint: stored ${withCarbon}, withheld ${recipes.length - withCarbon}`,
   );
 }
 
@@ -329,7 +352,8 @@ export async function seedRecipes(
 
   if (!dryRun) {
     await syncIngredients(prisma, data.ingredientMappings);
-    await recalculateNutrition(prisma);
+    await applyCarbonFootprints(prisma);
+    await recalculateEstimates(prisma);
   }
 
   console.log(`\n✅ TheMealDB seeding complete:`);

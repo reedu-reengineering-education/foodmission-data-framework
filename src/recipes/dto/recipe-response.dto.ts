@@ -60,9 +60,17 @@ export class RecipeResponseDto {
   @Expose()
   nutritionalInfo?: Record<string, any>;
 
-  @ApiPropertyOptional({ description: 'Sustainability score' })
+  @ApiPropertyOptional({
+    description:
+      'Carbon footprint in kg CO2 eq per kg of the dish, from AGRIBALYSE v3.2 (ADEME) values of the linked ' +
+      'generic foods. Unlinked ingredients up to 15 g count by weight only. Null when a linked food has no known ' +
+      'footprint, an unlinked ingredient is over 15 g, or an ingredient cannot be weighed',
+    type: Number,
+    nullable: true,
+    example: 2.35,
+  })
   @Expose()
-  sustainabilityScore?: number;
+  carbonFootprint?: number | null;
 
   @ApiPropertyOptional({ description: 'Estimated price or cost' })
   @Expose()

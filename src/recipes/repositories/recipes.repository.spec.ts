@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecipesRepository } from './recipes.repository';
 import { PrismaService } from '../../database/prisma.service';
@@ -291,6 +292,28 @@ describe('RecipesRepository', () => {
         mockPrismaService.recipeIngredient.findMany,
       ).not.toHaveBeenCalled();
     });
+  });
+
+  describe('updateEstimates', () => {
+    it.each([
+      [
+        { nutritionalInfo: null, carbonFootprint: 2.5 },
+        { nutritionalInfo: Prisma.JsonNull, carbonFootprint: 2.5 },
+      ],
+      [{ carbonFootprint: null }, { carbonFootprint: null }],
+    ])(
+      'writes only the estimates it is given (%o)',
+      async (estimates, data) => {
+        mockPrismaService.recipe.update.mockResolvedValueOnce(mockRecipe);
+
+        await repository.updateEstimates('recipe-1', estimates);
+
+        expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
+          where: { id: 'recipe-1' },
+          data,
+        });
+      },
+    );
   });
 
   describe('count', () => {
