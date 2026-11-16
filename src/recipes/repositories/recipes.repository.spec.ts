@@ -53,7 +53,7 @@ describe('RecipesRepository', () => {
       },
       recipeIngredient: {
         deleteMany: jest.fn(),
-        groupBy: jest.fn(),
+        findMany: jest.fn(),
       },
       recipeRating: {
         findUnique: jest.fn(),
@@ -430,27 +430,31 @@ describe('RecipesRepository', () => {
   });
 
   describe('findCuratedGenericFoodIds', () => {
-    it('picks the food most seeded lines with that name link to, ignoring case', async () => {
-      mockPrismaService.recipeIngredient.groupBy.mockResolvedValue([
-        {
-          name: 'Olive Oil',
-          genericFoodId: 'oil-olive',
-          _count: { _all: 100 },
-        },
-        { name: 'olive oil', genericFoodId: 'oil-olive', _count: { _all: 60 } },
-        { name: 'Olive Oil', genericFoodId: 'oil-av', _count: { _all: 120 } },
+    it('finds the seeded link for a name written in a different case', async () => {
+      mockPrismaService.recipeIngredient.findMany.mockResolvedValue([
+        { name: 'Olive Oil', genericFoodId: 'oil-olive' },
       ]);
 
-      const ids = await repository.findCuratedGenericFoodIds(['Olive Oil']);
+      const ids = await repository.findCuratedGenericFoodIds(['olive oil']);
 
       expect(ids).toEqual(new Map([['olive oil', 'oil-olive']]));
+      expect(mockPrismaService.recipeIngredient.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            name: { in: ['olive oil'], mode: 'insensitive' },
+          }),
+          distinct: ['name'],
+        }),
+      );
     });
 
     it('does not query for an empty list', async () => {
       await expect(repository.findCuratedGenericFoodIds([])).resolves.toEqual(
         new Map(),
       );
-      expect(mockPrismaService.recipeIngredient.groupBy).not.toHaveBeenCalled();
+      expect(
+        mockPrismaService.recipeIngredient.findMany,
+      ).not.toHaveBeenCalled();
     });
   });
 

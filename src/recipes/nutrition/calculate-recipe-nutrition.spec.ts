@@ -1,4 +1,5 @@
 import { Unit } from '@prisma/client';
+import { parseQuantityUnit } from '../../common/utils/measure-parser';
 import {
   calculateRecipeNutrition,
   NutritionIngredient,
@@ -23,13 +24,24 @@ function food(
   };
 }
 
+function calculateFromMeasureText(recipe: {
+  ingredients: NutritionIngredient[];
+}) {
+  return calculateRecipeNutrition({
+    ingredients: recipe.ingredients.map((ingredient) => ({
+      ...(ingredient.measure ? parseQuantityUnit(ingredient.measure) : null),
+      ...ingredient,
+    })),
+  });
+}
+
 describe('calculateRecipeNutrition', () => {
   it('returns null when there are no ingredients', () => {
-    expect(calculateRecipeNutrition({ ingredients: [] })).toBeNull();
+    expect(calculateFromMeasureText({ ingredients: [] })).toBeNull();
   });
 
   it('scales a weighed ingredient and reports it per 100 g', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food(
           'Chicken',
@@ -47,8 +59,22 @@ describe('calculateRecipeNutrition', () => {
     });
   });
 
+  it('does not read an amount from the measure text', () => {
+    expect(
+      calculateRecipeNutrition({
+        ingredients: [
+          {
+            name: 'Flour',
+            measure: '200g',
+            genericFood: { foodName: 'Flour wheat white', energyKcal: 345 },
+          },
+        ],
+      }),
+    ).toBeNull();
+  });
+
   it('counts a condiment without an amount as 1 g and records its name', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food('Chicken', '100g', { energyKcal: 165, sodium: 74 }),
         food('Salt', 'to taste', { energyKcal: 0, sodium: 38758 }),
@@ -66,7 +92,7 @@ describe('calculateRecipeNutrition', () => {
   ])(
     'counts a small unlinked ingredient (%s) by weight only',
     (name, measure, kcalPer100g) => {
-      const result = calculateRecipeNutrition({
+      const result = calculateFromMeasureText({
         ingredients: [
           food('Chicken', '100g', { energyKcal: 165 }),
           { name, measure },
@@ -80,7 +106,7 @@ describe('calculateRecipeNutrition', () => {
 
   it('returns null when an unlinked ingredient weighs more than a tablespoon', () => {
     expect(
-      calculateRecipeNutrition({
+      calculateFromMeasureText({
         ingredients: [
           food('Chicken', '100g', { energyKcal: 165 }),
           {
@@ -95,7 +121,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('guesses an unweighable low-energy food so one chilli does not drop the recipe', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food('Beef', '500g', { energyKcal: 200 }),
         food('Bird chilli pods', 'a few', { energyKcal: 40 }),
@@ -107,7 +133,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('recognises a condiment by its linked food when the name is not English', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food('Rindfleisch', '500g', { energyKcal: 200 }),
         {
@@ -131,7 +157,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('leaves out a nutrient that a counted ingredient has no value for', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         {
           name: 'Chicken',
@@ -151,7 +177,7 @@ describe('calculateRecipeNutrition', () => {
 
   it('treats a linked food without an energy value as not linked', () => {
     expect(
-      calculateRecipeNutrition({
+      calculateFromMeasureText({
         ingredients: [
           food('Beef', '500g', { energyKcal: 200 }),
           {
@@ -165,7 +191,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('falls back to the generic food when the product has no energy value', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         {
           name: 'Yoghurt',
@@ -180,7 +206,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('uses the linked product over the generic food when both are set', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         {
           name: 'Yoghurt',
@@ -207,7 +233,7 @@ describe('calculateRecipeNutrition', () => {
     });
 
     it('adds the cooking water to the dish weight when the recipe lists none', () => {
-      const result = calculateRecipeNutrition({
+      const result = calculateFromMeasureText({
         ingredients: [dryPasta('100g')],
       });
 
@@ -215,7 +241,7 @@ describe('calculateRecipeNutrition', () => {
     });
 
     it('adds only the shortfall when the recipe lists some liquid', () => {
-      const result = calculateRecipeNutrition({
+      const result = calculateFromMeasureText({
         ingredients: [dryPasta('100g'), water('100ml')],
       });
 
@@ -223,7 +249,7 @@ describe('calculateRecipeNutrition', () => {
     });
 
     it('adds nothing when the listed liquid already covers it', () => {
-      const result = calculateRecipeNutrition({
+      const result = calculateFromMeasureText({
         ingredients: [dryPasta('100g'), water('400ml')],
       });
 
@@ -231,7 +257,7 @@ describe('calculateRecipeNutrition', () => {
     });
 
     it('does not count cheese or chocolate as cooking liquid', () => {
-      const result = calculateRecipeNutrition({
+      const result = calculateFromMeasureText({
         ingredients: [
           dryPasta('100g'),
           {
@@ -249,7 +275,7 @@ describe('calculateRecipeNutrition', () => {
     });
 
     it('uses a higher factor for rice', () => {
-      const result = calculateRecipeNutrition({
+      const result = calculateFromMeasureText({
         ingredients: [
           {
             name: 'Jasmine Rice',
@@ -264,7 +290,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('leaves out what is served alongside the dish', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food('Beef', '500g', { energyKcal: 200 }),
         food('Rice', 'To serve', { energyKcal: 352 }),
@@ -287,7 +313,7 @@ describe('calculateRecipeNutrition', () => {
     ['To Glaze', 20, 166.7],
     ['Topping', 20, 166.7],
   ])('counts "%s" as %d g', (measure, _grams, kcalPer100g) => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food('Beef', '100g', { energyKcal: 200 }),
         food('Lemon zest', measure, { energyKcal: 0 }),
@@ -299,7 +325,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('weighs counted prawns so the oil does not stand in for the dish', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         {
           name: 'Raw King Prawns',
@@ -327,7 +353,7 @@ describe('calculateRecipeNutrition', () => {
     'withholds the recipe when %s (%s) cannot be weighed and is not low in energy',
     (name, measure, energyKcal) => {
       expect(
-        calculateRecipeNutrition({
+        calculateFromMeasureText({
           ingredients: [
             food('Beef', '500g', { energyKcal: 200 }),
             food(name, measure, { energyKcal }),
@@ -339,14 +365,14 @@ describe('calculateRecipeNutrition', () => {
 
   it('returns null when a piece has no known weight', () => {
     expect(
-      calculateRecipeNutrition({
+      calculateFromMeasureText({
         ingredients: [food('Dragon fruit', '2', { energyKcal: 260 })],
       }),
     ).toBeNull();
   });
 
   it('returns null when guessed condiments are more than 10% of energy', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food('Chicken', '100g', { energyKcal: 100 }),
         food('Olive oil', 'drizzle', { energyKcal: 900, fat: 100 }),
@@ -358,7 +384,7 @@ describe('calculateRecipeNutrition', () => {
   });
 
   it('keeps a recipe when the condiment guess is under 10% of energy', () => {
-    const result = calculateRecipeNutrition({
+    const result = calculateFromMeasureText({
       ingredients: [
         food('Chicken', '200g', { energyKcal: 500 }),
         food('Olive oil', 'drizzle', { energyKcal: 900 }),
@@ -371,7 +397,7 @@ describe('calculateRecipeNutrition', () => {
 
   it('does not guess a vegetable pepper as a pinch of spice', () => {
     expect(
-      calculateRecipeNutrition({
+      calculateFromMeasureText({
         ingredients: [food('Green pepper', 'to taste', { energyKcal: 20 })],
       }),
     ).toBeNull();

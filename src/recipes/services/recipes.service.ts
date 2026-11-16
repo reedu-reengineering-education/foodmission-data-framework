@@ -12,6 +12,7 @@ import {
   RecipeResponseDto,
 } from '../dto/recipe-response.dto';
 import { QueryRecipeDto } from '../dto/query-recipe.dto';
+import { CreateRecipeIngredientDto } from '../dto/recipe-ingredient.dto';
 import {
   RateRecipeDto,
   RecipeRatingResponseDto,
@@ -44,6 +45,12 @@ type LocalizableIngredient = {
   genericFood?: { foodName: string } | null;
 };
 
+function markedAsEntered(
+  nutritionalInfo: Record<string, any> | undefined,
+): Record<string, any> | undefined {
+  return nutritionalInfo && { ...nutritionalInfo, estimated: false };
+}
+
 @Injectable()
 export class RecipesService {
   private readonly logger = new Logger(RecipesService.name);
@@ -74,6 +81,7 @@ export class RecipesService {
     try {
       const recipe = await this.recipeRepository.create({
         ...createRecipeDto,
+        nutritionalInfo: markedAsEntered(createRecipeDto.nutritionalInfo),
         ingredients: await this.linkToGenericFoods(createRecipeDto.ingredients),
         allergens: createRecipeDto.allergens ?? [],
         isPublic: createRecipeDto.isPublic ?? false,
@@ -388,6 +396,7 @@ export class RecipesService {
     try {
       const updated = await this.recipeRepository.update(id, {
         ...updateRecipeDto,
+        nutritionalInfo: markedAsEntered(updateRecipeDto.nutritionalInfo),
         ingredients: await this.linkToGenericFoods(updateRecipeDto.ingredients),
       });
       return this.toResponse(
@@ -418,10 +427,10 @@ export class RecipesService {
     });
   }
 
-  private async linkToGenericFoods<
-    T extends { name: string; foodProductId?: string; genericFoodId?: string },
-  >(ingredients: T[] | undefined): Promise<T[] | undefined> {
-    const isUnlinked = (ingredient: T) =>
+  private async linkToGenericFoods(
+    ingredients: CreateRecipeIngredientDto[] | undefined,
+  ): Promise<CreateRecipeIngredientDto[] | undefined> {
+    const isUnlinked = (ingredient: CreateRecipeIngredientDto) =>
       !ingredient.foodProductId && !ingredient.genericFoodId;
     if (!ingredients?.some(isUnlinked)) return ingredients;
 
@@ -449,13 +458,11 @@ export class RecipesService {
       name,
       DEFAULT_LOCALE,
     );
-    const startsWithName = new RegExp(
-      `^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
-      'i',
-    );
-    return rankSearchCandidates(name, candidates).find((candidate) =>
-      startsWithName.test(candidate.foodName),
-    )?.id;
+    const lowerName = name.toLowerCase();
+    return rankSearchCandidates(name, candidates).find((candidate) => {
+      const food = candidate.foodName.toLowerCase();
+      return food === lowerName || food.startsWith(`${lowerName} `);
+    })?.id;
   }
 
   private async withEstimatedNutrition<T extends { id: string }>(

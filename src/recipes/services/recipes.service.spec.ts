@@ -253,14 +253,46 @@ describe('RecipesService', () => {
       expect(result.nutritionalInfo).toEqual(sent);
     });
 
+    it('marks nutrition the user sends as entered, whatever flag they send', async () => {
+      mockRecipeRepository.create.mockResolvedValue(
+        buildRecipe({ id: 'r1', userId }),
+      );
+
+      await service.create(
+        {
+          title: 'Test Recipe',
+          nutritionalInfo: { energyKcal: 300, estimated: true },
+        },
+        userId,
+      );
+
+      expect(mockRecipeRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          nutritionalInfo: { energyKcal: 300, estimated: false },
+        }),
+      );
+    });
+
     it.each([
       ['ingredients change', { ingredients: [{ name: 'Rice' }] }, estimate, 1],
-      ['only servings change', { servings: 2 }, null, 0],
+      ['only servings change', { servings: 2 }, estimate, 0],
       ['only the title changes', { title: 'New title' }, estimate, 0],
       [
         'the stored nutrition came from the user',
         { ingredients: [{ name: 'Rice' }] },
+        { energyKcal: 300, estimated: false },
+        0,
+      ],
+      [
+        'the stored nutrition predates the flag',
+        { ingredients: [{ name: 'Rice' }] },
         { energyKcal: 300 },
+        0,
+      ],
+      [
+        'the user sends new nutrition with the ingredients',
+        { ingredients: [{ name: 'Rice' }], nutritionalInfo: { energyKcal: 1 } },
+        estimate,
         0,
       ],
     ])('on update when %s', async (_, dto, storedNutrition, expectedCalls) => {

@@ -48,6 +48,9 @@ const quantityUnitMessage =
       ? 'quantity and unit must be provided together'
       : invalidValueMessage;
 
+export const MAX_RECIPE_INGREDIENTS = 100;
+export const MAX_INGREDIENT_NAME_LENGTH = 100;
+
 /**
  * DTO for creating a recipe ingredient
  */
@@ -55,16 +58,17 @@ export class CreateRecipeIngredientDto {
   @ApiProperty({
     description: 'Ingredient name',
     example: 'Chicken Breast',
+    maxLength: MAX_INGREDIENT_NAME_LENGTH,
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(MAX_INGREDIENT_NAME_LENGTH)
   @Validate(OptionalExclusiveFoodReferenceConstraint) // runs on whole object (args.object)
   name: string;
 
   @ApiPropertyOptional({
     description:
-      'Free-text amount as written in the recipe. Not converted into quantity/unit. ' +
-      'Nutrition is estimated from quantity + unit when both are set, otherwise from this text',
+      'Free-text amount as written in the recipe. Stored as sent; nutrition is estimated from quantity + unit only',
     example: '500g',
     maxLength: MAX_MEASURE_LENGTH,
   })
@@ -118,7 +122,9 @@ export class CreateRecipeIngredientDto {
   foodProductId?: string;
 
   @ApiPropertyOptional({
-    description: 'ID of linked generic food (NEVO generic food)',
+    description:
+      'ID of linked generic food (NEVO generic food). If neither genericFoodId nor foodProductId is sent, ' +
+      'the ingredient is linked by name when a match is found',
     example: 'uuid-generic-food-id',
   })
   @IsUUID()

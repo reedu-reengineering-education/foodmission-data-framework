@@ -10,14 +10,11 @@ import * as path from 'path';
 import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
 import {
   calculateRecipeNutrition,
-  isUserProvidedNutrition,
   NUTRITION_INGREDIENT_SELECT,
 } from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 const DATA_PATH = path.join(DATA_DIR, 'themealdb-data.json');
-const NUTRITION_PAGE_SIZE = 200;
-
 const INGREDIENT_GRAMS_PATH = path.join(
   DATA_DIR,
   'themealdb-ingredient-grams.json',
@@ -253,54 +250,34 @@ async function reparseIngredientUnits(prisma: PrismaClient): Promise<void> {
 }
 
 async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
-  let stored = 0;
-  let withheld = 0;
-  let keptFromUser = 0;
-  let cursor: string | undefined;
+  const recipes = await prisma.recipe.findMany({
+    where: { origin: RecipeOrigin.THEMEALDB },
+    select: {
+      id: true,
+      ingredients: {
+        orderBy: { order: 'asc' },
+        select: NUTRITION_INGREDIENT_SELECT,
+      },
+    },
+  });
 
-  for (;;) {
-    const recipes = await prisma.recipe.findMany({
-      take: NUTRITION_PAGE_SIZE,
-      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
-      orderBy: { id: 'asc' },
-      select: {
-        id: true,
-        origin: true,
-        nutritionalInfo: true,
-        ingredients: {
-          orderBy: { order: 'asc' },
-          select: NUTRITION_INGREDIENT_SELECT,
-        },
+  let stored = 0;
+  for (const recipe of recipes) {
+    const nutrition = calculateRecipeNutrition(recipe);
+    if (nutrition) stored++;
+    await prisma.recipe.update({
+      where: { id: recipe.id },
+      data: {
+        nutritionalInfo:
+          nutrition === null
+            ? Prisma.JsonNull
+            : (nutrition as unknown as Prisma.InputJsonValue),
       },
     });
-    if (recipes.length === 0) break;
-    cursor = recipes[recipes.length - 1].id;
-
-    for (const recipe of recipes) {
-      if (
-        recipe.origin !== RecipeOrigin.THEMEALDB &&
-        isUserProvidedNutrition(recipe.nutritionalInfo)
-      ) {
-        keptFromUser++;
-        continue;
-      }
-      const nutrition = calculateRecipeNutrition(recipe);
-      if (nutrition) stored++;
-      else withheld++;
-      await prisma.recipe.update({
-        where: { id: recipe.id },
-        data: {
-          nutritionalInfo:
-            nutrition === null
-              ? Prisma.JsonNull
-              : (nutrition as unknown as Prisma.InputJsonValue),
-        },
-      });
-    }
   }
 
   console.log(
-    `   🥗 Recipe nutrition: stored ${stored}, withheld ${withheld}, kept from users ${keptFromUser}`,
+    `   🥗 Recipe nutrition: stored ${stored}, withheld ${recipes.length - stored}`,
   );
 }
 

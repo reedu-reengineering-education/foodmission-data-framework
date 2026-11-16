@@ -80,6 +80,14 @@ describe('RecipeIngredient DTOs', () => {
       );
     });
 
+    it('should fail validation when the name is too long', async () => {
+      const dto = plainToInstance(CreateRecipeIngredientDto, {
+        name: 'x'.repeat(101),
+      });
+      const errors = await validate(dto);
+      expect(errors.some((e) => e.property === 'name')).toBe(true);
+    });
+
     it('should fail validation when measure is too long', async () => {
       const dto = plainToInstance(CreateRecipeIngredientDto, {
         name: 'Salt',

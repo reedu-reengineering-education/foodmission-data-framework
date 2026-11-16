@@ -1,5 +1,4 @@
 import { Unit } from '@prisma/client';
-import { parseQuantityUnit } from '../../common/utils/measure-parser';
 import { SPICE_PEPPER, quantityToGrams } from './ingredient-grams';
 
 const MAX_ESTIMATED_ENERGY_SHARE = 0.1;
@@ -172,14 +171,9 @@ function isCondiment(ingredient: NutritionIngredient): boolean {
 }
 
 function measuredGrams(ingredient: NutritionIngredient): number | null {
-  const parsed =
-    ingredient.quantity != null && ingredient.unit != null
-      ? { quantity: ingredient.quantity, unit: ingredient.unit }
-      : ingredient.measure
-        ? parseQuantityUnit(ingredient.measure)
-        : null;
-  return parsed
-    ? quantityToGrams(parsed, foodNames(ingredient), ingredient.measure)
+  const { quantity, unit, measure } = ingredient;
+  return quantity != null && unit != null
+    ? quantityToGrams({ quantity, unit }, foodNames(ingredient), measure)
     : null;
 }
 
@@ -244,7 +238,7 @@ export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
   return (
     typeof nutritionalInfo === 'object' &&
     nutritionalInfo !== null &&
-    (nutritionalInfo as NutritionalInfo).estimated !== true
+    (nutritionalInfo as Partial<NutritionalInfo>).estimated !== true
   );
 }
 

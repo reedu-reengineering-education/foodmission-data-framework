@@ -11,6 +11,17 @@ describe('CreateRecipeDto with ingredients', () => {
     expect(errors.length).toBe(0);
   });
 
+  it('should reject more than 100 ingredients', async () => {
+    const dto = plainToInstance(CreateRecipeDto, {
+      title: 'Long Recipe',
+      ingredients: Array.from({ length: 101 }, (_, i) => ({
+        name: `Item ${i}`,
+      })),
+    });
+    const errors = await validate(dto);
+    expect(errors.some((e) => e.property === 'ingredients')).toBe(true);
+  });
+
   it('should validate recipe with valid ingredients array', async () => {
     const dto = plainToInstance(CreateRecipeDto, {
       title: 'Recipe with Ingredients',
