@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { ProgressStatus } from '../../common/progress-status';
 import { PrismaService } from '../../database/prisma.service';
 import { codeOrIdWhere } from '../../learning/utils/code-or-id';
@@ -53,6 +54,7 @@ export class ChallengeProgressRepository {
     userId: string,
     challengeId: string,
     updateDto: UpdateChallengeProgressDto,
+    tx: Prisma.TransactionClient,
   ) {
     const failed = updateDto.failed === true;
     const progress = updateDto.progress ?? 0;
@@ -67,7 +69,7 @@ export class ChallengeProgressRepository {
 
     // Creating the progress row is starting the challenge, even at progress 0
     // (clients start it that way), so it always gets a start time.
-    return this.prisma.challengeProgress.upsert({
+    return tx.challengeProgress.upsert({
       where: { userId_challengeId: { userId, challengeId } },
       create: {
         userId,

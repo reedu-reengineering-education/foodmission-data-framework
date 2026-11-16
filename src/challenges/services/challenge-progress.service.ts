@@ -15,6 +15,8 @@ import { CompletionRewardService } from '../../gamification/services/completion-
 import { EventSource, EventType } from '../../events/event-types';
 import { ProgressStatus } from '../../common/progress-status';
 import { progressEventKey } from '../../common/progress-event-keys';
+import { findProgressForUpdate } from '../../common/progress-row-lock';
+import { PrismaService } from '../../database/prisma.service';
 import {
   RecordUserEventInput,
   UserEventService,
@@ -38,6 +40,7 @@ export class ChallengeProgressService {
   private readonly logger = new Logger(ChallengeProgressService.name);
 
   constructor(
+    private readonly prisma: PrismaService,
     private readonly challengeProgressRepository: ChallengeProgressRepository,
     private readonly translationService: TranslationService,
     private readonly userEventService: UserEventService,
@@ -124,120 +127,120 @@ export class ChallengeProgressService {
       );
     }
 
-    const previous =
-      await this.challengeProgressRepository.findByUserIdAndChallengeId(
-        userId,
-        challenge.id,
-      );
-
     if (updateDto.failed && updateDto.completed) {
       throw new BadRequestException(
         'A challenge cannot be failed and completed at once',
       );
     }
-    if (previous?.status === ProgressStatus.FAILED) {
-      throw new BadRequestException(
-        'This challenge has failed; restart it to try again',
+
+    const { previous, updated } = await this.prisma.$transaction(async (tx) => {
+      const previous = await findProgressForUpdate(
+        tx,
+        'challenge',
+        userId,
+        challenge.id,
       );
-    }
-    if (updateDto.failed && previous?.completed) {
-      throw new BadRequestException('A completed challenge cannot be failed');
-    }
-
-    const updated = await this.challengeProgressRepository.upsert(
-      userId,
-      challenge.id,
-      updateDto,
-    );
-
-    const wasIdle =
-      previous == null || (previous.progress === 0 && !previous.completed);
-    const isActive = updated.progress > 0 || updated.completed;
-    const metadata = {
-      challengeId: challenge.id,
-      challengeCode: challenge.code,
-      source: EventSource.API,
-      body: {
-        ...(updateDto.progress !== undefined
-          ? { progress: updateDto.progress }
-          : {}),
-        ...(updateDto.completed !== undefined
-          ? { completed: updateDto.completed }
-          : {}),
-        ...(updateDto.failed !== undefined ? { failed: updateDto.failed } : {}),
-      },
-    };
-
-    if (wasIdle && isActive) {
-      await this.emitProgressEvent({
+      if (previous?.status === ProgressStatus.FAILED) {
+        throw new BadRequestException(
+          'This challenge has failed; restart it to try again',
+        );
+      }
+      if (updateDto.failed && previous?.completed) {
+        throw new BadRequestException('A completed challenge cannot be failed');
+      }
+      const updated = await this.challengeProgressRepository.upsert(
         userId,
-        eventType: EventType.CHALLENGE_STARTED,
-        source: EventSource.CHALLENGE,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'challenge',
-          transition: 'started',
-          userId,
-          id: challenge.id,
-          startedAt: updated.startedAt,
-        }),
-      });
-    } else if (
-      previous != null &&
-      (previous.progress !== updated.progress ||
-        previous.completed !== updated.completed)
-    ) {
-      await this.emitProgressEvent({
-        userId,
-        eventType: EventType.CHALLENGE_UPDATED,
-        source: EventSource.CHALLENGE,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'challenge',
-          transition: 'updated',
-          userId,
-          id: challenge.id,
-          startedAt: updated.startedAt,
-          progress: updated.progress,
-          completed: updated.completed,
-        }),
-      });
-    }
+        challenge.id,
+        updateDto,
+        tx,
+      );
+      const record = (input: RecordUserEventInput) =>
+        this.userEventService.record(input, tx);
 
-    if (updated.status === ProgressStatus.FAILED) {
-      // Same key as the rules engine, so a manual and a rule-based failure
-      // record one event.
-      await this.emitProgressEvent({
-        userId,
-        eventType: EventType.CHALLENGE_FAILED,
-        source: EventSource.CHALLENGE,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'challenge',
-          transition: 'failed',
+      const wasIdle =
+        previous == null || (previous.progress === 0 && !previous.completed);
+      const isActive = updated.progress > 0 || updated.completed;
+      const metadata = {
+        challengeId: challenge.id,
+        challengeCode: challenge.code,
+        source: EventSource.API,
+        body: {
+          ...(updateDto.progress !== undefined
+            ? { progress: updateDto.progress }
+            : {}),
+          ...(updateDto.completed !== undefined
+            ? { completed: updateDto.completed }
+            : {}),
+          ...(updateDto.failed !== undefined
+            ? { failed: updateDto.failed }
+            : {}),
+        },
+      };
+
+      if (wasIdle && isActive) {
+        await record({
           userId,
-          id: challenge.id,
-          startedAt: updated.startedAt,
-        }),
-      });
-    }
+          eventType: EventType.CHALLENGE_STARTED,
+          source: EventSource.CHALLENGE,
+          metadata,
+          idempotencyKey: progressEventKey({
+            kind: 'challenge',
+            transition: 'started',
+            userId,
+            id: challenge.id,
+            startedAt: updated.startedAt,
+          }),
+        });
+      } else if (
+        previous != null &&
+        (previous.progress !== updated.progress ||
+          previous.completed !== updated.completed)
+      ) {
+        await record({
+          userId,
+          eventType: EventType.CHALLENGE_UPDATED,
+          source: EventSource.CHALLENGE,
+          metadata,
+        });
+      }
+
+      if (updated.status === ProgressStatus.FAILED) {
+        // Same key as the rules engine, so a manual and a rule-based failure
+        // record one event.
+        await record({
+          userId,
+          eventType: EventType.CHALLENGE_FAILED,
+          source: EventSource.CHALLENGE,
+          metadata,
+          idempotencyKey: progressEventKey({
+            kind: 'challenge',
+            transition: 'failed',
+            userId,
+            id: challenge.id,
+            startedAt: updated.startedAt,
+          }),
+        });
+      }
+
+      if (updated.completed && !previous?.completed) {
+        await record({
+          userId,
+          eventType: EventType.CHALLENGE_COMPLETED,
+          source: EventSource.CHALLENGE,
+          metadata,
+          idempotencyKey: progressEventKey({
+            kind: 'challenge',
+            transition: 'completed',
+            userId,
+            id: challenge.id,
+          }),
+        });
+      }
+
+      return { previous, updated };
+    });
 
     const justCompleted = updated.completed && !previous?.completed;
-
-    if (justCompleted) {
-      await this.emitProgressEvent({
-        userId,
-        eventType: EventType.CHALLENGE_COMPLETED,
-        source: EventSource.CHALLENGE,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'challenge',
-          transition: 'completed',
-          userId,
-          id: challenge.id,
-        }),
-      });
-    }
 
     const reward = justCompleted
       ? await this.completionRewardService.awardCompletion({

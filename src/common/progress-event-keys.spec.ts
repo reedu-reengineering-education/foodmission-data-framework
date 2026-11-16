@@ -5,19 +5,13 @@ describe('progressEventKey', () => {
   const second = new Date('2026-10-02T09:00:00.000Z');
   const base = { kind: 'mission' as const, userId: 'u1', id: 'm1' };
 
-  it('scopes started, updated, failed and restarted keys to the attempt', () => {
+  it('scopes started, failed and restarted keys to the attempt', () => {
     expect(
       progressEventKey({ ...base, transition: 'failed', startedAt: first }),
     ).toBe(`mission-failed:u1:m1:${first.getTime()}`);
     expect(
-      progressEventKey({
-        ...base,
-        transition: 'updated',
-        startedAt: first,
-        progress: 40,
-        completed: false,
-      }),
-    ).toBe(`mission-updated:u1:m1:40:false:${first.getTime()}`);
+      progressEventKey({ ...base, transition: 'restarted', startedAt: first }),
+    ).toBe(`mission-restarted:u1:m1:${first.getTime()}`);
     expect(
       progressEventKey({ ...base, transition: 'started', startedAt: first }),
     ).not.toBe(

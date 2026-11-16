@@ -55,6 +55,7 @@ export class MissionProgressRepository {
     userId: string,
     missionId: string,
     updateDto: UpdateMissionProgressDto,
+    tx: Prisma.TransactionClient,
   ) {
     const failed = updateDto.failed === true;
     const progress = updateDto.progress ?? 0;
@@ -69,7 +70,7 @@ export class MissionProgressRepository {
 
     // Creating the progress row is starting the mission, even at progress 0
     // (clients start it that way), so it always gets a start time.
-    return this.prisma.missionProgress.upsert({
+    return tx.missionProgress.upsert({
       where: { userId_missionId: { userId, missionId } },
       create: {
         userId,

@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { MissionProgressService } from './mission-progress.service';
 import { MissionProgressRepository } from '../repositories/mission-progress.repository';
+import { PrismaService } from '../../database/prisma.service';
+import {
+  InteractiveTransactionMock,
+  withInteractiveTransaction,
+} from '../../common/testing';
 import { TranslationService } from '../../translations/services/translation.service';
 import { EventSource, EventType } from '../../events/event-types';
 import { UserEventService } from '../../events/services/user-event.service';
@@ -13,6 +18,7 @@ import { RulesService } from '../../rules/rules.service';
 describe('MissionProgressService', () => {
   let service: MissionProgressService;
   let repository: MissionProgressRepository;
+  let prisma: InteractiveTransactionMock;
   let userEventService: jest.Mocked<Pick<UserEventService, 'record'>>;
   let walletService: jest.Mocked<Pick<GamificationWalletService, 'award'>>;
   let rulesService: { getMissionRuleInputs: jest.Mock };
@@ -25,8 +31,15 @@ describe('MissionProgressService', () => {
       award: jest.fn().mockResolvedValue({ replayed: false }),
     };
 
+    prisma = withInteractiveTransaction({});
+    prisma.$queryRaw.mockImplementation(async () => {
+      const row: unknown = await repository.findByUserIdAndMissionId('', '');
+      return row ? [row] : [];
+    });
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        { provide: PrismaService, useValue: prisma },
         MissionProgressService,
         {
           provide: MissionProgressRepository,
@@ -202,10 +215,15 @@ describe('MissionProgressService', () => {
         { completed: true, progress: 1 },
         'u1',
       );
-      expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
-        completed: true,
-        progress: 1,
-      });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        'u1',
+        'm1',
+        {
+          completed: true,
+          progress: 1,
+        },
+        prisma,
+      );
       expect(result).toEqual({
         missionId: 'm1',
         userId: 'u1',
@@ -312,9 +330,14 @@ describe('MissionProgressService', () => {
       await service.update('M.A1.1', { progress: 10 }, 'u1');
 
       expect(repository.findMissionByCodeOrId).toHaveBeenCalledWith('M.A1.1');
-      expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
-        progress: 10,
-      });
+      expect(repository.upsert).toHaveBeenCalledWith(
+        'u1',
+        'm1',
+        {
+          progress: 10,
+        },
+        prisma,
+      );
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           metadata: expect.objectContaining({
@@ -323,6 +346,7 @@ describe('MissionProgressService', () => {
           }),
           idempotencyKey: 'mission-started:u1:m1',
         }),
+        prisma,
       );
     });
 
@@ -346,18 +370,21 @@ describe('MissionProgressService', () => {
       await service.update('m1', { progress: 10 }, 'u1');
 
       expect(userEventService.record).toHaveBeenCalledTimes(1);
-      expect(userEventService.record).toHaveBeenCalledWith({
-        userId: 'u1',
-        eventType: EventType.MISSION_STARTED,
-        source: EventSource.MISSION,
-        metadata: {
-          missionId: 'm1',
-          missionCode: 'M.A1.1',
-          source: EventSource.API,
-          body: { progress: 10 },
+      expect(userEventService.record).toHaveBeenCalledWith(
+        {
+          userId: 'u1',
+          eventType: EventType.MISSION_STARTED,
+          source: EventSource.MISSION,
+          metadata: {
+            missionId: 'm1',
+            missionCode: 'M.A1.1',
+            source: EventSource.API,
+            body: { progress: 10 },
+          },
+          idempotencyKey: 'mission-started:u1:m1',
         },
-        idempotencyKey: 'mission-started:u1:m1',
-      });
+        prisma,
+      );
     });
 
     it('emits MISSION_UPDATED when progress changes after start', async () => {
@@ -386,11 +413,11 @@ describe('MissionProgressService', () => {
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: EventType.MISSION_UPDATED,
-          idempotencyKey: 'mission-updated:u1:m1:40:false',
           metadata: expect.objectContaining({
             body: { progress: 40 },
           }),
         }),
+        prisma,
       );
     });
 
@@ -500,9 +527,14 @@ describe('MissionProgressService', () => {
 
         const result = await service.update('m1', { failed: true }, 'u1');
 
-        expect(repository.upsert).toHaveBeenCalledWith('u1', 'm1', {
-          failed: true,
-        });
+        expect(repository.upsert).toHaveBeenCalledWith(
+          'u1',
+          'm1',
+          {
+            failed: true,
+          },
+          prisma,
+        );
         expect(result.status).toBe('FAILED');
         expect(result.reward).toBeNull();
         expect(userEventService.record).toHaveBeenCalledWith(
@@ -510,6 +542,7 @@ describe('MissionProgressService', () => {
             eventType: EventType.MISSION_FAILED,
             idempotencyKey: `mission-failed:u1:m1:${failedRow.startedAt.getTime()}`,
           }),
+          prisma,
         );
         expect(walletService.award).not.toHaveBeenCalled();
       });

@@ -115,10 +115,15 @@ describe('MissionProgressRepository', () => {
       (prisma.missionProgress.upsert as jest.Mock).mockResolvedValue(
         mockReturn,
       );
-      const result = await repository.upsert('u1', 'm1', {
-        completed: true,
-        progress: 50,
-      });
+      const result = await repository.upsert(
+        'u1',
+        'm1',
+        {
+          completed: true,
+          progress: 50,
+        },
+        prisma,
+      );
       expect(prisma.missionProgress.upsert).toHaveBeenCalledWith({
         where: { userId_missionId: { userId: 'u1', missionId: 'm1' } },
         create: {
@@ -146,7 +151,12 @@ describe('MissionProgressRepository', () => {
         startedAt: new Date(),
       });
 
-      await repository.upsert('u1', 'm1', { failed: true, progress: 40 });
+      await repository.upsert(
+        'u1',
+        'm1',
+        { failed: true, progress: 40 },
+        prisma,
+      );
 
       const call = (prisma.missionProgress.upsert as jest.Mock).mock
         .calls[0][0];
@@ -163,7 +173,7 @@ describe('MissionProgressRepository', () => {
         startedAt: new Date(),
       });
 
-      await repository.upsert('u1', 'm1', { progress: 0 });
+      await repository.upsert('u1', 'm1', { progress: 0 }, prisma);
 
       const call = (prisma.missionProgress.upsert as jest.Mock).mock
         .calls[0][0];

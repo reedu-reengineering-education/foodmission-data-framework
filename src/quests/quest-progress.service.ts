@@ -206,9 +206,9 @@ export class QuestProgressService implements QuestProgressRecomputer {
 
     const finished = await findFinishedItemKeys(this.prisma, userId, scored);
     const completed = finished.size === scored.length;
-    // Rounded before it is stored and before it goes into a QUEST_UPDATED
-    // idempotency key: 4/9*100 is 44.44444444444444, and float jitter between
-    // two recomputes of identical state would emit a spurious event.
+    // Rounded before it is stored and compared with the stored value:
+    // 4/9*100 is 44.44444444444444, and float jitter between two recomputes of
+    // identical state would emit a spurious QUEST_UPDATED.
     const progress = Math.round((finished.size / scored.length) * 10000) / 100;
     const status = completed
       ? ProgressStatus.COMPLETED
@@ -299,9 +299,9 @@ export class QuestProgressService implements QuestProgressRecomputer {
         eventType: EventType.QUEST_UPDATED,
         source: EventSource.QUEST,
         metadata,
-        // Same shape as the key the PATCH path builds, so the two paths
-        // deduplicate against each other.
-        idempotencyKey: `quest-updated:${userId}:${quest.id}:${change.progress}:${change.completed}`,
+        ...(change.previous == null
+          ? { idempotencyKey: `quest-updated:${userId}:${quest.id}:initial` }
+          : {}),
       });
     }
 

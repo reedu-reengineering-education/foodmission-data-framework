@@ -930,7 +930,6 @@ describe('LearningService', () => {
             source: EventSource.API,
             body: { progress: 40 },
           },
-          idempotencyKey: 'quest-updated:u1:quest-1:40:false',
         }),
         prisma,
       );
@@ -960,7 +959,6 @@ describe('LearningService', () => {
       expect(userEventService.record.mock.calls[0][0]).toEqual(
         expect.objectContaining({
           eventType: EventType.QUEST_UPDATED,
-          idempotencyKey: 'quest-updated:u1:quest-1:100:true',
         }),
       );
       expect(userEventService.record.mock.calls[1][0]).toEqual(
@@ -1084,7 +1082,6 @@ describe('LearningService', () => {
       expect(userEventService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: EventType.QUIZ_UPDATED,
-          idempotencyKey: 'quiz-updated:u1:q1:opt-b',
           metadata: expect.objectContaining({
             isCorrect: true,
             body: { selectedLabel: 'B' },

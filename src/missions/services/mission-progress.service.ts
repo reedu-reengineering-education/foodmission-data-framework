@@ -15,6 +15,8 @@ import { CompletionRewardService } from '../../gamification/services/completion-
 import { EventSource, EventType } from '../../events/event-types';
 import { ProgressStatus } from '../../common/progress-status';
 import { progressEventKey } from '../../common/progress-event-keys';
+import { findProgressForUpdate } from '../../common/progress-row-lock';
+import { PrismaService } from '../../database/prisma.service';
 import {
   RecordUserEventInput,
   UserEventService,
@@ -41,6 +43,7 @@ export class MissionProgressService {
   private readonly logger = new Logger(MissionProgressService.name);
 
   constructor(
+    private readonly prisma: PrismaService,
     private readonly missionProgressRepository: MissionProgressRepository,
     private readonly translationService: TranslationService,
     private readonly userEventService: UserEventService,
@@ -117,120 +120,120 @@ export class MissionProgressService {
 
     const mission = await this.requireMission(codeOrId);
 
-    const previous =
-      await this.missionProgressRepository.findByUserIdAndMissionId(
-        userId,
-        mission.id,
-      );
-
     if (updateDto.failed && updateDto.completed) {
       throw new BadRequestException(
         'A mission cannot be failed and completed at once',
       );
     }
-    if (previous?.status === ProgressStatus.FAILED) {
-      throw new BadRequestException(
-        'This mission has failed; restart it to try again',
+
+    const { previous, updated } = await this.prisma.$transaction(async (tx) => {
+      const previous = await findProgressForUpdate(
+        tx,
+        'mission',
+        userId,
+        mission.id,
       );
-    }
-    if (updateDto.failed && previous?.completed) {
-      throw new BadRequestException('A completed mission cannot be failed');
-    }
-
-    const updated = await this.missionProgressRepository.upsert(
-      userId,
-      mission.id,
-      updateDto,
-    );
-
-    const wasIdle =
-      previous == null || (previous.progress === 0 && !previous.completed);
-    const isActive = updated.progress > 0 || updated.completed;
-    const metadata = {
-      missionId: mission.id,
-      missionCode: mission.code,
-      source: EventSource.API,
-      body: {
-        ...(updateDto.progress !== undefined
-          ? { progress: updateDto.progress }
-          : {}),
-        ...(updateDto.completed !== undefined
-          ? { completed: updateDto.completed }
-          : {}),
-        ...(updateDto.failed !== undefined ? { failed: updateDto.failed } : {}),
-      },
-    };
-
-    if (wasIdle && isActive) {
-      await this.emitProgressEvent({
+      if (previous?.status === ProgressStatus.FAILED) {
+        throw new BadRequestException(
+          'This mission has failed; restart it to try again',
+        );
+      }
+      if (updateDto.failed && previous?.completed) {
+        throw new BadRequestException('A completed mission cannot be failed');
+      }
+      const updated = await this.missionProgressRepository.upsert(
         userId,
-        eventType: EventType.MISSION_STARTED,
-        source: EventSource.MISSION,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'mission',
-          transition: 'started',
-          userId,
-          id: mission.id,
-          startedAt: updated.startedAt,
-        }),
-      });
-    } else if (
-      previous != null &&
-      (previous.progress !== updated.progress ||
-        previous.completed !== updated.completed)
-    ) {
-      await this.emitProgressEvent({
-        userId,
-        eventType: EventType.MISSION_UPDATED,
-        source: EventSource.MISSION,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'mission',
-          transition: 'updated',
-          userId,
-          id: mission.id,
-          startedAt: updated.startedAt,
-          progress: updated.progress,
-          completed: updated.completed,
-        }),
-      });
-    }
+        mission.id,
+        updateDto,
+        tx,
+      );
+      const record = (input: RecordUserEventInput) =>
+        this.userEventService.record(input, tx);
 
-    if (updated.status === ProgressStatus.FAILED) {
-      // Same key as the rules engine, so a manual and a rule-based failure
-      // record one event.
-      await this.emitProgressEvent({
-        userId,
-        eventType: EventType.MISSION_FAILED,
-        source: EventSource.MISSION,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'mission',
-          transition: 'failed',
+      const wasIdle =
+        previous == null || (previous.progress === 0 && !previous.completed);
+      const isActive = updated.progress > 0 || updated.completed;
+      const metadata = {
+        missionId: mission.id,
+        missionCode: mission.code,
+        source: EventSource.API,
+        body: {
+          ...(updateDto.progress !== undefined
+            ? { progress: updateDto.progress }
+            : {}),
+          ...(updateDto.completed !== undefined
+            ? { completed: updateDto.completed }
+            : {}),
+          ...(updateDto.failed !== undefined
+            ? { failed: updateDto.failed }
+            : {}),
+        },
+      };
+
+      if (wasIdle && isActive) {
+        await record({
           userId,
-          id: mission.id,
-          startedAt: updated.startedAt,
-        }),
-      });
-    }
+          eventType: EventType.MISSION_STARTED,
+          source: EventSource.MISSION,
+          metadata,
+          idempotencyKey: progressEventKey({
+            kind: 'mission',
+            transition: 'started',
+            userId,
+            id: mission.id,
+            startedAt: updated.startedAt,
+          }),
+        });
+      } else if (
+        previous != null &&
+        (previous.progress !== updated.progress ||
+          previous.completed !== updated.completed)
+      ) {
+        await record({
+          userId,
+          eventType: EventType.MISSION_UPDATED,
+          source: EventSource.MISSION,
+          metadata,
+        });
+      }
+
+      if (updated.status === ProgressStatus.FAILED) {
+        // Same key as the rules engine, so a manual and a rule-based failure
+        // record one event.
+        await record({
+          userId,
+          eventType: EventType.MISSION_FAILED,
+          source: EventSource.MISSION,
+          metadata,
+          idempotencyKey: progressEventKey({
+            kind: 'mission',
+            transition: 'failed',
+            userId,
+            id: mission.id,
+            startedAt: updated.startedAt,
+          }),
+        });
+      }
+
+      if (updated.completed && !previous?.completed) {
+        await record({
+          userId,
+          eventType: EventType.MISSION_COMPLETED,
+          source: EventSource.MISSION,
+          metadata,
+          idempotencyKey: progressEventKey({
+            kind: 'mission',
+            transition: 'completed',
+            userId,
+            id: mission.id,
+          }),
+        });
+      }
+
+      return { previous, updated };
+    });
 
     const justCompleted = updated.completed && !previous?.completed;
-
-    if (justCompleted) {
-      await this.emitProgressEvent({
-        userId,
-        eventType: EventType.MISSION_COMPLETED,
-        source: EventSource.MISSION,
-        metadata,
-        idempotencyKey: progressEventKey({
-          kind: 'mission',
-          transition: 'completed',
-          userId,
-          id: mission.id,
-        }),
-      });
-    }
 
     const reward = justCompleted
       ? await this.completionRewardService.awardCompletion({

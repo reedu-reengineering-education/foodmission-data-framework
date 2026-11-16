@@ -10,6 +10,10 @@ import {
 import { CompletionRewardAwarder } from '../gamification/completion-reward.types';
 import { RulesCoverageDoc } from './rule-schema';
 import { RulesService } from './rules.service';
+import {
+  InteractiveTransactionMock,
+  withInteractiveTransaction,
+} from '../common/testing';
 
 /** Minimal rule doc: one challenge that completes on a single MEAL_LOGGED. */
 const RULES = {
@@ -39,7 +43,7 @@ const RULES = {
   ],
 } as unknown as RulesCoverageDoc;
 
-type MockDb = {
+type MockDb = InteractiveTransactionMock & {
   user: { findUnique: jest.Mock };
   userEvent: { findMany: jest.Mock; create: jest.Mock };
   mission: { findMany: jest.Mock; findUnique: jest.Mock };
@@ -57,7 +61,7 @@ type MockDb = {
 };
 
 function buildDb(): MockDb {
-  return {
+  const db = withInteractiveTransaction({
     user: {
       findUnique: jest.fn().mockResolvedValue({
         currentQuest: {
@@ -95,7 +99,12 @@ function buildDb(): MockDb {
       findUnique: jest.fn().mockResolvedValue(null),
       upsert: jest.fn().mockResolvedValue({}),
     },
-  };
+  });
+  db.$queryRaw.mockImplementation(async () => {
+    const row: unknown = await db.challengeProgress.findUnique();
+    return row ? [row] : [];
+  });
+  return db;
 }
 
 describe('RulesService completion rewards', () => {

@@ -141,71 +141,101 @@ export class UserEventService implements UserEventRecorder {
       dayBucket: toDayBucket(createdAt),
     };
 
-    try {
-      const event = await db.userEvent.create({
-        data: {
-          userId: input.userId,
-          groupId: input.groupId ?? null,
-          eventType: input.eventType,
-          source: input.source,
-          metadata,
-          idempotencyKey: input.idempotencyKey ?? null,
-          createdAt,
-        },
-      });
+    const { event, replayed } = await this.insertOrReplay(db, tx, input, {
+      userId: input.userId,
+      groupId: input.groupId ?? null,
+      eventType: input.eventType,
+      source: input.source,
+      metadata,
+      idempotencyKey: input.idempotencyKey ?? null,
+      createdAt,
+    });
+    if (replayed) {
+      return { event, replayed };
+    }
 
-      userEventsRecordedTotal.inc({
-        event_type: event.eventType,
-        source: event.source,
-      });
+    userEventsRecordedTotal.inc({
+      event_type: event.eventType,
+      source: event.source,
+    });
 
-      if (this.shouldEvaluateDerivedProgress(event.eventType)) {
-        if (tx) {
-          await this.runDerivedProgressEvaluation(
-            event.userId,
-            event.eventType,
-            tx,
-          );
-        } else {
-          void this.runDerivedProgressEvaluation(event.userId, event.eventType);
-        }
-      }
-
-      // Badges are evaluated separately and on a wider set of events: the
-      // MISSION_/QUEST_ completions excluded above are exactly what several
-      // badge rules count. BadgeRulesService keeps its own, narrower exclusion
-      // list, so there is no filtering to do here. Inside a transaction the
-      // evaluator only queues work for after the commit — it never touches tx.
+    if (this.shouldEvaluateDerivedProgress(event.eventType)) {
       if (tx) {
-        await this.runBadgeEvaluation(event, true);
+        await this.runDerivedProgressEvaluation(
+          event.userId,
+          event.eventType,
+          tx,
+        );
       } else {
-        void this.runBadgeEvaluation(event, false);
+        void this.runDerivedProgressEvaluation(event.userId, event.eventType);
       }
+    }
 
-      // Only on a fresh write. A replayed event means some earlier call already
-      // recomputed for it, so the completion is counted exactly once.
-      this.getQuestRecomputer()?.onCompletionEvent({
-        userId: event.userId,
-        eventId: event.id,
-        eventType: event.eventType,
-      });
+    // Badges are evaluated separately and on a wider set of events: the
+    // MISSION_/QUEST_ completions excluded above are exactly what several
+    // badge rules count. BadgeRulesService keeps its own, narrower exclusion
+    // list, so there is no filtering to do here. Inside a transaction the
+    // evaluator only queues work for after the commit — it never touches tx.
+    if (tx) {
+      await this.runBadgeEvaluation(event, true);
+    } else {
+      void this.runBadgeEvaluation(event, false);
+    }
 
+    // Only on a fresh write. A replayed event means some earlier call already
+    // recomputed for it, so the completion is counted exactly once.
+    this.getQuestRecomputer()?.onCompletionEvent({
+      userId: event.userId,
+      eventId: event.id,
+      eventType: event.eventType,
+    });
+
+    return { event, replayed: false };
+  }
+
+  /**
+   * Inserts the event, or returns the existing row when a concurrent writer
+   * won the idempotency-key race (P2002). Inside a transaction a failed INSERT
+   * aborts the whole transaction, so the insert runs under a savepoint that is
+   * rolled back before the lookup; otherwise the lookup itself would fail with
+   * "current transaction is aborted" and the caller's write would be lost.
+   */
+  private async insertOrReplay(
+    db: Prisma.TransactionClient | PrismaService,
+    tx: Prisma.TransactionClient | undefined,
+    input: RecordUserEventInput,
+    data: Prisma.UserEventUncheckedCreateInput,
+  ): Promise<{ event: UserEvent; replayed: boolean }> {
+    // Only keyed events can collide, so only they pay for the savepoint.
+    const savepoint = tx && input.idempotencyKey ? tx : undefined;
+    if (savepoint) {
+      await savepoint.$executeRaw`SAVEPOINT user_event_insert`;
+    }
+    try {
+      const event = await db.userEvent.create({ data });
+      if (savepoint) {
+        await savepoint.$executeRaw`RELEASE SAVEPOINT user_event_insert`;
+      }
       return { event, replayed: false };
     } catch (error) {
       if (
-        input.idempotencyKey &&
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
+        !input.idempotencyKey ||
+        !(error instanceof Prisma.PrismaClientKnownRequestError) ||
+        error.code !== 'P2002'
       ) {
-        const existing = await db.userEvent.findUnique({
-          where: { idempotencyKey: input.idempotencyKey },
-        });
-        if (existing) {
-          this.countReplay(input);
-          return { event: existing, replayed: true };
-        }
+        throw error;
       }
-      throw error;
+      if (savepoint) {
+        await savepoint.$executeRaw`ROLLBACK TO SAVEPOINT user_event_insert`;
+      }
+      const existing = await db.userEvent.findUnique({
+        where: { idempotencyKey: input.idempotencyKey },
+      });
+      if (!existing) {
+        throw error;
+      }
+      this.countReplay(input);
+      return { event: existing, replayed: true };
     }
   }
 
