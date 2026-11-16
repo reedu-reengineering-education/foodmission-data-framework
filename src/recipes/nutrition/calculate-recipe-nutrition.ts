@@ -1,8 +1,13 @@
-import { Unit } from '@prisma/client';
-import { SPICE_PEPPER, quantityToGrams } from './ingredient-grams';
+import { Prisma, Unit } from '@prisma/client';
+import {
+  SPICE_PEPPER,
+  WordTable,
+  lookup,
+  quantityToGrams,
+  wordTable,
+} from './ingredient-grams';
 
 const MAX_ESTIMATED_ENERGY_SHARE = 0.1;
-
 const MAX_UNLINKED_GRAMS = 15;
 const LOW_ENERGY_KCAL_PER_100G = 50;
 const LOW_ENERGY_GUESS_GRAMS = 30;
@@ -30,13 +35,13 @@ type NutrientField = keyof typeof NUTRITION_VALUE_SELECT;
 
 const NUTRIENT_FIELDS = Object.keys(NUTRITION_VALUE_SELECT) as NutrientField[];
 
+type NutrientSource = Partial<Record<NutrientField, number | null>>;
+
 export interface NutritionalInfo {
   per100g: Partial<Record<NutrientField, number>>;
   estimated: true;
   missingIngredients: string[];
 }
-
-type NutrientSource = Partial<Record<NutrientField, number | null>>;
 
 export const NUTRITION_INGREDIENT_SELECT = {
   name: true,
@@ -56,7 +61,7 @@ export interface NutritionIngredient {
   genericFood?: (NutrientSource & { foodName?: string }) | null;
 }
 
-const ABSORBED_WATER_PER_GRAM: [RegExp, number][] = [
+const ABSORBED_WATER_PER_GRAM: WordTable = [
   [/^pasta\b.*\braw\b/i, 1.3],
   [/^rice\b.*\braw\b/i, 1.8],
   [/^couscous\b.*\bunprepared\b/i, 1.5],
@@ -67,7 +72,7 @@ const ABSORBED_WATER_PER_GRAM: [RegExp, number][] = [
 const COOKING_LIQUID =
   /^(water|stock|milk|buttermilk|cream|creme fraiche|coconut milk|drink soya|wine|sherry|beer|cider|juice|tomatoes tinned)\b/i;
 
-const PHRASE_GRAMS: [RegExp, number][] = [
+const PHRASE_GRAMS: WordTable = [
   [/\b(to serve|for serving|serve with)\b/i, 0],
   [/\b(pinch|drops?)\b/i, 0.5],
   [/\bdash\b/i, 1],
@@ -76,11 +81,6 @@ const PHRASE_GRAMS: [RegExp, number][] = [
   [/\bsplash\b/i, 15],
   [/\b(glaze|topping|top)\b/i, 20],
 ];
-
-function phraseGrams(measure: string): number | null {
-  const match = PHRASE_GRAMS.find(([phrase]) => phrase.test(measure));
-  return match ? match[1] : null;
-}
 
 const CONDIMENT_WORDS = [
   'salts?',
@@ -141,9 +141,20 @@ const CONDIMENT_WORDS = [
   'herbs',
 ];
 
-const CONDIMENT_NAME = new RegExp(
-  `\\b(${CONDIMENT_WORDS.join('|')})\\b|^peppers?$`,
-);
+const CONDIMENTS: WordTable = [
+  ...wordTable(
+    Object.fromEntries(CONDIMENT_WORDS.map((word) => [word, CONDIMENT_GRAMS])),
+  ),
+  [SPICE_PEPPER, CONDIMENT_GRAMS],
+  [/^peppers?$/i, CONDIMENT_GRAMS],
+];
+
+type WeighedIngredient = {
+  ingredient: NutritionIngredient;
+  source: NutrientSource | null;
+  grams: number;
+  estimated: boolean;
+};
 
 function nutrientSource(
   ingredient: NutritionIngredient,
@@ -163,13 +174,6 @@ function foodNames(ingredient: NutritionIngredient): string[] {
   ].filter((name): name is string => !!name);
 }
 
-function isCondiment(ingredient: NutritionIngredient): boolean {
-  return foodNames(ingredient).some((name) => {
-    const normalized = name.toLowerCase();
-    return CONDIMENT_NAME.test(normalized) || SPICE_PEPPER.test(normalized);
-  });
-}
-
 function measuredGrams(ingredient: NutritionIngredient): number | null {
   const { quantity, unit, measure } = ingredient;
   return quantity != null && unit != null
@@ -177,61 +181,116 @@ function measuredGrams(ingredient: NutritionIngredient): number | null {
     : null;
 }
 
-function absorbedWaterGrams(
-  ingredient: NutritionIngredient,
-  grams: number,
-): number {
-  const food = ingredient.genericFood?.foodName ?? '';
-  const match = ABSORBED_WATER_PER_GRAM.find(([dryStaple]) =>
-    dryStaple.test(food),
-  );
-  return match ? grams * match[1] : 0;
-}
-
-function isCookingLiquid(ingredient: NutritionIngredient): boolean {
-  return COOKING_LIQUID.test(ingredient.genericFood?.foodName ?? '');
-}
-
 function guessedGrams(
   ingredient: NutritionIngredient,
   source: NutrientSource | null,
 ): number | null {
-  const fromPhrase = ingredient.measure
-    ? phraseGrams(ingredient.measure)
-    : null;
-  if (fromPhrase != null) return fromPhrase;
-  if (isCondiment(ingredient)) return CONDIMENT_GRAMS;
   const kcal = source?.energyKcal;
-  return kcal != null && kcal <= LOW_ENERGY_KCAL_PER_100G
-    ? LOW_ENERGY_GUESS_GRAMS
-    : null;
+  return (
+    lookup(PHRASE_GRAMS, [ingredient.measure]) ??
+    lookup(CONDIMENTS, foodNames(ingredient)) ??
+    (kcal != null && kcal <= LOW_ENERGY_KCAL_PER_100G
+      ? LOW_ENERGY_GUESS_GRAMS
+      : null)
+  );
 }
 
-function emptyTotals(): Record<NutrientField, number> {
-  return Object.fromEntries(
-    NUTRIENT_FIELDS.map((field) => [field, 0]),
-  ) as Record<NutrientField, number>;
-}
-
-function addNutrients(
-  totals: Record<NutrientField, number>,
-  unknownFields: Set<NutrientField>,
-  source: NutrientSource,
-  grams: number,
-): void {
-  if (grams === 0) return;
-  for (const field of NUTRIENT_FIELDS) {
-    const value = source[field];
-    if (typeof value === 'number' && !Number.isNaN(value)) {
-      totals[field] += (value * grams) / 100;
-    } else {
-      unknownFields.add(field);
-    }
+function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
+  const source = nutrientSource(ingredient);
+  const measured = measuredGrams(ingredient);
+  if (measured != null) {
+    if (!source && measured > MAX_UNLINKED_GRAMS) return null;
+    return { ingredient, source, grams: measured, estimated: !source };
   }
+  const guessed = guessedGrams(ingredient, source);
+  return guessed == null
+    ? null
+    : { ingredient, source, grams: guessed, estimated: true };
 }
 
-function round(value: number): number {
-  return Math.round(value * 10) / 10;
+const sum = (values: number[]) =>
+  values.reduce((total, value) => total + value, 0);
+
+const isKnown = (value: number | null | undefined): value is number =>
+  typeof value === 'number' && !Number.isNaN(value);
+
+const round = (value: number) => Math.round(value * 10) / 10;
+
+const kcalOf = ({ source, grams }: WeighedIngredient) =>
+  ((source?.energyKcal ?? 0) * grams) / 100;
+
+function dishGrams(weighed: WeighedIngredient[]): number {
+  const foodName = ({ ingredient }: WeighedIngredient) =>
+    ingredient.genericFood?.foodName ?? '';
+  const absorbedWater = sum(
+    weighed.map(
+      (item) =>
+        item.grams * (lookup(ABSORBED_WATER_PER_GRAM, [foodName(item)]) ?? 0),
+    ),
+  );
+  const cookingLiquid = sum(
+    weighed
+      .filter((item) => COOKING_LIQUID.test(foodName(item)))
+      .map(({ grams }) => grams),
+  );
+  return (
+    sum(weighed.map(({ grams }) => grams)) +
+    Math.max(0, absorbedWater - cookingLiquid)
+  );
+}
+
+function per100g(
+  weighed: WeighedIngredient[],
+  totalGrams: number,
+): NutritionalInfo['per100g'] {
+  const counted = weighed.flatMap(({ source, grams }) =>
+    source && grams > 0 ? [{ source, grams }] : [],
+  );
+  const amountOf = (field: NutrientField) =>
+    sum(counted.map(({ source, grams }) => (source[field]! * grams) / 100));
+  return Object.fromEntries(
+    NUTRIENT_FIELDS.filter((field) =>
+      counted.every(({ source }) => isKnown(source[field])),
+    ).map((field) => [field, round((amountOf(field) * 100) / totalGrams)]),
+  );
+}
+
+export function calculateRecipeNutrition({
+  ingredients,
+}: {
+  ingredients: NutritionIngredient[];
+}): NutritionalInfo | null {
+  const weighed: WeighedIngredient[] = [];
+  for (const ingredient of ingredients) {
+    const item = weigh(ingredient);
+    if (!item) return null;
+    weighed.push(item);
+  }
+  if (weighed.length === 0) return null;
+
+  const estimated = weighed.filter((item) => item.estimated);
+  const totalKcal = sum(weighed.map(kcalOf));
+  if (
+    totalKcal > 0 &&
+    sum(estimated.map(kcalOf)) / totalKcal > MAX_ESTIMATED_ENERGY_SHARE
+  ) {
+    return null;
+  }
+
+  const totalGrams = dishGrams(weighed);
+  if (totalGrams <= 0) return null;
+
+  return {
+    per100g: per100g(weighed, totalGrams),
+    estimated: true,
+    missingIngredients: estimated.map(({ ingredient }) => ingredient.name),
+  };
+}
+
+export function markedAsEntered(
+  nutritionalInfo: Record<string, any> | undefined,
+): Record<string, any> | undefined {
+  return nutritionalInfo && { ...nutritionalInfo, estimated: false };
 }
 
 export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
@@ -242,65 +301,10 @@ export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
   );
 }
 
-export function calculateRecipeNutrition(recipe: {
-  ingredients: NutritionIngredient[];
-}): NutritionalInfo | null {
-  if (recipe.ingredients.length === 0) return null;
-
-  const totals = emptyTotals();
-  const unknownFields = new Set<NutrientField>();
-  const missingIngredients: string[] = [];
-  let estimatedKcal = 0;
-  let totalGrams = 0;
-  let waterToAbsorb = 0;
-  let cookingLiquid = 0;
-
-  for (const ingredient of recipe.ingredients) {
-    const source = nutrientSource(ingredient);
-    const measuredWeight = measuredGrams(ingredient);
-
-    if (measuredWeight == null) {
-      const grams = guessedGrams(ingredient, source);
-      if (grams == null) return null;
-      missingIngredients.push(ingredient.name);
-      totalGrams += grams;
-      if (source) {
-        addNutrients(totals, unknownFields, source, grams);
-        estimatedKcal += ((source.energyKcal ?? 0) * grams) / 100;
-      }
-      continue;
-    }
-
-    totalGrams += measuredWeight;
-    waterToAbsorb += absorbedWaterGrams(ingredient, measuredWeight);
-    if (isCookingLiquid(ingredient)) cookingLiquid += measuredWeight;
-
-    if (!source) {
-      if (measuredWeight > MAX_UNLINKED_GRAMS) return null;
-      missingIngredients.push(ingredient.name);
-      continue;
-    }
-
-    addNutrients(totals, unknownFields, source, measuredWeight);
-  }
-
-  if (
-    totals.energyKcal > 0 &&
-    estimatedKcal / totals.energyKcal > MAX_ESTIMATED_ENERGY_SHARE
-  ) {
-    return null;
-  }
-
-  const dishGrams = totalGrams + Math.max(0, waterToAbsorb - cookingLiquid);
-  if (dishGrams <= 0) return null;
-
-  return {
-    per100g: Object.fromEntries(
-      NUTRIENT_FIELDS.filter((field) => !unknownFields.has(field)).map(
-        (field) => [field, round((totals[field] * 100) / dishGrams)],
-      ),
-    ),
-    estimated: true,
-    missingIngredients,
-  };
+export function toNutritionJson(
+  nutrition: NutritionalInfo | null,
+): Prisma.InputJsonValue | Prisma.NullTypes.JsonNull {
+  return nutrition === null
+    ? Prisma.JsonNull
+    : (nutrition as unknown as Prisma.InputJsonValue);
 }

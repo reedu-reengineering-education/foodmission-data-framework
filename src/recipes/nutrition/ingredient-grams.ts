@@ -1,107 +1,128 @@
 import { Unit } from '@prisma/client';
 import { ML_PER_CUP, ParsedQuantity } from '../../common/utils/measure-parser';
 
-const COUNT_GRAMS: Record<string, number> = {
-  clove: 3,
-  cloves: 3,
-  slice: 30,
-  slices: 30,
-  sprig: 2,
-  can: 400,
-  rasher: 25,
-  rashers: 25,
-  piece: 50,
-  pieces: 50,
-  strip: 20,
-  strips: 20,
-  leaf: 0.5,
-  leaves: 0.5,
-};
+export type WordTable = [RegExp, number][];
 
-const SIZE_MODIFIERS: Record<string, number> = {
-  small: 0.7,
-  medium: 1,
-  large: 1.3,
-};
+export function wordTable(values: Record<string, number>): WordTable {
+  return Object.entries(values)
+    .sort(([a], [b]) => b.length - a.length)
+    .map(([word, value]) => [
+      new RegExp(`\\b(?:${word})(?:s|es)?\\b`, 'i'),
+      value,
+    ]);
+}
 
-const COUNT_WORDS = Object.keys(COUNT_GRAMS).sort(
-  (a, b) => b.length - a.length,
-);
+export function lookup(
+  table: WordTable,
+  texts: (string | null | undefined)[],
+): number | undefined {
+  for (const text of texts) {
+    const hit = text
+      ? table.find(([pattern]) => pattern.test(text))
+      : undefined;
+    if (hit) return hit[1];
+  }
+  return undefined;
+}
+
+export const SPICE_PEPPER =
+  /\b(black|white|cayenne|ground|cracked)\s+peppers?\b|\bpeppercorns?\b|\bpepper (black|white|red cayenne)\b/i;
 
 const DEFAULT_SOLID_GRAMS_PER_ML = 0.6;
 
-const GRAMS_PER_ML: Record<string, number> = {
-  flour: 0.5,
-  'almond flour': 0.4,
-  'ground almonds?': 0.4,
-  sugar: 0.83,
-  'brown sugar': 0.89,
-  'icing sugar': 0.47,
-  'powdered sugar': 0.47,
-  cocoa: 0.35,
-  cacao: 0.35,
-  cornstarch: 0.47,
-  cornflour: 0.47,
-  'baking powder': 0.9,
-  salt: 1.2,
-  breadcrumbs: 0.47,
-  'graham cracker': 0.42,
-  rice: 0.83,
-  oats: 0.4,
-  quinoa: 0.74,
-  'lentils?': 0.8,
-  'split peas': 0.82,
-  butter: 0.94,
-  'peanut butter': 1.12,
-  oil: 0.91,
-  shortening: 0.77,
-  lard: 0.94,
-  ghee: 0.73,
-  tahini: 1.07,
-  honey: 1.4,
-  syrup: 1.3,
-  jam: 1.42,
-  molasses: 1.42,
-  treacle: 1.42,
-  'almonds?': 0.59,
-  'peanuts?': 0.59,
-  'pine nuts?': 0.59,
-  'hazelnuts?': 0.59,
-  'cashews?': 0.47,
-  'walnuts?': 0.47,
-  'pecans?': 0.47,
-  'pistachios?': 0.5,
-  'sesame seeds?': 0.59,
-  'chocolate chips': 0.71,
-  'marshmallows?': 0.18,
-  'raisins?': 0.62,
-  'dates?': 0.62,
-  'dried cranberries': 0.48,
-  'dried cherries': 0.59,
-  coconut: 0.35,
-  'coconut milk': 1,
-  'coconut cream': 1,
-  cheese: 0.47,
-  mozzarella: 0.47,
-  parmesan: 0.42,
-  feta: 0.48,
-  'cream cheese': 0.95,
-  'cottage cheese': 0.94,
-  ricotta: 0.95,
-  'mushrooms?': 0.33,
-  'spring onions?': 0.27,
-  'scallions?': 0.27,
-  'chives?': 0.18,
-  'parsley|cilantro|basil|mint|dill': 0.25,
-  spinach: 0.13,
-  cabbage: 0.3,
-  tomatoes: 0.75,
-};
+const COUNT_WORD_GRAMS = wordTable({
+  clove: 3,
+  slice: 30,
+  sprig: 2,
+  can: 400,
+  rasher: 25,
+  piece: 50,
+  strip: 20,
+  leaf: 0.5,
+  leaves: 0.5,
+});
 
-const LIQUID_NAME =
-  /\b(water|milk|buttermilk|cream|fraiche|yogh?urt|stock|broth|juice|vinegar|sauce|wine|beer|cider|brandy|rum|sherry|liqueur|vodka|whisky|extract|puree|passata|paste|ketchup|mayonnaise|mustard|stout|hotsauce)\b/;
+const SIZE_FACTORS = wordTable({
+  small: 0.7,
+  medium: 1,
+  large: 1.3,
+});
 
-const AVERAGE_PIECE_GRAMS: Record<string, number> = {
+const GRAMS_PER_ML: WordTable = [
+  ...wordTable({
+    flour: 0.5,
+    'almond flour': 0.4,
+    'ground almonds?': 0.4,
+    sugar: 0.83,
+    'brown sugar': 0.89,
+    'icing sugar': 0.47,
+    'powdered sugar': 0.47,
+    cocoa: 0.35,
+    cacao: 0.35,
+    cornstarch: 0.47,
+    cornflour: 0.47,
+    'baking powder': 0.9,
+    salt: 1.2,
+    breadcrumbs: 0.47,
+    'graham cracker': 0.42,
+    rice: 0.83,
+    oats: 0.4,
+    quinoa: 0.74,
+    'lentils?': 0.8,
+    'split peas': 0.82,
+    butter: 0.94,
+    'peanut butter': 1.12,
+    oil: 0.91,
+    shortening: 0.77,
+    lard: 0.94,
+    ghee: 0.73,
+    tahini: 1.07,
+    honey: 1.4,
+    syrup: 1.3,
+    jam: 1.42,
+    molasses: 1.42,
+    treacle: 1.42,
+    'almonds?': 0.59,
+    'peanuts?': 0.59,
+    'pine nuts?': 0.59,
+    'hazelnuts?': 0.59,
+    'cashews?': 0.47,
+    'walnuts?': 0.47,
+    'pecans?': 0.47,
+    'pistachios?': 0.5,
+    'sesame seeds?': 0.59,
+    'chocolate chips': 0.71,
+    'marshmallows?': 0.18,
+    'raisins?': 0.62,
+    'dates?': 0.62,
+    'dried cranberries': 0.48,
+    'dried cherries': 0.59,
+    coconut: 0.35,
+    'coconut milk': 1,
+    'coconut cream': 1,
+    cheese: 0.47,
+    mozzarella: 0.47,
+    parmesan: 0.42,
+    feta: 0.48,
+    'cream cheese': 0.95,
+    'cottage cheese': 0.94,
+    ricotta: 0.95,
+    'mushrooms?': 0.33,
+    'spring onions?': 0.27,
+    'scallions?': 0.27,
+    'chives?': 0.18,
+    'parsley|cilantro|basil|mint|dill': 0.25,
+    spinach: 0.13,
+    cabbage: 0.3,
+    tomatoes: 0.75,
+  }),
+  [
+    /\b(water|milk|buttermilk|cream|fraiche|yogh?urt|stock|broth|juice|vinegar|sauce|wine|beer|cider|brandy|rum|sherry|liqueur|vodka|whisky|extract|puree|passata|paste|ketchup|mayonnaise|mustard|stout|hotsauce)\b/i,
+    1,
+  ],
+];
+
+const AVERAGE_PIECE_GRAMS = wordTable({
   egg: 50,
   eggs: 50,
   'egg yolk': 17,
@@ -167,61 +188,20 @@ const AVERAGE_PIECE_GRAMS: Record<string, number> = {
   baguette: 250,
   pita: 60,
   'star anise': 1,
-};
-
-const AVERAGE_PIECE_KEYS = Object.keys(AVERAGE_PIECE_GRAMS).sort(
-  (a, b) => b.length - a.length,
-);
-
-export const SPICE_PEPPER =
-  /\b(black|white|cayenne|ground|cracked)\s+peppers?\b|\bpeppercorns?\b|\bpepper (black|white|red cayenne)\b/;
-
-const hasWord = (text: string, word: string) =>
-  new RegExp(`\\b${word}\\b`).test(text);
-
-const GRAMS_PER_ML_PATTERNS = Object.entries(GRAMS_PER_ML)
-  .sort(([a], [b]) => b.length - a.length)
-  .map(([key, grams]): [RegExp, number] => [new RegExp(`\\b${key}\\b`), grams]);
-
-function knownGramsPerMl(foodName: string): number | null {
-  const name = foodName.toLowerCase();
-  const match = GRAMS_PER_ML_PATTERNS.find(([pattern]) => pattern.test(name));
-  if (match) return match[1];
-  return LIQUID_NAME.test(name) ? 1 : null;
-}
-
-function gramsPerMl(foodNames: string[]): number {
-  for (const name of foodNames) {
-    const known = knownGramsPerMl(name);
-    if (known != null) return known;
-  }
-  return DEFAULT_SOLID_GRAMS_PER_ML;
-}
-
-function averagePieceGrams(foodNames: string[]): number | null {
-  const names = foodNames.map((name) => name.toLowerCase());
-  if (names.some((name) => SPICE_PEPPER.test(name))) return null;
-  for (const name of names) {
-    const key = AVERAGE_PIECE_KEYS.find((candidate) =>
-      name.includes(candidate),
-    );
-    if (key) return AVERAGE_PIECE_GRAMS[key];
-  }
-  return null;
-}
+});
 
 function pieceGrams(
   quantity: number,
   foodNames: string[],
-  measure: string,
+  measure: string | null | undefined,
 ): number | null {
-  const countWord = COUNT_WORDS.find((word) => hasWord(measure, word));
-  if (countWord) return quantity * COUNT_GRAMS[countWord];
+  const perCountWord = lookup(COUNT_WORD_GRAMS, [measure]);
+  if (perCountWord !== undefined) return quantity * perCountWord;
+  if (foodNames.some((name) => SPICE_PEPPER.test(name))) return null;
 
-  const average = averagePieceGrams(foodNames);
-  if (average == null) return null;
-  const size = measure.match(/\b(small|medium|large)\b/);
-  return quantity * average * (size ? SIZE_MODIFIERS[size[1]] : 1);
+  const average = lookup(AVERAGE_PIECE_GRAMS, foodNames);
+  if (average === undefined) return null;
+  return quantity * average * (lookup(SIZE_FACTORS, [measure]) ?? 1);
 }
 
 export function quantityToGrams(
@@ -229,19 +209,21 @@ export function quantityToGrams(
   foodNames: string[],
   measure?: string | null,
 ): number | null {
+  const gramsPerMl = () =>
+    lookup(GRAMS_PER_ML, foodNames) ?? DEFAULT_SOLID_GRAMS_PER_ML;
   switch (unit) {
     case Unit.G:
       return quantity;
     case Unit.KG:
       return quantity * 1000;
     case Unit.ML:
-      return quantity * gramsPerMl(foodNames);
+      return quantity * gramsPerMl();
     case Unit.L:
-      return quantity * 1000 * gramsPerMl(foodNames);
+      return quantity * 1000 * gramsPerMl();
     case Unit.CUPS:
-      return quantity * ML_PER_CUP * gramsPerMl(foodNames);
+      return quantity * ML_PER_CUP * gramsPerMl();
     case Unit.PIECES:
-      return pieceGrams(quantity, foodNames, (measure ?? '').toLowerCase());
+      return pieceGrams(quantity, foodNames, measure);
     default:
       return null;
   }

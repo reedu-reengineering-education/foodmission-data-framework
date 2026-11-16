@@ -36,6 +36,7 @@ import { rankSearchCandidates } from '../../generic-foods/utils/search-ranking';
 import {
   calculateRecipeNutrition,
   isUserProvidedNutrition,
+  markedAsEntered,
 } from '../nutrition/calculate-recipe-nutrition';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
@@ -44,12 +45,6 @@ type LocalizableIngredient = {
   genericFoodId?: string | null;
   genericFood?: { foodName: string } | null;
 };
-
-function markedAsEntered(
-  nutritionalInfo: Record<string, any> | undefined,
-): Record<string, any> | undefined {
-  return nutritionalInfo && { ...nutritionalInfo, estimated: false };
-}
 
 @Injectable()
 export class RecipesService {

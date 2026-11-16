@@ -11,6 +11,7 @@ import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
 import {
   calculateRecipeNutrition,
   NUTRITION_INGREDIENT_SELECT,
+  toNutritionJson,
 } from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
@@ -268,10 +269,7 @@ async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
     await prisma.recipe.update({
       where: { id: recipe.id },
       data: {
-        nutritionalInfo:
-          nutrition === null
-            ? Prisma.JsonNull
-            : (nutrition as unknown as Prisma.InputJsonValue),
+        nutritionalInfo: toNutritionJson(nutrition),
       },
     });
   }

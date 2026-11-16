@@ -18,6 +18,7 @@ import { normalizePagination } from '../../common/utils/pagination';
 import {
   NUTRITION_INGREDIENT_SELECT,
   NutritionalInfo,
+  toNutritionJson,
 } from '../nutrition/calculate-recipe-nutrition';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
@@ -242,10 +243,7 @@ export class RecipesRepository implements BaseRepository<
     await this.prisma.recipe.update({
       where: { id: recipeId },
       data: {
-        nutritionalInfo:
-          nutrition === null
-            ? Prisma.JsonNull
-            : (nutrition as unknown as Prisma.InputJsonValue),
+        nutritionalInfo: toNutritionJson(nutrition),
       },
     });
   }

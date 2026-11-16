@@ -1,4 +1,41 @@
-import { quantityToGrams } from './ingredient-grams';
+import { lookup, quantityToGrams, wordTable } from './ingredient-grams';
+
+describe('lookup', () => {
+  const table = wordTable({ egg: 50, 'egg yolk': 17, 'mint|dill': 1 });
+
+  it('matches whole words and their plurals', () => {
+    expect(lookup(table, ['Eggs'])).toBe(50);
+    expect(lookup(table, ['Eggplant'])).toBeUndefined();
+  });
+
+  it('prefers the longest word', () => {
+    expect(lookup(table, ['Egg Yolks'])).toBe(17);
+  });
+
+  it('keeps alternatives inside word boundaries', () => {
+    expect(lookup(table, ['Mint'])).toBe(1);
+    expect(lookup(table, ['Spearmint'])).toBeUndefined();
+  });
+
+  it('tries the texts in order', () => {
+    expect(lookup(table, [null, 'Zutat', 'Egg whole raw'])).toBe(50);
+  });
+});
+
+describe('count words', () => {
+  it('weighs plural count words like the singular', () => {
+    expect(
+      quantityToGrams(
+        { quantity: 3, unit: 'PIECES' },
+        ['Tomato Puree'],
+        '3 cans',
+      ),
+    ).toBe(1200);
+    expect(
+      quantityToGrams({ quantity: 4, unit: 'PIECES' }, ['Thyme'], '4 sprigs'),
+    ).toBe(8);
+  });
+});
 
 describe('quantityToGrams', () => {
   it('falls back to the linked food name when the ingredient name is not English', () => {
