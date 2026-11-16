@@ -167,160 +167,54 @@ describe('RecipesRepository', () => {
       expect(result.title).toBe('Test Recipe');
     });
 
-    it('should create recipe with ingredients using nested create', async () => {
-      const recipeWithIngredients = {
-        ...mockRecipe,
-        ingredients: mockIngredients,
-      };
-      mockPrismaService.recipe.create.mockResolvedValueOnce(
-        recipeWithIngredients,
-      );
-
-      const result = await repository.create({
-        userId: 'user-1',
-        title: 'Test Recipe',
-        ingredients: [
-          { name: 'Chicken', measure: '500g', genericFoodId: 'fc-1' },
-          { name: 'Salt', measure: '1 tsp' },
-        ],
-      });
-
-      expect(mockPrismaService.recipe.create).toHaveBeenCalledWith({
-        data: {
-          userId: 'user-1',
-          title: 'Test Recipe',
-          ingredients: {
-            create: [
-              {
-                name: 'Chicken',
-                measure: '500g',
-                quantity: null,
-                unit: null,
-                order: 0,
-                itemType: 'generic_food',
-                foodProductId: null,
-                genericFoodId: 'fc-1',
-              },
-              {
-                name: 'Salt',
-                measure: '1 tsp',
-                quantity: null,
-                unit: null,
-                order: 1,
-                itemType: 'generic_food',
-                foodProductId: null,
-                genericFoodId: null,
-              },
-            ],
-          },
-        },
-        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
-      });
-      expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(
-        2,
-      );
-    });
-
-    it('should set itemType to food_product when foodProductId is provided', async () => {
-      mockPrismaService.recipe.create.mockResolvedValueOnce({
-        ...mockRecipe,
-        ingredients: [
-          {
-            ...mockIngredients[0],
-            itemType: 'food_product',
-            foodProductId: 'food-1',
-          },
-        ],
-      });
-
-      await repository.create({
-        userId: 'user-1',
-        title: 'Test Recipe',
-        ingredients: [
-          { name: 'Product X', measure: '100g', foodProductId: 'food-1' },
-        ],
-      });
-
-      expect(mockPrismaService.recipe.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
-          ingredients: {
-            create: [
-              expect.objectContaining({
-                itemType: 'food_product',
-                foodProductId: 'food-1',
-                genericFoodId: null,
-              }),
-            ],
-          },
-        }),
-        include: expect.any(Object),
-      });
-    });
-
-    it('should store user quantity, unit and measure as sent without parsing', async () => {
+    it('maps each ingredient: order, link type, amount as sent', async () => {
       mockPrismaService.recipe.create.mockResolvedValueOnce(mockRecipe);
 
       await repository.create({
         userId: 'user-1',
         title: 'Test Recipe',
         ingredients: [
+          { name: 'Chicken', measure: '500g', genericFoodId: 'fc-1' },
+          { name: 'Product X', foodProductId: 'food-1', order: 5 },
           { name: 'Flour', measure: '2 tbsp', quantity: 20, unit: 'G' },
-          { name: 'Milk', quantity: 1, unit: 'CUPS' },
-          { name: 'Salt', measure: '500g' },
         ],
       });
 
-      expect(mockPrismaService.recipe.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
-          ingredients: {
-            create: [
-              expect.objectContaining({
-                measure: '2 tbsp',
-                quantity: 20,
-                unit: 'G',
-              }),
-              expect.objectContaining({
-                measure: null,
-                quantity: 1,
-                unit: 'CUPS',
-              }),
-              expect.objectContaining({
-                measure: '500g',
-                quantity: null,
-                unit: null,
-              }),
-            ],
+      expect(
+        mockPrismaService.recipe.create.mock.calls[0][0].data.ingredients,
+      ).toEqual({
+        create: [
+          {
+            name: 'Chicken',
+            measure: '500g',
+            quantity: null,
+            unit: null,
+            order: 0,
+            itemType: 'generic_food',
+            foodProductId: null,
+            genericFoodId: 'fc-1',
           },
-        }),
-        include: expect.any(Object),
-      });
-    });
-
-    it('should preserve explicit order values in ingredients', async () => {
-      mockPrismaService.recipe.create.mockResolvedValueOnce({
-        ...mockRecipe,
-        ingredients: mockIngredients,
-      });
-
-      await repository.create({
-        userId: 'user-1',
-        title: 'Test Recipe',
-        ingredients: [
-          { name: 'Second', measure: '1', order: 5 },
-          { name: 'First', measure: '2', order: 1 },
+          {
+            name: 'Product X',
+            measure: null,
+            quantity: null,
+            unit: null,
+            order: 5,
+            itemType: 'food_product',
+            foodProductId: 'food-1',
+            genericFoodId: null,
+          },
+          {
+            name: 'Flour',
+            measure: '2 tbsp',
+            quantity: 20,
+            unit: 'G',
+            order: 2,
+            itemType: 'generic_food',
+            foodProductId: null,
+            genericFoodId: null,
+          },
         ],
-      });
-
-      expect(mockPrismaService.recipe.create).toHaveBeenCalledWith({
-        data: expect.objectContaining({
-          ingredients: {
-            create: [
-              expect.objectContaining({ name: 'Second', order: 5 }),
-              expect.objectContaining({ name: 'First', order: 1 }),
-            ],
-          },
-        }),
-        include: expect.any(Object),
       });
     });
   });
@@ -344,76 +238,17 @@ describe('RecipesRepository', () => {
       expect(result.title).toBe('Updated Title');
     });
 
-    it('should replace all ingredients when ingredients array is provided', async () => {
-      mockPrismaService.recipeIngredient.deleteMany.mockResolvedValueOnce({
-        count: 2,
-      });
-      mockPrismaService.recipe.update.mockResolvedValueOnce({
-        ...mockRecipe,
-        ingredients: [{ ...mockIngredients[0], name: 'New Ingredient' }],
-      });
+    it.each([
+      ['replaces all ingredients', [{ name: 'Rice', measure: '200g' }], 1],
+      ['clears all ingredients', [], 0],
+    ])('%s when ingredients are sent', async (_, ingredients, created) => {
+      mockPrismaService.recipe.update.mockResolvedValueOnce(mockRecipe);
 
-      const result = await repository.update('recipe-1', {
-        ingredients: [{ name: 'New Ingredient', measure: '200g' }],
-      });
+      await repository.update('recipe-1', { ingredients });
 
-      // Should use transaction
-      expect(mockPrismaService.$transaction).toHaveBeenCalled();
-
-      // Should delete existing ingredients
-      expect(
-        mockPrismaService.recipeIngredient.deleteMany,
-      ).toHaveBeenCalledWith({
-        where: { recipeId: 'recipe-1' },
-      });
-
-      // Should create new ingredients
-      expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
-        where: { id: 'recipe-1' },
-        data: {
-          ingredients: {
-            create: [
-              {
-                name: 'New Ingredient',
-                measure: '200g',
-                quantity: null,
-                unit: null,
-                order: 0,
-                itemType: 'generic_food',
-                foodProductId: null,
-                genericFoodId: null,
-              },
-            ],
-          },
-        },
-        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
-      });
-      expect((result as { ingredients?: unknown[] }).ingredients).toHaveLength(
-        1,
-      );
-    });
-
-    it('should clear all ingredients when empty array is provided', async () => {
-      mockPrismaService.recipeIngredient.deleteMany.mockResolvedValueOnce({
-        count: 2,
-      });
-      mockPrismaService.recipe.update.mockResolvedValueOnce({
-        ...mockRecipe,
-        ingredients: [],
-      });
-
-      await repository.update('recipe-1', { ingredients: [] });
-
-      expect(
-        mockPrismaService.recipeIngredient.deleteMany,
-      ).toHaveBeenCalledWith({
-        where: { recipeId: 'recipe-1' },
-      });
-      expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
-        where: { id: 'recipe-1' },
-        data: { ingredients: undefined },
-        include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
-      });
+      const { data } = mockPrismaService.recipe.update.mock.calls[0][0];
+      expect(data.ingredients.deleteMany).toEqual({});
+      expect(data.ingredients.create).toHaveLength(created);
     });
   });
 

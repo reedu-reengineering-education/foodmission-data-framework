@@ -74,7 +74,6 @@ export interface UpdateRecipeData extends Partial<
 > {
   rating?: number;
   ratingCount?: number;
-  ingredients?: CreateRecipeIngredientData[];
 }
 
 function toIngredientCreateInput(
@@ -164,11 +163,9 @@ export class RecipesRepository implements BaseRepository<
     return this.prisma.recipe.create({
       data: {
         ...recipeData,
-        ingredients: ingredients?.length
-          ? {
-              create: ingredients.map(toIngredientCreateInput),
-            }
-          : undefined,
+        ingredients: ingredients && {
+          create: ingredients.map(toIngredientCreateInput),
+        },
       },
       include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
@@ -176,32 +173,17 @@ export class RecipesRepository implements BaseRepository<
 
   async update(id: string, data: UpdateRecipeData): Promise<Recipe> {
     const { ingredients, ...recipeData } = data;
-
-    // If ingredients are provided, replace them all
-    if (ingredients !== undefined) {
-      return this.prisma.$transaction(async (tx) => {
-        // Delete existing ingredients
-        await tx.recipeIngredient.deleteMany({ where: { recipeId: id } });
-
-        // Update recipe and create new ingredients
-        return tx.recipe.update({
-          where: { id },
-          data: {
-            ...recipeData,
-            ingredients: ingredients?.length
-              ? {
-                  create: ingredients.map(toIngredientCreateInput),
-                }
-              : undefined,
-          },
-          include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
-        });
-      });
-    }
-
     return this.prisma.recipe.update({
       where: { id },
-      data: recipeData,
+      data: {
+        ...recipeData,
+        ...(ingredients && {
+          ingredients: {
+            deleteMany: {},
+            create: ingredients.map(toIngredientCreateInput),
+          },
+        }),
+      },
       include: RECIPE_WITH_INGREDIENTS_AND_MEALS_INCLUDE,
     });
   }
