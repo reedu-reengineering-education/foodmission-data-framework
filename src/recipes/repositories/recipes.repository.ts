@@ -233,7 +233,7 @@ export class RecipesRepository implements BaseRepository<
         ...(nutritionalInfo !== undefined && {
           nutritionalInfo: toNutritionJson(nutritionalInfo),
         }),
-        ...(carbonFootprint !== undefined && { carbonFootprint }),
+        carbonFootprint,
       },
     });
   }

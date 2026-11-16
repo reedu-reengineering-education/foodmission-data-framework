@@ -55,6 +55,13 @@ describe('calculateRecipeCarbonFootprint', () => {
     ],
     ['an unlinked ingredient is over 15 g', item('Olive oil', '1 cup')],
     [
+      'an ingredient is linked only to a food product',
+      {
+        ...item('Yoghurt', '150g'),
+        foodProduct: { name: 'Greek yoghurt', energyKcal: 97 },
+      },
+    ],
+    [
       'an ingredient cannot be weighed',
       item('Butter', 'To taste', { energyKcal: 740, carbonFootprint: 7.94 }),
     ],

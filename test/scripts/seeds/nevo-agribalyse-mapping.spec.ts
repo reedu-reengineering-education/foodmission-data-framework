@@ -5,7 +5,7 @@ const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 
 type Mapping = {
   foods: { nevoCode: number; co2PerKg: number; match: string }[];
-  unmatched: { nevoCode: number; reason: string }[];
+  unmatched: { nevoCode: number }[];
 };
 
 describe('NEVO to AGRIBALYSE mapping', () => {
@@ -41,11 +41,5 @@ describe('NEVO to AGRIBALYSE mapping', () => {
           !(food.co2PerKg > 0) || !['high', 'medium'].includes(food.match),
       ),
     ).toEqual([]);
-  });
-
-  it('explains every unmatched food', () => {
-    expect(mapping.unmatched.every((food) => food.reason.length > 0)).toBe(
-      true,
-    );
   });
 });

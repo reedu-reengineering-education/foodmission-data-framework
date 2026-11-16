@@ -448,19 +448,16 @@ export class RecipesService {
       (dto.ingredients !== undefined &&
         dto.nutritionalInfo === undefined &&
         !isUserProvidedNutrition(storedNutrition));
-    const needsCarbon = dto.ingredients !== undefined;
-    if (!needsNutrition && !needsCarbon) return recipe;
+    if (!needsNutrition && dto.ingredients === undefined) return recipe;
 
     try {
       const ingredients = await this.recipeRepository.findNutritionIngredients(
         recipe.id,
       );
       const estimates = {
+        carbonFootprint: calculateRecipeCarbonFootprint({ ingredients }),
         ...(needsNutrition && {
           nutritionalInfo: calculateRecipeNutrition({ ingredients }),
-        }),
-        ...(needsCarbon && {
-          carbonFootprint: calculateRecipeCarbonFootprint({ ingredients }),
         }),
       };
       await this.recipeRepository.updateEstimates(recipe.id, estimates);

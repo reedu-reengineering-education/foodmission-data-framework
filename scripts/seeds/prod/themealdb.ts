@@ -234,9 +234,9 @@ async function applyCarbonFootprints(prisma: PrismaClient): Promise<void> {
 
 async function recalculateEstimates(prisma: PrismaClient): Promise<void> {
   const recipes = await prisma.recipe.findMany({
-    where: { origin: RecipeOrigin.THEMEALDB },
     select: {
       id: true,
+      origin: true,
       ingredients: {
         orderBy: { order: 'asc' },
         select: NUTRITION_INGREDIENT_SELECT,
@@ -244,21 +244,27 @@ async function recalculateEstimates(prisma: PrismaClient): Promise<void> {
     },
   });
 
+  let seeded = 0;
   let withNutrition = 0;
   let withCarbon = 0;
   for (const recipe of recipes) {
-    const nutrition = calculateRecipeNutrition(recipe);
+    const isSeeded = recipe.origin === RecipeOrigin.THEMEALDB;
+    const nutrition = isSeeded ? calculateRecipeNutrition(recipe) : null;
     const carbonFootprint = calculateRecipeCarbonFootprint(recipe);
+    if (isSeeded) seeded++;
     if (nutrition) withNutrition++;
     if (carbonFootprint !== null) withCarbon++;
     await prisma.recipe.update({
       where: { id: recipe.id },
-      data: { nutritionalInfo: toNutritionJson(nutrition), carbonFootprint },
+      data: {
+        carbonFootprint,
+        ...(isSeeded && { nutritionalInfo: toNutritionJson(nutrition) }),
+      },
     });
   }
 
   console.log(
-    `   🥗 Recipe nutrition: stored ${withNutrition}, withheld ${recipes.length - withNutrition}`,
+    `   🥗 Recipe nutrition: stored ${withNutrition}, withheld ${seeded - withNutrition}`,
   );
   console.log(
     `   🌍 Recipe carbon footprint: stored ${withCarbon}, withheld ${recipes.length - withCarbon}`,

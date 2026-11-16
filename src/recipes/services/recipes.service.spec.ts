@@ -331,7 +331,7 @@ describe('RecipesService', () => {
         'the user sends null to drop their own nutrition',
         { nutritionalInfo: null },
         { energyKcal: 300, estimated: false },
-        ['nutritionalInfo'],
+        ['carbonFootprint', 'nutritionalInfo'],
       ],
       [
         'the user sends new nutrition with the ingredients',

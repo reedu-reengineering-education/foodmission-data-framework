@@ -157,7 +157,7 @@ const CONDIMENTS: WordTable = [
   [/^peppers?$/i, CONDIMENT_GRAMS],
 ];
 
-export type WeighedIngredient = {
+type WeighedIngredient = {
   ingredient: NutritionIngredient;
   source: NutrientSource | null;
   grams: number;
@@ -216,7 +216,7 @@ function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
     : { ingredient, source, grams: guessed, guessed: true };
 }
 
-export const sum = (values: number[]) =>
+const sum = (values: number[]) =>
   values.reduce((total, value) => total + value, 0);
 
 const isKnown = (value: number | null | undefined): value is number =>

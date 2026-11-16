@@ -1,7 +1,6 @@
 import {
   NutritionIngredient,
   dishGrams,
-  sum,
   weighIngredients,
 } from './calculate-recipe-nutrition';
 
@@ -13,19 +12,14 @@ export function calculateRecipeCarbonFootprint({
   const weighed = weighIngredients(ingredients);
   if (!weighed) return null;
 
-  const counted = weighed.filter(({ grams, source }) => grams > 0 && source);
-  const co2PerKg = counted.map(
-    ({ ingredient }) => ingredient.genericFood?.carbonFootprint,
-  );
-  if (
-    counted.length === 0 ||
-    co2PerKg.some((value) => typeof value !== 'number')
-  ) {
-    return null;
+  let gramsCo2 = 0;
+  for (const { ingredient, source, grams } of weighed) {
+    if (grams === 0 || !source) continue;
+    const co2PerKg = ingredient.genericFood?.carbonFootprint;
+    if (co2PerKg == null) return null;
+    gramsCo2 += co2PerKg * grams;
   }
+  if (gramsCo2 === 0) return null;
 
-  const totalKgCo2 = sum(
-    counted.map(({ grams }, i) => (co2PerKg[i]! * grams) / 1000),
-  );
-  return Math.round((totalKgCo2 / (dishGrams(weighed) / 1000)) * 100) / 100;
+  return Math.round((gramsCo2 / dishGrams(weighed)) * 100) / 100;
 }
