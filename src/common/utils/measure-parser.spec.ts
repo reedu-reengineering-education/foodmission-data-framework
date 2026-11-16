@@ -175,6 +175,16 @@ describe('quantityToGrams', () => {
     expect(result).toBeCloseTo(141.6, 1);
   });
 
+  it('does not weigh a lemongrass stalk as a lemon', () => {
+    expect(
+      quantityToGrams(
+        { quantity: 2, unit: 'PIECES' },
+        ['Lemongrass Stalks'],
+        '2',
+      ),
+    ).toBe(30);
+  });
+
   it('weighs egg yolks and whites as parts of an egg', () => {
     expect(
       quantityToGrams({ quantity: 6, unit: 'PIECES' }, ['Egg Yolks'], '6'),

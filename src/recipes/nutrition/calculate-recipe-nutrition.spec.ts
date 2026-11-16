@@ -173,6 +173,55 @@ describe('calculateRecipeNutrition', () => {
     },
   );
 
+  it('leaves out a nutrient that a counted ingredient has no value for', () => {
+    const result = calculateRecipeNutrition({
+      ingredients: [
+        {
+          name: 'Chicken',
+          measure: '100g',
+          genericFood: { energyKcal: 120, fat: 3, vitaminA: null },
+        },
+        {
+          name: 'Rice',
+          measure: '100g',
+          genericFood: { energyKcal: 130, fat: 1, vitaminA: 5, fiber: 2 },
+        },
+      ],
+    });
+
+    expect(result?.per100g).toEqual({ energyKcal: 125, fat: 2 });
+  });
+
+  it('treats a linked food without an energy value as not linked', () => {
+    expect(
+      calculateRecipeNutrition({
+        ingredients: [
+          food('Beef', '500g', { energyKcal: 200 }),
+          {
+            name: 'Protein bar',
+            measure: '100g',
+            foodProduct: { name: 'Protein bar', energyKcal: null, fat: 10 },
+          },
+        ],
+      }),
+    ).toBeNull();
+  });
+
+  it('falls back to the generic food when the product has no energy value', () => {
+    const result = calculateRecipeNutrition({
+      ingredients: [
+        {
+          name: 'Yoghurt',
+          measure: '100g',
+          foodProduct: { energyKcal: null },
+          genericFood: { energyKcal: 60 },
+        },
+      ],
+    });
+
+    expect(result?.per100g.energyKcal).toBe(60);
+  });
+
   it('uses the linked product over the generic food when both are set', () => {
     const result = calculateRecipeNutrition({
       ingredients: [

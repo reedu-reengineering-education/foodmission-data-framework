@@ -33,7 +33,7 @@ const NUTRITION_VALUE_SELECT = {
   potassium: true,
 } as const;
 
-type NutrientField = keyof typeof NUTRITION_VALUE_SELECT;
+export type NutrientField = keyof typeof NUTRITION_VALUE_SELECT;
 
 const NUTRIENT_FIELDS = Object.keys(NUTRITION_VALUE_SELECT) as NutrientField[];
 
@@ -144,7 +144,11 @@ const CONDIMENT_NAME = new RegExp(
 function nutrientSource(
   ingredient: NutritionIngredient,
 ): NutrientSource | null {
-  return ingredient.foodProduct || ingredient.genericFood || null;
+  return (
+    [ingredient.foodProduct, ingredient.genericFood].find(
+      (food) => typeof food?.energyKcal === 'number',
+    ) ?? null
+  );
 }
 
 function foodNames(ingredient: NutritionIngredient): string[] {
@@ -224,14 +228,17 @@ function emptyTotals(): Record<NutrientField, number> {
 
 function addNutrients(
   totals: Record<NutrientField, number>,
+  unknownFields: Set<NutrientField>,
   source: NutrientSource,
   grams: number,
 ): void {
-  const scale = grams / 100;
+  if (grams === 0) return;
   for (const field of NUTRIENT_FIELDS) {
     const value = source[field];
     if (typeof value === 'number' && !Number.isNaN(value)) {
-      totals[field] += value * scale;
+      totals[field] += (value * grams) / 100;
+    } else {
+      unknownFields.add(field);
     }
   }
 }
@@ -254,6 +261,7 @@ export function calculateRecipeNutrition(recipe: {
   if (recipe.ingredients.length === 0) return null;
 
   const totals = emptyTotals();
+  const unknownFields = new Set<NutrientField>();
   const missingIngredients: string[] = [];
   let estimatedKcal = 0;
   let totalGrams = 0;
@@ -270,7 +278,7 @@ export function calculateRecipeNutrition(recipe: {
       missingIngredients.push(ingredient.name);
       totalGrams += grams;
       if (source) {
-        addNutrients(totals, source, grams);
+        addNutrients(totals, unknownFields, source, grams);
         estimatedKcal += ((source.energyKcal ?? 0) * grams) / 100;
       }
       continue;
@@ -289,7 +297,7 @@ export function calculateRecipeNutrition(recipe: {
       continue;
     }
 
-    addNutrients(totals, source, measuredWeight);
+    addNutrients(totals, unknownFields, source, measuredWeight);
   }
 
   if (
@@ -304,10 +312,9 @@ export function calculateRecipeNutrition(recipe: {
 
   return {
     per100g: Object.fromEntries(
-      NUTRIENT_FIELDS.map((field) => [
-        field,
-        round((totals[field] * 100) / dishGrams),
-      ]),
+      NUTRIENT_FIELDS.filter((field) => !unknownFields.has(field)).map(
+        (field) => [field, round((totals[field] * 100) / dishGrams)],
+      ),
     ),
     estimated: true,
     missingIngredients,
