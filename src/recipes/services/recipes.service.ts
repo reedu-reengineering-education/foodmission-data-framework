@@ -75,18 +75,14 @@ export class RecipesService {
 
     try {
       const recipe = await this.recipeRepository.create({
-        ...createRecipeDto,
-        nutritionalInfo: markedAsEntered(createRecipeDto.nutritionalInfo),
-        ingredients: await this.linkToGenericFoods(createRecipeDto.ingredients),
+        ...(await this.toRecipeData(createRecipeDto)),
         allergens: createRecipeDto.allergens ?? [],
         isPublic: createRecipeDto.isPublic ?? false,
         origin: RecipeOrigin.USER,
         userId,
       });
       return this.toResponse(
-        createRecipeDto.nutritionalInfo === undefined
-          ? await this.withEstimatedNutrition(recipe)
-          : recipe,
+        await this.withNutritionIfNeeded(recipe, createRecipeDto),
       );
     } catch (error) {
       throw handlePrismaError(error, 'create recipe', 'Recipe');
@@ -97,46 +93,14 @@ export class RecipesService {
     userId: string,
     query: QueryRecipeDto,
   ): Promise<MultipleRecipeResponseDto> {
-    const { page = 1, limit = 10 } = query;
-    const skip = (page - 1) * limit;
-
-    const where: Prisma.RecipeWhereInput = {
-      userId,
-      ...this.buildFiltersWhere(query),
-    };
-
-    try {
-      const result = await this.recipeRepository.findWithPagination({
-        skip,
-        take: limit,
-        where,
-        orderBy: { createdAt: 'desc' },
-      });
-
-      const data = await this.localizeIngredients(result.data, query.lang);
-
-      return plainToInstance(
-        MultipleRecipeResponseDto,
-        {
-          data: data.map((recipe) => this.toResponse(recipe)),
-          total: result.total,
-          page: result.page,
-          limit: result.limit,
-          totalPages: result.totalPages,
-        },
-        { excludeExtraneousValues: true },
-      );
-    } catch (error) {
-      throw handlePrismaError(error, 'find recipes', 'Recipe');
-    }
+    return this.findPage({ userId, ...this.buildFiltersWhere(query) }, query);
   }
 
   async findAll(
     userId: string,
     query: QueryRecipeDto,
   ): Promise<MultipleRecipeResponseDto> {
-    const { page = 1, limit = 10, isPublic } = query;
-    const skip = (page - 1) * limit;
+    const { isPublic } = query;
 
     // Visibility: when isPublic is explicit, use it; otherwise show user's recipes OR public
     const visibilityWhere: Prisma.RecipeWhereInput =
@@ -146,10 +110,18 @@ export class RecipesService {
           ? { userId, isPublic: false }
           : { OR: [{ userId }, { isPublic: true }] };
 
-    const where: Prisma.RecipeWhereInput = {
-      ...visibilityWhere,
-      ...this.buildFiltersWhere(query),
-    };
+    return this.findPage(
+      { ...visibilityWhere, ...this.buildFiltersWhere(query) },
+      query,
+    );
+  }
+
+  private async findPage(
+    where: Prisma.RecipeWhereInput,
+    query: QueryRecipeDto,
+  ): Promise<MultipleRecipeResponseDto> {
+    const { page = 1, limit = 10 } = query;
+    const skip = (page - 1) * limit;
 
     try {
       const result = await this.recipeRepository.findWithPagination({
@@ -383,19 +355,18 @@ export class RecipesService {
     userId: string,
   ): Promise<RecipeResponseDto> {
     const existing = await this.getOwnedRecipeOrThrow(id, userId);
-    const estimate =
-      updateRecipeDto.ingredients !== undefined &&
-      updateRecipeDto.nutritionalInfo === undefined &&
-      !isUserProvidedNutrition(existing.nutritionalInfo);
 
     try {
-      const updated = await this.recipeRepository.update(id, {
-        ...updateRecipeDto,
-        nutritionalInfo: markedAsEntered(updateRecipeDto.nutritionalInfo),
-        ingredients: await this.linkToGenericFoods(updateRecipeDto.ingredients),
-      });
+      const updated = await this.recipeRepository.update(
+        id,
+        await this.toRecipeData(updateRecipeDto),
+      );
       return this.toResponse(
-        estimate ? await this.withEstimatedNutrition(updated) : updated,
+        await this.withNutritionIfNeeded(
+          updated,
+          updateRecipeDto,
+          existing.nutritionalInfo,
+        ),
       );
     } catch (error) {
       throw handlePrismaError(error, 'update recipe', 'Recipe');
@@ -460,9 +431,25 @@ export class RecipesService {
     })?.id;
   }
 
-  private async withEstimatedNutrition<T extends { id: string }>(
+  private async toRecipeData<T extends UpdateRecipeDto>(dto: T) {
+    return {
+      ...dto,
+      nutritionalInfo: markedAsEntered(dto.nutritionalInfo),
+      ingredients: await this.linkToGenericFoods(dto.ingredients),
+    };
+  }
+
+  private async withNutritionIfNeeded<T extends { id: string }>(
     recipe: T,
+    dto: UpdateRecipeDto,
+    storedNutrition?: unknown,
   ): Promise<T> {
+    const needsEstimate =
+      dto.ingredients !== undefined &&
+      dto.nutritionalInfo === undefined &&
+      !isUserProvidedNutrition(storedNutrition);
+    if (!needsEstimate) return recipe;
+
     try {
       const ingredients = await this.recipeRepository.findNutritionIngredients(
         recipe.id,

@@ -187,10 +187,15 @@ describe('RecipesService', () => {
       missingIngredients: [],
     };
 
-    it('estimates nutrition for a new recipe, stores it and returns it', async () => {
+    const withIngredients = { ingredients: [{ name: 'Chicken' }] };
+
+    beforeEach(() => {
       mockRecipeRepository.create.mockResolvedValue(
         buildRecipe({ id: 'r1', userId }),
       );
+    });
+
+    it('estimates nutrition for a new recipe, stores it and returns it', async () => {
       mockRecipeRepository.findNutritionIngredients.mockResolvedValueOnce([
         {
           name: 'Chicken',
@@ -202,7 +207,10 @@ describe('RecipesService', () => {
         },
       ]);
 
-      const result = await service.create({ title: 'Test Recipe' }, userId);
+      const result = await service.create(
+        { title: 'Test Recipe', ...withIngredients },
+        userId,
+      );
 
       expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledWith(
         'r1',
@@ -212,11 +220,10 @@ describe('RecipesService', () => {
     });
 
     it('stores no nutrition when the ingredients cannot be weighed', async () => {
-      mockRecipeRepository.create.mockResolvedValue(
-        buildRecipe({ id: 'r1', userId }),
+      await service.create(
+        { title: 'Test Recipe', ...withIngredients },
+        userId,
       );
-
-      await service.create({ title: 'Test Recipe' }, userId);
 
       expect(mockRecipeRepository.updateNutrition).toHaveBeenCalledWith(
         'r1',
@@ -225,39 +232,31 @@ describe('RecipesService', () => {
     });
 
     it('still returns the new recipe when the estimate fails', async () => {
-      mockRecipeRepository.create.mockResolvedValue(
-        buildRecipe({ id: 'r1', userId }),
-      );
       mockRecipeRepository.updateNutrition.mockRejectedValueOnce(
         new Error('database unavailable'),
       );
 
-      const result = await service.create({ title: 'Test Recipe' }, userId);
+      const result = await service.create(
+        { title: 'Test Recipe', ...withIngredients },
+        userId,
+      );
 
       expect(result.id).toBe('r1');
     });
 
-    it('keeps nutrition the user sent with a new recipe', async () => {
-      const sent = { energyKcal: 300 };
-      mockRecipeRepository.create.mockResolvedValue({
-        ...buildRecipe({ id: 'r1', userId }),
-        nutritionalInfo: sent,
-      });
-
-      const result = await service.create(
-        { title: 'Test Recipe', nutritionalInfo: sent },
-        userId,
-      );
+    it.each([
+      ['has no ingredients', {}],
+      [
+        'comes with nutrition from the user',
+        { ...withIngredients, nutritionalInfo: { energyKcal: 300 } },
+      ],
+    ])('does not estimate a new recipe that %s', async (_, dto) => {
+      await service.create({ title: 'Test Recipe', ...dto }, userId);
 
       expect(mockRecipeRepository.updateNutrition).not.toHaveBeenCalled();
-      expect(result.nutritionalInfo).toEqual(sent);
     });
 
     it('marks nutrition the user sends as entered, whatever flag they send', async () => {
-      mockRecipeRepository.create.mockResolvedValue(
-        buildRecipe({ id: 'r1', userId }),
-      );
-
       await service.create(
         {
           title: 'Test Recipe',
