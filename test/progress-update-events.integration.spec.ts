@@ -28,12 +28,17 @@ const PARALLEL = 5;
 const times = <T>(n: number, make: () => T): T[] =>
   Array.from({ length: n }, make);
 
+// The ratio rule in the rules YAML is keyed by this catalog code, so the test
+// cannot use a PUEV-prefixed mission. On a seeded DB the real mission is used
+// as is; otherwise a PUEV-titled stand-in is created and removed again.
 const RATIO_MISSION = 'M.A1.2';
 
 async function cleanup(prisma: PrismaClient) {
   await prisma.user.deleteMany({ where: { keycloakId: { startsWith: P } } });
   await prisma.quest.deleteMany({ where: { code: { startsWith: P } } });
-  await prisma.mission.deleteMany({ where: { code: RATIO_MISSION } });
+  await prisma.mission.deleteMany({
+    where: { code: RATIO_MISSION, title: { startsWith: P } },
+  });
   await prisma.dimension.deleteMany({ where: { code: { startsWith: P } } });
 }
 
@@ -204,17 +209,19 @@ describeWithDb('progress UPDATED events (integration)', () => {
       } as unknown as ModuleRef,
       new AfterCommitQueue(),
     );
-    const ratioMission = await prisma.mission.create({
-      data: {
-        code: RATIO_MISSION,
-        dimensionId: dimension.id,
-        level: 'BEGINNER',
-        title: 'Ratio mission',
-        duration: '7 days',
-        goal: 'goal',
-        whyItMatters: 'why',
-      },
-    });
+    const ratioMission =
+      (await prisma.mission.findUnique({ where: { code: RATIO_MISSION } })) ??
+      (await prisma.mission.create({
+        data: {
+          code: RATIO_MISSION,
+          dimensionId: dimension.id,
+          level: 'BEGINNER',
+          title: `${P} ratio mission`,
+          duration: '7 days',
+          goal: 'goal',
+          whyItMatters: 'why',
+        },
+      }));
     ratioMissionId = ratioMission.id;
     const ratioQuest = await prisma.quest.create({
       data: {

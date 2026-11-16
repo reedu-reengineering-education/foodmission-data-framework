@@ -16,6 +16,7 @@ import { metricValue as counterValue } from '../../common/metrics/metric-value.t
 describe('UserEventService', () => {
   let service: UserEventService;
   let prisma: {
+    $executeRaw: jest.Mock;
     userEvent: { findUnique: jest.Mock; create: jest.Mock };
   };
   let rulesService: {
@@ -25,6 +26,7 @@ describe('UserEventService', () => {
 
   beforeEach(async () => {
     prisma = {
+      $executeRaw: jest.fn().mockResolvedValue(0),
       userEvent: {
         findUnique: jest.fn(),
         create: jest.fn(),
@@ -320,8 +322,50 @@ describe('UserEventService', () => {
     expect(questRecomputer.onCompletionEvent).not.toHaveBeenCalled();
   });
 
+  it('replays on P2002 race inside a transaction by rolling back to a savepoint', async () => {
+    const tx = {
+      $executeRaw: jest.fn().mockResolvedValue(0),
+      userEvent: {
+        findUnique: jest
+          .fn()
+          .mockResolvedValueOnce(null)
+          .mockResolvedValueOnce({ id: 'evt-race-tx' }),
+        create: jest
+          .fn()
+          .mockRejectedValue(
+            new Prisma.PrismaClientKnownRequestError(
+              'Unique constraint failed',
+              { code: 'P2002', clientVersion: 'test' },
+            ),
+          ),
+      },
+    } as unknown as Prisma.TransactionClient;
+
+    const result = await service.record(
+      {
+        userId: 'u1',
+        eventType: EventType.WALLET_POINTS_AWARDED,
+        source: EventSource.WALLET,
+        idempotencyKey: 'key-race-tx',
+      },
+      tx,
+    );
+
+    expect(result.replayed).toBe(true);
+    expect(result.event.id).toBe('evt-race-tx');
+    const sql = (tx.$executeRaw as jest.Mock).mock.calls.map((call) =>
+      String(call[0]),
+    );
+    expect(sql).toEqual([
+      'SAVEPOINT user_event_insert',
+      'ROLLBACK TO SAVEPOINT user_event_insert',
+    ]);
+    expect(rulesService.evaluateUserEvent).not.toHaveBeenCalled();
+  });
+
   it('awaits derived progress evaluation when called with a transaction client', async () => {
     const tx = {
+      $executeRaw: jest.fn().mockResolvedValue(0),
       userEvent: {
         findUnique: jest.fn().mockResolvedValue(null),
         create: jest.fn().mockResolvedValue({
