@@ -1,5 +1,5 @@
 import { Unit } from '@prisma/client';
-import { parseQuantityUnit } from '../../common/utils/measure-parser';
+import { parseQuantityUnit } from '../../../scripts/seeds/prod/measure-parser';
 import {
   calculateRecipeNutrition,
   NutritionIngredient,

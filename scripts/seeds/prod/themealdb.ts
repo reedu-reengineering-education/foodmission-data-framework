@@ -7,7 +7,7 @@ import {
 } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
-import { parseQuantityUnit } from '../../../src/common/utils/measure-parser';
+import { parseQuantityUnit } from './measure-parser';
 import {
   calculateRecipeNutrition,
   NUTRITION_INGREDIENT_SELECT,

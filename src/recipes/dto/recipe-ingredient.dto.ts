@@ -18,7 +18,6 @@ import {
   ValidationArguments,
 } from 'class-validator';
 import { Expose } from 'class-transformer';
-import { MAX_MEASURE_LENGTH } from '../../common/utils/measure-parser';
 
 /**
  * Validator: ensures 0 or 1 of foodProductId/genericFoodId is provided (not both)
@@ -49,6 +48,7 @@ const quantityUnitMessage =
       : invalidValueMessage;
 
 export const MAX_RECIPE_INGREDIENTS = 100;
+export const MAX_MEASURE_LENGTH = 100;
 export const MAX_INGREDIENT_NAME_LENGTH = 100;
 
 /**

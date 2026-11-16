@@ -1,5 +1,6 @@
 import { Unit } from '@prisma/client';
-import { ML_PER_CUP, ParsedQuantity } from '../../common/utils/measure-parser';
+
+export const ML_PER_CUP = 240;
 
 export type WordTable = [RegExp, number][];
 
@@ -236,7 +237,7 @@ function pieceGrams(
 }
 
 export function quantityToGrams(
-  { quantity, unit }: ParsedQuantity,
+  { quantity, unit }: { quantity: number; unit: Unit },
   foodNames: string[],
   measure?: string | null,
 ): number | null {
