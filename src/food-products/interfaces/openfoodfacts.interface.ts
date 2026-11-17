@@ -168,6 +168,7 @@ export interface ProductInfo {
   novaGroup?: number;
   ecoscoreGrade?: string;
   carbonFootprint?: number;
+  agribalyseCode?: string;
   nutritionDataPer?: string;
   imageUrl?: string;
   imageFrontUrl?: string;

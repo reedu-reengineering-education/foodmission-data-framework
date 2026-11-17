@@ -59,6 +59,8 @@ model FoodProduct {
   novaGroup       Int? // 1 = unprocessed, 4 = ultra-processed
   ecoscoreGrade   String? // a, b, c, d, e, unknown
   carbonFootprint Float? // CO₂ from known ingredients (kg CO₂e / kg product)
+  agribalyseCode  String?
+  agribalyseFood  AgribalyseFood? @relation(fields: [agribalyseCode], references: [code])
 
   // --- Nutrient levels (traffic lights) ---
   nutrientLevels Json? // { fat: "high", sugars: "high", salt: "low", "saturated-fat": "high" }
@@ -320,6 +322,7 @@ model AgribalyseFood {
   version      String
 
   genericFoods GenericFood[]
+  foodProducts FoodProduct[]
 
   @@index([ciqualCode])
   @@map("agribalyse_foods")

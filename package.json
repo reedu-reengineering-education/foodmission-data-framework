@@ -57,6 +57,8 @@
     "db:translations": "ts-node scripts/seeds/seed-translations.ts",
     "db:translations:prod": "node dist/scripts/seeds/seed-translations.js",
     "db:import:nevo-translations": "ts-node scripts/seeds/import-nevo-translations.ts",
+    "db:link:agribalyse-products": "ts-node scripts/link-food-products-to-agribalyse.ts",
+    "db:link:agribalyse-products:prod": "node dist/scripts/link-food-products-to-agribalyse.js",
     "db:seed:test": "ts-node scripts/dev/seed-test.ts",
     "db:seed:foods": "ts-node scripts/seeds/seed-food-products-only.ts",
     "db:seed:meal-logs": "ts-node scripts/seeds/dev/seed-meal-logs.ts",

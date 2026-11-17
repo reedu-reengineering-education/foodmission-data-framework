@@ -24,6 +24,9 @@ describe('FoodProductRepository', () => {
         delete: jest.fn(),
         count: jest.fn(),
       },
+      agribalyseFood: {
+        count: jest.fn(),
+      },
     };
   });
 
@@ -168,6 +171,24 @@ describe('FoodProductRepository', () => {
           ...createDto,
           createdBy: userId,
         }),
+      });
+    });
+
+    it.each([
+      ['keeps a known AGRIBALYSE code', 1, '31032'],
+      ['drops an AGRIBALYSE code missing from the table', 0, undefined],
+    ])('%s', async (_, known, stored) => {
+      mockPrismaService.agribalyseFood.count.mockResolvedValueOnce(known);
+      mockPrismaService.foodProduct.create.mockResolvedValueOnce(mockFood);
+
+      await repository.create({
+        name: 'Nutella',
+        createdBy: 'user-1',
+        agribalyseCode: '31032',
+      });
+
+      expect(mockPrismaService.foodProduct.create).toHaveBeenCalledWith({
+        data: { name: 'Nutella', createdBy: 'user-1', agribalyseCode: stored },
       });
     });
 

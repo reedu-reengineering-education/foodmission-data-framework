@@ -251,6 +251,7 @@ export class FoodProductService {
       isVegan: productInfo.isVegan ?? undefined,
       isVegetarian: productInfo.isVegetarian ?? undefined,
       isPalmOilFree: productInfo.isPalmOilFree ?? undefined,
+      agribalyseCode: productInfo.agribalyseCode,
     });
 
     return this.transformToResponseDto(food);

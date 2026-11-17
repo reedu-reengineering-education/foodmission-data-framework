@@ -19,6 +19,7 @@ import {
 
 export type FoodProductCreateInput = CreateFoodProductDto & {
   createdBy: string;
+  agribalyseCode?: string;
 };
 
 @Injectable()
@@ -116,10 +117,20 @@ export class FoodProductRepository implements BaseRepository<
     });
   }
 
-  async create(data: FoodProductCreateInput): Promise<FoodProduct> {
+  async create({
+    agribalyseCode,
+    ...data
+  }: FoodProductCreateInput): Promise<FoodProduct> {
+    const knownAgribalyseCode =
+      agribalyseCode &&
+      (await this.prisma.agribalyseFood.count({
+        where: { code: agribalyseCode },
+      }))
+        ? agribalyseCode
+        : undefined;
     try {
       return await this.prisma.foodProduct.create({
-        data,
+        data: { ...data, agribalyseCode: knownAgribalyseCode },
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {

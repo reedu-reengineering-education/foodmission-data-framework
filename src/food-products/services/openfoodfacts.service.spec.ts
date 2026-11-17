@@ -581,6 +581,42 @@ describe('OpenFoodFactsService', () => {
     });
   });
 
+  describe('AGRIBALYSE code', () => {
+    beforeEach(() => {
+      mockOffMongoRepository.isAvailable = true;
+    });
+
+    it.each([
+      [
+        'the environmental score data',
+        { environmental_score_data: { agribalyse: { code: '31032' } } },
+        '31032',
+      ],
+      [
+        'the older eco-score data',
+        { ecoscore_data: { agribalyse: { code: '31032' } } },
+        '31032',
+      ],
+      [
+        'the older data when the newer has no code',
+        {
+          environmental_score_data: { agribalyse: {} },
+          ecoscore_data: { agribalyse: { code: '31032' } },
+        },
+        '31032',
+      ],
+      ['nothing when OFF has no AGRIBALYSE match', {}, undefined],
+    ])('reads it from %s', async (_, fields, expected) => {
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce(
+        localDoc({ ...mockProduct.product, ...fields }),
+      );
+
+      const result = await service.getProductByBarcode('3017620422003');
+
+      expect(result?.agribalyseCode).toBe(expected);
+    });
+  });
+
   describe('local OFF database only (no live-API fallback)', () => {
     it('returns a product from the local database without calling the HTTP API', async () => {
       mockOffMongoRepository.isAvailable = true;

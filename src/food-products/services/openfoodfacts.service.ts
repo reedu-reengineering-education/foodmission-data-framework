@@ -26,6 +26,7 @@ import {
   extractOffNutritionPer,
 } from '../utils/off-nutrition';
 import { offImageUrl } from '../utils/off-images';
+import { offAgribalyseCode } from '../utils/off-agribalyse';
 import { describeError } from '../../common/utils/error.utils';
 
 @Injectable()
@@ -335,6 +336,7 @@ export class OpenFoodFactsService {
       nutritionGrade: this.toOptionalString(product.nutrition_grades),
       novaGroup: this.toOptionalNumber(product.nova_group),
       ecoscoreGrade: this.toOptionalString(product.ecoscore_grade),
+      agribalyseCode: offAgribalyseCode(product),
       carbonFootprint: (nutriments as Record<string, unknown> | undefined)?.[
         'carbon-footprint-from-known-ingredients_product'
       ]
