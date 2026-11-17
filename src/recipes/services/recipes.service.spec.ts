@@ -34,7 +34,7 @@ describe('RecipesService', () => {
     findRating: jest.fn(),
     upsertRating: jest.fn(),
     deleteRating: jest.fn(),
-    findNutritionIngredients: jest.fn().mockResolvedValue([]),
+    findEstimateIngredients: jest.fn().mockResolvedValue([]),
     findCuratedGenericFoodIds: jest.fn().mockResolvedValue(new Map()),
     updateEstimates: jest.fn().mockResolvedValue(undefined),
   };
@@ -196,12 +196,12 @@ describe('RecipesService', () => {
 
     beforeEach(() => {
       mockRecipeRepository.create.mockResolvedValue(
-        buildRecipe({ id: 'r1', userId, servings: 2 }),
+        buildRecipe({ id: 'r1', userId }),
       );
     });
 
     it('estimates nutrition and environmental impact for a new recipe, stores and returns them', async () => {
-      mockRecipeRepository.findNutritionIngredients.mockResolvedValueOnce([
+      mockRecipeRepository.findEstimateIngredients.mockResolvedValueOnce([
         {
           name: 'Chicken',
           measure: '200g',
@@ -221,8 +221,7 @@ describe('RecipesService', () => {
         },
       ]);
       const environmentalImpact = {
-        perKg: { co2: 5.58, efScoreMpt: 500 },
-        perServing: { co2: 0.558, efScoreMpt: 50 },
+        perKg: { co2: 5.58, efScoreMpt: 0.5 },
         coverage: 1,
         dqr: 2.1,
         source: 'AGRIBALYSE 3.2',
@@ -320,12 +319,7 @@ describe('RecipesService', () => {
         estimate,
         ['environmentalImpact', 'nutritionalInfo'],
       ],
-      [
-        'only servings change',
-        { servings: 2 },
-        estimate,
-        ['environmentalImpact'],
-      ],
+      ['only servings change', { servings: 2 }, estimate, []],
       ['only the title changes', { title: 'New title' }, estimate, []],
       [
         'ingredients change and the stored nutrition came from the user',

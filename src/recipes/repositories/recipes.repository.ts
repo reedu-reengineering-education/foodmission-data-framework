@@ -14,15 +14,12 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
-import {
-  EnvironmentalImpact,
-  toImpactJson,
-} from '../nutrition/calculate-recipe-impact';
+import { EnvironmentalImpact } from '../nutrition/calculate-recipe-impact';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
-  NUTRITION_INGREDIENT_SELECT,
+  ESTIMATE_INGREDIENT_SELECT,
   NutritionalInfo,
-  toNutritionJson,
+  toJsonColumn,
 } from '../nutrition/calculate-recipe-nutrition';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
@@ -213,11 +210,11 @@ export class RecipesRepository implements BaseRepository<
     );
   }
 
-  findNutritionIngredients(recipeId: string) {
+  findEstimateIngredients(recipeId: string) {
     return this.prisma.recipeIngredient.findMany({
       where: { recipeId },
       orderBy: { order: 'asc' },
-      select: NUTRITION_INGREDIENT_SELECT,
+      select: ESTIMATE_INGREDIENT_SELECT,
     });
   }
 
@@ -235,9 +232,9 @@ export class RecipesRepository implements BaseRepository<
       where: { id: recipeId },
       data: {
         ...(nutritionalInfo !== undefined && {
-          nutritionalInfo: toNutritionJson(nutritionalInfo),
+          nutritionalInfo: toJsonColumn(nutritionalInfo),
         }),
-        environmentalImpact: toImpactJson(environmentalImpact),
+        environmentalImpact: toJsonColumn(environmentalImpact),
       },
     });
   }

@@ -437,25 +437,24 @@ export class RecipesService {
     };
   }
 
-  private async withEstimates<
-    T extends { id: string; servings?: number | null },
-  >(recipe: T, dto: UpdateRecipeDto, storedNutrition?: unknown): Promise<T> {
+  private async withEstimates<T extends { id: string }>(
+    recipe: T,
+    dto: UpdateRecipeDto,
+    storedNutrition?: unknown,
+  ): Promise<T> {
     const needsNutrition =
       dto.nutritionalInfo === null ||
       (dto.ingredients !== undefined &&
         dto.nutritionalInfo === undefined &&
         !isUserProvidedNutrition(storedNutrition));
-    const needsImpact =
-      dto.ingredients !== undefined || dto.servings !== undefined;
-    if (!needsNutrition && !needsImpact) return recipe;
+    if (!needsNutrition && dto.ingredients === undefined) return recipe;
 
     try {
-      const ingredients = await this.recipeRepository.findNutritionIngredients(
+      const ingredients = await this.recipeRepository.findEstimateIngredients(
         recipe.id,
       );
       const { nutritionalInfo, environmentalImpact } = estimateRecipe({
         ingredients,
-        servings: recipe.servings,
       });
       const estimates = {
         environmentalImpact,

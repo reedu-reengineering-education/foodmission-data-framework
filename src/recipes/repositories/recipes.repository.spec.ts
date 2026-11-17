@@ -296,8 +296,7 @@ describe('RecipesRepository', () => {
 
   describe('updateEstimates', () => {
     const impact = {
-      perKg: { co2: 2.5, efScoreMpt: 250 },
-      perServing: null,
+      perKg: { co2: 2.5, efScoreMpt: 0.25 },
       coverage: 1,
       dqr: 2.5,
       source: 'AGRIBALYSE 3.2',

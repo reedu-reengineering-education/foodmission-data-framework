@@ -22,10 +22,8 @@ const item = (
   genericFood: food && { energyKcal: 100, ...food },
 });
 
-const impactOf = (
-  servings: number | null,
-  ...ingredients: NutritionIngredient[]
-) => estimateRecipe({ ingredients, servings }).environmentalImpact;
+const impactOf = (...ingredients: NutritionIngredient[]) =>
+  estimateRecipe({ ingredients }).environmentalImpact;
 
 const beef = item('Beef', '500g', {
   foodName: 'Beef stewing meat cooked',
@@ -37,20 +35,29 @@ const onion = item('Onion', '500g', {
 });
 
 describe('calculateRecipeImpact', () => {
-  it('reports CO2 and EF score per kg of dish and per serving', () => {
-    expect(impactOf(4, beef, onion)).toEqual({
-      perKg: { co2: 14.66, efScoreMpt: 1274.4 },
-      perServing: { co2: 3.665, efScoreMpt: 318.6 },
+  it('reports CO2 and EF score per kg of dish', () => {
+    expect(impactOf(beef, onion)).toEqual({
+      perKg: { co2: 14.66, efScoreMpt: 1.274 },
       coverage: 1,
       dqr: 2.6,
       source: 'AGRIBALYSE 3.2',
     });
   });
 
+  it('gives a single cooked ingredient its own AGRIBALYSE values per kg', () => {
+    expect(
+      impactOf(
+        item('Lentils', '300g', {
+          foodName: 'Lentils boiled',
+          agribalyseFood: agribalyse(0.585, 0.083),
+        }),
+      )?.perKg,
+    ).toEqual({ co2: 0.585, efScoreMpt: 0.083 });
+  });
+
   it('divides by the cooked dish weight', () => {
     expect(
       impactOf(
-        null,
         item('Beef', '400g', {
           foodName: 'Beef stewing meat raw',
           foodGroup: 'Meat and poultry',
@@ -60,13 +67,9 @@ describe('calculateRecipeImpact', () => {
     ).toBe(38.533);
   });
 
-  it('leaves out per serving when servings are unknown', () => {
-    expect(impactOf(null, beef)?.perServing).toBeNull();
-  });
-
   it('prefers the product AGRIBALYSE value over the generic food', () => {
     expect(
-      impactOf(null, {
+      impactOf({
         ...beef,
         foodProduct: {
           energyKcal: 100,
@@ -78,7 +81,6 @@ describe('calculateRecipeImpact', () => {
 
   it('accepts up to 5% of the weight without AGRIBALYSE data', () => {
     const impact = impactOf(
-      null,
       item('Beef', '960g', {
         foodName: 'Beef cooked',
         agribalyseFood: agribalyse(30, 3),
@@ -102,6 +104,6 @@ describe('calculateRecipeImpact', () => {
     ],
     ['there are no ingredients', []],
   ])('returns null when %s', (_, ingredients) => {
-    expect(impactOf(4, ...ingredients)).toBeNull();
+    expect(impactOf(...ingredients)).toBeNull();
   });
 });

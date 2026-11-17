@@ -1,8 +1,7 @@
 import { PrismaClient, RecipeOrigin } from '@prisma/client';
-import { toImpactJson } from '../../../src/recipes/nutrition/calculate-recipe-impact';
 import {
-  NUTRITION_INGREDIENT_SELECT,
-  toNutritionJson,
+  ESTIMATE_INGREDIENT_SELECT,
+  toJsonColumn,
 } from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
 import { estimateRecipe } from '../../../src/recipes/nutrition/estimate-recipe';
 
@@ -13,10 +12,9 @@ export async function recalculateRecipeEstimates(
     select: {
       id: true,
       origin: true,
-      servings: true,
       ingredients: {
         orderBy: { order: 'asc' },
-        select: NUTRITION_INGREDIENT_SELECT,
+        select: ESTIMATE_INGREDIENT_SELECT,
       },
     },
   });
@@ -33,8 +31,8 @@ export async function recalculateRecipeEstimates(
     await prisma.recipe.update({
       where: { id: recipe.id },
       data: {
-        environmentalImpact: toImpactJson(environmentalImpact),
-        ...(isSeeded && { nutritionalInfo: toNutritionJson(nutritionalInfo) }),
+        environmentalImpact: toJsonColumn(environmentalImpact),
+        ...(isSeeded && { nutritionalInfo: toJsonColumn(nutritionalInfo) }),
       },
     });
   }

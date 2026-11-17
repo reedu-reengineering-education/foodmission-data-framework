@@ -9,21 +9,17 @@ import {
   weighIngredients,
 } from './calculate-recipe-nutrition';
 
-export interface RecipeEstimates {
-  nutritionalInfo: NutritionalInfo | null;
-  environmentalImpact: EnvironmentalImpact | null;
-}
-
 export function estimateRecipe({
   ingredients,
-  servings,
 }: {
   ingredients: NutritionIngredient[];
-  servings?: number | null;
-}): RecipeEstimates {
+}): {
+  nutritionalInfo: NutritionalInfo | null;
+  environmentalImpact: EnvironmentalImpact | null;
+} {
   const weighed = weighIngredients(ingredients);
   return {
     nutritionalInfo: weighed && calculateRecipeNutrition(weighed),
-    environmentalImpact: weighed && calculateRecipeImpact(weighed, servings),
+    environmentalImpact: weighed && calculateRecipeImpact(weighed),
   };
 }

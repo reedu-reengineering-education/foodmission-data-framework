@@ -63,13 +63,12 @@ export class RecipeResponseDto {
 
   @ApiPropertyOptional({
     description:
-      'Environmental impact from AGRIBALYSE (ADEME) values of the linked foods: CO2 in kg CO2 eq and the EF single score in mPt, per kg of the dish and per serving. coverage is the share of ingredient weight with AGRIBALYSE data, dqr the weighted data quality (1 best, 5 worst). Null when less than 95% of the ingredient weight has data or an ingredient cannot be weighed',
+      'Environmental impact from AGRIBALYSE (ADEME) values of the linked foods: CO2 in kg CO2 eq and the EF single score in mPt, per kg of the dish. coverage is the share of ingredient weight with AGRIBALYSE data, dqr the weighted data quality (1 best, 5 worst). Null when less than 95% of the ingredient weight has data or an ingredient cannot be weighed',
     nullable: true,
     example: {
-      perKg: { co2: 2.35, efScoreMpt: 241.3 },
-      perServing: { co2: 0.82, efScoreMpt: 84.5 },
+      perKg: { co2: 2.416, efScoreMpt: 0.301 },
       coverage: 1,
-      dqr: 2.61,
+      dqr: 2.92,
       source: 'AGRIBALYSE 3.2',
     },
   })

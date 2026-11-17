@@ -39,7 +39,7 @@ async function main() {
           ? +(impact.perKg.co2 / dish.co2PerKg).toFixed(2)
           : '',
         'EF ratio': impact
-          ? +(impact.perKg.efScoreMpt / 1000 / dish.efScorePerKg).toFixed(2)
+          ? +(impact.perKg.efScoreMpt / dish.efScorePerKg).toFixed(2)
           : '',
       });
     }

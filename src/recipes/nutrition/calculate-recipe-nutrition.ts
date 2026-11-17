@@ -1,4 +1,4 @@
-import { Prisma, Unit } from '@prisma/client';
+import { AgribalyseFood, Prisma, Unit } from '@prisma/client';
 import {
   SPICE_PEPPER,
   WordTable,
@@ -50,14 +50,12 @@ const AGRIBALYSE_IMPACT_SELECT = {
   version: true,
 } as const;
 
-export type ImpactSource = {
-  co2PerKg: number;
-  efScorePerKg: number;
-  dqr: number;
-  version: string;
-};
+export type ImpactSource = Pick<
+  AgribalyseFood,
+  keyof typeof AGRIBALYSE_IMPACT_SELECT
+>;
 
-export const NUTRITION_INGREDIENT_SELECT = {
+export const ESTIMATE_INGREDIENT_SELECT = {
   name: true,
   measure: true,
   quantity: true,
@@ -248,7 +246,7 @@ function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
     : { ingredient, source, grams: guessed, guessed: true };
 }
 
-export const sum = (values: number[]) =>
+const sum = (values: number[]) =>
   values.reduce((total, value) => total + value, 0);
 
 const isKnown = (value: number | null | undefined): value is number =>
@@ -349,10 +347,8 @@ export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
   );
 }
 
-export function toNutritionJson(
-  nutrition: NutritionalInfo | null,
+export function toJsonColumn<T extends object>(
+  value: T | null,
 ): Prisma.InputJsonValue | Prisma.NullTypes.JsonNull {
-  return nutrition === null
-    ? Prisma.JsonNull
-    : (nutrition as unknown as Prisma.InputJsonValue);
+  return value === null ? Prisma.JsonNull : value;
 }

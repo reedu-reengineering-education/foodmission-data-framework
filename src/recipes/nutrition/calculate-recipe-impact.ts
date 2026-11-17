@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { WeighedIngredient, dishGrams } from './calculate-recipe-nutrition';
 
 const MIN_COVERAGE = 0.95;
@@ -7,7 +6,6 @@ type Indicators = { co2: number; efScoreMpt: number };
 
 export interface EnvironmentalImpact {
   perKg: Indicators;
-  perServing: Indicators | null;
   coverage: number;
   dqr: number;
   source: string;
@@ -18,12 +16,11 @@ const round = (value: number, decimals: number) =>
 
 const indicators = (co2: number, efScore: number): Indicators => ({
   co2: round(co2, 3),
-  efScoreMpt: round(efScore * 1000, 1),
+  efScoreMpt: round(efScore, 3),
 });
 
 export function calculateRecipeImpact(
   weighed: WeighedIngredient[],
-  servings?: number | null,
 ): EnvironmentalImpact | null {
   let countedGrams = 0;
   let knownGrams = 0;
@@ -47,25 +44,13 @@ export function calculateRecipeImpact(
   }
 
   const coverage = countedGrams > 0 ? knownGrams / countedGrams : 0;
-  if (knownGrams === 0 || coverage < MIN_COVERAGE) return null;
+  if (coverage < MIN_COVERAGE) return null;
 
   const dishKg = dishGrams(weighed) / 1000;
   return {
     perKg: indicators(co2 / dishKg, efScore / dishKg),
-    perServing:
-      servings && servings > 0
-        ? indicators(co2 / servings, efScore / servings)
-        : null,
     coverage: round(coverage, 3),
     dqr: round(dqrGrams / knownGrams, 2),
     source: `AGRIBALYSE ${[...versions].sort().join(', ')}`,
   };
-}
-
-export function toImpactJson(
-  impact: EnvironmentalImpact | null,
-): Prisma.InputJsonValue | Prisma.NullTypes.JsonNull {
-  return impact === null
-    ? Prisma.JsonNull
-    : (impact as unknown as Prisma.InputJsonValue);
 }
