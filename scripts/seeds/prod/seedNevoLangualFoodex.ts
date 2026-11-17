@@ -12,7 +12,7 @@ const CSV_PATH = path.join(
   'nevo2025-langual-foodex2.csv',
 );
 
-function parseCsvLine(line: string): string[] {
+export function parseCsvLine(line: string): string[] {
   const fields: string[] = [];
   let cur = '';
   let inQuotes = false;

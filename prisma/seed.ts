@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { seedGenericFoods } from '../scripts/seeds/prod/genericFoods';
 import { seedDietFlags } from '../scripts/seeds/prod/dietFlags';
 import { seedNevoLangualFoodex } from '../scripts/seeds/prod/seedNevoLangualFoodex';
+import { seedAgribalyse } from '../scripts/seeds/prod/agribalyse';
 import { seedOpenFoodFactsFromJson } from '../scripts/seeds/dev/openfoodfacts';
 import { seedUsers } from '../scripts/seeds/dev/users';
 import { seedShoppingLists } from '../scripts/seeds/dev/shoppingList';
@@ -68,6 +69,7 @@ async function seedProduction() {
   const dietFlags = await seedDietFlags(prisma);
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
+  const agribalyse = await seedAgribalyse(prisma);
   const recipes = await seedRecipes(prisma);
   const shelfLife = await seedFoodKeeper(prisma);
   const shelfLifeLinks = await linkShelfLife(prisma);
@@ -107,6 +109,7 @@ async function seedProduction() {
     },
     { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
+    { label: 'agribalyse', value: agribalyse.upserted },
     {
       label: 'nevoLangualMapping',
       value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,
@@ -162,6 +165,7 @@ async function seedDevelopment() {
   const dietFlags = await seedDietFlags(prisma);
   // Backfill external classification codes (LanguaL / FoodEx2) from CSV
   const nevoLangualResult = await seedNevoLangualFoodex(prisma);
+  const agribalyse = await seedAgribalyse(prisma);
 
   // --- Identity & user-owned data (lists reference users; items may create FoodProduct stubs by name) ---
   const users = await seedUsers(prisma);
@@ -229,6 +233,7 @@ async function seedDevelopment() {
       value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
     },
     { label: 'genericFoods', value: genericFoods.length },
+    { label: 'agribalyse', value: agribalyse.upserted },
     {
       label: 'nevoLangualMapping',
       value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,

@@ -303,6 +303,23 @@ model GenericFood {
   @@map("generic_foods")
 }
 
+model AgribalyseFood {
+  code         String @id
+  ciqualCode   Int
+  foodGroup    String
+  foodSubgroup String
+  nameFr       String
+  nameEn       String
+  preparation  String
+  dqr          Float
+  efScorePerKg Float
+  co2PerKg     Float
+  version      String
+
+  @@index([ciqualCode])
+  @@map("agribalyse_foods")
+}
+
 model FoodShelfLife {
   id                           String   @id @default(uuid())
   foodKeeperProductId          Int      @unique
