@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecipesRepository } from './recipes.repository';
 import { PrismaService } from '../../database/prisma.service';
@@ -291,6 +292,36 @@ describe('RecipesRepository', () => {
         mockPrismaService.recipeIngredient.findMany,
       ).not.toHaveBeenCalled();
     });
+  });
+
+  describe('updateEstimates', () => {
+    const impact = {
+      perKg: { co2: 2.5, efScoreMpt: 250 },
+      perServing: null,
+      coverage: 1,
+      dqr: 2.5,
+      source: 'AGRIBALYSE 3.2',
+    };
+
+    it.each([
+      [
+        { nutritionalInfo: null, environmentalImpact: impact },
+        { nutritionalInfo: Prisma.JsonNull, environmentalImpact: impact },
+      ],
+      [{ environmentalImpact: null }, { environmentalImpact: Prisma.JsonNull }],
+    ])(
+      'writes nutrition only when it is given (%o)',
+      async (estimates, data) => {
+        mockPrismaService.recipe.update.mockResolvedValueOnce(mockRecipe);
+
+        await repository.updateEstimates('recipe-1', estimates);
+
+        expect(mockPrismaService.recipe.update).toHaveBeenCalledWith({
+          where: { id: 'recipe-1' },
+          data,
+        });
+      },
+    );
   });
 
   describe('count', () => {

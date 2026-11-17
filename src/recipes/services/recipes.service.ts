@@ -34,10 +34,10 @@ import { TranslationService } from '../../translations/services/translation.serv
 import { GenericFoodRepository } from '../../generic-foods/repositories/generic-food.repository';
 import { rankSearchCandidates } from '../../generic-foods/utils/search-ranking';
 import {
-  calculateRecipeNutrition,
   isUserProvidedNutrition,
   markedAsEntered,
 } from '../nutrition/calculate-recipe-nutrition';
+import { estimateRecipe } from '../nutrition/estimate-recipe';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 
 type LocalizableIngredient = {
@@ -81,9 +81,7 @@ export class RecipesService {
         origin: RecipeOrigin.USER,
         userId,
       });
-      return this.toResponse(
-        await this.withNutritionIfNeeded(recipe, createRecipeDto),
-      );
+      return this.toResponse(await this.withEstimates(recipe, createRecipeDto));
     } catch (error) {
       throw handlePrismaError(error, 'create recipe', 'Recipe');
     }
@@ -362,7 +360,7 @@ export class RecipesService {
         await this.toRecipeData(updateRecipeDto),
       );
       return this.toResponse(
-        await this.withNutritionIfNeeded(
+        await this.withEstimates(
           updated,
           updateRecipeDto,
           existing.nutritionalInfo,
@@ -439,28 +437,35 @@ export class RecipesService {
     };
   }
 
-  private async withNutritionIfNeeded<T extends { id: string }>(
-    recipe: T,
-    dto: UpdateRecipeDto,
-    storedNutrition?: unknown,
-  ): Promise<T> {
-    const needsEstimate =
+  private async withEstimates<
+    T extends { id: string; servings?: number | null },
+  >(recipe: T, dto: UpdateRecipeDto, storedNutrition?: unknown): Promise<T> {
+    const needsNutrition =
       dto.nutritionalInfo === null ||
       (dto.ingredients !== undefined &&
         dto.nutritionalInfo === undefined &&
         !isUserProvidedNutrition(storedNutrition));
-    if (!needsEstimate) return recipe;
+    const needsImpact =
+      dto.ingredients !== undefined || dto.servings !== undefined;
+    if (!needsNutrition && !needsImpact) return recipe;
 
     try {
       const ingredients = await this.recipeRepository.findNutritionIngredients(
         recipe.id,
       );
-      const nutritionalInfo = calculateRecipeNutrition({ ingredients });
-      await this.recipeRepository.updateNutrition(recipe.id, nutritionalInfo);
-      return { ...recipe, nutritionalInfo };
+      const { nutritionalInfo, environmentalImpact } = estimateRecipe({
+        ingredients,
+        servings: recipe.servings,
+      });
+      const estimates = {
+        environmentalImpact,
+        ...(needsNutrition && { nutritionalInfo }),
+      };
+      await this.recipeRepository.updateEstimates(recipe.id, estimates);
+      return { ...recipe, ...estimates };
     } catch (error) {
       this.logger.warn(
-        `Nutrition estimate failed for recipe ${recipe.id}: ${describeError(error)}`,
+        `Estimates failed for recipe ${recipe.id}: ${describeError(error)}`,
       );
       return recipe;
     }

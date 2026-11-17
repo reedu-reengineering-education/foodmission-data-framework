@@ -43,13 +43,40 @@ export interface NutritionalInfo {
   missingIngredients: string[];
 }
 
+const AGRIBALYSE_IMPACT_SELECT = {
+  co2PerKg: true,
+  efScorePerKg: true,
+  dqr: true,
+  version: true,
+} as const;
+
+export type ImpactSource = {
+  co2PerKg: number;
+  efScorePerKg: number;
+  dqr: number;
+  version: string;
+};
+
 export const NUTRITION_INGREDIENT_SELECT = {
   name: true,
   measure: true,
   quantity: true,
   unit: true,
-  foodProduct: { select: { ...NUTRITION_VALUE_SELECT, name: true } },
-  genericFood: { select: { ...NUTRITION_VALUE_SELECT, foodName: true } },
+  foodProduct: {
+    select: {
+      ...NUTRITION_VALUE_SELECT,
+      name: true,
+      agribalyseFood: { select: AGRIBALYSE_IMPACT_SELECT },
+    },
+  },
+  genericFood: {
+    select: {
+      ...NUTRITION_VALUE_SELECT,
+      foodName: true,
+      foodGroup: true,
+      agribalyseFood: { select: AGRIBALYSE_IMPACT_SELECT },
+    },
+  },
 } as const;
 
 export interface NutritionIngredient {
@@ -57,8 +84,16 @@ export interface NutritionIngredient {
   measure?: string | null;
   quantity?: number | null;
   unit?: Unit | null;
-  foodProduct?: (NutrientSource & { name?: string }) | null;
-  genericFood?: (NutrientSource & { foodName?: string }) | null;
+  foodProduct?:
+    | (NutrientSource & { name?: string; agribalyseFood?: ImpactSource | null })
+    | null;
+  genericFood?:
+    | (NutrientSource & {
+        foodName?: string;
+        foodGroup?: string;
+        agribalyseFood?: ImpactSource | null;
+      })
+    | null;
 }
 
 const ABSORBED_WATER_PER_GRAM: WordTable = [
@@ -68,6 +103,11 @@ const ABSORBED_WATER_PER_GRAM: WordTable = [
   [/^(bulgur|quinoa)\b.*\braw\b/i, 1.7],
   [/^lentils\b.*\bdried\b/i, 1.5],
 ];
+
+const COOKED_WEIGHT_PER_RAW_GRAM: Record<string, number> = {
+  'Meat and poultry': 0.75,
+  'Fish, crustacean and shellfish': 0.8,
+};
 
 const COOKING_LIQUID =
   /^(water|stock|milk|buttermilk|cream|creme fraiche|coconut milk|drink soya|wine|sherry|beer|cider|juice|tomatoes tinned)\b/i;
@@ -149,7 +189,7 @@ const CONDIMENTS: WordTable = [
   [/^peppers?$/i, CONDIMENT_GRAMS],
 ];
 
-type WeighedIngredient = {
+export type WeighedIngredient = {
   ingredient: NutritionIngredient;
   source: NutrientSource | null;
   grams: number;
@@ -208,7 +248,7 @@ function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
     : { ingredient, source, grams: guessed, guessed: true };
 }
 
-const sum = (values: number[]) =>
+export const sum = (values: number[]) =>
   values.reduce((total, value) => total + value, 0);
 
 const isKnown = (value: number | null | undefined): value is number =>
@@ -219,7 +259,13 @@ const round = (value: number) => Math.round(value * 10) / 10;
 const kcalOf = ({ source, grams }: WeighedIngredient) =>
   ((source?.energyKcal ?? 0) * grams) / 100;
 
-function dishGrams(weighed: WeighedIngredient[]): number {
+function cookedWeightPerGram({ ingredient }: WeighedIngredient): number {
+  const food = ingredient.genericFood;
+  if (!food?.foodName || !/\braw\b/i.test(food.foodName)) return 1;
+  return COOKED_WEIGHT_PER_RAW_GRAM[food.foodGroup ?? ''] ?? 1;
+}
+
+export function dishGrams(weighed: WeighedIngredient[]): number {
   const foodName = ({ ingredient }: WeighedIngredient) =>
     ingredient.genericFood?.foodName ?? '';
   const absorbedWater = sum(
@@ -233,10 +279,10 @@ function dishGrams(weighed: WeighedIngredient[]): number {
       .filter((item) => COOKING_LIQUID.test(foodName(item)))
       .map(({ grams }) => grams),
   );
-  return (
-    sum(weighed.map(({ grams }) => grams)) +
-    Math.max(0, absorbedWater - cookingLiquid)
+  const cookedGrams = sum(
+    weighed.map((item) => item.grams * cookedWeightPerGram(item)),
   );
+  return cookedGrams + Math.max(0, absorbedWater - cookingLiquid);
 }
 
 function per100g(
@@ -255,18 +301,21 @@ function per100g(
   );
 }
 
-export function calculateRecipeNutrition({
-  ingredients,
-}: {
-  ingredients: NutritionIngredient[];
-}): NutritionalInfo | null {
+export function weighIngredients(
+  ingredients: NutritionIngredient[],
+): WeighedIngredient[] | null {
   const weighed: WeighedIngredient[] = [];
   for (const ingredient of ingredients) {
     const item = weigh(ingredient);
     if (!item) return null;
     weighed.push(item);
   }
+  return weighed;
+}
 
+export function calculateRecipeNutrition(
+  weighed: WeighedIngredient[],
+): NutritionalInfo | null {
   const guessed = weighed.filter((item) => item.guessed);
   const totalKcal = sum(weighed.map(kcalOf));
   if (

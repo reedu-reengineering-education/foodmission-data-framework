@@ -5,6 +5,7 @@ import {
   OFF_AGRIBALYSE_PROJECTION,
   offAgribalyseCode,
 } from '../src/food-products/utils/off-agribalyse';
+import { recalculateRecipeEstimates } from './seeds/prod/recipe-estimates';
 
 const BATCH_SIZE = 500;
 
@@ -53,6 +54,7 @@ async function main() {
     console.log(
       `🌍 Food products with an AGRIBALYSE code: ${linked} of ${products.length} (${updated} updated)`,
     );
+    if (updated > 0) await recalculateRecipeEstimates(prisma);
   } finally {
     await prisma.$disconnect();
     await offMongo.$disconnect();

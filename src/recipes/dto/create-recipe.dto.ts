@@ -80,15 +80,6 @@ export class CreateRecipeDto {
   nutritionalInfo?: Record<string, any> | null;
 
   @ApiPropertyOptional({
-    description: 'Sustainability score',
-    example: 0.65,
-  })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  sustainabilityScore?: number;
-
-  @ApiPropertyOptional({
     description: 'Estimated recipe price or cost',
     example: 12.5,
   })

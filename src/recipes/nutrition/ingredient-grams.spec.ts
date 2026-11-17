@@ -61,10 +61,19 @@ describe('quantityToGrams', () => {
     ['1 can', 'Tomatoes', 400],
     ['3 cans', 'Tomato Puree', 1200],
     ['4 sprigs', 'Thyme', 8],
+    ['2', 'Bananas', 160],
+    ['4', 'Chicken Legs', 560],
+    ['2', 'Lamb Shanks', 300],
   ])('weighs "%s" %s as %d g', (measure, name, grams) => {
     const quantity = parseInt(measure, 10);
     expect(quantityToGrams({ quantity, unit: 'PIECES' }, [name], measure)).toBe(
       grams,
+    );
+  });
+
+  it('weighs a piece without its peel, stone or bone', () => {
+    expect(quantityToGrams({ quantity: 1, unit: 'PIECES' }, ['Avocado'])).toBe(
+      110,
     );
   });
 

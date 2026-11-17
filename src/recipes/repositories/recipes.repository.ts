@@ -14,6 +14,10 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
+import {
+  EnvironmentalImpact,
+  toImpactJson,
+} from '../nutrition/calculate-recipe-impact';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
   NUTRITION_INGREDIENT_SELECT,
@@ -47,7 +51,6 @@ export interface CreateRecipeData {
   difficulty?: string;
   tags?: string[];
   nutritionalInfo?: Prisma.InputJsonValue;
-  sustainabilityScore?: number;
   price?: number;
   allergens?: Allergens[];
   // New fields for external recipes
@@ -218,14 +221,23 @@ export class RecipesRepository implements BaseRepository<
     });
   }
 
-  async updateNutrition(
+  async updateEstimates(
     recipeId: string,
-    nutrition: NutritionalInfo | null,
+    {
+      nutritionalInfo,
+      environmentalImpact,
+    }: {
+      nutritionalInfo?: NutritionalInfo | null;
+      environmentalImpact: EnvironmentalImpact | null;
+    },
   ): Promise<void> {
     await this.prisma.recipe.update({
       where: { id: recipeId },
       data: {
-        nutritionalInfo: toNutritionJson(nutrition),
+        ...(nutritionalInfo !== undefined && {
+          nutritionalInfo: toNutritionJson(nutritionalInfo),
+        }),
+        environmentalImpact: toImpactJson(environmentalImpact),
       },
     });
   }

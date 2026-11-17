@@ -8,11 +8,7 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseQuantityUnit } from './measure-parser';
-import {
-  calculateRecipeNutrition,
-  NUTRITION_INGREDIENT_SELECT,
-  toNutritionJson,
-} from '../../../src/recipes/nutrition/calculate-recipe-nutrition';
+import { recalculateRecipeEstimates } from './recipe-estimates';
 
 const DATA_DIR = path.join(process.cwd(), 'prisma', 'seeds', 'data');
 
@@ -39,7 +35,6 @@ interface ThemealdbData {
     servings: number;
     ingredients: { name: string; measure: string; order: number }[];
     allergens?: string[];
-    sustainabilityScore?: number | null;
   }[];
 }
 
@@ -140,7 +135,6 @@ function toRecipeCreateData(
     dietaryLabels: recipe.dietaryLabels ?? [],
     servings: recipe.servings ?? 4,
     allergens: mapAllergensToEnum(recipe.allergens),
-    sustainabilityScore: recipe.sustainabilityScore ?? undefined,
     isPublic: true,
     userId: null,
     origin: RecipeOrigin.THEMEALDB,
@@ -210,35 +204,6 @@ async function syncIngredients(
 
   console.log(
     `   🔗 Ingredients: updated ${updated}, ${unparsed} without a parsed amount`,
-  );
-}
-
-async function recalculateNutrition(prisma: PrismaClient): Promise<void> {
-  const recipes = await prisma.recipe.findMany({
-    where: { origin: RecipeOrigin.THEMEALDB },
-    select: {
-      id: true,
-      ingredients: {
-        orderBy: { order: 'asc' },
-        select: NUTRITION_INGREDIENT_SELECT,
-      },
-    },
-  });
-
-  let stored = 0;
-  for (const recipe of recipes) {
-    const nutrition = calculateRecipeNutrition(recipe);
-    if (nutrition) stored++;
-    await prisma.recipe.update({
-      where: { id: recipe.id },
-      data: {
-        nutritionalInfo: toNutritionJson(nutrition),
-      },
-    });
-  }
-
-  console.log(
-    `   🥗 Recipe nutrition: stored ${stored}, withheld ${recipes.length - stored}`,
   );
 }
 
@@ -329,7 +294,7 @@ export async function seedRecipes(
 
   if (!dryRun) {
     await syncIngredients(prisma, data.ingredientMappings);
-    await recalculateNutrition(prisma);
+    await recalculateRecipeEstimates(prisma);
   }
 
   console.log(`\n✅ TheMealDB seeding complete:`);

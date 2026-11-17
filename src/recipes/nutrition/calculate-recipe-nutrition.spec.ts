@@ -1,8 +1,6 @@
 import { parseQuantityUnit } from '../../../scripts/seeds/prod/measure-parser';
-import {
-  calculateRecipeNutrition,
-  NutritionIngredient,
-} from './calculate-recipe-nutrition';
+import { NutritionIngredient } from './calculate-recipe-nutrition';
+import { estimateRecipe } from './estimate-recipe';
 
 type Food = NonNullable<NutritionIngredient['genericFood']>;
 
@@ -18,7 +16,7 @@ const item = (
 });
 
 const nutritionOf = (...ingredients: NutritionIngredient[]) =>
-  calculateRecipeNutrition({ ingredients });
+  estimateRecipe({ ingredients }).nutritionalInfo;
 
 const kcalPer100g = (...ingredients: NutritionIngredient[]) =>
   nutritionOf(...ingredients)?.per100g.energyKcal;
@@ -194,6 +192,32 @@ describe('calculateRecipeNutrition', () => {
 
     it('withholds the recipe above 15 g', () => {
       expect(nutritionOf(beef, item('Olive oil', '1 cup'))).toBeNull();
+    });
+  });
+
+  describe('weight lost in cooking', () => {
+    const raw = (foodName: string, foodGroup: string) =>
+      item('Main', '400g', { foodName, foodGroup, energyKcal: 200 });
+
+    it.each([
+      [
+        'raw meat to 75%',
+        raw('Beef stewing meat raw', 'Meat and poultry'),
+        266.7,
+      ],
+      [
+        'raw fish to 80%',
+        raw('Cod raw', 'Fish, crustacean and shellfish'),
+        250,
+      ],
+      [
+        'nothing from cooked meat',
+        raw('Sardines grilled', 'Fish, crustacean and shellfish'),
+        200,
+      ],
+      ['nothing from raw vegetables', raw('Onions raw', 'Vegetables'), 200],
+    ])('takes %s', (_, ingredient, expected) => {
+      expect(kcalPer100g(ingredient)).toBe(expected);
     });
   });
 

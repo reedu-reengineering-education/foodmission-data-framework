@@ -398,6 +398,10 @@ For local analytics testing, anonymization details, and batch publish workflow, 
 - `docs/analytics_instructions:.md`
 - `docs/Data anonymization/`
 
+### Recipe Environmental Impact
+
+How `environmentalImpact` on recipes is calculated from AGRIBALYSE, and how to update the data: [docs/RECIPE_ENVIRONMENTAL_IMPACT.md](docs/RECIPE_ENVIRONMENTAL_IMPACT.md)
+
 ## 📚 API Documentation
 
 ### Swagger/OpenAPI

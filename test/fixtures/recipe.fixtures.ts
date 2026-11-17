@@ -16,6 +16,7 @@ export type RecipeFixture = {
   cuisineType?: string | null;
   category?: string | null;
   dietaryLabels?: string[];
+  servings?: number | null;
   ingredients?: unknown[];
 };
 

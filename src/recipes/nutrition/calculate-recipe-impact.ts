@@ -1,0 +1,71 @@
+import { Prisma } from '@prisma/client';
+import { WeighedIngredient, dishGrams } from './calculate-recipe-nutrition';
+
+const MIN_COVERAGE = 0.95;
+
+type Indicators = { co2: number; efScoreMpt: number };
+
+export interface EnvironmentalImpact {
+  perKg: Indicators;
+  perServing: Indicators | null;
+  coverage: number;
+  dqr: number;
+  source: string;
+}
+
+const round = (value: number, decimals: number) =>
+  Math.round(value * 10 ** decimals) / 10 ** decimals;
+
+const indicators = (co2: number, efScore: number): Indicators => ({
+  co2: round(co2, 3),
+  efScoreMpt: round(efScore * 1000, 1),
+});
+
+export function calculateRecipeImpact(
+  weighed: WeighedIngredient[],
+  servings?: number | null,
+): EnvironmentalImpact | null {
+  let countedGrams = 0;
+  let knownGrams = 0;
+  let co2 = 0;
+  let efScore = 0;
+  let dqrGrams = 0;
+  const versions = new Set<string>();
+
+  for (const { ingredient, grams } of weighed) {
+    if (grams === 0) continue;
+    countedGrams += grams;
+    const food =
+      ingredient.foodProduct?.agribalyseFood ??
+      ingredient.genericFood?.agribalyseFood;
+    if (!food) continue;
+    knownGrams += grams;
+    co2 += (food.co2PerKg * grams) / 1000;
+    efScore += (food.efScorePerKg * grams) / 1000;
+    dqrGrams += food.dqr * grams;
+    versions.add(food.version);
+  }
+
+  const coverage = countedGrams > 0 ? knownGrams / countedGrams : 0;
+  if (knownGrams === 0 || coverage < MIN_COVERAGE) return null;
+
+  const dishKg = dishGrams(weighed) / 1000;
+  return {
+    perKg: indicators(co2 / dishKg, efScore / dishKg),
+    perServing:
+      servings && servings > 0
+        ? indicators(co2 / servings, efScore / servings)
+        : null,
+    coverage: round(coverage, 3),
+    dqr: round(dqrGrams / knownGrams, 2),
+    source: `AGRIBALYSE ${[...versions].sort().join(', ')}`,
+  };
+}
+
+export function toImpactJson(
+  impact: EnvironmentalImpact | null,
+): Prisma.InputJsonValue | Prisma.NullTypes.JsonNull {
+  return impact === null
+    ? Prisma.JsonNull
+    : (impact as unknown as Prisma.InputJsonValue);
+}
