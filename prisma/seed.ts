@@ -109,7 +109,10 @@ async function seedProduction() {
     },
     { label: 'microLearnings', value: microLearnings.seeded },
     { label: 'genericFoods', value: genericFoods.length },
-    { label: 'agribalyse', value: agribalyse.upserted },
+    {
+      label: 'agribalyse',
+      value: `${agribalyse.upserted} foods, ${agribalyse.linked} generic foods linked`,
+    },
     {
       label: 'nevoLangualMapping',
       value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,
@@ -233,7 +236,10 @@ async function seedDevelopment() {
       value: offResult.skipped ? 'skipped' : `${offResult.count} rows upserted`,
     },
     { label: 'genericFoods', value: genericFoods.length },
-    { label: 'agribalyse', value: agribalyse.upserted },
+    {
+      label: 'agribalyse',
+      value: `${agribalyse.upserted} foods, ${agribalyse.linked} generic foods linked`,
+    },
     {
       label: 'nevoLangualMapping',
       value: `${nevoLangualResult.updated} updated, ${nevoLangualResult.missing} missing (${nevoLangualResult.processed} processed)`,

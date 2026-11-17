@@ -4,21 +4,41 @@ import * as path from 'path';
 import { parseCsvLine } from './seedNevoLangualFoodex';
 
 const VERSION = '3.2';
-const CSV_PATH = path.join(
+const DATA_DIR = path.join(
   process.cwd(),
   'prisma',
   'seeds',
   'data',
   'agribalyse',
-  `agribalyse-${VERSION}-synthese.csv`,
 );
+const CSV_PATH = path.join(DATA_DIR, `agribalyse-${VERSION}-synthese.csv`);
+const MAPPING_PATH = path.join(DATA_DIR, 'nevo-agribalyse-mapping.json');
+
+async function linkGenericFoods(prisma: PrismaClient): Promise<number> {
+  const { foods } = JSON.parse(fs.readFileSync(MAPPING_PATH, 'utf-8')) as {
+    foods: { nevoCode: number; agribalyseCode: string }[];
+  };
+  await prisma.genericFood.updateMany({
+    where: { nevoCode: { notIn: foods.map((food) => food.nevoCode) } },
+    data: { agribalyseCode: null },
+  });
+  let linked = 0;
+  for (const { nevoCode, agribalyseCode } of foods) {
+    const { count } = await prisma.genericFood.updateMany({
+      where: { nevoCode },
+      data: { agribalyseCode },
+    });
+    linked += count;
+  }
+  return linked;
+}
 
 export async function seedAgribalyse(
   prisma: PrismaClient,
-): Promise<{ upserted: number }> {
+): Promise<{ upserted: number; linked: number }> {
   const [header, ...lines] = fs
     .readFileSync(CSV_PATH, 'utf-8')
-    .replace(/^﻿/, '')
+    .replace(/^\uFEFF/, '')
     .split('\n')
     .filter((line) => line.trim() !== '');
   const columns = parseCsvLine(header);
@@ -62,6 +82,10 @@ export async function seedAgribalyse(
     });
   }
 
-  console.log(`   🌍 AGRIBALYSE ${VERSION}: ${lines.length} foods upserted`);
-  return { upserted: lines.length };
+  const linked = await linkGenericFoods(prisma);
+
+  console.log(
+    `   🌍 AGRIBALYSE ${VERSION}: ${lines.length} foods upserted, ${linked} generic foods linked`,
+  );
+  return { upserted: lines.length, linked };
 }

@@ -282,6 +282,9 @@ model GenericFood {
   // --- Other ---
   fattyAcidsUnidentified Float? // Unknown/unidentified fatty acids (g)
 
+  agribalyseCode String?
+  agribalyseFood AgribalyseFood? @relation(fields: [agribalyseCode], references: [code])
+
   // --- Shelf life link ---
   shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
   shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])
@@ -315,6 +318,8 @@ model AgribalyseFood {
   efScorePerKg Float
   co2PerKg     Float
   version      String
+
+  genericFoods GenericFood[]
 
   @@index([ciqualCode])
   @@map("agribalyse_foods")
