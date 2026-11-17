@@ -26,7 +26,7 @@ It is not a grade. No A–E letter is derived from it (the Green-Score needs a l
 ## Data
 
 - **AGRIBALYSE table:** `prisma/seeds/data/agribalyse/agribalyse-3.2-synthese.csv`, downloaded from the [ADEME dataset](https://data.ademe.fr/datasets/agribalyse-31-synthese) (Licence Ouverte / Open Licence 2.0). It is imported into `agribalyse_foods` with one row per AGRIBALYSE code: names, food group, preparation at home, DQR, `efScorePerKg` (Pt per kg) and `co2PerKg` (kg CO2 eq per kg).
-- **Generic foods:** `prisma/seeds/data/agribalyse/nevo-agribalyse-mapping.json` links NEVO foods to AGRIBALYSE codes (`GenericFood.agribalyseCode`). AGRIBALYSE has no NEVO codes, so the links were matched by name and reviewed. `match` is `high` for the same product and `medium` for the closest available one (for example raisins for dried currants). Dried products are not linked when only the fresh product exists.
+- **Generic foods:** `prisma/seeds/data/agribalyse/nevo-agribalyse-mapping.json` links NEVO foods to AGRIBALYSE codes (`GenericFood.agribalyseCode`). AGRIBALYSE has no NEVO codes, so the links were matched by name: the 374 foods used in seeded recipes by hand, the rest with scripted candidate searches and a decision per food, checked for valid codes, duplicates and cross-species meat matches. `match` is `high` for the same product and `medium` for the closest available one (for example raisins for dried currants). Dried products are not linked when only the fresh product exists.
 - **Open Food Facts products:** `FoodProduct.agribalyseCode` is the code OFF assigns from the product's category (`environmental_score_data.agribalyse.code`, or `ecoscore_data` in older data). It is set when a product is imported and can be filled for existing products with `npm run db:link:agribalyse-products`. A code that is not in our AGRIBALYSE table is ignored.
 
 An ingredient uses its product's AGRIBALYSE value first, then its generic food's.
@@ -82,7 +82,7 @@ Clients can't send `environmentalImpact`.
 - **Measured weights are taken as given.** "Chicken legs 460 g" may include bone; only piece weights are edible weights.
 - **Vegetables are not reduced for cooking loss**, and liquid boiled off in stews is not subtracted, because the cooking method is unknown.
 - **French data.** AGRIBALYSE describes products sold in France; production in other countries can differ.
-- **Coverage of NEVO foods.** 374 of the 2328 NEVO foods are linked (those used in seeded recipes). A user recipe with other foods is withheld until they are mapped.
+- **Coverage of NEVO foods.** 2007 of the 2328 NEVO foods are linked. The other 321 have no reasonable AGRIBALYSE equivalent: for example cultivated mushrooms, yeast, gravies, pickles, eel, horse and game, Dutch and Surinamese composite dishes, sports and protein products. Most links are `medium`, because AGRIBALYSE describes French products (Dutch breads, cheeses and sauces map to their closest French counterpart).
 
 ## Changing the data
 
