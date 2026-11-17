@@ -77,7 +77,6 @@ function toFoodUpsertData(row: OffRow, barcode: string) {
     nutriscoreScore: toNumber(row.nutriscoreScore),
     novaGroup: toNumber(row.novaGroup),
     ecoscoreGrade: toOptionalString(row.ecoscoreGrade),
-    carbonFootprint: toNumber(row.carbonFootprint),
     isVegan: toOptionalBool(row.isVegan),
     isVegetarian: toOptionalBool(row.isVegetarian),
     isPalmOilFree: toOptionalBool(row.isPalmOilFree),

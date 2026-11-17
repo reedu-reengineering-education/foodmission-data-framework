@@ -581,6 +581,30 @@ describe('OpenFoodFactsService', () => {
     });
   });
 
+  describe('environmental score grade', () => {
+    beforeEach(() => {
+      mockOffMongoRepository.isAvailable = true;
+    });
+
+    it.each([
+      ['the current field', { environmental_score_grade: 'b' }, 'b'],
+      [
+        'the current field over the older one',
+        { environmental_score_grade: 'b', ecoscore_grade: 'd' },
+        'b',
+      ],
+      ['the older field when the current one is missing', {}, 'd'],
+    ])('reads it from %s', async (_, fields, expected) => {
+      mockOffMongoRepository.findByBarcode.mockResolvedValueOnce(
+        localDoc({ ...mockProduct.product, ...fields }),
+      );
+
+      const result = await service.getProductByBarcode('3017620422003');
+
+      expect(result?.ecoscoreGrade).toBe(expected);
+    });
+  });
+
   describe('AGRIBALYSE code', () => {
     beforeEach(() => {
       mockOffMongoRepository.isAvailable = true;

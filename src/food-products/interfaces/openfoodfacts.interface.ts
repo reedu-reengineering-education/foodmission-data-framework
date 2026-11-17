@@ -27,6 +27,7 @@ export interface OpenFoodFactsProduct {
     nutrition_grades?: string;
     nova_group?: number;
     ecoscore_grade?: string;
+    environmental_score_grade?: string;
     image_url?: string;
     image_front_url?: string;
     image_nutrition_url?: string;
@@ -167,7 +168,6 @@ export interface ProductInfo {
   nutritionGrade?: string;
   novaGroup?: number;
   ecoscoreGrade?: string;
-  carbonFootprint?: number;
   agribalyseCode?: string;
   nutritionDataPer?: string;
   imageUrl?: string;

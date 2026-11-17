@@ -48,7 +48,6 @@ export const TEST_FOOD = {
   nutriscoreScore: 8,
   novaGroup: 2,
   ecoscoreGrade: 'c',
-  carbonFootprint: 1.5,
   nutrientLevels: { fat: 'low', sugars: 'medium', salt: 'low' },
   isVegan: true,
   isVegetarian: true,

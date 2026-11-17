@@ -125,11 +125,12 @@ describe('FoodProductService', () => {
       );
     });
 
-    it('keeps the AGRIBALYSE code OFF matched the product to', async () => {
+    it('keeps the environmental grade and AGRIBALYSE code from OFF', async () => {
       repository.findByBarcode.mockResolvedValue(null);
       openFoodFacts.getProductByBarcode.mockResolvedValue({
         barcode: '999',
         name: 'Nutella',
+        ecoscoreGrade: 'e',
         agribalyseCode: '31032',
       });
       repository.create.mockResolvedValue({
@@ -141,7 +142,10 @@ describe('FoodProductService', () => {
       await service.importFromOpenFoodFacts('999', 'user-1');
 
       expect(repository.create).toHaveBeenCalledWith(
-        expect.objectContaining({ agribalyseCode: '31032' }),
+        expect.objectContaining({
+          ecoscoreGrade: 'e',
+          agribalyseCode: '31032',
+        }),
       );
     });
   });

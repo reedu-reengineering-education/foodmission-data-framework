@@ -323,11 +323,12 @@ export class ShoppingListAnalyticsAggregator {
         fp."novaGroup"                AS "novaGroup",
         fp."isVegetarian"             AS "isVegetarian",
         fp."isVegan"                  AS "isVegan",
-        fp."carbonFootprint"          AS "carbonFootprint"
+        ab."co2PerKg"                 AS "carbonFootprint"
       FROM shopping_list_items sli
       JOIN shopping_lists sl ON sl.id = sli."shoppingListId"
       JOIN users u ON u.id = sl."userId"
       LEFT JOIN food_products fp ON fp.id = sli."foodProductId"
+      LEFT JOIN agribalyse_foods ab ON ab.code = fp."agribalyseCode"
       LEFT JOIN generic_foods gf ON gf.id = sli."genericFoodId"
       WHERE sli."createdAt" >= ${periodStart}
         AND sli."createdAt" < ${periodEnd}

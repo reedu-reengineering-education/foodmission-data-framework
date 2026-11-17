@@ -58,7 +58,6 @@ model FoodProduct {
   nutriscoreScore Int?
   novaGroup       Int? // 1 = unprocessed, 4 = ultra-processed
   ecoscoreGrade   String? // a, b, c, d, e, unknown
-  carbonFootprint Float? // CO₂ from known ingredients (kg CO₂e / kg product)
   agribalyseCode  String?
   agribalyseFood  AgribalyseFood? @relation(fields: [agribalyseCode], references: [code])
 

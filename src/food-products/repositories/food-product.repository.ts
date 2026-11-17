@@ -19,6 +19,7 @@ import {
 
 export type FoodProductCreateInput = CreateFoodProductDto & {
   createdBy: string;
+  ecoscoreGrade?: string;
   agribalyseCode?: string;
 };
 
