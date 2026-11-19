@@ -241,6 +241,17 @@ describe('RecipesService', () => {
     });
 
     it('stores neither when the ingredients cannot be weighed', async () => {
+      mockRecipeRepository.findEstimateIngredients.mockResolvedValueOnce([
+        {
+          name: 'Butter',
+          measure: 'To taste',
+          quantity: null,
+          unit: null,
+          foodProduct: null,
+          genericFood: { foodName: 'Butter', energyKcal: 740 },
+        },
+      ]);
+
       await service.create(
         { title: 'Test Recipe', ...withIngredients },
         userId,

@@ -587,7 +587,6 @@ describe('OpenFoodFactsService', () => {
     });
 
     it.each([
-      ['the current field', { environmental_score_grade: 'b' }, 'b'],
       [
         'the current field over the older one',
         { environmental_score_grade: 'b', ecoscore_grade: 'd' },

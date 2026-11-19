@@ -26,9 +26,6 @@ CREATE TABLE "agribalyse_foods" (
     CONSTRAINT "agribalyse_foods_pkey" PRIMARY KEY ("code")
 );
 
--- CreateIndex
-CREATE INDEX "agribalyse_foods_ciqualCode_idx" ON "agribalyse_foods"("ciqualCode");
-
 -- AddForeignKey
 ALTER TABLE "food_products" ADD CONSTRAINT "food_products_agribalyseCode_fkey" FOREIGN KEY ("agribalyseCode") REFERENCES "agribalyse_foods"("code") ON DELETE SET NULL ON UPDATE CASCADE;
 

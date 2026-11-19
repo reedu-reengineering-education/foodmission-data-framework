@@ -323,7 +323,6 @@ model AgribalyseFood {
   genericFoods GenericFood[]
   foodProducts FoodProduct[]
 
-  @@index([ciqualCode])
   @@map("agribalyse_foods")
 }
 

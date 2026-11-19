@@ -79,6 +79,20 @@ describe('calculateRecipeImpact', () => {
     ).toBe(10);
   });
 
+  it('counts a product with AGRIBALYSE data but no nutrient values', () => {
+    expect(
+      impactOf({
+        name: 'Hazelnut spread',
+        measure: '200g',
+        ...parseQuantityUnit('200g'),
+        foodProduct: {
+          energyKcal: null,
+          agribalyseFood: agribalyse(9.11, 0.7),
+        },
+      })?.perKg,
+    ).toEqual({ co2: 9.11, efScoreMpt: 0.7 });
+  });
+
   it('accepts up to 5% of the weight without AGRIBALYSE data', () => {
     const impact = impactOf(
       item('Beef', '960g', {

@@ -34,8 +34,7 @@ An ingredient uses its product's AGRIBALYSE value first, then its generic food's
 The ingredients are weighed by the same code as the nutrition estimate (`weighIngredients` in `src/recipes/nutrition/calculate-recipe-nutrition.ts`):
 
 - measured amounts are converted to grams; pieces use edible weights (a banana counts 80 g, a chicken leg 140 g);
-- amounts without a measure get a small fixed weight ("pinch" 0.5 g, "splash" 15 g, condiments 1 g, low-energy foods 30 g);
-- "to serve" counts 0 g.
+- amounts that can't be converted to grams get a small fixed weight ("pinch" 0.5 g, "splash" 15 g, condiments 1 g, low-energy foods 30 g, "to serve" 0 g).
 
 Then:
 

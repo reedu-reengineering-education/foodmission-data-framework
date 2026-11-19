@@ -191,6 +191,7 @@ export type WeighedIngredient = {
   ingredient: NutritionIngredient;
   source: NutrientSource | null;
   grams: number;
+  measured: boolean;
   guessed: boolean;
 };
 
@@ -237,13 +238,18 @@ function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
   const source = nutrientSource(ingredient);
   const measured = measuredGrams(ingredient);
   if (measured != null) {
-    if (!source && measured > MAX_UNLINKED_GRAMS) return null;
-    return { ingredient, source, grams: measured, guessed: !source };
+    return {
+      ingredient,
+      source,
+      grams: measured,
+      measured: true,
+      guessed: !source,
+    };
   }
   const guessed = guessedGrams(ingredient, source);
   return guessed == null
     ? null
-    : { ingredient, source, grams: guessed, guessed: true };
+    : { ingredient, source, grams: guessed, measured: false, guessed: true };
 }
 
 const sum = (values: number[]) =>
@@ -314,6 +320,14 @@ export function weighIngredients(
 export function calculateRecipeNutrition(
   weighed: WeighedIngredient[],
 ): NutritionalInfo | null {
+  if (
+    weighed.some(
+      ({ source, measured, grams }) =>
+        !source && measured && grams > MAX_UNLINKED_GRAMS,
+    )
+  ) {
+    return null;
+  }
   const guessed = weighed.filter((item) => item.guessed);
   const totalKcal = sum(weighed.map(kcalOf));
   if (

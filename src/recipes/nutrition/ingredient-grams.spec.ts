@@ -64,16 +64,11 @@ describe('quantityToGrams', () => {
     ['2', 'Bananas', 160],
     ['4', 'Chicken Legs', 560],
     ['2', 'Lamb Shanks', 300],
+    ['1', 'Avocado', 110],
   ])('weighs "%s" %s as %d g', (measure, name, grams) => {
     const quantity = parseInt(measure, 10);
     expect(quantityToGrams({ quantity, unit: 'PIECES' }, [name], measure)).toBe(
       grams,
-    );
-  });
-
-  it('weighs a piece without its peel, stone or bone', () => {
-    expect(quantityToGrams({ quantity: 1, unit: 'PIECES' }, ['Avocado'])).toBe(
-      110,
     );
   });
 

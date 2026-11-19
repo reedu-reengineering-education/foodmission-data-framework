@@ -31,7 +31,6 @@ describe('seedAgribalyse', () => {
       },
     },
   } as unknown as PrismaClient;
-  const rows = () => imported;
   const nevoCodes = new Set(
     fs
       .readFileSync(
@@ -45,20 +44,18 @@ describe('seedAgribalyse', () => {
   );
 
   beforeAll(async () => {
-    const log = console.log;
-    console.log = () => undefined;
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
     await seedAgribalyse(prisma);
-    console.log = log;
   });
 
   it('imports every AGRIBALYSE food once', () => {
-    const codes = rows().map((row) => row.code);
+    const codes = imported.map((row) => row.code);
     expect(codes).toHaveLength(2451);
     expect(new Set(codes).size).toBe(codes.length);
   });
 
   it('reads names, indicators and quality per food', () => {
-    expect(rows().find((row) => row.code === '20034')).toEqual({
+    expect(imported.find((row) => row.code === '20034')).toEqual({
       code: '20034',
       ciqualCode: 20034,
       foodGroup: 'fruits, légumes, légumineuses et oléagineux',
@@ -73,19 +70,19 @@ describe('seedAgribalyse', () => {
     });
   });
 
-  it('gives every food finite, non-negative values', () => {
+  it('gives every food positive indicators and a quality rating from 1 to 5', () => {
     expect(
-      rows().filter(
-        (row) =>
-          ![row.ciqualCode, row.dqr, row.efScorePerKg, row.co2PerKg].every(
-            (value) => Number.isFinite(value) && (value as number) >= 0,
-          ),
+      imported.filter(
+        ({ ciqualCode, efScorePerKg, co2PerKg, dqr }) =>
+          ![ciqualCode, efScorePerKg, co2PerKg].every(
+            (value) => (value as number) > 0,
+          ) || !((dqr as number) >= 1 && (dqr as number) <= 5),
       ),
     ).toEqual([]);
   });
 
   it('links each mapped NEVO food once, to an imported AGRIBALYSE food', () => {
-    const codes = new Set(rows().map((row) => row.code));
+    const codes = new Set(imported.map((row) => row.code));
     const linkedNevoCodes = links.map((link) => link.nevoCode);
 
     expect(links.length).toBeGreaterThan(0);

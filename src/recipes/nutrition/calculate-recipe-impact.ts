@@ -2,10 +2,8 @@ import { WeighedIngredient, dishGrams } from './calculate-recipe-nutrition';
 
 const MIN_COVERAGE = 0.95;
 
-type Indicators = { co2: number; efScoreMpt: number };
-
 export interface EnvironmentalImpact {
-  perKg: Indicators;
+  perKg: { co2: number; efScoreMpt: number };
   coverage: number;
   dqr: number;
   source: string;
@@ -13,11 +11,6 @@ export interface EnvironmentalImpact {
 
 const round = (value: number, decimals: number) =>
   Math.round(value * 10 ** decimals) / 10 ** decimals;
-
-const indicators = (co2: number, efScore: number): Indicators => ({
-  co2: round(co2, 3),
-  efScoreMpt: round(efScore, 3),
-});
 
 export function calculateRecipeImpact(
   weighed: WeighedIngredient[],
@@ -48,7 +41,10 @@ export function calculateRecipeImpact(
 
   const dishKg = dishGrams(weighed) / 1000;
   return {
-    perKg: indicators(co2 / dishKg, efScore / dishKg),
+    perKg: {
+      co2: round(co2 / dishKg, 3),
+      efScoreMpt: round(efScore / dishKg, 3),
+    },
     coverage: round(coverage, 3),
     dqr: round(dqrGrams / knownGrams, 2),
     source: `AGRIBALYSE ${[...versions].sort().join(', ')}`,
