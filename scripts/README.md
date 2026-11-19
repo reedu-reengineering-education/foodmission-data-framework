@@ -51,6 +51,7 @@ npm run db:translations
 
 - `prisma/seeds/data/nevo/NEVO2025_v9.0.csv` — nutrition + English labels
 - `prisma/seeds/data/nevo/nevo_translations.csv` — all non-English display strings
+- `prisma/seeds/data/agribalyse/` — AGRIBALYSE 3.2 table and NEVO links (see [docs/RECIPE_ENVIRONMENTAL_IMPACT.md](../docs/RECIPE_ENVIRONMENTAL_IMPACT.md))
 
 ### Backup and Restore
 

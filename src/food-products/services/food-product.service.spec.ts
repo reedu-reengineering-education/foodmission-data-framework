@@ -124,6 +124,30 @@ describe('FoodProductService', () => {
         'en',
       );
     });
+
+    it('keeps the environmental grade and AGRIBALYSE code from OFF', async () => {
+      repository.findByBarcode.mockResolvedValue(null);
+      openFoodFacts.getProductByBarcode.mockResolvedValue({
+        barcode: '999',
+        name: 'Nutella',
+        ecoscoreGrade: 'e',
+        agribalyseCode: '31032',
+      });
+      repository.create.mockResolvedValue({
+        id: 'imported',
+        name: 'Nutella',
+        barcode: '999',
+      } as any);
+
+      await service.importFromOpenFoodFacts('999', 'user-1');
+
+      expect(repository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ecoscoreGrade: 'e',
+          agribalyseCode: '31032',
+        }),
+      );
+    });
   });
 
   describe('getOpenFoodFactsInfo', () => {

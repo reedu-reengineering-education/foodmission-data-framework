@@ -1,4 +1,4 @@
-import { Prisma, Unit } from '@prisma/client';
+import { AgribalyseFood, Prisma, Unit } from '@prisma/client';
 import {
   SPICE_PEPPER,
   WordTable,
@@ -43,13 +43,38 @@ export interface NutritionalInfo {
   missingIngredients: string[];
 }
 
-export const NUTRITION_INGREDIENT_SELECT = {
+const AGRIBALYSE_IMPACT_SELECT = {
+  co2PerKg: true,
+  efScorePerKg: true,
+  dqr: true,
+  version: true,
+} as const;
+
+export type ImpactSource = Pick<
+  AgribalyseFood,
+  keyof typeof AGRIBALYSE_IMPACT_SELECT
+>;
+
+export const ESTIMATE_INGREDIENT_SELECT = {
   name: true,
   measure: true,
   quantity: true,
   unit: true,
-  foodProduct: { select: { ...NUTRITION_VALUE_SELECT, name: true } },
-  genericFood: { select: { ...NUTRITION_VALUE_SELECT, foodName: true } },
+  foodProduct: {
+    select: {
+      ...NUTRITION_VALUE_SELECT,
+      name: true,
+      agribalyseFood: { select: AGRIBALYSE_IMPACT_SELECT },
+    },
+  },
+  genericFood: {
+    select: {
+      ...NUTRITION_VALUE_SELECT,
+      foodName: true,
+      foodGroup: true,
+      agribalyseFood: { select: AGRIBALYSE_IMPACT_SELECT },
+    },
+  },
 } as const;
 
 export interface NutritionIngredient {
@@ -57,8 +82,16 @@ export interface NutritionIngredient {
   measure?: string | null;
   quantity?: number | null;
   unit?: Unit | null;
-  foodProduct?: (NutrientSource & { name?: string }) | null;
-  genericFood?: (NutrientSource & { foodName?: string }) | null;
+  foodProduct?:
+    | (NutrientSource & { name?: string; agribalyseFood?: ImpactSource | null })
+    | null;
+  genericFood?:
+    | (NutrientSource & {
+        foodName?: string;
+        foodGroup?: string;
+        agribalyseFood?: ImpactSource | null;
+      })
+    | null;
 }
 
 const ABSORBED_WATER_PER_GRAM: WordTable = [
@@ -68,6 +101,11 @@ const ABSORBED_WATER_PER_GRAM: WordTable = [
   [/^(bulgur|quinoa)\b.*\braw\b/i, 1.7],
   [/^lentils\b.*\bdried\b/i, 1.5],
 ];
+
+const COOKED_WEIGHT_PER_RAW_GRAM: Record<string, number> = {
+  'Meat and poultry': 0.75,
+  'Fish, crustacean and shellfish': 0.8,
+};
 
 const COOKING_LIQUID =
   /^(water|stock|milk|buttermilk|cream|creme fraiche|coconut milk|drink soya|wine|sherry|beer|cider|juice|tomatoes tinned)\b/i;
@@ -149,10 +187,11 @@ const CONDIMENTS: WordTable = [
   [/^peppers?$/i, CONDIMENT_GRAMS],
 ];
 
-type WeighedIngredient = {
+export type WeighedIngredient = {
   ingredient: NutritionIngredient;
   source: NutrientSource | null;
   grams: number;
+  measured: boolean;
   guessed: boolean;
 };
 
@@ -199,13 +238,18 @@ function weigh(ingredient: NutritionIngredient): WeighedIngredient | null {
   const source = nutrientSource(ingredient);
   const measured = measuredGrams(ingredient);
   if (measured != null) {
-    if (!source && measured > MAX_UNLINKED_GRAMS) return null;
-    return { ingredient, source, grams: measured, guessed: !source };
+    return {
+      ingredient,
+      source,
+      grams: measured,
+      measured: true,
+      guessed: !source,
+    };
   }
   const guessed = guessedGrams(ingredient, source);
   return guessed == null
     ? null
-    : { ingredient, source, grams: guessed, guessed: true };
+    : { ingredient, source, grams: guessed, measured: false, guessed: true };
 }
 
 const sum = (values: number[]) =>
@@ -219,7 +263,13 @@ const round = (value: number) => Math.round(value * 10) / 10;
 const kcalOf = ({ source, grams }: WeighedIngredient) =>
   ((source?.energyKcal ?? 0) * grams) / 100;
 
-function dishGrams(weighed: WeighedIngredient[]): number {
+function cookedWeightPerGram({ ingredient }: WeighedIngredient): number {
+  const food = ingredient.genericFood;
+  if (!food?.foodName || !/\braw\b/i.test(food.foodName)) return 1;
+  return COOKED_WEIGHT_PER_RAW_GRAM[food.foodGroup ?? ''] ?? 1;
+}
+
+export function dishGrams(weighed: WeighedIngredient[]): number {
   const foodName = ({ ingredient }: WeighedIngredient) =>
     ingredient.genericFood?.foodName ?? '';
   const absorbedWater = sum(
@@ -233,10 +283,10 @@ function dishGrams(weighed: WeighedIngredient[]): number {
       .filter((item) => COOKING_LIQUID.test(foodName(item)))
       .map(({ grams }) => grams),
   );
-  return (
-    sum(weighed.map(({ grams }) => grams)) +
-    Math.max(0, absorbedWater - cookingLiquid)
+  const cookedGrams = sum(
+    weighed.map((item) => item.grams * cookedWeightPerGram(item)),
   );
+  return cookedGrams + Math.max(0, absorbedWater - cookingLiquid);
 }
 
 function per100g(
@@ -255,18 +305,29 @@ function per100g(
   );
 }
 
-export function calculateRecipeNutrition({
-  ingredients,
-}: {
-  ingredients: NutritionIngredient[];
-}): NutritionalInfo | null {
+export function weighIngredients(
+  ingredients: NutritionIngredient[],
+): WeighedIngredient[] | null {
   const weighed: WeighedIngredient[] = [];
   for (const ingredient of ingredients) {
     const item = weigh(ingredient);
     if (!item) return null;
     weighed.push(item);
   }
+  return weighed;
+}
 
+export function calculateRecipeNutrition(
+  weighed: WeighedIngredient[],
+): NutritionalInfo | null {
+  if (
+    weighed.some(
+      ({ source, measured, grams }) =>
+        !source && measured && grams > MAX_UNLINKED_GRAMS,
+    )
+  ) {
+    return null;
+  }
   const guessed = weighed.filter((item) => item.guessed);
   const totalKcal = sum(weighed.map(kcalOf));
   if (
@@ -300,10 +361,8 @@ export function isUserProvidedNutrition(nutritionalInfo: unknown): boolean {
   );
 }
 
-export function toNutritionJson(
-  nutrition: NutritionalInfo | null,
+export function toJsonColumn<T extends object>(
+  value: T | null,
 ): Prisma.InputJsonValue | Prisma.NullTypes.JsonNull {
-  return nutrition === null
-    ? Prisma.JsonNull
-    : (nutrition as unknown as Prisma.InputJsonValue);
+  return value === null ? Prisma.JsonNull : value;
 }

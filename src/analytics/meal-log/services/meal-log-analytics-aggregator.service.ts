@@ -482,7 +482,7 @@ export class MealLogAnalyticsAggregator {
         f."novaGroup"        AS "foodNovaGroup",
         f."isVegetarian"     AS "foodIsVegetarian",
         f."isVegan"          AS "foodIsVegan",
-        f."carbonFootprint"  AS "foodCarbonFootprint",
+        ab."co2PerKg" / 10   AS "foodCarbonFootprint",
 
         fc."foodName"        AS "categoryFoodName",
         fc."foodGroup"       AS "categoryFoodGroup",
@@ -500,6 +500,7 @@ export class MealLogAnalyticsAggregator {
       JOIN users u ON ml."userId" = u.id
       LEFT JOIN meal_items mi ON mi."mealId" = m.id
       LEFT JOIN food_products f ON mi."foodProductId" = f.id
+      LEFT JOIN agribalyse_foods ab ON ab.code = f."agribalyseCode"
       LEFT JOIN generic_foods fc ON mi."genericFoodId" = fc.id
       WHERE ml."status" = 'CONFIRMED'
         AND ml."timestamp" >= ${periodStart}

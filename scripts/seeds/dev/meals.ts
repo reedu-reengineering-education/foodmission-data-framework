@@ -135,7 +135,6 @@ export async function seedMeals(prisma: PrismaClient): Promise<Meal[]> {
           calories: null,
           proteins: null,
           nutritionalInfo: recipe.nutritionalInfo ?? undefined,
-          sustainabilityScore: recipe.sustainabilityScore ?? undefined,
           price: recipe.price ?? undefined,
           barcode: null,
           mealCategories: taxonomy.mealCategories,

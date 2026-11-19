@@ -108,7 +108,6 @@ global.testUtils = {
         nutriscoreScore: null,
         novaGroup: null,
         ecoscoreGrade: null,
-        carbonFootprint: null,
         nutrientLevels: null,
         // Diet analysis
         isVegan: null,

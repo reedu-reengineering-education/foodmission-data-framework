@@ -176,10 +176,8 @@ export async function seedFoods(
             p.nutriscore_grade || p.nutrition_grades || undefined,
           nutriscoreScore: num(p.nutriscore_score ?? p.nutriscore_data?.score),
           novaGroup: num(p.nova_group),
-          ecoscoreGrade: p.ecoscore_grade || undefined,
-          carbonFootprint: num(
-            nutriments['carbon-footprint-from-known-ingredients_product'],
-          ),
+          ecoscoreGrade:
+            p.environmental_score_grade || p.ecoscore_grade || undefined,
 
           // Nutrient levels (traffic lights)
           nutrientLevels: p.nutrient_levels || undefined,

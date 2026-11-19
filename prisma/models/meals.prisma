@@ -132,7 +132,7 @@ model Recipe {
   difficulty          String?
   tags                String[]
   nutritionalInfo     Json?
-  sustainabilityScore Float?
+  environmentalImpact Json?
   price               Float?
   allergens           Allergens[]
   rating              Float        @default(0)

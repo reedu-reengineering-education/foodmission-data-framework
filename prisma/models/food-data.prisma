@@ -58,7 +58,8 @@ model FoodProduct {
   nutriscoreScore Int?
   novaGroup       Int? // 1 = unprocessed, 4 = ultra-processed
   ecoscoreGrade   String? // a, b, c, d, e, unknown
-  carbonFootprint Float? // CO₂ from known ingredients (kg CO₂e / kg product)
+  agribalyseCode  String?
+  agribalyseFood  AgribalyseFood? @relation(fields: [agribalyseCode], references: [code])
 
   // --- Nutrient levels (traffic lights) ---
   nutrientLevels Json? // { fat: "high", sugars: "high", salt: "low", "saturated-fat": "high" }
@@ -282,6 +283,9 @@ model GenericFood {
   // --- Other ---
   fattyAcidsUnidentified Float? // Unknown/unidentified fatty acids (g)
 
+  agribalyseCode String?
+  agribalyseFood AgribalyseFood? @relation(fields: [agribalyseCode], references: [code])
+
   // --- Shelf life link ---
   shelfLifeId String?        // FK to FoodShelfLife (optional, set by matching script)
   shelfLife   FoodShelfLife? @relation(fields: [shelfLifeId], references: [id])
@@ -301,6 +305,25 @@ model GenericFood {
   // created in migration 20261022120000_add_search_normalize_indexes (Prisma
   // cannot declare expression indexes).
   @@map("generic_foods")
+}
+
+model AgribalyseFood {
+  code         String @id
+  ciqualCode   Int
+  foodGroup    String
+  foodSubgroup String
+  nameFr       String
+  nameEn       String
+  preparation  String
+  dqr          Float
+  efScorePerKg Float
+  co2PerKg     Float
+  version      String
+
+  genericFoods GenericFood[]
+  foodProducts FoodProduct[]
+
+  @@map("agribalyse_foods")
 }
 
 model FoodShelfLife {

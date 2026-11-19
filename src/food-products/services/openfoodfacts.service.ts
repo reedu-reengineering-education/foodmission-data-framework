@@ -16,7 +16,6 @@ import {
   ProductInfo,
   NutritionalInfo,
   OpenFoodFactsSearchOptions,
-  OpenFoodFactsNutriments,
 } from '../interfaces/openfoodfacts.interface';
 import { DEFAULT_LOCALE } from '../../i18n/constants';
 import { pickLocalizedString } from '../utils/off-locale';
@@ -26,6 +25,7 @@ import {
   extractOffNutritionPer,
 } from '../utils/off-nutrition';
 import { offImageUrl } from '../utils/off-images';
+import { offAgribalyseCode } from '../utils/off-agribalyse';
 import { describeError } from '../../common/utils/error.utils';
 
 @Injectable()
@@ -304,8 +304,6 @@ export class OpenFoodFactsService {
     lang: string = DEFAULT_LOCALE,
   ): ProductInfo {
     const brands = product.brands;
-    const nutriments = product.nutriments as
-      OpenFoodFactsNutriments | undefined;
     const id = this.toOptionalString(product._id) ?? '';
     const ingredientsAnalysisTags =
       (product.ingredients_analysis_tags as string[]) || [];
@@ -334,16 +332,10 @@ export class OpenFoodFactsService {
       traces: (product.traces_tags as string[]) || [],
       nutritionGrade: this.toOptionalString(product.nutrition_grades),
       novaGroup: this.toOptionalNumber(product.nova_group),
-      ecoscoreGrade: this.toOptionalString(product.ecoscore_grade),
-      carbonFootprint: (nutriments as Record<string, unknown> | undefined)?.[
-        'carbon-footprint-from-known-ingredients_product'
-      ]
-        ? Number(
-            (nutriments as Record<string, unknown>)[
-              'carbon-footprint-from-known-ingredients_product'
-            ],
-          )
-        : undefined,
+      ecoscoreGrade:
+        this.toOptionalString(product.environmental_score_grade) ??
+        this.toOptionalString(product.ecoscore_grade),
+      agribalyseCode: offAgribalyseCode(product),
       // Legacy nutrition_data_per lingers on migrated docs and can disagree
       // with the aggregated set the values now come from.
       nutritionDataPer:

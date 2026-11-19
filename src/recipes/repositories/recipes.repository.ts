@@ -14,11 +14,12 @@ import {
   PaginatedResult,
 } from '../../common/interfaces/base-repository.interface';
 import { PrismaService } from '../../database/prisma.service';
+import { EnvironmentalImpact } from '../nutrition/calculate-recipe-impact';
 import { normalizePagination } from '../../common/utils/pagination';
 import {
-  NUTRITION_INGREDIENT_SELECT,
+  ESTIMATE_INGREDIENT_SELECT,
   NutritionalInfo,
-  toNutritionJson,
+  toJsonColumn,
 } from '../nutrition/calculate-recipe-nutrition';
 import {
   RECIPE_CANDIDATE_WITH_INGREDIENTS_INCLUDE,
@@ -47,7 +48,6 @@ export interface CreateRecipeData {
   difficulty?: string;
   tags?: string[];
   nutritionalInfo?: Prisma.InputJsonValue;
-  sustainabilityScore?: number;
   price?: number;
   allergens?: Allergens[];
   // New fields for external recipes
@@ -210,22 +210,31 @@ export class RecipesRepository implements BaseRepository<
     );
   }
 
-  findNutritionIngredients(recipeId: string) {
+  findEstimateIngredients(recipeId: string) {
     return this.prisma.recipeIngredient.findMany({
       where: { recipeId },
       orderBy: { order: 'asc' },
-      select: NUTRITION_INGREDIENT_SELECT,
+      select: ESTIMATE_INGREDIENT_SELECT,
     });
   }
 
-  async updateNutrition(
+  async updateEstimates(
     recipeId: string,
-    nutrition: NutritionalInfo | null,
+    {
+      nutritionalInfo,
+      environmentalImpact,
+    }: {
+      nutritionalInfo?: NutritionalInfo | null;
+      environmentalImpact: EnvironmentalImpact | null;
+    },
   ): Promise<void> {
     await this.prisma.recipe.update({
       where: { id: recipeId },
       data: {
-        nutritionalInfo: toNutritionJson(nutrition),
+        ...(nutritionalInfo !== undefined && {
+          nutritionalInfo: toJsonColumn(nutritionalInfo),
+        }),
+        environmentalImpact: toJsonColumn(environmentalImpact),
       },
     });
   }
